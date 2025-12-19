@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect } from "react"
 import { Link, NavLink, Outlet } from "react-router-dom"
 import { useLanguageStore } from "../zustand/useLanguageStore"
 import { t } from "../utils/i18n"
@@ -6,8 +6,18 @@ import { t } from "../utils/i18n"
 export function AppShell() {
   const { language, setLanguage } = useLanguageStore()
 
+  useEffect(() => {
+    document.title = t(language, "app.title")
+  }, [language])
+
   return (
     <div className="min-h-screen bg-surface text-foreground">
+      <a
+        href="#main"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:border focus:border-border focus:bg-surface focus:px-3 focus:py-2 focus:text-foreground"
+      >
+        {t(language, "a11y.skipToContent")}
+      </a>
       <header className="border-b border-border">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
           <Link to="/" className="font-semibold text-foreground">

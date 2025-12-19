@@ -25,7 +25,8 @@ const dict: Dictionary = {
   "quiz.title": { en: "Career Quiz", es: "Cuestionario" },
   "quiz.body": { en: "Placeholder page. Will guide users to recommended careers.", es: "Página temporal. Recomendará carreras a los usuarios." },
   "resources.title": { en: "Resources", es: "Recursos" },
-  "resources.body": { en: "Placeholder page. Will list scholarships and resources.", es: "Página temporal. Listará becas y recursos." }
+  "resources.body": { en: "Placeholder page. Will list scholarships and resources.", es: "Página temporal. Listará becas y recursos." },
+  "a11y.skipToContent": { en: "Skip to content", es: "Saltar al contenido" }
 }
 
 export function t(language: Language, key: keyof typeof dict): string {
