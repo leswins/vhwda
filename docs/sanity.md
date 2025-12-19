@@ -4,6 +4,9 @@
 - **projectId**: `j0yc55ca`
 - **dataset**: `production` (public)
 
+## Node version
+- Use **Node 20 LTS** (recommended) for `sanity schema deploy` / `sanity deploy`.
+
 ## Studio location
 - `apps/studio`
 

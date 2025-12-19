@@ -3,7 +3,7 @@
 This guide covers **initial project setup** for the VHWDA Health Careers Catalog monorepo.
 
 ## 0) Prerequisites
-- Node.js (LTS recommended)
+- Node.js (**20 LTS recommended**)
 - `pnpm` (workspace package manager)
 - Sanity CLI (installed via `apps/studio` dependencies)
 - Git + GitHub CLI (`gh`) (recommended)
@@ -78,6 +78,7 @@ pnpm sanity:deploy
 Notes:
 - `pnpm --filter studio dev` starts a **local** Studio at `http://localhost:3333` for editing, but does **not** register a “deployed studio” in the Sanity web app.
 - The **Sanity “Studios” tab** only shows Studios that have been **hosted/deployed** (Sanity-hosted or your own hosting).
+- If you see `TypeError: Cannot read properties of undefined (reading 'get')` during deploy, upgrade to **Node 20** and reinstall deps (`pnpm install`), then retry.
 
 If you hit CORS issues when the web app reads from Sanity locally, add your dev origin in Sanity project settings (e.g. `http://localhost:5173`).
 

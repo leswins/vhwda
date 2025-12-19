@@ -15,6 +15,9 @@ These values are configured in:
 - `sanity.cli.ts` (CLI operations like schema deploy)
 - `sanity.config.ts` (Studio runtime configuration)
 
+## Node version
+- Use **Node 20 LTS** (recommended) for `sanity schema deploy` / `sanity deploy`.
+
 ## How to run locally
 From repo root:
 
