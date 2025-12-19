@@ -9,7 +9,7 @@
 
 ## Local schema is source of truth
 Schemas live in `apps/studio/schemaTypes`. Deploy schema changes with:
-- `pnpm sanity:deploy` (or `pnpm --filter studio deploy`)
+- `pnpm sanity:deploy` (or `pnpm --filter studio run deploy`)
 
 ## Type generation
 Generate schema-driven types (and keep web app aligned) with:
