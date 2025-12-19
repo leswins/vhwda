@@ -75,6 +75,7 @@ This structure does two key things:
 ## Content model (matches `prd.md` §8.2)
 This Studio defines the following primary document types:
 - **`career`**: the core catalog item
+- **`educationalInstitution`**: a shared list of schools/training institutions (used for the Career detail “Educational Programs” section)
 - **`program`**: training programs / schools
 - **`scholarship`**: scholarship & financial aid entries
 - **`resource`**: resources hub entries (category-driven)
@@ -83,11 +84,30 @@ This Studio defines the following primary document types:
 - **`siteSettings`**: global settings (nav/footer links, announcements, feature flags, SEO defaults) — **singleton**
 - **`careerCategory`**: taxonomy helper referenced by `career.categories`
 
+## Career detail modeling (Career page)
+The public Career detail page is section-driven. **Section titles are handled in the web app (i18n) and should not be authored in Sanity.**
+
+### Bullet-list sections (reduce editor error)
+Some Career sections are displayed as uniform “bullets” on the frontend. To reduce editor error, these fields use `localizedBulletList` (plain strings) instead of rich text:
+- `career.responsibilities`
+- `career.workEnvironment`
+- `career.specializations`
+- `career.licensureAndCerts`
+
+Rule of thumb: **enter one bullet per item**. Do not paste headings into these fields.
+
+### Educational programs / institutions
+Career pages show an “Educational Programs” section with a map and list.
+
+- Institutions live in the **`educationalInstitution`** collection and include `location` (geopoint).
+- Each Career can associate a list of institution items via `career.educationInstitutions[]`, where each item links to an `educationalInstitution` reference and optional `programUrl` (deep link) and optional display `label`.
+
 ## Localization (EN/ES)
 The app is bilingual (EN/ES). Studio fields use **localized objects**:
 - `localizedString`: `{ en: string, es?: string }`
 - `localizedText`: `{ en: string, es?: string }`
 - `localizedPortableText`: `{ en: PortableText[], es?: PortableText[] }`
+- `localizedBulletList`: `{ en: string[], es?: string[] }` (one bullet per item)
 
 These types live in `src/schemaTypes/objects/` and are reused across documents.
 
@@ -98,5 +118,6 @@ Avoid deleting fields that may have production content. Prefer deprecation patte
 ## Common gotchas
 - **CORS**: If the web app cannot read from Sanity locally, add `http://localhost:5173` to CORS origins in the Sanity project settings.
 - **Dataset is public**: web reads are expected to use CDN (`useCdn: true`) and not require a token for basic browsing.
+- **Hosted Studio vs local Studio**: Changes you make locally show up at `http://localhost:3333/` when running `pnpm --filter studio dev`. To update the hosted Studio at `https://careercatalog.sanity.studio/`, run `pnpm studio:deploy` after schema changes.
 
 

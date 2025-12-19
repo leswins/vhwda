@@ -25,11 +25,32 @@ export const career = defineType({
       type: "localizedText"
     }),
 
-    defineField({ name: "responsibilities", title: "Responsibilities", type: "localizedPortableText" }),
-    defineField({ name: "workEnvironment", title: "Work Environment", type: "localizedPortableText" }),
+    defineField({
+      name: "responsibilities",
+      title: "Responsibilities",
+      description: "Enter one bullet per item (do not include the section title).",
+      type: "localizedBulletList"
+    }),
+    defineField({
+      name: "workEnvironment",
+      title: "Work Environment",
+      description: "Enter one item per environment (do not include the section title).",
+      type: "localizedBulletList"
+    }),
+    defineField({
+      name: "specializations",
+      title: "Areas of Specialization",
+      description: "Enter one item per specialization (do not include the section title).",
+      type: "localizedBulletList"
+    }),
     defineField({ name: "educationRequirements", title: "Education Requirements", type: "localizedPortableText" }),
     defineField({ name: "prerequisites", title: "Prerequisites", type: "localizedPortableText" }),
-    defineField({ name: "licensureAndCerts", title: "Licensure & Certifications", type: "localizedPortableText" }),
+    defineField({
+      name: "licensureAndCerts",
+      title: "Licensure & Certifications",
+      description: "Enter one bullet per item (do not include the section title).",
+      type: "localizedBulletList"
+    }),
 
     defineField({ name: "salary", title: "Salary", type: "salary" }),
     defineField({ name: "outlook", title: "Outlook", type: "outlook" }),
@@ -53,6 +74,46 @@ export const career = defineType({
       title: "Programs",
       type: "array",
       of: [defineArrayMember({ type: "reference", to: [{ type: "program" }] })]
+    }),
+    defineField({
+      name: "educationInstitutions",
+      title: "Educational Institutions",
+      description: "Add institutions related to this career. One item per institution/program link.",
+      type: "array",
+      of: [
+        defineArrayMember({
+          name: "educationInstitutionItem",
+          title: "Institution",
+          type: "object",
+          fields: [
+            defineField({
+              name: "institution",
+              title: "Institution",
+              type: "reference",
+              to: [{ type: "educationalInstitution" }],
+              validation: (r) => r.required()
+            }),
+            defineField({
+              name: "programUrl",
+              title: "Program URL",
+              type: "url",
+              validation: (r) => r.uri({ scheme: ["http", "https"] })
+            }),
+            defineField({
+              name: "label",
+              title: "Label (optional override)",
+              type: "string",
+              description: "If set, this label will be shown instead of the institution name."
+            })
+          ],
+          preview: {
+            select: { title: "label" },
+            prepare: ({ title }) => ({
+              title: title || "Institution"
+            })
+          }
+        })
+      ]
     }),
     defineField({
       name: "scholarships",

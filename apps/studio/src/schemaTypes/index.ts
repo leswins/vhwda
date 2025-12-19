@@ -1,5 +1,6 @@
 import { career } from "./documents/career"
 import { careerCategory } from "./documents/career-category"
+import { educationalInstitution } from "./documents/educational-institution"
 import { program } from "./documents/program"
 import { scholarship } from "./documents/scholarship"
 import { resource } from "./documents/resource"
@@ -9,6 +10,7 @@ import { siteSettings } from "./documents/site-settings"
 
 import { localizedString } from "./objects/localized-string"
 import { localizedText } from "./objects/localized-text"
+import { localizedBulletList } from "./objects/localized-bullet-list"
 import { localizedPortableText } from "./objects/localized-portable-text"
 import { duration } from "./objects/duration"
 import { moneyRange } from "./objects/money-range"
@@ -20,6 +22,7 @@ export const schemaTypes = [
   siteSettings,
   career,
   careerCategory,
+  educationalInstitution,
   program,
   scholarship,
   resource,
@@ -29,6 +32,7 @@ export const schemaTypes = [
   // objects
   localizedString,
   localizedText,
+  localizedBulletList,
   localizedPortableText,
   duration,
   moneyRange,
