@@ -1,11 +1,11 @@
 import { defineField, defineType } from "sanity"
-import { TrendUpIcon } from "@sanity/icons"
+import { BarChartIcon } from "@sanity/icons"
 
 export const outlook = defineType({
   name: "outlook",
   title: "Outlook",
   type: "object",
-  icon: TrendUpIcon,
+  icon: BarChartIcon,
   fields: [
     defineField({ name: "label", title: "Label", type: "string" }),
     defineField({ name: "value", title: "Value", type: "number" }),

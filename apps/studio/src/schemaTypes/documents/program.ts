@@ -1,11 +1,11 @@
 import { defineField, defineType } from "sanity"
-import { SchoolIcon } from "@sanity/icons"
+import { BookIcon } from "@sanity/icons"
 
 export const program = defineType({
   name: "program",
   title: "Program",
   type: "document",
-  icon: SchoolIcon,
+  icon: BookIcon,
   fields: [
     defineField({ name: "name", title: "Name", type: "string", validation: (r) => r.required() }),
     defineField({ name: "region", title: "Region", type: "string" }),
