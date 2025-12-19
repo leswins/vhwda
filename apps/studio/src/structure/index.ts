@@ -2,6 +2,15 @@ import type { StructureResolver } from "sanity/structure"
 import { CogIcon, TagIcon, ThLargeIcon } from "@sanity/icons"
 
 const SINGLETONS = ["siteSettings"]
+const CUSTOM_NAV_TYPES = [
+  "career",
+  "program",
+  "scholarship",
+  "resource",
+  "professionalOrganization",
+  "quiz",
+  "careerCategory"
+]
 
 export const structure: StructureResolver = (S) =>
   S.list()
@@ -43,7 +52,10 @@ export const structure: StructureResolver = (S) =>
 
       S.divider(),
 
-      ...S.documentTypeListItems().filter((item) => !SINGLETONS.includes(item.getId() as string))
+      ...S.documentTypeListItems().filter((item) => {
+        const id = item.getId() as string
+        return !SINGLETONS.includes(id) && !CUSTOM_NAV_TYPES.includes(id)
+      })
     ])
 
 
