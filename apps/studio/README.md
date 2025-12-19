@@ -15,6 +15,10 @@ These values are configured in:
 - `sanity.cli.ts` (CLI operations like schema deploy)
 - `sanity.config.ts` (Studio runtime configuration)
 
+### Hosted Studio URL / hostname
+- **Studio URL**: `https://careercatalog.sanity.studio/`
+- `sanity.cli.ts` pins `studioHost: "careercatalog"` so `pnpm studio:deploy` doesn’t prompt for a hostname.
+
 ## Node version
 - Use **Node 20 LTS** (recommended) for `sanity schema deploy` / `sanity deploy`.
 
