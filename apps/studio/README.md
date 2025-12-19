@@ -37,6 +37,13 @@ From repo root:
 pnpm sanity:deploy
 ```
 
+## Deploy the Studio (so it appears in the Sanity “Studios” tab)
+Running the Studio locally (`sanity dev`) is just for your machine. If you want the Studio to appear in `sanity.io` under **Studios**, deploy it:
+
+```bash
+pnpm studio:deploy
+```
+
 ## Where to find the important code
 
 ### Studio entrypoints

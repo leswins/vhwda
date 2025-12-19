@@ -13,8 +13,9 @@
     "lint": "pnpm -r lint",
     "format": "prettier . --write",
     "format:check": "prettier . --check",
-    "sanity:typegen": "pnpm --filter studio sanity typegen generate",
-    "sanity:deploy": "pnpm --filter studio sanity schema deploy",
+    "sanity:typegen": "pnpm --filter studio typegen",
+    "sanity:deploy": "pnpm --filter studio deploy",
+    "studio:deploy": "pnpm --filter studio deploy:studio",
     "tokens:pull": "node scripts/pull-figma-tokens.mjs",
     "ci": "pnpm lint && pnpm typecheck && pnpm build"
   },

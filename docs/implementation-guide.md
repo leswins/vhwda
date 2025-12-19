@@ -75,6 +75,10 @@ Sanity reports that **no schema is currently deployed** to `j0yc55ca/production`
 pnpm sanity:deploy
 ```
 
+Notes:
+- `pnpm --filter studio dev` starts a **local** Studio at `http://localhost:3333` for editing, but does **not** register a “deployed studio” in the Sanity web app.
+- The **Sanity “Studios” tab** only shows Studios that have been **hosted/deployed** (Sanity-hosted or your own hosting).
+
 If you hit CORS issues when the web app reads from Sanity locally, add your dev origin in Sanity project settings (e.g. `http://localhost:5173`).
 
 ### 5.3 (Optional) Type generation

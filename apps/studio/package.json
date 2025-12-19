@@ -6,16 +6,17 @@
     "dev": "sanity dev",
     "build": "sanity build",
     "deploy": "sanity schema deploy",
+    "deploy:studio": "sanity deploy",
+    "typegen": "sanity typegen generate",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "lint": "echo \"lint not configured yet\" && exit 0"
   },
   "dependencies": {
     "@sanity/icons": "^3.7.0",
-    "sanity": "^3.78.0"
+    "sanity": "^3.78.0",
+    "styled-components": "^6.1.15"
   },
   "devDependencies": {
     "typescript": "^5.7.2"
   }
 }
-
-
