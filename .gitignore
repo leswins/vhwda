@@ -1,0 +1,14 @@
+node_modules
+.DS_Store
+dist
+build
+.turbo
+.cache
+.env
+.env.*
+!.env.example
+
+# Sanity
+.sanity
+
+

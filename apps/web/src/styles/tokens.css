@@ -1,0 +1,25 @@
+:root {
+  /**
+   * NOTE: These are placeholder defaults until we ingest real values from Figma variables via MCP.
+   * Replace the RGB triplets with values derived from Figma variables.
+   */
+
+  /* Semantic colors (rgb triplets) */
+  --color-surface: 255 255 255;
+  --color-foreground: 17 24 39;
+  --color-muted: 107 114 128;
+  --color-border: 229 231 235;
+  --color-primary: 37 99 235;
+  --color-on-primary: 255 255 255;
+
+  /* Typography */
+  --font-sans: ui-sans-serif;
+
+  /* Radii */
+  --radius-md: 0.75rem;
+
+  /* Spacing (example) */
+  --space-4_5: 1.125rem;
+}
+
+

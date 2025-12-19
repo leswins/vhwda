@@ -1,0 +1,9 @@
+## VHWDA Project Rules (Agent Guidance)
+
+### Design tokens
+- Never hardcode colors; use CSS variables from `tokens.css` (e.g. `var(--color-...)`) and reference them via Tailwind theme tokens.
+
+### Localization
+- All user-facing strings must go through i18n utilities. Do not inline English strings in components except as translation keys or fallback values inside the i18n layer.
+
+
