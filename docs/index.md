@@ -8,6 +8,7 @@ This folder is the canonical “source of truth” for how this repo is organize
 - [Sanity](sanity.md)
 - [Design System](design-system.md)
 - [Runbook](runbook.md)
+- [PRD](../prd.md)
 
 ## Conventions + contracts
 - [Repo Conventions](conventions.md)
