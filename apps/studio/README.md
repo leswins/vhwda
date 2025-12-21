@@ -96,6 +96,18 @@ Some Career sections are displayed as uniform “bullets” on the frontend. To 
 
 Rule of thumb: **enter one bullet per item**. Do not paste headings into these fields.
 
+### Areas of Specialization (note text)
+The “Areas of Specialization” section can include an optional supporting sentence/link beneath the bullets:
+- `career.specializationsNote` (uses `localizedPortableTextSmall`)
+
+### Top highlights (career detail widgets)
+Some values shown in the top highlight widgets are authored as plain text on the Career document:
+- `career.academicRequirementsHighlight` (uses `localizedString`)
+- `career.programLengthHighlight` (uses `localizedString`)
+
+### Academic Requirements formatting
+`career.educationRequirements` uses `localizedPortableTextSmall` so editors only see **Normal** and **Small** style options (no headings).
+
 ### Educational programs / institutions
 Career pages show an “Educational Programs” section with a map and list.
 
@@ -108,6 +120,7 @@ The app is bilingual (EN/ES). Studio fields use **localized objects**:
 - `localizedText`: `{ en: string, es?: string }`
 - `localizedPortableText`: `{ en: PortableText[], es?: PortableText[] }`
 - `localizedBulletList`: `{ en: string[], es?: string[] }` (one bullet per item)
+- `localizedPortableTextSmall`: `{ en: PortableText[], es?: PortableText[] }` (Normal + Small only)
 
 These types live in `src/schemaTypes/objects/` and are reused across documents.
 

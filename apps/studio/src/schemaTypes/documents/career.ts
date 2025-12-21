@@ -43,13 +43,37 @@ export const career = defineType({
       description: "Enter one item per specialization (do not include the section title).",
       type: "localizedBulletList"
     }),
-    defineField({ name: "educationRequirements", title: "Education Requirements", type: "localizedPortableText" }),
+    defineField({
+      name: "specializationsNote",
+      title: "Areas of Specialization (note)",
+      description: "Optional text shown beneath the specialization bullets.",
+      type: "localizedPortableTextSmall"
+    }),
+    defineField({
+      name: "educationRequirements",
+      title: "Education Requirements",
+      description: "Use Normal + Small only (no headings).",
+      type: "localizedPortableTextSmall"
+    }),
     defineField({ name: "prerequisites", title: "Prerequisites", type: "localizedPortableText" }),
     defineField({
       name: "licensureAndCerts",
       title: "Licensure & Certifications",
       description: "Enter one bullet per item (do not include the section title).",
       type: "localizedBulletList"
+    }),
+
+    defineField({
+      name: "academicRequirementsHighlight",
+      title: "Academic Requirements (highlight)",
+      description: "Short highlight shown in the top-right widget (e.g., “Associate/Bachelors”).",
+      type: "localizedString"
+    }),
+    defineField({
+      name: "programLengthHighlight",
+      title: "Program Length (highlight)",
+      description: "Short highlight shown in the top-right widget (e.g., “2–4 Years”).",
+      type: "localizedString"
     }),
 
     defineField({ name: "salary", title: "Salary", type: "salary" }),

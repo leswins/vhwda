@@ -1,8 +1,9 @@
+@import "mapbox-gl/dist/mapbox-gl.css";
+@import "./tokens.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-@import "./tokens.css";
 
 /* Base */
 html,
@@ -21,5 +22,3 @@ body {
   outline: 2px solid rgb(var(--color-primary));
   outline-offset: 2px;
 }
-
-

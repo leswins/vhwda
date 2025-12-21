@@ -12,6 +12,7 @@ import { localizedString } from "./objects/localized-string"
 import { localizedText } from "./objects/localized-text"
 import { localizedBulletList } from "./objects/localized-bullet-list"
 import { localizedPortableText } from "./objects/localized-portable-text"
+import { localizedPortableTextSmall } from "./objects/localized-portable-text-small"
 import { duration } from "./objects/duration"
 import { moneyRange } from "./objects/money-range"
 import { salary } from "./objects/salary"
@@ -34,6 +35,7 @@ export const schemaTypes = [
   localizedText,
   localizedBulletList,
   localizedPortableText,
+  localizedPortableTextSmall,
   duration,
   moneyRange,
   salary,
