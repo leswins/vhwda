@@ -1,14 +1,10 @@
-/**
- * Quiz queries from Sanity
- */
+
 
 import { sanityClient } from "../client"
 import type { QuizVector } from "./careers"
 import type { Question, QuestionOption } from "../../quiz/questions"
 
-/**
- * Quiz document from Sanity
- */
+// sanity quiz type
 type SanityQuiz = {
   _id: string
   title?: { en: string; es?: string }
@@ -31,14 +27,12 @@ type SanityQuiz = {
   }>
 }
 
-/**
- * Query to fetch quiz from Sanity
- */
+// query to fetch quiz from sanity
 const QUIZ_QUERY = /* groq */ `
 *[_type == "quiz"][0]{
   _id,
   title,
-  questions[] | order(order asc){
+  questions[] | order(coalesce(order, 9999) asc){
     _key,
     order,
     title,
@@ -58,9 +52,7 @@ const QUIZ_QUERY = /* groq */ `
 }
 `
 
-/**
- * Transform Sanity quiz to our Question format
- */
+//transform sanity quiz to our Question format
 function transformQuiz(sanityQuiz: SanityQuiz | null, language: "en" | "es"): Question[] {
   if (!sanityQuiz || !sanityQuiz.questions) return []
 
@@ -82,11 +74,13 @@ function transformQuiz(sanityQuiz: SanityQuiz | null, language: "en" | "es"): Qu
   }))
 }
 
-/**
- * Fetch quiz questions from Sanity
- */
+//fetch questions from sanity
 export async function fetchQuizQuestions(language: "en" | "es" = "en"): Promise<Question[]> {
   const quiz = await sanityClient.fetch<SanityQuiz | null>(QUIZ_QUERY)
-  return transformQuiz(quiz, language)
+  const transformed = transformQuiz(quiz, language)
+  console.log("TRANSFORMEDDDDD QUESTIONS")
+  console.log(transformed)
+  console.log(quiz)
+  return transformed
 }
 

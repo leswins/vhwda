@@ -199,3 +199,29 @@ export type HardRequirements = {
   requiresAcuteStress?: boolean
 }
 
+
+export type CareerForMatching = {
+  _id: string
+  slug?: string
+  title: LocalizedString
+  quizVector?: QuizVector
+  hardRequirements?: HardRequirements
+}
+
+const CAREERS_FOR_QUIZ_QUERY = /* groq */ `
+*[_type == "career"]{
+  _id,
+  "slug": slug.current,
+  title,
+  quizVector,
+  hardRequirements
+}
+`
+
+/**
+ * Fetch all careers with quiz data for matching
+ */
+export async function fetchCareersForQuiz(): Promise<CareerForMatching[]> {
+  return await sanityClient.fetch<CareerForMatching[]>(CAREERS_FOR_QUIZ_QUERY)
+}
+
