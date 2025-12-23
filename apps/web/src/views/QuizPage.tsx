@@ -12,7 +12,7 @@ export function QuizPage() {
     const [currentStep, setCurrentStep] = useState<"intro" | "questions" | "results">("intro")
     const [userVector, setUserVector] = useState<QuizVector>(createEmptyVector())
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
-    const [selectedAnswers, setSelectedAnswers] = useState<Record<string, string>>({}) // questionId -> optionId
+    const [selectedAnswers, setSelectedAnswers] = useState<Record<string, string | string[]>>({}) // questionId -> optionId (string for single-select, string[] for multi-select)
     const [questions, setQuestions] = useState<Question[]>([]) // Load from Sanity
     const [loadingQuestions, setLoadingQuestions] = useState(true)
     const [errorLoadingQuestions, setErrorLoadingQuestions] = useState<string | null>(null)
@@ -52,38 +52,102 @@ export function QuizPage() {
         const question = questions.find(q => q.id === questionId)
         if (!question) return
 
-        const previousOptionId = selectedAnswers[questionId]
-        const previousOption = previousOptionId 
-            ? question.options.find(o => o.id === previousOptionId)
-            : null
+        const isMultiSelect = question.type === "multi_select"
+        const currentSelection = selectedAnswers[questionId]
+        const currentSelectedIds = Array.isArray(currentSelection) 
+            ? currentSelection 
+            : currentSelection 
+                ? [currentSelection] 
+                : []
 
         const newOption = question.options.find(o => o.id === optionId)
         if (!newOption) return
 
-        setUserVector(prev => {
-            const updated = { ...prev }
-            
-            // First substract previous weight -> then add new weight
-            if (previousOption?.weights) {
-                Object.entries(previousOption.weights).forEach(([dimension, value]) => {
-                    const dim = dimension as keyof QuizVector
-                    updated[dim] = (updated[dim] || 0) - (value || 0)
-                })
-            }
-            if (newOption.weights) {
-                Object.entries(newOption.weights).forEach(([dimension, value]) => {
-                    const dim = dimension as keyof QuizVector
-                    updated[dim] = (updated[dim] || 0) + (value || 0)
-                })
-            }
-            
-            return updated
-        })
+        // For multi-select: toggle selection, respecting maxSelect
+        if (isMultiSelect) {
+            const isCurrentlySelected = currentSelectedIds.includes(optionId)
+            let newSelectedIds: string[]
 
-        setSelectedAnswers(prev => ({
-            ...prev,
-            [questionId]: optionId
-        }))
+            if (isCurrentlySelected) {
+                // Deselect: remove from array
+                newSelectedIds = currentSelectedIds.filter(id => id !== optionId)
+            } else {
+                // Select: add to array if under maxSelect limit
+                const maxSelect = question.maxSelect || Infinity
+                if (currentSelectedIds.length >= maxSelect) {
+                    // Already at max, don't add
+                    return
+                }
+                newSelectedIds = [...currentSelectedIds, optionId]
+            }
+
+            // Recalculate vector: remove all previous weights, add all new weights
+            setUserVector(prev => {
+                const updated = { ...prev }
+                
+                // Remove weights from all previously selected options
+                currentSelectedIds.forEach(prevOptionId => {
+                    const prevOption = question.options.find(o => o.id === prevOptionId)
+                    if (prevOption?.weights) {
+                        Object.entries(prevOption.weights).forEach(([dimension, value]) => {
+                            const dim = dimension as keyof QuizVector
+                            updated[dim] = (updated[dim] || 0) - (value || 0)
+                        })
+                    }
+                })
+                
+                // Add weights from all newly selected options
+                newSelectedIds.forEach(newOptionId => {
+                    const opt = question.options.find(o => o.id === newOptionId)
+                    if (opt?.weights) {
+                        Object.entries(opt.weights).forEach(([dimension, value]) => {
+                            const dim = dimension as keyof QuizVector
+                            updated[dim] = (updated[dim] || 0) + (value || 0)
+                        })
+                    }
+                })
+                
+                return updated
+            })
+
+            setSelectedAnswers(prev => ({
+                ...prev,
+                [questionId]: newSelectedIds
+            }))
+        } else {
+            // Single-select: replace previous selection
+            const previousOptionId = Array.isArray(currentSelection) 
+                ? currentSelection[0] 
+                : currentSelection
+            const previousOption = previousOptionId 
+                ? question.options.find(o => o.id === previousOptionId)
+                : null
+
+            setUserVector(prev => {
+                const updated = { ...prev }
+                
+                // First subtract previous weight -> then add new weight
+                if (previousOption?.weights) {
+                    Object.entries(previousOption.weights).forEach(([dimension, value]) => {
+                        const dim = dimension as keyof QuizVector
+                        updated[dim] = (updated[dim] || 0) - (value || 0)
+                    })
+                }
+                if (newOption.weights) {
+                    Object.entries(newOption.weights).forEach(([dimension, value]) => {
+                        const dim = dimension as keyof QuizVector
+                        updated[dim] = (updated[dim] || 0) + (value || 0)
+                    })
+                }
+                
+                return updated
+            })
+
+            setSelectedAnswers(prev => ({
+                ...prev,
+                [questionId]: optionId
+            }))
+        }
     }
 
     const currentQuestion = questions[currentQuestionIndex]
@@ -163,22 +227,50 @@ export function QuizPage() {
                     <h2>Question {currentQuestionIndex + 1} of {questions.length}</h2>
                     {loadingQuestions && <p>Loading questions from Sanity...</p>}
                     <p>{currentQuestion.prompt}</p>
+                    {currentQuestion.type === "multi_select" && currentQuestion.maxSelect && (
+                        <p style={{ fontSize: "14px", color: "#666", fontStyle: "italic" }}>
+                            {language === "es" 
+                                ? `Selecciona hasta ${currentQuestion.maxSelect} opciones`
+                                : `Select up to ${currentQuestion.maxSelect} options`}
+                        </p>
+                    )}
                     <div>
-                        {currentQuestion.options.map((option) => (
-                            <label key={option.id} style={{ display: "block", marginBottom: "10px" }}>
-                                <input 
-                                    type="radio" 
-                                    name={`question_${currentQuestion.id}`}
-                                    value={option.id}
-                                    checked={selectedAnswers[currentQuestion.id] === option.id}
-                                    onChange={() => handleAnswer(currentQuestion.id, option.id)}
-                                /> 
-                                {option.label}
-                                <span style={{ fontSize: "12px", color: "#666", marginLeft: "10px" }}>
-                                    (weights: {JSON.stringify(option.weights)})
-                                </span>
-                            </label>
-                        ))}
+                        {currentQuestion.options.map((option) => {
+                            const isMultiSelect = currentQuestion.type === "multi_select"
+                            const currentSelection = selectedAnswers[currentQuestion.id]
+                            const isSelected = isMultiSelect
+                                ? Array.isArray(currentSelection) && currentSelection.includes(option.id)
+                                : currentSelection === option.id
+                            const isDisabled = isMultiSelect && 
+                                !isSelected && 
+                                Array.isArray(currentSelection) && 
+                                currentSelection.length >= (currentQuestion.maxSelect || Infinity)
+
+                            return (
+                                <label 
+                                    key={option.id} 
+                                    style={{ 
+                                        display: "block", 
+                                        marginBottom: "10px",
+                                        opacity: isDisabled ? 0.5 : 1,
+                                        cursor: isDisabled ? "not-allowed" : "pointer"
+                                    }}
+                                >
+                                    <input 
+                                        type={isMultiSelect ? "checkbox" : "radio"}
+                                        name={`question_${currentQuestion.id}`}
+                                        value={option.id}
+                                        checked={isSelected}
+                                        disabled={isDisabled}
+                                        onChange={() => handleAnswer(currentQuestion.id, option.id)}
+                                    /> 
+                                    {option.label}
+                                    <span style={{ fontSize: "12px", color: "#666", marginLeft: "10px" }}>
+                                        (weights: {JSON.stringify(option.weights)})
+                                    </span>
+                                </label>
+                            )
+                        })}
                     </div>
                     
                     <div style={{ marginTop: "20px", padding: "10px", background: "#f5f5f5", fontSize: "12px" }}>
