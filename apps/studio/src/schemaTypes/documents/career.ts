@@ -139,7 +139,9 @@ export const career = defineType({
         defineField({ name: "w_env_school", title: "Environment: School", type: "number", validation: (r) => r.min(-2).max(2) }),
         defineField({ name: "w_env_lab", title: "Environment: Lab", type: "number", validation: (r) => r.min(-2).max(2) }),
         defineField({ name: "w_env_office", title: "Environment: Office", type: "number", validation: (r) => r.min(-2).max(2) }),
-        defineField({ name: "w_multi_env", title: "Multiple Environments", type: "number", validation: (r) => r.min(-2).max(2) })
+        defineField({ name: "w_multi_env", title: "Multiple Environments", type: "number", validation: (r) => r.min(-2).max(2) }),
+        defineField({ name: "w_outlook_importance", title: "Outlook Importance", type: "number", validation: (r) => r.min(-2).max(2) }),
+        defineField({ name: "w_short_path", title: "Short Path Preference", type: "number", validation: (r) => r.min(-2).max(2) })
       ]
     }),
     defineField({

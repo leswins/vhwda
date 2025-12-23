@@ -19,13 +19,46 @@ export type Quiz = {
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
-  title?: LocalizedString;
   questions?: Array<{
+    order?: number;
+    section?: "Interests & Values" | "Skills & Aptitudes" | "Work Environment" | "Schedule & Lifestyle" | "Education Path" | "Salary & Outlook" | "Location & Access" | "Career Features" | "Deal-breakers";
     prompt?: LocalizedString;
-    type?: "single" | "multi" | "likert";
+    type?: "likert_5" | "rating_1_5" | "multi_select" | "single_select" | "boolean" | "region_select";
+    maxSelect?: number;
+    isDealbreaker?: boolean;
     options?: Array<{
       label?: LocalizedString;
-      score?: number;
+      weights?: {
+        w_patient_facing?: number;
+        w_tech_equipment?: number;
+        w_lab_research?: number;
+        w_counseling_education?: number;
+        w_pediatrics?: number;
+        w_geriatrics?: number;
+        w_exposure_tolerance?: number;
+        w_analytical?: number;
+        w_admin?: number;
+        w_procedural_dexterity?: number;
+        w_collaboration?: number;
+        w_pace_routine?: number;
+        w_pace_fast?: number;
+        w_schedule_flex?: number;
+        w_stress_tolerance?: number;
+        w_physical_light?: number;
+        w_physical_on_feet?: number;
+        w_physical_lifting?: number;
+        w_env_hospital?: number;
+        w_env_clinic?: number;
+        w_env_community?: number;
+        w_env_school?: number;
+        w_env_lab?: number;
+        w_env_office?: number;
+        w_multi_env?: number;
+        w_outlook_importance?: number;
+        w_short_path?: number;
+      };
+      hardFilterField?: "education_ceiling" | "licensure_rule" | "dealbreaker" | "min_start_salary" | "region";
+      hardFilterValue?: string;
       _key: string;
     }>;
     _key: string;
@@ -159,6 +192,8 @@ export type Career = {
     w_env_lab?: number;
     w_env_office?: number;
     w_multi_env?: number;
+    w_outlook_importance?: number;
+    w_short_path?: number;
   };
   hardRequirements?: {
     requiresLicensure?: boolean;

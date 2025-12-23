@@ -34,14 +34,6 @@
           "type": "string"
         }
       },
-      "title": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "inline",
-          "name": "localizedString"
-        },
-        "optional": true
-      },
       "questions": {
         "type": "objectAttribute",
         "value": {
@@ -49,6 +41,58 @@
           "of": {
             "type": "object",
             "attributes": {
+              "order": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "number"
+                },
+                "optional": true
+              },
+              "section": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "union",
+                  "of": [
+                    {
+                      "type": "string",
+                      "value": "Interests & Values"
+                    },
+                    {
+                      "type": "string",
+                      "value": "Skills & Aptitudes"
+                    },
+                    {
+                      "type": "string",
+                      "value": "Work Environment"
+                    },
+                    {
+                      "type": "string",
+                      "value": "Schedule & Lifestyle"
+                    },
+                    {
+                      "type": "string",
+                      "value": "Education Path"
+                    },
+                    {
+                      "type": "string",
+                      "value": "Salary & Outlook"
+                    },
+                    {
+                      "type": "string",
+                      "value": "Location & Access"
+                    },
+                    {
+                      "type": "string",
+                      "value": "Career Features"
+                    },
+                    {
+                      "type": "string",
+                      "value": "Deal-breakers"
+                    }
+                  ]
+                },
+                "optional": true
+              },
               "prompt": {
                 "type": "objectAttribute",
                 "value": {
@@ -64,17 +108,43 @@
                   "of": [
                     {
                       "type": "string",
-                      "value": "single"
+                      "value": "likert_5"
                     },
                     {
                       "type": "string",
-                      "value": "multi"
+                      "value": "rating_1_5"
                     },
                     {
                       "type": "string",
-                      "value": "likert"
+                      "value": "multi_select"
+                    },
+                    {
+                      "type": "string",
+                      "value": "single_select"
+                    },
+                    {
+                      "type": "string",
+                      "value": "boolean"
+                    },
+                    {
+                      "type": "string",
+                      "value": "region_select"
                     }
                   ]
+                },
+                "optional": true
+              },
+              "maxSelect": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "number"
+                },
+                "optional": true
+              },
+              "isDealbreaker": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "boolean"
                 },
                 "optional": true
               },
@@ -93,10 +163,237 @@
                         },
                         "optional": true
                       },
-                      "score": {
+                      "weights": {
                         "type": "objectAttribute",
                         "value": {
-                          "type": "number"
+                          "type": "object",
+                          "attributes": {
+                            "w_patient_facing": {
+                              "type": "objectAttribute",
+                              "value": {
+                                "type": "number"
+                              },
+                              "optional": true
+                            },
+                            "w_tech_equipment": {
+                              "type": "objectAttribute",
+                              "value": {
+                                "type": "number"
+                              },
+                              "optional": true
+                            },
+                            "w_lab_research": {
+                              "type": "objectAttribute",
+                              "value": {
+                                "type": "number"
+                              },
+                              "optional": true
+                            },
+                            "w_counseling_education": {
+                              "type": "objectAttribute",
+                              "value": {
+                                "type": "number"
+                              },
+                              "optional": true
+                            },
+                            "w_pediatrics": {
+                              "type": "objectAttribute",
+                              "value": {
+                                "type": "number"
+                              },
+                              "optional": true
+                            },
+                            "w_geriatrics": {
+                              "type": "objectAttribute",
+                              "value": {
+                                "type": "number"
+                              },
+                              "optional": true
+                            },
+                            "w_exposure_tolerance": {
+                              "type": "objectAttribute",
+                              "value": {
+                                "type": "number"
+                              },
+                              "optional": true
+                            },
+                            "w_analytical": {
+                              "type": "objectAttribute",
+                              "value": {
+                                "type": "number"
+                              },
+                              "optional": true
+                            },
+                            "w_admin": {
+                              "type": "objectAttribute",
+                              "value": {
+                                "type": "number"
+                              },
+                              "optional": true
+                            },
+                            "w_procedural_dexterity": {
+                              "type": "objectAttribute",
+                              "value": {
+                                "type": "number"
+                              },
+                              "optional": true
+                            },
+                            "w_collaboration": {
+                              "type": "objectAttribute",
+                              "value": {
+                                "type": "number"
+                              },
+                              "optional": true
+                            },
+                            "w_pace_routine": {
+                              "type": "objectAttribute",
+                              "value": {
+                                "type": "number"
+                              },
+                              "optional": true
+                            },
+                            "w_pace_fast": {
+                              "type": "objectAttribute",
+                              "value": {
+                                "type": "number"
+                              },
+                              "optional": true
+                            },
+                            "w_schedule_flex": {
+                              "type": "objectAttribute",
+                              "value": {
+                                "type": "number"
+                              },
+                              "optional": true
+                            },
+                            "w_stress_tolerance": {
+                              "type": "objectAttribute",
+                              "value": {
+                                "type": "number"
+                              },
+                              "optional": true
+                            },
+                            "w_physical_light": {
+                              "type": "objectAttribute",
+                              "value": {
+                                "type": "number"
+                              },
+                              "optional": true
+                            },
+                            "w_physical_on_feet": {
+                              "type": "objectAttribute",
+                              "value": {
+                                "type": "number"
+                              },
+                              "optional": true
+                            },
+                            "w_physical_lifting": {
+                              "type": "objectAttribute",
+                              "value": {
+                                "type": "number"
+                              },
+                              "optional": true
+                            },
+                            "w_env_hospital": {
+                              "type": "objectAttribute",
+                              "value": {
+                                "type": "number"
+                              },
+                              "optional": true
+                            },
+                            "w_env_clinic": {
+                              "type": "objectAttribute",
+                              "value": {
+                                "type": "number"
+                              },
+                              "optional": true
+                            },
+                            "w_env_community": {
+                              "type": "objectAttribute",
+                              "value": {
+                                "type": "number"
+                              },
+                              "optional": true
+                            },
+                            "w_env_school": {
+                              "type": "objectAttribute",
+                              "value": {
+                                "type": "number"
+                              },
+                              "optional": true
+                            },
+                            "w_env_lab": {
+                              "type": "objectAttribute",
+                              "value": {
+                                "type": "number"
+                              },
+                              "optional": true
+                            },
+                            "w_env_office": {
+                              "type": "objectAttribute",
+                              "value": {
+                                "type": "number"
+                              },
+                              "optional": true
+                            },
+                            "w_multi_env": {
+                              "type": "objectAttribute",
+                              "value": {
+                                "type": "number"
+                              },
+                              "optional": true
+                            },
+                            "w_outlook_importance": {
+                              "type": "objectAttribute",
+                              "value": {
+                                "type": "number"
+                              },
+                              "optional": true
+                            },
+                            "w_short_path": {
+                              "type": "objectAttribute",
+                              "value": {
+                                "type": "number"
+                              },
+                              "optional": true
+                            }
+                          }
+                        },
+                        "optional": true
+                      },
+                      "hardFilterField": {
+                        "type": "objectAttribute",
+                        "value": {
+                          "type": "union",
+                          "of": [
+                            {
+                              "type": "string",
+                              "value": "education_ceiling"
+                            },
+                            {
+                              "type": "string",
+                              "value": "licensure_rule"
+                            },
+                            {
+                              "type": "string",
+                              "value": "dealbreaker"
+                            },
+                            {
+                              "type": "string",
+                              "value": "min_start_salary"
+                            },
+                            {
+                              "type": "string",
+                              "value": "region"
+                            }
+                          ]
+                        },
+                        "optional": true
+                      },
+                      "hardFilterValue": {
+                        "type": "objectAttribute",
+                        "value": {
+                          "type": "string"
                         },
                         "optional": true
                       }
@@ -958,6 +1255,20 @@
               "optional": true
             },
             "w_multi_env": {
+              "type": "objectAttribute",
+              "value": {
+                "type": "number"
+              },
+              "optional": true
+            },
+            "w_outlook_importance": {
+              "type": "objectAttribute",
+              "value": {
+                "type": "number"
+              },
+              "optional": true
+            },
+            "w_short_path": {
               "type": "objectAttribute",
               "value": {
                 "type": "number"

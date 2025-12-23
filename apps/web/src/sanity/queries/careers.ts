@@ -186,6 +186,8 @@ export type QuizVector = {
   w_env_lab?: number
   w_env_office?: number
   w_multi_env?: number
+  w_outlook_importance?: number
+  w_short_path?: number
 }
 
 // hard requirements to exclude from quiz

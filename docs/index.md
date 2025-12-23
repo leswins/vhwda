@@ -13,6 +13,7 @@ This folder is the canonical “source of truth” for how this repo is organize
 ## Conventions + contracts
 - [Repo Conventions](conventions.md)
 - [Data Model / Contract](data-model.md)
+- [Quiz System](quiz-system.md)
 - [Decision Log (ADRs)](adr/)
 
 
