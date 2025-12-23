@@ -199,7 +199,9 @@ Located in: `apps/studio/src/schemaTypes/documents/career.ts`
 
 ### 2. Rating 1-5 (`rating_1_5`)
 - 5 options: 1, 2, 3, 4, 5
-- Each option has `weights` (typically transformed: value - 3 → -2, -1, 0, +1, +2)
+- Each option has `weights` using the transform **(value - 3)**, yielding:  
+  - 1 → -2, 2 → -1, 3 → 0, 4 → +1, 5 → +2  
+  - En Sanity, ingresa directamente estos valores en `weights` para cada opción.
 - Example: Q09-Q14
 - **Note**: The transformation is conceptual; in Sanity, you directly set the weight values
 

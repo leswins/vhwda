@@ -5,68 +5,7 @@ import type { QuizVector, CareerForMatching } from "../sanity/queries/careers"
 import { fetchCareersForQuiz } from "../sanity/queries/careers"
 import type { Question } from "../quiz/questions"
 import { fetchQuizQuestions } from "../sanity/queries/quiz"
-
-/**
- * Calculate matching score between user vector and career vector
- * Uses dot product: sum of (userVector[i] * careerVector[i]) for all dimensions
- */
-function calculateMatchingScore(userVector: QuizVector, careerVector?: QuizVector): number {
-    if (!careerVector) return 0
-    
-    let score = 0
-    const dimensions: (keyof QuizVector)[] = [
-        "w_patient_facing", "w_tech_equipment", "w_lab_research", "w_counseling_education",
-        "w_pediatrics", "w_geriatrics", "w_exposure_tolerance", "w_analytical", "w_admin",
-        "w_procedural_dexterity", "w_collaboration", "w_pace_routine", "w_pace_fast",
-        "w_schedule_flex", "w_stress_tolerance", "w_physical_light", "w_physical_on_feet",
-        "w_physical_lifting", "w_env_hospital", "w_env_clinic", "w_env_community",
-        "w_env_school", "w_env_lab", "w_env_office", "w_multi_env",
-        "w_outlook_importance", "w_short_path"
-    ]
-    
-    for (const dim of dimensions) {
-        const userValue = userVector[dim] || 0
-        const careerValue = careerVector[dim] || 0
-        score += userValue * careerValue
-    }
-    
-    return score
-}
-
-/**
- * Initialize empty quiz vector (all zeros)
- */
-function createEmptyVector(): QuizVector {
-    return {
-        w_patient_facing: 0,
-        w_tech_equipment: 0,
-        w_lab_research: 0,
-        w_counseling_education: 0,
-        w_pediatrics: 0,
-        w_geriatrics: 0,
-        w_exposure_tolerance: 0,
-        w_analytical: 0,
-        w_admin: 0,
-        w_procedural_dexterity: 0,
-        w_collaboration: 0,
-        w_pace_routine: 0,
-        w_pace_fast: 0,
-        w_schedule_flex: 0,
-        w_stress_tolerance: 0,
-        w_physical_light: 0,
-        w_physical_on_feet: 0,
-        w_physical_lifting: 0,
-        w_env_hospital: 0,
-        w_env_clinic: 0,
-        w_env_community: 0,
-        w_env_school: 0,
-        w_env_lab: 0,
-        w_env_office: 0,
-        w_multi_env: 0,
-        w_outlook_importance: 0,
-        w_short_path: 0
-    }
-}
+import { createEmptyVector, calculateMatchingScore } from "../utils/vector-aux"
 
 export function QuizPage() {
     const { language } = useLanguageStore()
@@ -141,7 +80,6 @@ export function QuizPage() {
             return updated
         })
 
-        // Save the new answer
         setSelectedAnswers(prev => ({
             ...prev,
             [questionId]: optionId
