@@ -1,5 +1,5 @@
 import React from "react"
-import type { QuizVector } from "../../sanity/queries/careers"
+import type { QuizVector } from "../../../../sanity/queries/careers"
 
 type VectorDisplayProps = {
     vector: QuizVector

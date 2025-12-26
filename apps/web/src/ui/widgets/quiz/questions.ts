@@ -1,4 +1,4 @@
-import type { QuizVector } from "../sanity/queries/careers"
+import type { QuizVector } from "../../../sanity/queries/careers"
 
 export type QuestionOption = {
     id: string

@@ -2,7 +2,7 @@
 
 import { sanityClient } from "../client"
 import type { QuizVector } from "./careers"
-import type { Question, QuestionOption } from "../../quiz/questions"
+import type { Question, QuestionOption } from "../../ui/widgets/quiz/questions"
 
 // sanity quiz type
 type SanityQuiz = {

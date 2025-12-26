@@ -1,5 +1,5 @@
 import React from "react"
-import { useQuizLogic } from "../quiz/hooks/useQuizLogic"
+import { useQuizLogic } from "../ui/widgets/quiz/hooks/useQuizLogic"
 import {
     QuizLoading,
     QuizError,
@@ -9,7 +9,7 @@ import {
     QuizNavigation,
     VectorDisplay,
     QuizResults,
-} from "../quiz/components"
+} from "../ui/widgets/quiz/components"
 
 export function QuizPage() {
     const {

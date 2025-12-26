@@ -1,5 +1,5 @@
 import React from "react"
-import type { QuizVector, CareerForMatching } from "../../sanity/queries/careers"
+import type { QuizVector, CareerForMatching } from "../../../../sanity/queries/careers"
 import { CareerMatchList } from "./CareerMatchList"
 import { VectorDisplay } from "./VectorDisplay"
 

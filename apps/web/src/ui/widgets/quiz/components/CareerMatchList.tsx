@@ -1,5 +1,5 @@
 import React from "react"
-import type { CareerForMatching } from "../../sanity/queries/careers"
+import type { CareerForMatching } from "../../../../sanity/queries/careers"
 
 type CareerMatch = CareerForMatching & { score: number }
 

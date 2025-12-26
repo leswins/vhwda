@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react"
-import { useLanguageStore } from "../../zustand/useLanguageStore"
-import type { QuizVector, CareerForMatching } from "../../sanity/queries/careers"
-import { fetchCareersForQuiz } from "../../sanity/queries/careers"
+import { useLanguageStore } from "../../../../zustand/useLanguageStore"
+import type { QuizVector, CareerForMatching } from "../../../../sanity/queries/careers"
+import { fetchCareersForQuiz } from "../../../../sanity/queries/careers"
 import type { Question } from "../questions"
-import { fetchQuizQuestions } from "../../sanity/queries/quiz"
-import { createEmptyVector, calculateMatchingScore } from "../../utils/vector-aux"
+import { fetchQuizQuestions } from "../../../../sanity/queries/quiz"
+import { createEmptyVector, calculateMatchingScore } from "../../../../utils/vector-aux"
 
 export type QuizStep = "intro" | "questions" | "results"
 
