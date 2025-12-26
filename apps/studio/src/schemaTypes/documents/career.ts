@@ -1,5 +1,6 @@
 import { defineArrayMember, defineField, defineType } from "sanity"
 import { ThLargeIcon } from "@sanity/icons"
+import { careerHardFilter } from "../objects/careerHardFilter"
 
 export const career = defineType({
   name: "career",
@@ -79,28 +80,14 @@ export const career = defineType({
     defineField({ name: "salary", title: "Salary", type: "salary" }),
     defineField({ name: "outlook", title: "Outlook", type: "outlook" }),
 
-    // Quiz fields
+    // Quiz fields - Hard Filters Checklist
     defineField({
-      name: "educationMin",
-      title: "Minimum Education Required",
-      type: "string",
-      description: "Minimum education level needed for this career",
-      options: {
-        list: [
-          { title: "Free Form (FF)", value: "FF" },
-          { title: "College Success Course (CSC)", value: "CSC" },
-          { title: "Certificate (CERT)", value: "CERT" },
-          { title: "Associate (AAS)", value: "AAS" },
-          { title: "Bachelor (BACH)", value: "BACH" },
-          { title: "Graduate (GRAD)", value: "GRAD" }
-        ]
-      }
-    }),
-    defineField({
-      name: "licensureRequired",
-      title: "Licensure Required",
-      type: "boolean",
-      description: "Does this career require a license or certification?"
+      name: "hardFilters",
+      title: "Hard Filter Requirements (Checklist)",
+      type: "array",
+      description: "Add filters that will exclude this career if user's quiz answers don't match. Click 'Add item' to add a new requirement.",
+      of: [defineArrayMember({ type: "careerHardFilter" })],
+      validation: (r) => r.max(20).error("Maximum 20 filters allowed")
     }),
     defineField({
       name: "quizVector",
@@ -144,11 +131,12 @@ export const career = defineType({
         defineField({ name: "w_short_path", title: "Short Path Preference", type: "number", validation: (r) => r.min(-2).max(2) })
       ]
     }),
+    // Legacy hardRequirements object (deprecated - use hardFilters checklist instead)
     defineField({
       name: "hardRequirements",
-      title: "Hard Requirements (Dealbreakers)",
+      title: "⚠️ Hard Requirements (Legacy - Use Hard Filters Checklist)",
       type: "object",
-      description: "Requirements that will exclude this career if user refuses them",
+      description: "⚠️ DEPRECATED: Use 'Hard Filter Requirements' checklist instead. This field is kept for backward compatibility.",
       fields: [
         defineField({
           name: "requiresLicensure",

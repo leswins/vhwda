@@ -1,5 +1,6 @@
 import { defineArrayMember, defineField, defineType } from "sanity"
 import { RocketIcon } from "@sanity/icons"
+import { hardFilter } from "../objects/hardFilter"
 
 export const quiz = defineType({
   name: "quiz",
@@ -134,25 +135,10 @@ export const quiz = defineType({
                       ]
                     }),
                     defineField({ 
-                      name: "hardFilterField", 
-                      title: "Hard Filter Field", 
-                      type: "string",
-                      description: "Field name for hard filter (e.g., 'education_ceiling', 'licensure_rule', 'dealbreaker')",
-                      options: {
-                        list: [
-                          { title: "Education Ceiling", value: "education_ceiling" },
-                          { title: "Licensure Rule", value: "licensure_rule" },
-                          { title: "Deal-breaker", value: "dealbreaker" },
-                          { title: "Min Start Salary", value: "min_start_salary" },
-                          { title: "Region", value: "region" }
-                        ]
-                      }
-                    }),
-                    defineField({ 
-                      name: "hardFilterValue", 
-                      title: "Hard Filter Value", 
-                      type: "string",
-                      description: "Value for the hard filter (e.g., 'FF', 'CSC', 'exclude_licensure_required', '<35000')"
+                      name: "hardFilter", 
+                      title: "Hard Filter (Optional)", 
+                      type: "hardFilter",
+                      description: "If set, this option will exclude careers based on the filter criteria. Leave empty if this option should not filter careers."
                     })
                   ]
                 })

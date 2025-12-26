@@ -5,6 +5,7 @@ import { fetchCareersForQuiz } from "../../../../sanity/queries/careers"
 import type { Question } from "../questions"
 import { fetchQuizQuestions } from "../../../../sanity/queries/quiz"
 import { createEmptyVector, calculateMatchingScore } from "../../../../utils/vector-aux"
+import { collectHardFiltersFromAnswers, shouldExcludeCareer } from "../../../../utils/hard-filters"
 
 export type QuizStep = "intro" | "questions" | "results"
 
@@ -34,7 +35,11 @@ export function useQuizLogic() {
                 }
             } catch (error) {
                 console.error("Error loading questions from Sanity:", error)
-                setErrorLoadingQuestions("Failed to load questions from Sanity. Please try again later.")
+                const errorMessage = error instanceof Error 
+                    ? error.message 
+                    : "Unknown error"
+                console.error("Error details:", errorMessage)
+                setErrorLoadingQuestions(`Failed to load questions from Sanity: ${errorMessage}`)
             } finally {
                 setLoadingQuestions(false)
             }
@@ -176,25 +181,39 @@ export function useQuizLogic() {
             const careers = await fetchCareersForQuiz()
             console.log("📥 Careers fetched for matching:", careers.length, careers)
             
-            // Calculate matching score for each career
+            // Collect hard filters from user's answers (deduplicated)
+            const userHardFilters = collectHardFiltersFromAnswers(selectedAnswers, questions)
+            console.log("🔍 User hard filters:", userHardFilters)
+            
+            // Calculate matching score for each career and apply hard filters
             const careersWithScores = careers
                 .map(career => {
                     const score = calculateMatchingScore(userVector, career.quizVector)
-                    console.log(
-                        "➡️ Score",
-                        score,
-                        "for career",
-                        career._id,
-                        (language === "es" && career.title.es ? career.title.es : career.title.en) ?? "Untitled",
-                        "quizVector:",
-                        career.quizVector
-                    )
                     return { ...career, score }
                 })
-                .filter(career => career.score > 0) // Only include careers with positive scores
+                .filter(career => {
+                    // First filter: only include careers with positive scores
+                    if (career.score <= 0) {
+                        return false
+                    }
+                    
+                    // Second filter: exclude careers that don't meet hard filter requirements
+                    const shouldExclude = shouldExcludeCareer(userHardFilters, career)
+                    if (shouldExclude) {
+                        console.log(
+                            "❌ Excluding career",
+                            career._id,
+                            (language === "es" && career.title.es ? career.title.es : career.title.en) ?? "Untitled",
+                            "due to hard filter"
+                        )
+                        return false
+                    }
+                    
+                    return true
+                })
                 .sort((a, b) => b.score - a.score) // Sort by score descending
             
-            console.log("✅ Matching careers (score > 0):", careersWithScores.length, careersWithScores)
+            console.log("✅ Matching careers (after filters):", careersWithScores.length, careersWithScores)
             setMatchedCareers(careersWithScores)
         } catch (error) {
             console.error("Error calculating career matches:", error)

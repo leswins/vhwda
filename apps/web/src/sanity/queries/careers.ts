@@ -205,7 +205,22 @@ export type CareerForMatching = {
   slug?: string
   title: LocalizedString
   quizVector?: QuizVector
+  educationMin?: string
+  licensureRequired?: boolean
+  salary?: {
+    rangeMin?: number
+    rangeMax?: number
+    median?: number
+  }
   hardRequirements?: HardRequirements
+  hardFilters?: Array<{
+    type: string
+    educationLevel?: string
+    minSalary?: number
+    dealbreakerType?: string
+    excludeLicensure?: boolean
+    region?: string
+  }>
 }
 
 const CAREERS_FOR_QUIZ_QUERY = /* groq */ `
@@ -214,7 +229,22 @@ const CAREERS_FOR_QUIZ_QUERY = /* groq */ `
   "slug": slug.current,
   title,
   quizVector,
-  hardRequirements
+  educationMin,
+  licensureRequired,
+  salary{
+    rangeMin,
+    rangeMax,
+    median
+  },
+  hardRequirements,
+  hardFilters[]{
+    type,
+    educationLevel,
+    minSalary,
+    dealbreakerType,
+    excludeLicensure,
+    region
+  }
 }
 `
 
