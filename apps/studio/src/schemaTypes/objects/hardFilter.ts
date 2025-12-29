@@ -43,12 +43,12 @@ export const hardFilter = defineType({
       description: "Maximum education level to exclude (excludes careers requiring higher)",
       options: {
         list: [
-          { title: "Free Form (FF)", value: "FF" },
-          { title: "College Success Course (CSC)", value: "CSC" },
-          { title: "Certificate (CERT)", value: "CERT" },
-          { title: "Associate (AAS)", value: "AAS" },
-          { title: "Bachelor (BACH)", value: "BACH" },
-          { title: "Graduate (GRAD)", value: "GRAD" }
+          { title: "FastForward / <6 months", value: "FF" },
+          { title: "Career Studies Certificate (~12-18 credits)", value: "CSC" },
+          { title: "Certificate", value: "CERT" },
+          { title: "Associate (AAS/2 years)", value: "AAS" },
+          { title: "Bachelor's (≈4 years)", value: "BACH" },
+          { title: "Graduate degree", value: "GRAD" }
         ]
       },
       hidden: ({ parent }) => !parent?.type || parent?.type !== "education_ceiling",

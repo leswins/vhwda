@@ -31,6 +31,7 @@ export function QuizResults({
             {!loading && (
                 <CareerMatchList 
                     careers={matchedCareers}
+                    userVector={userVector}
                     language={language}
                 />
             )}

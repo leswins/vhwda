@@ -52,3 +52,32 @@ export function calculateMatchingScore(userVector: QuizVector, careerVector?: Qu
   }
   return score
 }
+
+// Calculate vector magnitude (length)
+function calculateMagnitude(vector: QuizVector): number {
+  let sumOfSquares = 0
+  for (const dim of QUIZ_DIMENSIONS) {
+    const value = vector[dim] || 0
+    sumOfSquares += value * value
+  }
+  return Math.sqrt(sumOfSquares)
+}
+
+// Calculate match percentage (0-100%) using cosine similarity
+export function calculateMatchPercentage(userVector: QuizVector, careerVector?: QuizVector): number {
+  if (!careerVector) return 0
+
+  const dotProduct = calculateMatchingScore(userVector, careerVector)
+  const userMagnitude = calculateMagnitude(userVector)
+  const careerMagnitude = calculateMagnitude(careerVector)
+
+  if (userMagnitude === 0 || careerMagnitude === 0) {
+    return 0
+  }
+
+  const cosineSimilarity = dotProduct / (userMagnitude * careerMagnitude)
+  
+  const percentage = ((cosineSimilarity + 1) / 2) * 100
+  
+  return Math.max(0, Math.min(100, percentage))
+}
