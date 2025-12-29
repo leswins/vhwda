@@ -26,6 +26,7 @@ export function QuizPage() {
         currentQuestion,
         hasNext,
         hasPrevious,
+        isCurrentQuestionAnswered,
         language,
         // Actions
         handleStart,
@@ -63,6 +64,7 @@ export function QuizPage() {
                     <QuizNavigation
                         hasPrevious={hasPrevious}
                         hasNext={hasNext}
+                        isCurrentQuestionAnswered={isCurrentQuestionAnswered}
                         onCancel={handleCancel}
                         onPrevious={handlePrevious}
                         onNext={handleNext}

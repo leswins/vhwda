@@ -3,6 +3,7 @@ import React from "react"
 type QuizNavigationProps = {
     hasPrevious: boolean
     hasNext: boolean
+    isCurrentQuestionAnswered: boolean
     onCancel: () => void
     onPrevious: () => void
     onNext: () => void
@@ -12,6 +13,7 @@ type QuizNavigationProps = {
 export function QuizNavigation({
     hasPrevious,
     hasNext,
+    isCurrentQuestionAnswered,
     onCancel,
     onPrevious,
     onNext,
@@ -31,14 +33,24 @@ export function QuizNavigation({
             {hasNext ? (
                 <button 
                     onClick={onNext}
-                    style={{ marginLeft: "10px" }}
+                    disabled={!isCurrentQuestionAnswered}
+                    style={{ 
+                        marginLeft: "10px",
+                        opacity: isCurrentQuestionAnswered ? 1 : 0.5,
+                        cursor: isCurrentQuestionAnswered ? "pointer" : "not-allowed"
+                    }}
                 >
                     Next
                 </button>
             ) : (
                 <button 
                     onClick={onFinish}
-                    style={{ marginLeft: "10px" }}
+                    disabled={!isCurrentQuestionAnswered}
+                    style={{ 
+                        marginLeft: "10px",
+                        opacity: isCurrentQuestionAnswered ? 1 : 0.5,
+                        cursor: isCurrentQuestionAnswered ? "pointer" : "not-allowed"
+                    }}
                 >
                     Finish Quiz
                 </button>

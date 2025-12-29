@@ -233,6 +233,16 @@ export function useQuizLogic() {
     const currentQuestion = questions[currentQuestionIndex]
     const hasNext = currentQuestionIndex < questions.length - 1
     const hasPrevious = currentQuestionIndex > 0
+    
+    const isCurrentQuestionAnswered = (): boolean => {
+        if (!currentQuestion) return false
+        const answer = selectedAnswers[currentQuestion.id]
+        if (!answer) return false
+        if (Array.isArray(answer)) {
+            return answer.length > 0
+        }
+        return typeof answer === "string" && answer.length > 0
+    }
 
     return {
         // State
@@ -248,6 +258,7 @@ export function useQuizLogic() {
         currentQuestion,
         hasNext,
         hasPrevious,
+        isCurrentQuestionAnswered: isCurrentQuestionAnswered(), 
         language,
         // Actions
         handleStart,
