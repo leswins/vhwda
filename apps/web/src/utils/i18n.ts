@@ -64,6 +64,21 @@ const dict: Dictionary = {
   "quiz.body": { en: "Placeholder page. Will guide users to recommended careers.", es: "Página temporal. Recomendará carreras a los usuarios." },
   "resources.title": { en: "Resources", es: "Recursos" },
   "resources.body": { en: "Placeholder page. Will list scholarships and resources.", es: "Página temporal. Listará becas y recursos." },
+  "chat.welcome": { en: "Got Questions? The chat Got Answers.", es: "¿Tienes preguntas? Chat tiene respuestas." },
+  "chat.placeholder": { en: "Type your message here...", es: "Escribe tu mensaje aquí..." },
+  "chat.send": { en: "Send", es: "Enviar" },
+  "chat.clear": { en: "Clear", es: "Limpiar" },
+  "chat.generating": { en: "Generating response...", es: "Generando respuesta..." },
+  "chat.pleaseEnterPrompt": { en: "Please enter a prompt..", es: "Por favor ingresa un mensaje.." },
+  "chat.failedToGenerate": { en: "Failed to generate response", es: "Error al generar respuesta" },
+  "chat.apiKeyNotConfigured": {
+    en: "API key not configured. Please create a .env file with VITE_GEMINI_API_KEY=your_key_here",
+    es: "API key no configurada. Por favor crea un archivo .env con VITE_GEMINI_API_KEY=tu_key_aqui",
+  },
+  "chat.apiKeyInvalid": {
+    en: "Invalid API key. Please check your .env file and restart the server.",
+    es: "API key inválida. Por favor verifica tu archivo .env y reinicia el servidor.",
+  },
   "a11y.skipToContent": { en: "Skip to content", es: "Saltar al contenido" },
 
   "footer.heading.explore": { en: "Explore", es: "Explorar" },

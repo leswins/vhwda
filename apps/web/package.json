@@ -9,6 +9,7 @@
     "lint": "echo \"lint not configured yet\" && exit 0"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
     "@sanity/client": "^6.29.0",
     "@vhwda/shared": "workspace:*",
     "mapbox-gl": "^3.17.0",
