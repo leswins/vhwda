@@ -71,6 +71,14 @@ const dict: Dictionary = {
   "chat.generating": { en: "Generating response...", es: "Generando respuesta..." },
   "chat.pleaseEnterPrompt": { en: "Please enter a prompt..", es: "Por favor ingresa un mensaje.." },
   "chat.failedToGenerate": { en: "Failed to generate response", es: "Error al generar respuesta" },
+  "chat.loadingCareers": {
+    en: "Loading career information...",
+    es: "Cargando información de carreras...",
+  },
+  "chat.careersLoaded": {
+    en: "Career information loaded. Ready to help!",
+    es: "Información de carreras cargada. ¡Listo para ayudar!",
+  },
   "chat.apiKeyNotConfigured": {
     en: "API key not configured. Please create a .env file with VITE_GEMINI_API_KEY=your_key_here",
     es: "API key no configurada. Por favor crea un archivo .env con VITE_GEMINI_API_KEY=tu_key_aqui",

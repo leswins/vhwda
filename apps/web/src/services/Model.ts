@@ -7,17 +7,51 @@ if (!apiKey) {
 }
 
 const genAI = new GoogleGenerativeAI(apiKey || "");
-const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-lite" });
 
-export const generateContent = async (prompt: string): Promise<string> => {
+export type ChatMessage = {
+  role: "user" | "model"
+  parts: string
+}
+
+export const generateContent = async (
+  userMessage: string,
+  conversationHistory: ChatMessage[] = [],
+  systemContext?: string
+): Promise<string> => {
   if (!apiKey) {
     throw new Error("API key not configured. Please set VITE_GEMINI_API_KEY in your .env file.");
   }
 
-  const result = await model.generateContent(prompt);
+  console.log("🤖 Generating content with:")
+  console.log("  - User message:", userMessage)
+  console.log("  - Conversation history length:", conversationHistory.length)
+  console.log("  - System context:", systemContext ? `Yes (${systemContext.length} chars)` : "No")
+  if (systemContext) {
+    console.log("  - System context preview:", systemContext.substring(0, 200) + "...")
+  }
+
+  const model = genAI.getGenerativeModel({ 
+    model: "gemini-2.0-flash-lite",
+    systemInstruction: systemContext
+  });
+
+  const history = conversationHistory.map(msg => ({
+    role: msg.role === "user" ? "user" : "model",
+    parts: [{ text: msg.parts }]
+  }));
+
+  console.log("  - History formatted:", history.length, "messages")
+
+  const chat = history.length > 0 
+    ? model.startChat({ history })
+    : model.startChat();
+
+  console.log("  - Sending message to Gemini...")
+  const result = await chat.sendMessage(userMessage);
   const response = result.response;
   const text = response.text();
-  console.log(text);
+  
+  console.log("✅ Response received:", text.substring(0, 100) + "...")
   return text;
 };
 

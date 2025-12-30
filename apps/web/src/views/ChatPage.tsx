@@ -1,7 +1,8 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { useLanguageStore } from "../zustand/useLanguageStore"
 import { t } from "../utils/i18n"
-import { generateContent } from "../services/Model"
+import { generateContent, type ChatMessage } from "../services/Model"
+import { fetchCareersForChat, formatCareersContext, createChatSystemPrompt } from "../services/careerContext"
 
 type Message = {
   type: "user" | "bot" | "system"
@@ -13,6 +14,31 @@ export function ChatPage() {
   const [userInput, setUserInput] = useState("")
   const [response, setResponse] = useState<Message[]>([])
   const [isLoading, setIsLoading] = useState(false)
+  const [systemContext, setSystemContext] = useState<string | undefined>(undefined)
+  const [loadingCareers, setLoadingCareers] = useState(true)
+
+  useEffect(() => {
+    async function loadCareersContext() {
+      try {
+        setLoadingCareers(true)
+        console.log("🔄 Loading careers context...")
+        const careers = await fetchCareersForChat()
+        const careersContext = formatCareersContext(careers, language)
+        const context = createChatSystemPrompt(careersContext, language)
+        setSystemContext(context)
+        console.log("✅ Careers context loaded successfully")
+        console.log("✅ System context set:", context ? "Yes" : "No")
+      } catch (error) {
+        console.error("❌ Error loading careers for chat context:", error)
+        setSystemContext(undefined)
+      } finally {
+        setLoadingCareers(false)
+        console.log("✅ Loading careers completed")
+      }
+    }
+
+    loadCareersContext()
+  }, [language])
 
   const handleUserInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUserInput(e.target.value)
@@ -30,9 +56,22 @@ export function ChatPage() {
       return
     }
 
+    if (loadingCareers) {
+      setResponse([{ type: "system", message: t(language, "chat.loadingCareers") }])
+      return
+    }
+
     setIsLoading(true)
     try {
-      const res = await generateContent(userInput)
+      const conversationHistory: ChatMessage[] = response
+        .filter((msg) => msg.type === "user" || msg.type === "bot")
+        .map((msg) => ({
+          role: msg.type === "user" ? "user" : "model",
+          parts: msg.message,
+        }))
+
+      const res = await generateContent(userInput, conversationHistory, systemContext)
+      
       setResponse((prevResponse) => [
         ...prevResponse,
         { type: "user", message: userInput },
@@ -66,8 +105,16 @@ export function ChatPage() {
   return (
     <div className="flex h-[calc(100vh-200px)] flex-col space-y-4">
       {response.length === 0 ? (
-        <div className="flex flex-1 items-center justify-center">
+        <div className="flex flex-1 flex-col items-center justify-center space-y-4">
           <h1 className="text-2xl font-semibold">{t(language, "chat.welcome")}</h1>
+          {loadingCareers && (
+            <p className="text-sm text-muted">{t(language, "chat.loadingCareers")}</p>
+          )}
+          {!loadingCareers && systemContext && (
+            <p className="text-xs text-muted">
+              ✅ {t(language, "chat.careersLoaded")}
+            </p>
+          )}
         </div>
       ) : (
         <div className="flex-1 space-y-4 overflow-y-auto">
