@@ -104,19 +104,7 @@ export function ChatPage() {
 
   return (
     <div className="flex h-[calc(100vh-200px)] flex-col space-y-4">
-      {response.length === 0 ? (
-        <div className="flex flex-1 flex-col items-center justify-center space-y-4">
-          <h1 className="text-2xl font-semibold">{t(language, "chat.welcome")}</h1>
-          {loadingCareers && (
-            <p className="text-sm text-muted">{t(language, "chat.loadingCareers")}</p>
-          )}
-          {!loadingCareers && systemContext && (
-            <p className="text-xs text-muted">
-              ✅ {t(language, "chat.careersLoaded")}
-            </p>
-          )}
-        </div>
-      ) : (
+      {response.length > 0 && (
         <div className="flex-1 space-y-4 overflow-y-auto">
           {response.map((msg, index) => (
             <div

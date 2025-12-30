@@ -64,7 +64,6 @@ const dict: Dictionary = {
   "quiz.body": { en: "Placeholder page. Will guide users to recommended careers.", es: "Página temporal. Recomendará carreras a los usuarios." },
   "resources.title": { en: "Resources", es: "Recursos" },
   "resources.body": { en: "Placeholder page. Will list scholarships and resources.", es: "Página temporal. Listará becas y recursos." },
-  "chat.welcome": { en: "Got Questions? The chat Got Answers.", es: "¿Tienes preguntas? Chat tiene respuestas." },
   "chat.placeholder": { en: "Type your message here...", es: "Escribe tu mensaje aquí..." },
   "chat.send": { en: "Send", es: "Enviar" },
   "chat.clear": { en: "Clear", es: "Limpiar" },
@@ -74,10 +73,6 @@ const dict: Dictionary = {
   "chat.loadingCareers": {
     en: "Loading career information...",
     es: "Cargando información de carreras...",
-  },
-  "chat.careersLoaded": {
-    en: "Career information loaded. Ready to help!",
-    es: "Información de carreras cargada. ¡Listo para ayudar!",
   },
   "chat.apiKeyNotConfigured": {
     en: "API key not configured. Please create a .env file with VITE_GEMINI_API_KEY=your_key_here",
