@@ -21,19 +21,14 @@ export function ChatPage() {
     async function loadCareersContext() {
       try {
         setLoadingCareers(true)
-        console.log("🔄 Loading careers context...")
         const careers = await fetchCareersForChat()
         const careersContext = formatCareersContext(careers, language)
         const context = createChatSystemPrompt(careersContext, language)
         setSystemContext(context)
-        console.log("✅ Careers context loaded successfully")
-        console.log("✅ System context set:", context ? "Yes" : "No")
       } catch (error) {
-        console.error("❌ Error loading careers for chat context:", error)
         setSystemContext(undefined)
       } finally {
         setLoadingCareers(false)
-        console.log("✅ Loading careers completed")
       }
     }
 
@@ -83,7 +78,6 @@ export function ChatPage() {
       ])
       setUserInput("")
     } catch (err) {
-      console.error("Error generating response:", err)
       let errorMessage = t(language, "chat.failedToGenerate")
       
       if (err instanceof Error) {

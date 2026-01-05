@@ -38,10 +38,7 @@ const CAREERS_SUMMARY_QUERY = /* groq */ `
 
 
 export async function fetchCareersForChat(): Promise<CareerSummary[]> {
-  const careers = await sanityClient.fetch<CareerSummary[]>(CAREERS_SUMMARY_QUERY)
-  console.log("📚 Careers loaded for chat context:", careers.length)
-  console.log("📚 Careers data:", careers)
-  return careers
+  return await sanityClient.fetch<CareerSummary[]>(CAREERS_SUMMARY_QUERY)
 }
 
 
@@ -102,7 +99,6 @@ function formatHardRequirements(career: CareerSummary): string {
 
 export function formatCareersContext(careers: CareerSummary[], language: Language): string {
   if (careers.length === 0) {
-    console.warn("⚠️ No careers found to format context")
     return ""
   }
 
@@ -150,9 +146,7 @@ export function formatCareersContext(careers: CareerSummary[], language: Languag
     })
     .join("\n")
 
-  const context = `Available careers in the system:\n${careersList}`
-  console.log("📝 Formatted careers context:", context.substring(0, 200) + "...")
-  return context
+  return `Available careers in the system:\n${careersList}`
 }
 
 export function createChatSystemPrompt(
@@ -275,8 +269,6 @@ ${careersContext}
 
 Remember: Your goal is to help users find careers that truly match their profile, not just list all available options.`
 
-  console.log("🎯 System prompt created (length):", basePrompt.length)
-  console.log("🎯 System prompt preview:", basePrompt.substring(0, 300) + "...")
   return basePrompt
 }
 
