@@ -101,7 +101,6 @@ export function ChatPage() {
       handleSubmit()
     }
   }
-
   return (
     <div className="flex h-[calc(100vh-200px)] flex-col space-y-4">
       {response.length > 0 && (
