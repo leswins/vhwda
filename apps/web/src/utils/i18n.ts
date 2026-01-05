@@ -70,6 +70,10 @@ const dict: Dictionary = {
   "chat.generating": { en: "Generating response...", es: "Generando respuesta..." },
   "chat.pleaseEnterPrompt": { en: "Please enter a prompt..", es: "Por favor ingresa un mensaje.." },
   "chat.failedToGenerate": { en: "Failed to generate response", es: "Error al generar respuesta" },
+  "chat.quotaExceeded": {
+    en: "Quota exceeded. The model gemini-2.0-flash-lite requires a paid plan. Please enable billing at https://console.cloud.google.com/billing or wait a few minutes and try again.",
+    es: "Cuota excedida. El modelo gemini-2.0-flash-lite requiere un plan de pago. Por favor habilita la facturación en https://console.cloud.google.com/billing o espera unos minutos e intenta de nuevo.",
+  },
   "chat.loadingCareers": {
     en: "Loading career information...",
     es: "Cargando información de carreras...",

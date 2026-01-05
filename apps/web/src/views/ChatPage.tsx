@@ -61,6 +61,10 @@ export function ChatPage() {
       return
     }
 
+    if (isLoading) {
+      return
+    }
+
     setIsLoading(true)
     try {
       const conversationHistory: ChatMessage[] = response
@@ -80,12 +84,19 @@ export function ChatPage() {
       setUserInput("")
     } catch (err) {
       console.error("Error generating response:", err)
-      const errorMessage =
-        err instanceof Error && err.message.includes("API key not configured")
-          ? t(language, "chat.apiKeyNotConfigured")
-          : err instanceof Error && err.message.includes("API key not valid")
-            ? t(language, "chat.apiKeyInvalid")
-            : t(language, "chat.failedToGenerate")
+      let errorMessage = t(language, "chat.failedToGenerate")
+      
+      if (err instanceof Error) {
+        const errorStr = err.message.toLowerCase()
+        if (errorStr.includes("api key not configured")) {
+          errorMessage = t(language, "chat.apiKeyNotConfigured")
+        } else if (errorStr.includes("api key not valid")) {
+          errorMessage = t(language, "chat.apiKeyInvalid")
+        } else if (errorStr.includes("429") || errorStr.includes("quota") || errorStr.includes("exceeded")) {
+          errorMessage = t(language, "chat.quotaExceeded")
+        }
+      }
+      
       setResponse((prevResponse) => [
         ...prevResponse,
         { type: "system", message: errorMessage },

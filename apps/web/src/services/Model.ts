@@ -47,11 +47,20 @@ export const generateContent = async (
     : model.startChat();
 
   console.log("  - Sending message to Gemini...")
-  const result = await chat.sendMessage(userMessage);
-  const response = result.response;
-  const text = response.text();
   
-  console.log("✅ Response received:", text.substring(0, 100) + "...")
-  return text;
+  try {
+    const result = await chat.sendMessage(userMessage);
+    const response = result.response;
+    const text = response.text();
+    
+    console.log("✅ Response received:", text.substring(0, 100) + "...")
+    return text;
+  } catch (error: any) {
+    if (error?.status === 429 || error?.message?.includes("429") || error?.message?.includes("Resource exhausted")) {
+      const retryAfter = error?.retryDelay || 10;
+      throw new Error(`Rate limit exceeded. Please wait ${retryAfter} seconds before trying again.`);
+    }
+    throw error;
+  }
 };
 
