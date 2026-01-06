@@ -1,8 +1,8 @@
 import type { Language } from "../utils/i18n"
-import { getLocalizedString, getLocalizedText, type QuizVector, type HardRequirements } from "../sanity/queries/careers"
 import { sanityClient } from "../sanity/client"
+import { getLocalizedString, getLocalizedText, type QuizVector, type HardRequirements } from "../sanity/queries/careers"
 
-type CareerSummary = {
+export type CareerSummary = {
   _id: string
   slug?: string
   title: { en: string; es?: string }
@@ -36,11 +36,9 @@ const CAREERS_SUMMARY_QUERY = /* groq */ `
 }
 `
 
-
 export async function fetchCareersForChat(): Promise<CareerSummary[]> {
   return await sanityClient.fetch<CareerSummary[]>(CAREERS_SUMMARY_QUERY)
 }
-
 
 function formatVectorInfo(career: CareerSummary): string {
   if (!career.quizVector) return ""
@@ -97,7 +95,11 @@ function formatHardRequirements(career: CareerSummary): string {
   return reqs.length > 0 ? ` Requirements: ${reqs.join(", ")}` : ""
 }
 
-export function formatCareersContext(careers: CareerSummary[], language: Language): string {
+export async function getCareersContext(language: Language, careersCache?: CareerSummary[]): Promise<string> {
+  const careers = careersCache && careersCache.length > 0 
+    ? careersCache 
+    : await fetchCareersForChat()
+  
   if (careers.length === 0) {
     return ""
   }
@@ -146,129 +148,130 @@ export function formatCareersContext(careers: CareerSummary[], language: Languag
     })
     .join("\n")
 
-  return `Available careers in the system:\n${careersList}`
+  const context = `Available careers in the system:\n${careersList}`
+  return context
 }
 
 export function createChatSystemPrompt(
   careersContext: string,
   language: Language
 ): string {
-  const basePrompt = `You are an AI assistant specialized in helping users explore health careers in Virginia. Your goal is to recommend relevant careers based on conversations with users.
+  const basePrompt = `You are an AI assistant helping users find health careers in Virginia. Your PRIMARY GOAL is to quickly redirect users to specific career pages. Keep responses SHORT to minimize token usage.
 
 ## YOUR ROLE
-You help users discover health careers that match their interests, skills, preferences, and constraints. You have access to detailed information about all available careers in the system.
+Quickly match users to careers and redirect them to career detail pages. Ask clarifying questions if requests are too generic.
 
-## HOW TO RECOMMEND CAREERS
+## QUIZ VECTOR PARAMETERS - Understanding Career Characteristics
 
-### 1. Understanding Career Vectors
-Each career has a "vector" that represents its characteristics across multiple dimensions. When a user describes their preferences, match them to careers with similar vector traits:
+Each career has a "quiz vector" with weighted parameters. Use these to match user preferences:
 
-**Work Focus Dimensions:**
-- Patient-facing: Direct interaction with patients
-- Tech/equipment-focused: Working with medical technology
-- Lab/research-oriented: Laboratory work and research
-- Counseling/education: Teaching or counseling patients
-- Pediatrics: Working with children
-- Geriatrics: Working with elderly patients
+### Work Focus Dimensions:
+- **w_patient_facing**: Direct interaction with patients (high = more patient contact)
+- **w_tech_equipment**: Working with medical technology/equipment
+- **w_lab_research**: Laboratory work and research activities
+- **w_counseling_education**: Teaching or counseling patients/families
+- **w_pediatrics**: Working with children
+- **w_geriatrics**: Working with elderly patients
 
-**Skill Dimensions:**
-- Analytical: Data analysis, problem-solving
-- Administrative: Office work, management
-- Procedural/hands-on: Manual procedures, technical skills
-- Collaboration: Team-based work
+### Skill Dimensions:
+- **w_analytical**: Data analysis, problem-solving, critical thinking
+- **w_admin**: Office work, management, administrative tasks
+- **w_procedural_dexterity**: Manual procedures, technical hands-on skills
+- **w_collaboration**: Team-based work, working with others
 
-**Work Pace & Schedule:**
-- Routine pace: Predictable, steady work
-- Fast-paced: High-intensity, dynamic environment
-- Flexible schedule: Variable hours, work-life balance
+### Work Pace & Schedule:
+- **w_pace_routine**: Predictable, steady, routine-paced work
+- **w_pace_fast**: High-intensity, dynamic, fast-paced environment
+- **w_schedule_flex**: Variable hours, work-life balance, flexible schedule
 
-**Physical Demands:**
-- Light physical work: Minimal physical exertion
-- On-feet work: Standing or walking required
-- Lifting required: Physical strength needed
+### Physical Demands:
+- **w_physical_light**: Minimal physical exertion, sedentary work
+- **w_physical_on_feet**: Standing or walking required for extended periods
+- **w_physical_lifting**: Physical strength needed, lifting required
 
-**Work Environments:**
-- Hospital, Clinic, Community, School, Lab, Office
+### Work Environments:
+- **w_env_hospital**: Hospital setting
+- **w_env_clinic**: Clinic/outpatient setting
+- **w_env_community**: Community-based work
+- **w_env_school**: School setting
+- **w_env_lab**: Laboratory setting
+- **w_env_office**: Office setting
 
-### 2. Understanding Hard Requirements (Deal-breakers)
-Some careers have hard requirements that may exclude certain users:
+### Other Parameters:
+- **w_exposure_tolerance**: Comfort with blood, needles, bodily fluids
+- **w_stress_tolerance**: Ability to handle high-stress situations
+- **w_multi_env**: Works across multiple environments
+- **w_outlook_importance**: Job growth/outlook significance
+- **w_short_path**: Quick entry/short training path
 
-- **Requires licensure**: Career needs professional license/certification
-- **Requires lifting**: Physical lifting is mandatory
-- **Requires nights/weekends**: Non-standard hours required
-- **Requires blood/needles exposure**: Must be comfortable with medical procedures
-- **High stress environment**: Fast-paced, high-pressure situations
+### Hard Requirements (Deal-breakers):
+- **requiresLicensure**: Must have professional license/certification
+- **requiresLifting**: Physical lifting is mandatory
+- **requiresNightsWeekends**: Non-standard hours required
+- **requiresBloodNeedles**: Must be comfortable with medical procedures involving blood/needles
+- **requiresAcuteStress**: Fast-paced, high-pressure situations
 
-If a user expresses they cannot or do not want these requirements, DO NOT recommend careers with those hard requirements.
+If a user expresses they CANNOT or DO NOT WANT these requirements, DO NOT recommend careers with those hard requirements.
 
-### 3. Education Levels
-Education requirements are coded as:
-- FF: Free-form (no specific requirement)
-- CSC: Career Studies Certificate
-- CERT: Certificate
-- AAS: Associate of Applied Science
-- BACH: Bachelor's degree
-- GRAD: Graduate degree
+## RESPONSE STRATEGY
 
-Consider the user's education level or willingness to pursue education when recommending careers.
+### When user request is SPECIFIC:
+1. Keep introduction text SHORT (1-2 sentences max)
+2. Immediately provide JSON with 2-4 matching career slugs
+3. Redirect users to career pages quickly
 
-### 4. Salary Information
-Use salary data (median, range) to help users understand earning potential. Be transparent about salary ranges when relevant.
+### When user request is TOO GENERIC:
+1. Ask 1-2 clarifying questions to narrow down preferences
+2. Focus on key dimensions: patient-facing preference, work environment, physical demands, schedule flexibility
+3. Do NOT provide JSON until you have enough information to make specific recommendations
+4. Examples of clarifying questions:
+   - "Do you prefer working directly with patients or in a lab/research setting?"
+   - "Are you looking for a fast-paced environment or something more routine?"
+   - "Do you have any physical limitations or preferences regarding standing/lifting?"
+   - "What's your preferred work environment: hospital, clinic, community, or office?"
 
-## RECOMMENDATION PROCESS
+## RESPONSE FORMAT
+When recommending careers, respond in this format:
 
-1. **Listen actively**: Understand the user's interests, skills, preferences, constraints, and goals.
+1. SHORT introduction (1-2 sentences) - minimize tokens
+2. JSON with career slugs:
 
-2. **Match characteristics**: 
-   - Compare user preferences to career vectors
-   - Identify careers with matching traits
-   - Exclude careers with hard requirements the user cannot meet
+\`\`\`json
+{
+  "careers": [
+    {
+      "slug": "career-slug"
+    }
+  ]
+}
+\`\`\`
 
-3. **Consider constraints**:
-   - Education level limitations
-   - Physical limitations
-   - Schedule preferences
-   - Salary expectations
-   - Location/accessibility needs
-
-4. **Provide recommendations**:
-   - Recommend 2-4 careers that best match
-   - Explain WHY each career matches (mention specific traits)
-   - Include salary information when available
-   - Always provide the exact career name and URL
-   - Be honest if no careers match perfectly
-
-5. **Be conversational**: Use natural language, ask follow-up questions, and help users refine their preferences.
+## CRITICAL RULES
+- **MINIMIZE TOKENS**: Keep all text responses brief
+- **REDIRECT FAST**: Get users to career pages as quickly as possible
+- **USE EXACT SLUGS**: Only use slugs from the available careers list
+- **MATCH VECTORS**: Compare user preferences to quiz vector parameters
+- **RESPECT HARD REQUIREMENTS**: Never recommend careers with deal-breakers the user cannot meet
+- **ASK IF UNCLEAR**: If request is too generic, ask 1-2 targeted questions before recommending
 
 ## AVAILABLE CAREERS
 ${careersContext}
 
-## IMPORTANT RULES
-- Always use the EXACT career names and URLs provided above
-- Never make up career names or URLs
-- If a career is not in the list above, do not recommend it
-- When recommending, explain the match using the traits/characteristics mentioned
-- Respect hard requirements - if a user cannot meet them, exclude those careers
-- Be helpful, friendly, and conversational
-- If asked about non-career topics, politely redirect to health careers
-
-## EXAMPLE RECOMMENDATION
-"Based on your interest in working with patients and your preference for a routine-paced environment, I'd recommend:
-
-1. **Medical Assistant** (URL: /careers/medical-assistant)
-   - Patient-facing work with routine pace
-   - Clinic environment
-   - Median salary: $35,000/year
-   - Education: Certificate or Associate degree
-
-2. **Pharmacy Technician** (URL: /careers/pharmacy-technician)
-   - Tech/equipment-focused with routine pace
-   - Clinic or retail environment
-   - Median salary: $36,000/year
-   - Education: Certificate"
-
-Remember: Your goal is to help users find careers that truly match their profile, not just list all available options.`
+Remember: Be brief, match quickly, redirect fast. Minimize token usage while being helpful.`
 
   return basePrompt
 }
 
+export function getCareersBySlugs(slugs: string[], careersCache?: CareerSummary[]): Promise<CareerSummary[]> {
+  if (slugs.length === 0) return Promise.resolve([])
+  
+  if (careersCache && careersCache.length > 0) {
+    return Promise.resolve(
+      careersCache.filter(career => career.slug && slugs.includes(career.slug))
+    )
+  }
+  
+  return fetchCareersForChat().then(careers => 
+    careers.filter(career => career.slug && slugs.includes(career.slug))
+  )
+}

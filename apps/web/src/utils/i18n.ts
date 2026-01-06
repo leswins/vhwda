@@ -64,7 +64,7 @@ const dict: Dictionary = {
   "quiz.body": { en: "Placeholder page. Will guide users to recommended careers.", es: "Página temporal. Recomendará carreras a los usuarios." },
   "resources.title": { en: "Resources", es: "Recursos" },
   "resources.body": { en: "Placeholder page. Will list scholarships and resources.", es: "Página temporal. Listará becas y recursos." },
-  "chat.placeholder": { en: "Type your message here...", es: "Escribe tu mensaje aquí..." },
+  "chat.placeholder": { en: "Ask about careers, salaries, education...", es: "Pregunta sobre carreras, salarios, educación..." },
   "chat.send": { en: "Send", es: "Enviar" },
   "chat.clear": { en: "Clear", es: "Limpiar" },
   "chat.generating": { en: "Generating response...", es: "Generando respuesta..." },
@@ -76,6 +76,10 @@ const dict: Dictionary = {
   "chat.loadingCareers": {
     en: "Loading career information...",
     es: "Cargando información de carreras...",
+  },
+  "chat.selectOrEnterPrompt": {
+    en: "SELECT OR ENTER A PROMPT",
+    es: "SELECCIONA O INGRESA UN MENSAJE",
   },
   "chat.prompts.findCareers": {
     en: "I'm interested in careers that include",
