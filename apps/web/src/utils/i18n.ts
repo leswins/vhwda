@@ -69,22 +69,67 @@ const dict: Dictionary = {
   "chat.clear": { en: "Clear", es: "Limpiar" },
   "chat.generating": { en: "Generating response...", es: "Generando respuesta..." },
   "chat.pleaseEnterPrompt": { en: "Please enter a prompt..", es: "Por favor ingresa un mensaje.." },
-  "chat.failedToGenerate": { en: "Failed to generate response", es: "Error al generar respuesta" },
-  "chat.quotaExceeded": {
-    en: "Quota exceeded. The model gemini-2.0-flash-lite requires a paid plan. Please enable billing at https://console.cloud.google.com/billing or wait a few minutes and try again.",
-    es: "Cuota excedida. El modelo gemini-2.0-flash-lite requiere un plan de pago. Por favor habilita la facturación en https://console.cloud.google.com/billing o espera unos minutos e intenta de nuevo.",
+  "chat.error": {
+    en: "Sorry, something went wrong. Please try again later.",
+    es: "Lo siento, algo salió mal. Por favor intenta de nuevo más tarde.",
   },
   "chat.loadingCareers": {
     en: "Loading career information...",
     es: "Cargando información de carreras...",
   },
-  "chat.apiKeyNotConfigured": {
-    en: "API key not configured. Please create a .env file with VITE_GEMINI_API_KEY=your_key_here",
-    es: "API key no configurada. Por favor crea un archivo .env con VITE_GEMINI_API_KEY=tu_key_aqui",
+  "chat.prompts.findCareers": {
+    en: "I'm interested in careers that include",
+    es: "Estoy interesado en carreras que incluyan",
   },
-  "chat.apiKeyInvalid": {
-    en: "Invalid API key. Please check your .env file and restart the server.",
-    es: "API key inválida. Por favor verifica tu archivo .env y reinicia el servidor.",
+  "chat.prompts.findCareers.title": { en: "Find careers", es: "Buscar carreras" },
+  "chat.prompts.findCareers.subtitle": {
+    en: "Search by interest or skills",
+    es: "Buscar por interés o habilidades",
+  },
+  "chat.prompts.compareSalaries": {
+    en: "Compare salaries for different careers",
+    es: "Comparar salarios de diferentes carreras",
+  },
+  "chat.prompts.compareSalaries.title": { en: "Compare Salaries", es: "Comparar Salarios" },
+  "chat.prompts.compareSalaries.subtitle": {
+    en: "See earning potential",
+    es: "Ver potencial de ingresos",
+  },
+  "chat.prompts.educationPaths": {
+    en: "What education paths are available?",
+    es: "¿Qué caminos educativos están disponibles?",
+  },
+  "chat.prompts.educationPaths.title": { en: "Education paths", es: "Caminos educativos" },
+  "chat.prompts.educationPaths.subtitle": {
+    en: "Learn requirements",
+    es: "Conocer requisitos",
+  },
+  "chat.prompts.jobOutlook": {
+    en: "What is the job outlook for health careers?",
+    es: "¿Cuál es la perspectiva laboral para carreras de salud?",
+  },
+  "chat.prompts.jobOutlook.title": { en: "Job Outlook", es: "Perspectiva Laboral" },
+  "chat.prompts.jobOutlook.subtitle": {
+    en: "Check demand",
+    es: "Ver demanda",
+  },
+  "chat.prompts.careerTransitions": {
+    en: "Help me transition to a health career",
+    es: "Ayúdame a hacer la transición a una carrera de salud",
+  },
+  "chat.prompts.careerTransitions.title": { en: "Career transitions", es: "Transiciones de carrera" },
+  "chat.prompts.careerTransitions.subtitle": {
+    en: "Change careers",
+    es: "Cambiar de carrera",
+  },
+  "chat.prompts.quickStart": {
+    en: "Show me fast-track health careers",
+    es: "Muéstrame carreras de salud de inicio rápido",
+  },
+  "chat.prompts.quickStart.title": { en: "Quick start", es: "Inicio rápido" },
+  "chat.prompts.quickStart.subtitle": {
+    en: "Fast-track careers",
+    es: "Carreras de inicio rápido",
   },
   "a11y.skipToContent": { en: "Skip to content", es: "Saltar al contenido" },
 

@@ -78,22 +78,9 @@ export function ChatPage() {
       ])
       setUserInput("")
     } catch (err) {
-      let errorMessage = t(language, "chat.failedToGenerate")
-      
-      if (err instanceof Error) {
-        const errorStr = err.message.toLowerCase()
-        if (errorStr.includes("api key not configured")) {
-          errorMessage = t(language, "chat.apiKeyNotConfigured")
-        } else if (errorStr.includes("api key not valid")) {
-          errorMessage = t(language, "chat.apiKeyInvalid")
-        } else if (errorStr.includes("429") || errorStr.includes("quota") || errorStr.includes("exceeded")) {
-          errorMessage = t(language, "chat.quotaExceeded")
-        }
-      }
-      
       setResponse((prevResponse) => [
         ...prevResponse,
-        { type: "system", message: errorMessage },
+        { type: "system", message: t(language, "chat.error") },
       ])
     } finally {
       setIsLoading(false)
@@ -106,6 +93,49 @@ export function ChatPage() {
       handleSubmit()
     }
   }
+
+  const handleQuickPrompt = async (prompt: string) => {
+    if (loadingCareers || isLoading) {
+      return
+    }
+
+    setUserInput(prompt)
+    
+    setIsLoading(true)
+    try {
+      const conversationHistory: ChatMessage[] = response
+        .filter((msg) => msg.type === "user" || msg.type === "bot")
+        .map((msg) => ({
+          role: msg.type === "user" ? "user" : "model",
+          parts: msg.message,
+        }))
+
+      const res = await generateContent(prompt, conversationHistory, systemContext)
+      
+      setResponse((prevResponse) => [
+        ...prevResponse,
+        { type: "user", message: prompt },
+        { type: "bot", message: res },
+      ])
+      setUserInput("")
+    } catch (err) {
+      setResponse((prevResponse) => [
+        ...prevResponse,
+        { type: "system", message: t(language, "chat.error") },
+      ])
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const quickPrompts = [
+    { key: "findCareers", prompt: t(language, "chat.prompts.findCareers") },
+    { key: "compareSalaries", prompt: t(language, "chat.prompts.compareSalaries") },
+    { key: "educationPaths", prompt: t(language, "chat.prompts.educationPaths") },
+    { key: "jobOutlook", prompt: t(language, "chat.prompts.jobOutlook") },
+    { key: "careerTransitions", prompt: t(language, "chat.prompts.careerTransitions") },
+    { key: "quickStart", prompt: t(language, "chat.prompts.quickStart") },
+  ]
   return (
     <div className="flex h-[calc(100vh-200px)] flex-col space-y-4">
       {response.length > 0 && (
@@ -129,6 +159,27 @@ export function ChatPage() {
               <p className="text-muted">{t(language, "chat.generating")}</p>
             </div>
           )}
+        </div>
+      )}
+
+      {response.length === 0 && (
+        <div className="flex-1 flex items-center justify-center">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3 w-full max-w-4xl">
+            {quickPrompts.map((item) => (
+              <button
+                key={item.key}
+                onClick={() => handleQuickPrompt(item.prompt)}
+                className="rounded-md border border-border bg-surface p-4 text-left hover:bg-surface-1 transition-colors"
+              >
+                <div className="font-medium text-foreground mb-1">
+                  {t(language, `chat.prompts.${item.key}.title`)}
+                </div>
+                <div className="text-sm text-muted">
+                  {t(language, `chat.prompts.${item.key}.subtitle`)}
+                </div>
+              </button>
+            ))}
+          </div>
         </div>
       )}
 
