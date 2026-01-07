@@ -4,6 +4,10 @@ export type FilterGroup = {
   options: Array<{ value: string; labelKey: string }>
 }
 
+export type ScholarshipFilters = {
+  searchQuery: string
+}
+
 export const scholarshipFilters: FilterGroup[] = [
   {
     id: "currentStage",
@@ -33,4 +37,3 @@ export const scholarshipFilters: FilterGroup[] = [
     options: []
   }
 ]
-

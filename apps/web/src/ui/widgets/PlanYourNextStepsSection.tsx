@@ -6,8 +6,8 @@ import { FilterSidebar } from "./FilterSidebar"
 import { ScholarshipList } from "./ScholarshipList"
 import { ProfessionalOrganizationList } from "./ProfessionalOrganizationList"
 import { SectionHeader } from "./SectionHeader"
-import { scholarshipFilters } from "./filters/scholarshipFilters"
-import { organizationFilters } from "./filters/organizationFilters"
+import type { ScholarshipFilters } from "./filters/scholarshipFilters"
+import type { OrganizationFilters } from "./filters/organizationFilters"
 import { ScholarshipIcon } from "./icons/ScholarshipIcon"
 import { ProfessionalOrganizationIcon } from "./icons/ProfessionalOrganizationIcon"
 
@@ -15,6 +15,22 @@ export function PlanYourNextStepsSection() {
   const { language } = useLanguageStore()
   const [scholarshipCount, setScholarshipCount] = useState(0)
   const [organizationCount, setOrganizationCount] = useState(0)
+  
+  const [scholarshipFilters, setScholarshipFilters] = useState<ScholarshipFilters>({
+    searchQuery: ""
+  })
+
+  const [organizationFilters, setOrganizationFilters] = useState<OrganizationFilters>({
+    searchQuery: ""
+  })
+
+  const handleScholarshipSearchChange = (query: string) => {
+    setScholarshipFilters({ searchQuery: query })
+  }
+
+  const handleOrganizationSearchChange = (query: string) => {
+    setOrganizationFilters({ searchQuery: query })
+  }
 
   return (
     <div className="space-y-12">
@@ -42,10 +58,14 @@ export function PlanYourNextStepsSection() {
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-[256px_1fr]">
           <FilterSidebar
             language={language}
-            filterGroups={scholarshipFilters}
             searchPlaceholderKey="filters.search"
+            onSearchChange={handleScholarshipSearchChange}
           />
-          <ScholarshipList language={language} onCountChange={setScholarshipCount} />
+          <ScholarshipList
+            language={language}
+            filters={scholarshipFilters}
+            onCountChange={setScholarshipCount}
+          />
         </div>
       </section>
 
@@ -60,10 +80,14 @@ export function PlanYourNextStepsSection() {
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-[256px_1fr]">
           <FilterSidebar
             language={language}
-            filterGroups={organizationFilters}
             searchPlaceholderKey="filters.search"
+            onSearchChange={handleOrganizationSearchChange}
           />
-          <ProfessionalOrganizationList language={language} onCountChange={setOrganizationCount} />
+          <ProfessionalOrganizationList
+            language={language}
+            filters={organizationFilters}
+            onCountChange={setOrganizationCount}
+          />
         </div>
       </section>
 
