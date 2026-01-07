@@ -180,7 +180,29 @@ const dict: Dictionary = {
   "planNextSteps.card.schoolsPrerequisites.description": {
     en: "Find accredited programs in Virginia.",
     es: "Encuentra programas acreditados en Virginia."
-  }
+  },
+  "filters.search": { en: "Filter", es: "Filtrar" },
+  "filters.currentStage": { en: "Current Stage", es: "Etapa Actual" },
+  "filters.currentStage.highSchool": { en: "High School Student", es: "Estudiante de Secundaria" },
+  "filters.currentStage.college": { en: "College Student", es: "Estudiante Universitario" },
+  "filters.currentStage.graduate": { en: "Graduate Student", es: "Estudiante de Posgrado" },
+  "filters.currentStage.workingProfessional": {
+    en: "Working Professional",
+    es: "Profesional en Activo"
+  },
+  "filters.currentStage.veteranMilitary": { en: "Veteran, Military", es: "Veterano, Militar" },
+  "filters.currentStage.adultReturning": {
+    en: "Adult Returning to School",
+    es: "Adulto que Regresa a la Escuela"
+  },
+  "filters.fundingType": { en: "Funding Type", es: "Tipo de Financiamiento" },
+  "filters.locationScope": { en: "Location & Scope", es: "Ubicación y Alcance" },
+  "filters.careerArea": { en: "Career Area", es: "Área de Carrera" },
+  "filters.membershipType": { en: "Membership Type", es: "Tipo de Membresía" },
+  "filters.membershipType.student": { en: "Student", es: "Estudiante" },
+  "filters.membershipType.professional": { en: "Professional", es: "Profesional" },
+  "filters.membershipType.employer": { en: "Employer", es: "Empleador" },
+  "filters.geographicFocus": { en: "Geographic Focus", es: "Enfoque Geográfico" }
 }
 
 export type TranslationKey = keyof typeof dict

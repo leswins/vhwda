@@ -1,5 +1,4 @@
 import React from "react"
-import { Link } from "react-router-dom"
 import type { Language } from "../../utils/i18n"
 import { t } from "../../utils/i18n"
 
@@ -8,7 +7,12 @@ type ResourceType = "scholarships" | "professionalOrganizations" | "schoolsPrere
 type Props = {
   language: Language
   type: ResourceType
-  to: string
+}
+
+const sectionIds: Record<ResourceType, string> = {
+  scholarships: "scholarships",
+  professionalOrganizations: "organizations",
+  schoolsPrerequisites: "schools"
 }
 
 const iconColors: Record<ResourceType, string> = {
@@ -122,13 +126,23 @@ const iconSVGs: Record<ResourceType, React.ReactNode> = {
   )
 }
 
-export function ResourceCard({ language, type, to }: Props) {
+export function ResourceCard({ language, type }: Props) {
   const titleKey = `planNextSteps.card.${type}.title` as const
   const descriptionKey = `planNextSteps.card.${type}.description` as const
+  const sectionId = sectionIds[type]
+
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault()
+    const element = document.getElementById(sectionId)
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth", block: "start" })
+    }
+  }
 
   return (
-    <Link
-      to={to}
+    <a
+      href={`#${sectionId}`}
+      onClick={handleClick}
       className="flex items-start gap-4 rounded-md border border-border bg-surface p-4 transition-colors hover:bg-surface-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/20"
     >
       <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-md ${iconColors[type]}`}>
@@ -149,7 +163,7 @@ export function ResourceCard({ language, type, to }: Props) {
           />
         </svg>
       </div>
-    </Link>
+    </a>
   )
 }
 
