@@ -159,3 +159,99 @@ export function getLocalizedText(language: Language, value?: LocalizedText): str
   return language === "es" ? value.es ?? value.en : value.en
 }
 
+//Quiz data
+export type QuizVector = {
+  w_patient_facing?: number
+  w_tech_equipment?: number
+  w_lab_research?: number
+  w_counseling_education?: number
+  w_pediatrics?: number
+  w_geriatrics?: number
+  w_exposure_tolerance?: number
+  w_analytical?: number
+  w_admin?: number
+  w_procedural_dexterity?: number
+  w_collaboration?: number
+  w_pace_routine?: number
+  w_pace_fast?: number
+  w_schedule_flex?: number
+  w_stress_tolerance?: number
+  w_physical_light?: number
+  w_physical_on_feet?: number
+  w_physical_lifting?: number
+  w_env_hospital?: number
+  w_env_clinic?: number
+  w_env_community?: number
+  w_env_school?: number
+  w_env_lab?: number
+  w_env_office?: number
+  w_multi_env?: number
+  w_outlook_importance?: number
+  w_short_path?: number
+}
+
+// hard requirements to exclude from quiz
+export type HardRequirements = {
+  requiresLicensure?: boolean
+  requiresLifting?: boolean
+  requiresNightsWeekends?: boolean
+  requiresBloodNeedles?: boolean
+  requiresAcuteStress?: boolean
+}
+
+
+export type CareerForMatching = {
+  _id: string
+  slug?: string
+  title: LocalizedString
+  quizVector?: QuizVector
+  educationMin?: string
+  licensureRequired?: boolean
+  salary?: {
+    rangeMin?: number
+    rangeMax?: number
+    median?: number
+  }
+  hardRequirements?: HardRequirements
+  hardFilters?: Array<{
+    type: string
+    educationLevel?: string
+    minSalary?: number
+    dealbreakerType?: string
+    excludeLicensure?: boolean
+    region?: string
+  }>
+}
+
+const CAREERS_FOR_QUIZ_QUERY = /* groq */ `
+*[_type == "career"]{
+  _id,
+  "slug": slug.current,
+  title,
+  quizVector,
+  educationMin,
+  licensureRequired,
+  salary{
+    rangeMin,
+    rangeMax,
+    median
+  },
+  hardRequirements,
+  hardFilters[]{
+    type,
+    educationLevel,
+    minSalary,
+    dealbreakerType,
+    excludeLicensure,
+    region
+  }
+}
+`
+
+/**
+ * Fetch all careers with quiz data for matching
+ */
+export async function fetchCareersForQuiz(): Promise<CareerForMatching[]> {
+  return await sanityClient.fetch<CareerForMatching[]>(CAREERS_FOR_QUIZ_QUERY)
+}
+

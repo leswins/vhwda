@@ -64,6 +64,77 @@ const dict: Dictionary = {
   "quiz.body": { en: "Placeholder page. Will guide users to recommended careers.", es: "Página temporal. Recomendará carreras a los usuarios." },
   "resources.title": { en: "Resources", es: "Recursos" },
   "resources.body": { en: "Placeholder page. Will list scholarships and resources.", es: "Página temporal. Listará becas y recursos." },
+  "chat.placeholder": { en: "Ask about careers, salaries, education...", es: "Pregunta sobre carreras, salarios, educación..." },
+  "chat.send": { en: "Send", es: "Enviar" },
+  "chat.clear": { en: "Clear", es: "Limpiar" },
+  "chat.generating": { en: "Generating response...", es: "Generando respuesta..." },
+  "chat.pleaseEnterPrompt": { en: "Please enter a prompt..", es: "Por favor ingresa un mensaje.." },
+  "chat.error": {
+    en: "Sorry, something went wrong. Please try again later.",
+    es: "Lo siento, algo salió mal. Por favor intenta de nuevo más tarde.",
+  },
+  "chat.loadingCareers": {
+    en: "Loading career information...",
+    es: "Cargando información de carreras...",
+  },
+  "chat.selectOrEnterPrompt": {
+    en: "SELECT OR ENTER A PROMPT",
+    es: "SELECCIONA O INGRESA UN MENSAJE",
+  },
+  "chat.prompts.findCareers": {
+    en: "I'm interested in careers that include",
+    es: "Estoy interesado en carreras que incluyan",
+  },
+  "chat.prompts.findCareers.title": { en: "Find careers", es: "Buscar carreras" },
+  "chat.prompts.findCareers.subtitle": {
+    en: "Search by interest or skills",
+    es: "Buscar por interés o habilidades",
+  },
+  "chat.prompts.compareSalaries": {
+    en: "Compare salaries for different careers",
+    es: "Comparar salarios de diferentes carreras",
+  },
+  "chat.prompts.compareSalaries.title": { en: "Compare Salaries", es: "Comparar Salarios" },
+  "chat.prompts.compareSalaries.subtitle": {
+    en: "See earning potential",
+    es: "Ver potencial de ingresos",
+  },
+  "chat.prompts.educationPaths": {
+    en: "What education paths are available?",
+    es: "¿Qué caminos educativos están disponibles?",
+  },
+  "chat.prompts.educationPaths.title": { en: "Education paths", es: "Caminos educativos" },
+  "chat.prompts.educationPaths.subtitle": {
+    en: "Learn requirements",
+    es: "Conocer requisitos",
+  },
+  "chat.prompts.jobOutlook": {
+    en: "What is the job outlook for health careers?",
+    es: "¿Cuál es la perspectiva laboral para carreras de salud?",
+  },
+  "chat.prompts.jobOutlook.title": { en: "Job Outlook", es: "Perspectiva Laboral" },
+  "chat.prompts.jobOutlook.subtitle": {
+    en: "Check demand",
+    es: "Ver demanda",
+  },
+  "chat.prompts.careerTransitions": {
+    en: "Help me transition to a health career",
+    es: "Ayúdame a hacer la transición a una carrera de salud",
+  },
+  "chat.prompts.careerTransitions.title": { en: "Career transitions", es: "Transiciones de carrera" },
+  "chat.prompts.careerTransitions.subtitle": {
+    en: "Change careers",
+    es: "Cambiar de carrera",
+  },
+  "chat.prompts.quickStart": {
+    en: "Show me fast-track health careers",
+    es: "Muéstrame carreras de salud de inicio rápido",
+  },
+  "chat.prompts.quickStart.title": { en: "Quick start", es: "Inicio rápido" },
+  "chat.prompts.quickStart.subtitle": {
+    en: "Fast-track careers",
+    es: "Carreras de inicio rápido",
+  },
   "a11y.skipToContent": { en: "Skip to content", es: "Saltar al contenido" },
 
   "footer.heading.explore": { en: "Explore", es: "Explorar" },

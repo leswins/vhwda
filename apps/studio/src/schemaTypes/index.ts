@@ -17,6 +17,8 @@ import { duration } from "./objects/duration"
 import { moneyRange } from "./objects/money-range"
 import { salary } from "./objects/salary"
 import { outlook } from "./objects/outlook"
+import { hardFilter } from "./objects/hardFilter"
+import { careerHardFilter } from "./objects/careerHardFilter"
 
 export const schemaTypes = [
   // documents
@@ -39,7 +41,9 @@ export const schemaTypes = [
   duration,
   moneyRange,
   salary,
-  outlook
+  outlook,
+  hardFilter,
+  careerHardFilter
 ]
 
 

@@ -1,5 +1,5 @@
 import React from "react"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { useLanguageStore } from "../../zustand/useLanguageStore"
 import { t } from "../../utils/i18n"
 import { Button } from "../components/Button"
@@ -28,6 +28,7 @@ function IconButton({
 
 export function NavHeader() {
   const { language, setLanguage } = useLanguageStore()
+  const navigate = useNavigate()
 
   return (
     <header className="border-b border-foreground bg-surface text-foreground">
@@ -44,7 +45,7 @@ export function NavHeader() {
             variant="dark"
             className="h-full rounded-none px-5 py-5"
             onClick={() => {
-              // TODO: wire up Ask AI flow
+              navigate("/chat")
             }}
           >
             {t(language, "header.askAi")}

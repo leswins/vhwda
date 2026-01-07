@@ -1,16 +1,87 @@
 import React from "react"
-import { useLanguageStore } from "../zustand/useLanguageStore"
-import { t } from "../utils/i18n"
+import { useQuizLogic } from "../ui/widgets/quiz/hooks/useQuizLogic"
+import {
+    QuizLoading,
+    QuizError,
+    QuizIntro,
+    QuizEmpty,
+    QuizQuestion,
+    QuizNavigation,
+    VectorDisplay,
+    QuizResults,
+} from "../ui/widgets/quiz/components"
 
 export function QuizPage() {
-    const { language } = useLanguageStore()
+    const {
+        // State
+        currentStep,
+        userVector,
+        currentQuestionIndex,
+        selectedAnswers,
+        questions,
+        loadingQuestions,
+        errorLoadingQuestions,
+        matchedCareers,
+        loadingResults,
+        currentQuestion,
+        hasNext,
+        hasPrevious,
+        isCurrentQuestionAnswered,
+        language,
+        // Actions
+        handleStart,
+        handleAnswer,
+        handleNext,
+        handlePrevious,
+        handleCancel,
+        handleFinish,
+        handleStartOver,
+    } = useQuizLogic()
 
     return (
-        <div className="space-y-2">
-            <h1 className="text-2xl font-semibold">{t(language, "quiz.title")}</h1>
-            <p className="text-muted">{t(language, "quiz.body")}</p>
+        <div style={{ padding: "20px", maxWidth: "800px", margin: "0 auto" }}>
+            {loadingQuestions && <QuizLoading />}
+
+            {errorLoadingQuestions && <QuizError message={errorLoadingQuestions} />}
+
+            {!loadingQuestions && !errorLoadingQuestions && currentStep === "intro" && questions.length > 0 && (
+                <QuizIntro onStart={handleStart} />
+            )}
+
+            {!loadingQuestions && !errorLoadingQuestions && questions.length === 0 && <QuizEmpty />}
+
+            {currentStep === "questions" && currentQuestion && (
+                <>
+                    <QuizQuestion
+                        question={currentQuestion}
+                        questionNumber={currentQuestionIndex + 1}
+                        totalQuestions={questions.length}
+                        selectedAnswers={selectedAnswers}
+                        language={language}
+                        onAnswer={handleAnswer}
+                    />
+                    <VectorDisplay vector={userVector} />
+                    <QuizNavigation
+                        hasPrevious={hasPrevious}
+                        hasNext={hasNext}
+                        isCurrentQuestionAnswered={isCurrentQuestionAnswered}
+                        onCancel={handleCancel}
+                        onPrevious={handlePrevious}
+                        onNext={handleNext}
+                        onFinish={handleFinish}
+                    />
+                </>
+            )}
+
+            {currentStep === "results" && (
+                <QuizResults
+                    loading={loadingResults}
+                    matchedCareers={matchedCareers}
+                    userVector={userVector}
+                    language={language}
+                    onStartOver={handleStartOver}
+                />
+            )}
         </div>
     )
 }
-
-
