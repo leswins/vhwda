@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react"
 import { useLanguageStore } from "../../zustand/useLanguageStore"
 import { t } from "../../utils/i18n"
 import { ResourceCard } from "./ResourceCard"
@@ -13,6 +13,8 @@ import { ProfessionalOrganizationIcon } from "./icons/ProfessionalOrganizationIc
 
 export function PlanYourNextStepsSection() {
   const { language } = useLanguageStore()
+  const [scholarshipCount, setScholarshipCount] = useState(0)
+  const [organizationCount, setOrganizationCount] = useState(0)
 
   return (
     <div className="space-y-12">
@@ -33,7 +35,7 @@ export function PlanYourNextStepsSection() {
         <SectionHeader
           language={language}
           titleKey="planNextSteps.card.scholarships.title"
-          count={74}
+          count={scholarshipCount}
           iconBgColor="bg-[rgb(var(--color-accent-green))]"
           icon={<ScholarshipIcon />}
         />
@@ -43,7 +45,7 @@ export function PlanYourNextStepsSection() {
             filterGroups={scholarshipFilters}
             searchPlaceholderKey="filters.search"
           />
-          <ScholarshipList language={language} count={74} />
+          <ScholarshipList language={language} onCountChange={setScholarshipCount} />
         </div>
       </section>
 
@@ -51,7 +53,7 @@ export function PlanYourNextStepsSection() {
         <SectionHeader
           language={language}
           titleKey="planNextSteps.card.professionalOrganizations.title"
-          count={125}
+          count={organizationCount}
           iconBgColor="bg-[rgb(var(--color-accent-pink))]"
           icon={<ProfessionalOrganizationIcon />}
         />
@@ -61,7 +63,7 @@ export function PlanYourNextStepsSection() {
             filterGroups={organizationFilters}
             searchPlaceholderKey="filters.search"
           />
-          <ProfessionalOrganizationList language={language} count={125} />
+          <ProfessionalOrganizationList language={language} onCountChange={setOrganizationCount} />
         </div>
       </section>
 

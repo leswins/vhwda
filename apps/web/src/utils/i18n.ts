@@ -202,7 +202,8 @@ const dict: Dictionary = {
   "filters.membershipType.student": { en: "Student", es: "Estudiante" },
   "filters.membershipType.professional": { en: "Professional", es: "Profesional" },
   "filters.membershipType.employer": { en: "Employer", es: "Empleador" },
-  "filters.geographicFocus": { en: "Geographic Focus", es: "Enfoque Geográfico" }
+  "filters.geographicFocus": { en: "Geographic Focus", es: "Enfoque Geográfico" },
+  "common.visitSite": { en: "Visit Site", es: "Visitar Sitio" }
 }
 
 export type TranslationKey = keyof typeof dict
