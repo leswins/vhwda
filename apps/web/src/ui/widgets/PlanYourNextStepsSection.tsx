@@ -5,16 +5,19 @@ import { ResourceCard } from "./ResourceCard"
 import { FilterSidebar } from "./FilterSidebar"
 import { ScholarshipList } from "./ScholarshipList"
 import { ProfessionalOrganizationList } from "./ProfessionalOrganizationList"
+import { EducationalInstitutionsList } from "./EducationalInstitutionsList"
 import { SectionHeader } from "./SectionHeader"
 import type { ScholarshipFilters } from "./filters/scholarshipFilters"
 import type { OrganizationFilters } from "./filters/organizationFilters"
 import { ScholarshipIcon } from "./icons/ScholarshipIcon"
 import { ProfessionalOrganizationIcon } from "./icons/ProfessionalOrganizationIcon"
+import { SchoolIcon } from "./icons/SchoolIcon"
 
 export function PlanYourNextStepsSection() {
   const { language } = useLanguageStore()
   const [scholarshipCount, setScholarshipCount] = useState(0)
   const [organizationCount, setOrganizationCount] = useState(0)
+  const [institutionCount, setInstitutionCount] = useState(0)
   
   const [scholarshipFilters, setScholarshipFilters] = useState<ScholarshipFilters>({
     searchQuery: ""
@@ -91,13 +94,15 @@ export function PlanYourNextStepsSection() {
         </div>
       </section>
 
-      <section id="schools" className="scroll-mt-8">
-        <h2 className="text-2xl font-bold text-foreground mb-4">
-          {t(language, "planNextSteps.card.schoolsPrerequisites.title")}
-        </h2>
-        <p className="text-muted">
-          {t(language, "planNextSteps.card.schoolsPrerequisites.description")}
-        </p>
+      <section id="schools" className="scroll-mt-8 space-y-6">
+        <SectionHeader
+          language={language}
+          titleKey="planNextSteps.card.schoolsPrerequisites.title"
+          count={institutionCount}
+          iconBgColor="bg-[rgb(var(--color-accent-blue))]"
+          icon={<SchoolIcon />}
+        />
+        <EducationalInstitutionsList language={language} onCountChange={setInstitutionCount} />
       </section>
     </div>
   )
