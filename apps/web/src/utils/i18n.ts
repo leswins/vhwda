@@ -151,7 +151,36 @@ const dict: Dictionary = {
     en: "The Virginia Health Workforce Development Authority (VHWDA) strengthens Virginia’s healthcare workforce by aligning education, training, and employment resources with industry needs.",
     es: "La Autoridad para el Desarrollo de la Fuerza Laboral de Salud de Virginia (VHWDA) fortalece la fuerza laboral de salud de Virginia al alinear educación, capacitación y recursos de empleo con las necesidades de la industria."
   },
-  "footer.address": { en: "7818 E. Parham Road, Richmond, VA 23294", es: "7818 E. Parham Road, Richmond, VA 23294" }
+  "footer.address": { en: "7818 E. Parham Road, Richmond, VA 23294", es: "7818 E. Parham Road, Richmond, VA 23294" },
+  "planNextSteps.title": { en: "Plan Your Next Steps", es: "Planifica tus próximos pasos" },
+  "planNextSteps.description": {
+    en: "Find programs, prerequisites, and scholarships in Virginia to get started.",
+    es: "Encuentra programas, prerrequisitos y becas en Virginia para comenzar."
+  },
+  "planNextSteps.card.scholarships.title": {
+    en: "Scholarships & Financial Aid",
+    es: "Becas y Ayuda Financiera"
+  },
+  "planNextSteps.card.scholarships.description": {
+    en: "Explore federal aid and Virginia options like G3.",
+    es: "Explora ayuda federal y opciones de Virginia como G3."
+  },
+  "planNextSteps.card.professionalOrganizations.title": {
+    en: "Professional Organizations",
+    es: "Organizaciones Profesionales"
+  },
+  "planNextSteps.card.professionalOrganizations.description": {
+    en: "Join networks that support your field.",
+    es: "Únete a redes que apoyan tu campo."
+  },
+  "planNextSteps.card.schoolsPrerequisites.title": {
+    en: "Schools & Prerequisites",
+    es: "Escuelas y Prerrequisitos"
+  },
+  "planNextSteps.card.schoolsPrerequisites.description": {
+    en: "Find accredited programs in Virginia.",
+    es: "Encuentra programas acreditados en Virginia."
+  }
 }
 
 export type TranslationKey = keyof typeof dict
