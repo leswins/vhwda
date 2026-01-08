@@ -41,7 +41,7 @@ export function CompareTable({ selectedCareers, language, canAddCareer = false }
               selectedCareers={selectedCareers}
               language={language}
               type={section.key}
-              canAddCareer={canAddCareer && isLast}
+              canAddCareer={canAddCareer}
               isLast={isLast}
             />
           )

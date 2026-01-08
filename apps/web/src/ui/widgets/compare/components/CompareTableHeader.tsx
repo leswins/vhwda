@@ -32,12 +32,12 @@ export function CompareTableHeader({
   onClearSearch,
   onEscapeSearch,
 }: CompareTableHeaderProps) {
-  const gridCols = `200px repeat(${selectedCareers.length}, 1fr) ${selectedCareers.length < 4 ? "200px" : ""}`
+  const gridCols = `200px repeat(${selectedCareers.length}, 1fr)${selectedCareers.length < 4 ? " 200px" : ""}`
 
   return (
     <div className="overflow-x-auto overflow-y-visible">
-      <div className="min-w-full border-b-2 border-foreground">
-        <div className="grid gap-0" style={{ gridTemplateColumns: gridCols }}>
+      <div className="min-w-full border-b border-foreground">
+        <div className="grid" style={{ gridTemplateColumns: gridCols }}>
           <div className="border-r border-foreground bg-surface1 p-4 font-semibold">
             Category
           </div>
@@ -52,7 +52,7 @@ export function CompareTableHeader({
                 <span className="font-semibold">{title}</span>
                 <button
                   onClick={() => onRemoveCareer(career._id)}
-                  className="hover:bg-foreground/10 ml-2 rounded p-1"
+                  className="hover:bg-foreground/10 ml-2 shrink-0 rounded p-1"
                   aria-label={`Remove ${title}`}
                 >
                   <span className="text-lg leading-none" aria-hidden="true">×</span>

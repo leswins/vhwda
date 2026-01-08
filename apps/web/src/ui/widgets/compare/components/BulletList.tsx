@@ -7,11 +7,11 @@ interface BulletListProps {
 export function BulletList({ items }: BulletListProps) {
   if (!items?.length) return null
   return (
-    <div className="space-y-3">
+    <div className="space-y-2">
       {items.map((item, idx) => (
         <div key={idx} className="flex items-start gap-3">
-          <div className="mt-2 h-2 w-2 shrink-0 rounded-full bg-accentOrange" aria-hidden="true" />
-          <span className="text-lg">{item}</span>
+          <div className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-accentOrange" aria-hidden="true" />
+          <span className="text-sm leading-relaxed">{item}</span>
         </div>
       ))}
     </div>

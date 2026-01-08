@@ -41,8 +41,8 @@ export function CompareEmptyState({
   return (
     <div className="overflow-x-auto overflow-y-visible">
       <div className="min-w-full border border-foreground">
-        <div className="grid border-b-2 border-foreground" style={{ gridTemplateColumns: "200px 1fr" }}>
-          <div className="border-r border-foreground bg-surface1 p-4 font-semibold">
+        <div className="grid border-b border-foreground" style={{ gridTemplateColumns: "200px 1fr" }}>
+          <div className="flex items-start border-r border-foreground bg-surface1 p-4 font-semibold">
             Category
           </div>
           <div className="relative border-l border-foreground bg-surface1 p-4" style={{ minWidth: "200px" }}>
@@ -61,16 +61,16 @@ export function CompareEmptyState({
           </div>
         </div>
 
-        {CATEGORIES.map((categoryKey) => (
+        {CATEGORIES.map((categoryKey, idx) => (
           <div
             key={categoryKey}
-            className="grid border-b border-foreground last:border-b-0"
+            className={`grid ${idx === CATEGORIES.length - 1 ? "" : "border-b border-foreground"}`}
             style={{ gridTemplateColumns: "200px 1fr" }}
           >
-            <div className="border-r border-foreground bg-surface1 p-4 font-semibold">
+            <div className="flex items-start border-r border-foreground bg-surface1 p-4 font-semibold">
               {t(language, categoryKey)}
             </div>
-            <div className="border-l border-foreground p-4">
+            <div className="flex items-start border-l border-foreground p-4">
               <p className="text-foreground/60">{t(language, "compare.addCareerToCompare")}</p>
             </div>
           </div>

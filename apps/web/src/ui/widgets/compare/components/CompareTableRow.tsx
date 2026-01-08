@@ -26,7 +26,7 @@ export function CompareTableRow({
   canAddCareer = false,
   isLast = false,
 }: CompareTableRowProps) {
-  const gridCols = `200px repeat(${selectedCareers.length}, 1fr) ${canAddCareer ? "200px" : ""}`
+  const gridCols = `200px repeat(${selectedCareers.length}, 1fr)${canAddCareer ? " 200px" : ""}`
 
   const renderCellContent = (career: CareerForCompare) => {
     switch (type) {
@@ -52,9 +52,9 @@ export function CompareTableRow({
       case "overview": {
         const summary = getLocalizedText(language, career.summary)
         return summary ? (
-          <p className="text-foreground">{summary}</p>
+          <p className="text-foreground text-sm leading-relaxed">{summary}</p>
         ) : (
-          <p className="text-foreground/60">{t(language, "common.missing")}</p>
+          <p className="text-foreground/60 text-sm">{t(language, "common.missing")}</p>
         )
       }
 
@@ -77,7 +77,7 @@ export function CompareTableRow({
               </>
             )}
             {!career.salary?.median && !salaryRange && (
-              <p className="text-foreground/60">{t(language, "common.missing")}</p>
+              <p className="text-foreground/60 text-sm">{t(language, "common.missing")}</p>
             )}
           </div>
         )
@@ -87,11 +87,11 @@ export function CompareTableRow({
         const highlight = getLocalizedString(language, career.academicRequirementsHighlight)
         const programLength = getLocalizedString(language, career.programLengthHighlight)
         return (
-          <div className="space-y-2">
-            {highlight && <div className="font-semibold">{highlight}</div>}
-            {programLength && <div>{programLength}</div>}
+          <div className="space-y-1.5">
+            {highlight && <div className="font-semibold text-foreground">{highlight}</div>}
+            {programLength && <div className="text-foreground">{programLength}</div>}
             {!highlight && !programLength && (
-              <p className="text-foreground/60">{t(language, "common.missing")}</p>
+              <p className="text-foreground/60 text-sm">{t(language, "common.missing")}</p>
             )}
           </div>
         )
@@ -106,7 +106,7 @@ export function CompareTableRow({
             <div className="text-sm text-foreground/60">{t(language, "compare.projectedGrowth")}</div>
           </div>
         ) : (
-          <p className="text-foreground/60">{t(language, "common.missing")}</p>
+          <p className="text-foreground/60 text-sm">{t(language, "common.missing")}</p>
         )
       }
 
@@ -117,7 +117,7 @@ export function CompareTableRow({
         return responsibilities?.length ? (
           <BulletList items={responsibilities.slice(0, 4)} />
         ) : (
-          <p className="text-foreground/60">{t(language, "common.missing")}</p>
+          <p className="text-foreground/60 text-sm">{t(language, "common.missing")}</p>
         )
       }
 
@@ -128,7 +128,7 @@ export function CompareTableRow({
         return workEnvironments?.length ? (
           <BulletList items={workEnvironments.slice(0, 4)} />
         ) : (
-          <p className="text-foreground/60">{t(language, "common.missing")}</p>
+          <p className="text-foreground/60 text-sm">{t(language, "common.missing")}</p>
         )
       }
 
@@ -139,7 +139,7 @@ export function CompareTableRow({
         return specializations?.length ? (
           <BulletList items={specializations.slice(0, 4)} />
         ) : (
-          <p className="text-foreground/60">{t(language, "common.missing")}</p>
+          <p className="text-foreground/60 text-sm">{t(language, "common.missing")}</p>
         )
       }
 
@@ -150,17 +150,19 @@ export function CompareTableRow({
 
   return (
     <div className={`grid ${isLast ? "" : "border-b border-foreground"}`} style={{ gridTemplateColumns: gridCols }}>
-      <div className="border-r border-foreground bg-surface1 p-4 font-semibold">
+      <div className="flex items-start border-r border-foreground bg-surface1 p-4 font-semibold">
         {category}
       </div>
       {selectedCareers.map(career => (
-        <div key={career._id} className="border-r border-foreground p-4 last:border-r-0">
-          {renderCellContent(career)}
+        <div key={career._id} className="flex items-start border-r border-foreground p-4 last:border-r-0">
+          <div className="w-full">
+            {renderCellContent(career)}
+          </div>
         </div>
       ))}
       {canAddCareer && (
-        <div className="border-l border-foreground p-4">
-          <div className="text-foreground/40 text-xs">—</div>
+        <div className="flex items-start border-l border-foreground p-4">
+          <div className="text-foreground/40 text-sm">—</div>
         </div>
       )}
     </div>
