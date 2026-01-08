@@ -49,7 +49,7 @@ export function CareerSearchInput({
                 onEscape()
               }
             }}
-            className={`w-full rounded border border-foreground bg-surface2 px-3 py-2 text-sm focus:border-foreground focus:outline-none ${showIcon ? "pl-9" : ""}`}
+            className={`w-full rounded border border-foreground bg-surface2 px-3 py-2 text-sm focus:border-foreground focus:outline-none${showIcon ? " pl-9" : ""}`}
           />
           {showIcon && (
             <svg

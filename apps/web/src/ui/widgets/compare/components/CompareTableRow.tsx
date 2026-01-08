@@ -4,8 +4,17 @@ import { getLocalizedString, getLocalizedText } from "../../../../sanity/queries
 import type { Language } from "../../../../utils/i18n"
 import { t } from "../../../../utils/i18n"
 import { formatMoney } from "../utils/formatMoney"
-import { PortableTextPlain } from "./PortableTextPlain"
 import { BulletList } from "./BulletList"
+
+function getLocalizedBulletList(
+  career: CareerForCompare,
+  field: "responsibilities" | "workEnvironment" | "specializations",
+  language: Language
+): string[] | undefined {
+  const value = career[field]
+  if (!value) return undefined
+  return language === "es" ? value.es ?? value.en : value.en
+}
 
 type RowType = "dayToDay" | "overview" | "salary" | "academic" | "outlook" | "responsibilities" | "workEnvironments" | "specializations"
 
@@ -59,14 +68,23 @@ export function CompareTableRow({
       }
 
       case "salary": {
-        const rangeMin = career.salary?.rangeMin
-        const rangeMax = career.salary?.rangeMax
-        const salaryRange = rangeMin && rangeMax ? `${formatMoney(rangeMin)} - ${formatMoney(rangeMax)}` : undefined
+        const { median, rangeMin, rangeMax } = career.salary ?? {}
+        const hasSalaryData = median !== undefined || (rangeMin !== undefined && rangeMax !== undefined)
+
+        if (!hasSalaryData) {
+          return <p className="text-foreground/60 text-sm">{t(language, "common.missing")}</p>
+        }
+
+        const salaryRange =
+          rangeMin !== undefined && rangeMax !== undefined
+            ? `${formatMoney(rangeMin)} - ${formatMoney(rangeMax)}`
+            : undefined
+
         return (
           <div className="space-y-2">
-            {career.salary?.median !== undefined && (
+            {median !== undefined && (
               <>
-                <div className="text-lg font-semibold">{formatMoney(career.salary.median)}</div>
+                <div className="text-lg font-semibold">{formatMoney(median)}</div>
                 <div className="text-sm text-foreground/60">{t(language, "compare.medianSalary")}</div>
               </>
             )}
@@ -75,9 +93,6 @@ export function CompareTableRow({
                 <div className="text-lg font-semibold">{salaryRange}</div>
                 <div className="text-sm text-foreground/60">{t(language, "compare.salaryRange")}</div>
               </>
-            )}
-            {!career.salary?.median && !salaryRange && (
-              <p className="text-foreground/60 text-sm">{t(language, "common.missing")}</p>
             )}
           </div>
         )
@@ -99,45 +114,39 @@ export function CompareTableRow({
 
       case "outlook": {
         const outlookValue = career.outlook?.value
-        const outlookText = outlookValue !== undefined ? `${outlookValue}%` : null
-        return outlookText ? (
+        if (outlookValue === undefined) {
+          return <p className="text-foreground/60 text-sm">{t(language, "common.missing")}</p>
+        }
+        return (
           <div className="space-y-1">
-            <div className="text-lg font-semibold">{outlookText}</div>
+            <div className="text-lg font-semibold">{outlookValue}%</div>
             <div className="text-sm text-foreground/60">{t(language, "compare.projectedGrowth")}</div>
           </div>
-        ) : (
-          <p className="text-foreground/60 text-sm">{t(language, "common.missing")}</p>
         )
       }
 
       case "responsibilities": {
-        const responsibilities = language === "es"
-          ? career.responsibilities?.es ?? career.responsibilities?.en
-          : career.responsibilities?.en
-        return responsibilities?.length ? (
-          <BulletList items={responsibilities.slice(0, 4)} />
+        const items = getLocalizedBulletList(career, "responsibilities", language)
+        return items?.length ? (
+          <BulletList items={items.slice(0, 4)} />
         ) : (
           <p className="text-foreground/60 text-sm">{t(language, "common.missing")}</p>
         )
       }
 
       case "workEnvironments": {
-        const workEnvironments = language === "es"
-          ? career.workEnvironment?.es ?? career.workEnvironment?.en
-          : career.workEnvironment?.en
-        return workEnvironments?.length ? (
-          <BulletList items={workEnvironments.slice(0, 4)} />
+        const items = getLocalizedBulletList(career, "workEnvironment", language)
+        return items?.length ? (
+          <BulletList items={items.slice(0, 4)} />
         ) : (
           <p className="text-foreground/60 text-sm">{t(language, "common.missing")}</p>
         )
       }
 
       case "specializations": {
-        const specializations = language === "es"
-          ? career.specializations?.es ?? career.specializations?.en
-          : career.specializations?.en
-        return specializations?.length ? (
-          <BulletList items={specializations.slice(0, 4)} />
+        const items = getLocalizedBulletList(career, "specializations", language)
+        return items?.length ? (
+          <BulletList items={items.slice(0, 4)} />
         ) : (
           <p className="text-foreground/60 text-sm">{t(language, "common.missing")}</p>
         )
@@ -148,8 +157,10 @@ export function CompareTableRow({
     }
   }
 
+  const borderClass = isLast ? "" : "border-b border-foreground"
+
   return (
-    <div className={`grid ${isLast ? "" : "border-b border-foreground"}`} style={{ gridTemplateColumns: gridCols }}>
+    <div className={`grid ${borderClass}`} style={{ gridTemplateColumns: gridCols }}>
       <div className="flex items-start border-r border-foreground bg-surface1 p-4 font-semibold">
         {category}
       </div>

@@ -27,6 +27,8 @@ const CATEGORIES = [
   "compare.sections.areasOfSpecialization",
 ] as const
 
+const GRID_TEMPLATE_EMPTY = "200px 1fr"
+
 export function CompareEmptyState({
   language,
   searchQuery,
@@ -41,7 +43,7 @@ export function CompareEmptyState({
   return (
     <div className="overflow-x-auto overflow-y-visible">
       <div className="min-w-full border border-foreground">
-        <div className="grid border-b border-foreground" style={{ gridTemplateColumns: "200px 1fr" }}>
+        <div className="grid border-b border-foreground" style={{ gridTemplateColumns: GRID_TEMPLATE_EMPTY }}>
           <div className="flex items-start border-r border-foreground bg-surface1 p-4 font-semibold">
             Category
           </div>
@@ -61,20 +63,24 @@ export function CompareEmptyState({
           </div>
         </div>
 
-        {CATEGORIES.map((categoryKey, idx) => (
-          <div
-            key={categoryKey}
-            className={`grid ${idx === CATEGORIES.length - 1 ? "" : "border-b border-foreground"}`}
-            style={{ gridTemplateColumns: "200px 1fr" }}
-          >
-            <div className="flex items-start border-r border-foreground bg-surface1 p-4 font-semibold">
-              {t(language, categoryKey)}
+        {CATEGORIES.map((categoryKey, idx) => {
+          const isLast = idx === CATEGORIES.length - 1
+          const borderClass = isLast ? "" : "border-b border-foreground"
+          return (
+            <div
+              key={categoryKey}
+              className={`grid ${borderClass}`}
+              style={{ gridTemplateColumns: GRID_TEMPLATE_EMPTY }}
+            >
+              <div className="flex items-start border-r border-foreground bg-surface1 p-4 font-semibold">
+                {t(language, categoryKey)}
+              </div>
+              <div className="flex items-start border-l border-foreground p-4">
+                <p className="text-foreground/60">{t(language, "compare.addCareerToCompare")}</p>
+              </div>
             </div>
-            <div className="flex items-start border-l border-foreground p-4">
-              <p className="text-foreground/60">{t(language, "compare.addCareerToCompare")}</p>
-            </div>
-          </div>
-        ))}
+          )
+        })}
       </div>
     </div>
   )

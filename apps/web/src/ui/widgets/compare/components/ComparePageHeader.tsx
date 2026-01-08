@@ -8,18 +8,16 @@ interface ComparePageHeaderProps {
 }
 
 export function ComparePageHeader({ careerCount, language }: ComparePageHeaderProps) {
-  const getTitle = () => {
-    if (careerCount === 0) {
-      return t(language, "compare.title")
-    } else if (careerCount === 1) {
-      return t(language, "compare.title.comparing").replace("{count}", "1")
-    }
-    return t(language, "compare.title.comparingPlural").replace("{count}", careerCount.toString())
-  }
+  const title =
+    careerCount === 0
+      ? t(language, "compare.title")
+      : careerCount === 1
+        ? t(language, "compare.title.comparing").replace("{count}", "1")
+        : t(language, "compare.title.comparingPlural").replace("{count}", careerCount.toString())
 
   return (
     <div className="flex items-center justify-between">
-      <h1 className="text-4xl font-bold">{getTitle()}</h1>
+      <h1 className="text-4xl font-bold">{title}</h1>
     </div>
   )
 }
