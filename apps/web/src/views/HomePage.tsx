@@ -20,6 +20,9 @@ export function HomePage() {
         >
           {t(language, "nav.browse")}
         </Link>
+        <Link to="/compare" className="rounded-md border border-border px-4 py-2 text-sm">
+          {t(language, "nav.compare")}
+        </Link>
         <Link to="/quiz" className="rounded-md border border-border px-4 py-2 text-sm">
           {t(language, "nav.quiz")}
         </Link>
