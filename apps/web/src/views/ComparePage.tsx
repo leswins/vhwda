@@ -85,11 +85,11 @@ export function ComparePage() {
       setLoadingSelected(true)
       try {
         const careers = await fetchCareersByIds(careerIds)
-        // Preserve order based on careerIds
         const ordered = careerIds
           .map(id => careers.find(c => c._id === id))
           .filter((c): c is CareerForCompare => c !== undefined)
         setSelectedCareers(ordered)
+        setShowSearch(false)
       } catch (error) {
         console.error("Error loading selected careers:", error)
       } finally {
@@ -98,6 +98,13 @@ export function ComparePage() {
     }
     loadSelectedCareers()
   }, [careerIds])
+
+  // Auto-show search when empty and careers are loaded
+  useEffect(() => {
+    if (selectedCareers.length === 0 && !loading && allCareers.length > 0 && careerIds.length === 0) {
+      setShowSearch(true)
+    }
+  }, [selectedCareers.length, loading, allCareers.length, careerIds.length])
 
   const handleAddCareer = (id: string) => {
     addCareer(id)
@@ -247,77 +254,119 @@ export function ComparePage() {
         </div>
       )}
 
-      {/* Empty State */}
+      {/* Empty State - Tabular Layout */}
       {selectedCareers.length === 0 && !loadingSelected && (
-        <div className="flex min-h-[400px] flex-col items-center justify-center rounded-md border-2 border-dashed border-foreground/30">
-          <p className="mb-4 text-xl text-foreground/60">{t(language, "compare.addCareerToCompare")}</p>
-          <div className="relative w-96">
-            {!showSearch ? (
-              <button
-                onClick={() => setShowSearch(true)}
-                className="inline-flex w-full items-center justify-center gap-2 rounded-md border border-foreground bg-primary px-4 py-2 text-sm font-medium text-onPrimary hover:bg-primary/90"
-              >
-                <span className="text-lg leading-none" aria-hidden="true">+</span>
-                {t(language, "compare.addCareer")}
-              </button>
-            ) : (
-              <div className="relative w-full">
-                <div className="flex items-center gap-2">
-                  <input
-                    type="text"
-                    placeholder={t(language, "compare.searchPlaceholder")}
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Escape") {
-                        setShowSearch(false)
-                        setSearchQuery("")
-                      }
-                    }}
-                    className="flex-1 rounded border border-foreground bg-surface2 px-3 py-2 text-sm focus:border-foreground focus:outline-none"
-                    autoFocus
-                  />
-                  <button
-                    onClick={() => {
-                      setShowSearch(false)
-                      setSearchQuery("")
-                    }}
-                    className="rounded p-1 hover:bg-foreground/10"
-                    aria-label="Close search"
-                  >
-                    <span className="text-lg leading-none" aria-hidden="true">×</span>
-                  </button>
-                </div>
-                {showSearch && (
-                  <div className="absolute left-0 right-0 top-full z-[9999] mt-2 max-h-64 overflow-y-auto rounded-md border border-foreground bg-surface1 shadow-2xl">
-                    {filteredCareers.length > 0 ? (
-                      filteredCareers.map(career => {
-                        const title = getLocalizedString(language, career.title) || ""
-                        return (
-                          <button
-                            key={career._id}
-                            onClick={() => handleAddCareer(career._id)}
-                            className="flex w-full items-center justify-between px-4 py-3 text-left hover:bg-surface2 focus:bg-surface2 focus:outline-none"
-                            type="button"
-                          >
-                            <span className="text-sm font-medium">{title}</span>
-                            <span className="ml-2 text-lg leading-none text-primary" aria-hidden="true">+</span>
-                          </button>
-                        )
-                      })
-                    ) : searchQuery ? (
-                      <div className="px-4 py-3 text-sm text-foreground/60">
-                        {t(language, "compare.noCareersFound")}
-                      </div>
-                    ) : (
-                      <div className="px-4 py-3 text-sm text-foreground/60">
-                        {t(language, "compare.startTyping")}
-                      </div>
+        <div className="overflow-x-auto overflow-y-visible">
+          <div className="min-w-full border border-foreground">
+            {/* Header Row */}
+            <div className="grid border-b-2 border-foreground" style={{ gridTemplateColumns: "200px 1fr" }}>
+              <div className="border-r border-foreground bg-surface1 p-4 font-semibold">
+                Category
+              </div>
+              <div className="relative border-l border-foreground bg-surface1 p-4" style={{ minWidth: "200px" }}>
+                <div className="relative w-full">
+                  <div className="flex items-center gap-2">
+                    <div className="flex-1 relative">
+                      <input
+                        type="text"
+                        placeholder={t(language, "compare.searchPlaceholder")}
+                        value={searchQuery}
+                        onChange={(e) => {
+                          setSearchQuery(e.target.value)
+                          setShowSearch(true)
+                        }}
+                        onFocus={() => setShowSearch(true)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Escape") {
+                            setShowSearch(false)
+                            setSearchQuery("")
+                          }
+                        }}
+                        className="w-full rounded border border-foreground bg-surface2 px-3 py-2 pl-9 text-sm focus:border-foreground focus:outline-none"
+                      />
+                      <svg
+                        className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-foreground/40"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                        />
+                      </svg>
+                    </div>
+                    {searchQuery && (
+                      <button
+                        onClick={() => {
+                          setSearchQuery("")
+                        }}
+                        className="rounded p-1 hover:bg-foreground/10"
+                        aria-label="Clear search"
+                      >
+                        <span className="text-lg leading-none" aria-hidden="true">×</span>
+                      </button>
                     )}
                   </div>
-                )}
+                  {(showSearch || (selectedCareers.length === 0 && filteredCareers.length > 0)) && (
+                    <div className="absolute left-0 right-0 top-full z-[9999] mt-2 max-h-64 overflow-y-auto rounded-md border border-foreground bg-surface1 shadow-2xl">
+                      {filteredCareers.length > 0 ? (
+                        filteredCareers.map(career => {
+                          const title = getLocalizedString(language, career.title) || ""
+                          return (
+                            <button
+                              key={career._id}
+                              onClick={() => handleAddCareer(career._id)}
+                              className="flex w-full items-center justify-between px-4 py-3 text-left hover:bg-surface2 focus:bg-surface2 focus:outline-none"
+                              type="button"
+                            >
+                              <span className="text-sm font-medium">{title}</span>
+                              <span className="ml-2 text-lg leading-none text-primary" aria-hidden="true">+</span>
+                            </button>
+                          )
+                        })
+                      ) : searchQuery ? (
+                        <div className="px-4 py-3 text-sm text-foreground/60">
+                          {t(language, "compare.noCareersFound")}
+                        </div>
+                      ) : (
+                        <div className="px-4 py-3 text-sm text-foreground/60">
+                          {t(language, "compare.startTyping")}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
               </div>
-            )}
+            </div>
+
+            {/* Empty Category Rows */}
+            {[
+              t(language, "compare.sections.dayToDay"),
+              t(language, "compare.sections.overview"),
+              t(language, "compare.sections.salaryDetails"),
+              t(language, "compare.sections.academicRequirements"),
+              t(language, "compare.sections.jobOutlook"),
+              t(language, "compare.sections.responsibilities"),
+              t(language, "compare.sections.workEnvironments"),
+              t(language, "compare.sections.areasOfSpecialization"),
+            ].map((category, idx) => (
+              <div
+                key={idx}
+                className="grid border-b border-foreground last:border-b-0"
+                style={{ gridTemplateColumns: "200px 1fr" }}
+              >
+                <div className="border-r border-foreground bg-surface1 p-4 font-semibold">
+                  {category}
+                </div>
+                <div className="border-l border-foreground p-4">
+                  <p className="text-foreground/60">{t(language, "compare.addCareerToCompare")}</p>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       )}
