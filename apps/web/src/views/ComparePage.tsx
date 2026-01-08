@@ -111,7 +111,7 @@ export function ComparePage() {
         const title = getLocalizedString(language, c.title)?.toLowerCase() || ""
         return title.includes(searchQuery.toLowerCase())
       })
-    : availableCareers.slice(0, 10) // Show first 10 if no search
+    : availableCareers.slice(0, 20) // Show first 20 if no search
 
   const getTitle = () => {
     const count = selectedCareers.length
@@ -121,14 +121,6 @@ export function ComparePage() {
       return t(language, "compare.title.comparing").replace("{count}", "1")
     }
     return t(language, "compare.title.comparingPlural").replace("{count}", count.toString())
-  }
-
-  const getGridCols = () => {
-    const count = selectedCareers.length
-    if (count === 1) return "grid-cols-1"
-    if (count === 2) return "grid-cols-1 md:grid-cols-2"
-    if (count === 3) return "grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
-    return "grid-cols-1 md:grid-cols-2 lg:grid-cols-4"
   }
 
   if (loading) {
@@ -147,78 +139,190 @@ export function ComparePage() {
         <h1 className="text-4xl font-bold">{getTitle()}</h1>
       </div>
 
-      {/* Career Selection */}
-      <div className="flex flex-wrap items-center gap-3">
-        {selectedCareers.map(career => {
-          const title = getLocalizedString(language, career.title) || ""
-          return (
-            <div
-              key={career._id}
-              className="inline-flex items-center gap-2 rounded-md border border-foreground bg-surface1 px-4 py-2"
-            >
-              <span className="text-sm font-medium">{title}</span>
-              <button
-                onClick={() => removeCareer(career._id)}
-                className="hover:bg-foreground/10 rounded p-1"
-                aria-label={`Remove ${title}`}
-              >
-                <span className="text-lg leading-none" aria-hidden="true">×</span>
-              </button>
-            </div>
-          )
-        })}
+      {/* Career Selection Header - Tabular Layout */}
+      {selectedCareers.length > 0 && (
+        <div className="overflow-x-auto overflow-y-visible">
+          <div className="min-w-full border-b-2 border-foreground">
+            <div className="grid gap-0" style={{ gridTemplateColumns: `200px repeat(${selectedCareers.length}, 1fr) ${selectedCareers.length < 4 ? "200px" : ""}` }}>
+              {/* Category Column Header */}
+              <div className="border-r border-foreground bg-surface1 p-4 font-semibold">
+                Category
+              </div>
+              
+              {/* Career Column Headers */}
+              {selectedCareers.map(career => {
+                const title = getLocalizedString(language, career.title) || ""
+                return (
+                  <div
+                    key={career._id}
+                    className="flex items-center justify-between border-r border-foreground bg-surface1 p-4 last:border-r-0"
+                  >
+                    <span className="font-semibold">{title}</span>
+                    <button
+                      onClick={() => removeCareer(career._id)}
+                      className="hover:bg-foreground/10 ml-2 rounded p-1"
+                      aria-label={`Remove ${title}`}
+                    >
+                      <span className="text-lg leading-none" aria-hidden="true">×</span>
+                    </button>
+                  </div>
+                )
+              })}
 
-        {selectedCareers.length < 4 && (
-          <div className="relative z-[10]">
+              {/* Add Career Column */}
+              {selectedCareers.length < 4 && (
+                <div className="relative border-l border-foreground bg-surface1 p-4" style={{ minWidth: "200px" }}>
+                  {!showSearch ? (
+                    <button
+                      onClick={() => setShowSearch(true)}
+                      className="flex w-full items-center justify-center gap-1 rounded border border-foreground bg-primary px-3 py-2 text-sm font-medium text-onPrimary hover:bg-primary/90"
+                    >
+                      <span className="text-lg leading-none" aria-hidden="true">+</span>
+                      {t(language, "compare.addCareer")}
+                    </button>
+                  ) : (
+                    <div className="relative w-full">
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="text"
+                          placeholder={t(language, "compare.searchPlaceholder")}
+                          value={searchQuery}
+                          onChange={(e) => setSearchQuery(e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === "Escape") {
+                              setShowSearch(false)
+                              setSearchQuery("")
+                            }
+                          }}
+                          className="flex-1 rounded border border-foreground bg-surface2 px-3 py-2 text-sm focus:border-foreground focus:outline-none"
+                          autoFocus
+                        />
+                        <button
+                          onClick={() => {
+                            setShowSearch(false)
+                            setSearchQuery("")
+                          }}
+                          className="rounded p-1 hover:bg-foreground/10"
+                          aria-label="Close search"
+                        >
+                          <span className="text-lg leading-none" aria-hidden="true">×</span>
+                        </button>
+                      </div>
+                      {showSearch && (
+                        <div className="absolute left-0 right-0 top-full z-[9999] mt-2 max-h-64 overflow-y-auto rounded-md border border-foreground bg-surface1 shadow-2xl">
+                          {filteredCareers.length > 0 ? (
+                            <>
+                              {filteredCareers.map(career => {
+                                const title = getLocalizedString(language, career.title) || ""
+                                return (
+                                  <button
+                                    key={career._id}
+                                    onClick={() => handleAddCareer(career._id)}
+                                    className="flex w-full items-center justify-between px-4 py-3 text-left hover:bg-surface2 focus:bg-surface2 focus:outline-none"
+                                    type="button"
+                                  >
+                                    <span className="text-sm font-medium">{title}</span>
+                                    <span className="ml-2 text-lg leading-none text-primary" aria-hidden="true">+</span>
+                                  </button>
+                                )
+                              })}
+                            </>
+                          ) : searchQuery ? (
+                            <div className="px-4 py-3 text-sm text-foreground/60">
+                              {t(language, "compare.noCareersFound")}
+                            </div>
+                          ) : (
+                            <div className="px-4 py-3 text-sm text-foreground/60">
+                              {t(language, "compare.startTyping")}
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Empty State */}
+      {selectedCareers.length === 0 && !loadingSelected && (
+        <div className="flex min-h-[400px] flex-col items-center justify-center rounded-md border-2 border-dashed border-foreground/30">
+          <p className="mb-4 text-xl text-foreground/60">{t(language, "compare.addCareerToCompare")}</p>
+          <div className="relative w-96">
             {!showSearch ? (
               <button
                 onClick={() => setShowSearch(true)}
-                className="inline-flex items-center gap-2 rounded-md border border-foreground bg-primary px-4 py-2 text-sm font-medium text-onPrimary hover:bg-primary/90"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-md border border-foreground bg-primary px-4 py-2 text-sm font-medium text-onPrimary hover:bg-primary/90"
               >
                 <span className="text-lg leading-none" aria-hidden="true">+</span>
                 {t(language, "compare.addCareer")}
               </button>
             ) : (
-              <div className="absolute top-0 z-[10] w-80 rounded-md border border-foreground bg-surface1 shadow-lg">
-                <div className="p-3">
+              <div className="relative w-full">
+                <div className="flex items-center gap-2">
                   <input
                     type="text"
                     placeholder={t(language, "compare.searchPlaceholder")}
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full rounded border border-foreground/20 bg-surface2 px-3 py-2 text-sm focus:border-foreground focus:outline-none"
+                    onKeyDown={(e) => {
+                      if (e.key === "Escape") {
+                        setShowSearch(false)
+                        setSearchQuery("")
+                      }
+                    }}
+                    className="flex-1 rounded border border-foreground bg-surface2 px-3 py-2 text-sm focus:border-foreground focus:outline-none"
                     autoFocus
                   />
+                  <button
+                    onClick={() => {
+                      setShowSearch(false)
+                      setSearchQuery("")
+                    }}
+                    className="rounded p-1 hover:bg-foreground/10"
+                    aria-label="Close search"
+                  >
+                    <span className="text-lg leading-none" aria-hidden="true">×</span>
+                  </button>
                 </div>
-                {filteredCareers.length > 0 && (
-                  <div className="max-h-64 overflow-y-auto border-t border-foreground/20">
-                    {filteredCareers.map(career => {
-                      const title = getLocalizedString(language, career.title) || ""
-                      return (
-                        <button
-                          key={career._id}
-                          onClick={() => handleAddCareer(career._id)}
-                          className="flex w-full items-center justify-between px-4 py-3 text-left hover:bg-surface2"
-                        >
-                          <span className="text-sm font-medium">{title}</span>
-                          <span className="text-lg leading-none text-primary" aria-hidden="true">+</span>
-                        </button>
-                      )
-                    })}
-                  </div>
-                )}
-                {searchQuery && filteredCareers.length === 0 && (
-                  <div className="border-t border-foreground/20 px-4 py-3 text-sm text-foreground/60">
-                    {t(language, "compare.noCareersFound")}
+                {showSearch && (
+                  <div className="absolute left-0 right-0 top-full z-[9999] mt-2 max-h-64 overflow-y-auto rounded-md border border-foreground bg-surface1 shadow-2xl">
+                    {filteredCareers.length > 0 ? (
+                      filteredCareers.map(career => {
+                        const title = getLocalizedString(language, career.title) || ""
+                        return (
+                          <button
+                            key={career._id}
+                            onClick={() => handleAddCareer(career._id)}
+                            className="flex w-full items-center justify-between px-4 py-3 text-left hover:bg-surface2 focus:bg-surface2 focus:outline-none"
+                            type="button"
+                          >
+                            <span className="text-sm font-medium">{title}</span>
+                            <span className="ml-2 text-lg leading-none text-primary" aria-hidden="true">+</span>
+                          </button>
+                        )
+                      })
+                    ) : searchQuery ? (
+                      <div className="px-4 py-3 text-sm text-foreground/60">
+                        {t(language, "compare.noCareersFound")}
+                      </div>
+                    ) : (
+                      <div className="px-4 py-3 text-sm text-foreground/60">
+                        {t(language, "compare.startTyping")}
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
             )}
           </div>
-        )}
-      </div>
+        </div>
+      )}
 
-      {/* Comparison Content */}
+      {/* Comparison Content - Tabular Layout */}
       {loadingSelected ? (
         <div className="flex min-h-[400px] items-center justify-center">
           <p className="text-foreground/60">Loading careers...</p>
@@ -228,202 +332,211 @@ export function ComparePage() {
           <p className="text-xl text-foreground/60">{t(language, "compare.addCareerToCompare")}</p>
         </div>
       ) : (
-        <div className="space-y-16">
-          {/* Day-to-Day Section */}
-          <section className="border-b border-foreground pb-12">
-            <h2 className="mb-8 text-4xl font-bold">{t(language, "compare.sections.dayToDay")}</h2>
-            <div className={`grid gap-8 ${getGridCols()}`}>
+        <div className="overflow-x-auto overflow-y-visible">
+          <div className="min-w-full border border-foreground">
+            {/* Day-to-Day Row */}
+            <div className="grid border-b border-foreground" style={{ gridTemplateColumns: `200px repeat(${selectedCareers.length}, 1fr) ${selectedCareers.length < 4 ? "200px" : ""}` }}>
+              <div className="border-r border-foreground bg-surface1 p-4 font-semibold">
+                {t(language, "compare.sections.dayToDay")}
+              </div>
               {selectedCareers.map(career => (
-                <div key={career._id} className="overflow-hidden rounded border border-foreground bg-surface1">
-                  {career.videoUrl ? (
-                    <video className="aspect-video w-full object-cover" controls>
-                      <source src={career.videoUrl} />
-                    </video>
-                  ) : career.images?.[0]?.asset?.url ? (
-                    <img
-                      src={career.images[0].asset.url}
-                      alt={getLocalizedString(language, career.title) || ""}
-                      className="aspect-video w-full object-cover"
-                    />
-                  ) : (
-                    <div className="aspect-video w-full bg-surface2" />
-                  )}
+                <div key={career._id} className="border-r border-foreground p-4 last:border-r-0">
+                  <div className="overflow-hidden rounded bg-surface1">
+                    {career.videoUrl ? (
+                      <video className="aspect-video w-full object-cover" controls>
+                        <source src={career.videoUrl} />
+                      </video>
+                    ) : career.images?.[0]?.asset?.url ? (
+                      <img
+                        src={career.images[0].asset.url}
+                        alt={getLocalizedString(language, career.title) || ""}
+                        className="aspect-video w-full object-cover"
+                      />
+                    ) : (
+                      <div className="aspect-video w-full bg-surface2" />
+                    )}
+                  </div>
                 </div>
               ))}
+              {selectedCareers.length < 4 && (
+                <div className="border-l border-foreground p-4">
+                  <div className="text-foreground/40 text-xs">—</div>
+                </div>
+              )}
             </div>
-          </section>
 
-          {/* Overview Section */}
-          <section className="border-b border-foreground pb-12">
-            <h2 className="mb-8 text-4xl font-bold">{t(language, "compare.sections.overview")}</h2>
-            <div className={`grid gap-8 ${getGridCols()}`}>
+            {/* Overview Row */}
+            <div className="grid border-b border-foreground" style={{ gridTemplateColumns: `200px repeat(${selectedCareers.length}, 1fr) ${selectedCareers.length < 4 ? "200px" : ""}` }}>
+              <div className="border-r border-foreground bg-surface1 p-4 font-semibold">
+                {t(language, "compare.sections.overview")}
+              </div>
               {selectedCareers.map(career => {
-                const title = getLocalizedString(language, career.title) || ""
                 const summary = getLocalizedText(language, career.summary)
                 return (
-                  <div key={career._id} className="space-y-4">
-                    <h3 className="text-2xl font-semibold">{title}</h3>
-                    {summary && <p className="text-lg text-foreground/80">{summary}</p>}
+                  <div key={career._id} className="border-r border-foreground p-4 last:border-r-0">
+                    {summary ? (
+                      <p className="text-foreground">{summary}</p>
+                    ) : (
+                      <p className="text-foreground/60">{t(language, "common.missing")}</p>
+                    )}
                   </div>
                 )
               })}
+              {selectedCareers.length < 4 && <div className="border-l border-foreground" />}
             </div>
-          </section>
 
-          {/* Salary Details Section */}
-          <section className="border-b border-foreground pb-12">
-            <h2 className="mb-8 text-4xl font-bold">{t(language, "compare.sections.salaryDetails")}</h2>
-            <div className={`grid gap-8 ${getGridCols()}`}>
+            {/* Salary Details Row */}
+            <div className="grid border-b border-foreground" style={{ gridTemplateColumns: `200px repeat(${selectedCareers.length}, 1fr) ${selectedCareers.length < 4 ? "200px" : ""}` }}>
+              <div className="border-r border-foreground bg-surface1 p-4 font-semibold">
+                {t(language, "compare.sections.salaryDetails")}
+              </div>
               {selectedCareers.map(career => {
                 const rangeMin = career.salary?.rangeMin
                 const rangeMax = career.salary?.rangeMax
                 const salaryRange = rangeMin && rangeMax ? `${formatMoney(rangeMin)} - ${formatMoney(rangeMax)}` : undefined
                 return (
-                  <div key={career._id} className="space-y-4">
-                    {career.salary?.median !== undefined && (
-                      <div className="space-y-2">
-                        <div className="text-lg text-foreground/70">{formatMoney(career.salary.median)}</div>
-                        <div className="text-sm text-foreground/60">{t(language, "compare.medianSalary")}</div>
-                      </div>
-                    )}
-                    {salaryRange && (
-                      <div className="space-y-2">
-                        <div className="text-lg font-semibold">{salaryRange}</div>
-                        <div className="text-sm text-foreground/60">{t(language, "compare.salaryRange")}</div>
-                      </div>
-                    )}
-                    {!career.salary?.median && !salaryRange && (
-                      <p className="text-foreground/60">{t(language, "common.missing")}</p>
-                    )}
+                  <div key={career._id} className="border-r border-foreground p-4 last:border-r-0">
+                    <div className="space-y-2">
+                      {career.salary?.median !== undefined && (
+                        <>
+                          <div className="text-lg font-semibold">{formatMoney(career.salary.median)}</div>
+                          <div className="text-sm text-foreground/60">{t(language, "compare.medianSalary")}</div>
+                        </>
+                      )}
+                      {salaryRange && (
+                        <>
+                          <div className="text-lg font-semibold">{salaryRange}</div>
+                          <div className="text-sm text-foreground/60">{t(language, "compare.salaryRange")}</div>
+                        </>
+                      )}
+                      {!career.salary?.median && !salaryRange && (
+                        <p className="text-foreground/60">{t(language, "common.missing")}</p>
+                      )}
+                    </div>
                   </div>
                 )
               })}
+              {selectedCareers.length < 4 && <div className="border-l border-foreground" />}
             </div>
-          </section>
 
-          {/* Academic Requirements Section */}
-          <section className="border-b border-foreground pb-12">
-            <h2 className="mb-8 text-4xl font-bold">{t(language, "compare.sections.academicRequirements")}</h2>
-            <div className={`grid gap-8 ${getGridCols()}`}>
+            {/* Academic Requirements Row */}
+            <div className="grid border-b border-foreground" style={{ gridTemplateColumns: `200px repeat(${selectedCareers.length}, 1fr) ${selectedCareers.length < 4 ? "200px" : ""}` }}>
+              <div className="border-r border-foreground bg-surface1 p-4 font-semibold">
+                {t(language, "compare.sections.academicRequirements")}
+              </div>
               {selectedCareers.map(career => {
                 const highlight = getLocalizedString(language, career.academicRequirementsHighlight)
-                const requirements = language === "es" 
-                  ? career.educationRequirements?.es ?? career.educationRequirements?.en 
-                  : career.educationRequirements?.en
+                const programLength = getLocalizedString(language, career.programLengthHighlight)
                 return (
-                  <div key={career._id} className="space-y-4">
-                    {highlight && <div className="text-lg font-semibold">{highlight}</div>}
-                    {requirements && (
-                      <PortableTextPlain value={requirements} />
-                    )}
-                    {!highlight && !requirements && (
-                      <p className="text-foreground/60">{t(language, "common.missing")}</p>
-                    )}
+                  <div key={career._id} className="border-r border-foreground p-4 last:border-r-0">
+                    <div className="space-y-2">
+                      {highlight && <div className="font-semibold">{highlight}</div>}
+                      {programLength && <div>{programLength}</div>}
+                      {!highlight && !programLength && (
+                        <p className="text-foreground/60">{t(language, "common.missing")}</p>
+                      )}
+                    </div>
                   </div>
                 )
               })}
+              {selectedCareers.length < 4 && <div className="border-l border-foreground" />}
             </div>
-          </section>
 
-          {/* Job Outlook Section */}
-          <section className="border-b border-foreground pb-12">
-            <h2 className="mb-8 text-4xl font-bold">{t(language, "compare.sections.jobOutlook")}</h2>
-            <div className={`grid gap-8 ${getGridCols()}`}>
+            {/* Job Outlook Row */}
+            <div className="grid border-b border-foreground" style={{ gridTemplateColumns: `200px repeat(${selectedCareers.length}, 1fr) ${selectedCareers.length < 4 ? "200px" : ""}` }}>
+              <div className="border-r border-foreground bg-surface1 p-4 font-semibold">
+                {t(language, "compare.sections.jobOutlook")}
+              </div>
               {selectedCareers.map(career => {
                 const outlookValue = career.outlook?.value
-                const outlookLabel = career.outlook?.label
                 const outlookText = outlookValue !== undefined 
-                  ? `${outlookValue}% ${outlookLabel || t(language, "compare.projectedGrowth")}`
-                  : outlookLabel
+                  ? `${outlookValue}%`
+                  : null
                 return (
-                  <div key={career._id}>
+                  <div key={career._id} className="border-r border-foreground p-4 last:border-r-0">
                     {outlookText ? (
-                      <div className="text-lg font-semibold">{outlookText}</div>
+                      <div className="space-y-1">
+                        <div className="text-lg font-semibold">{outlookText}</div>
+                        <div className="text-sm text-foreground/60">{t(language, "compare.projectedGrowth")}</div>
+                      </div>
                     ) : (
                       <p className="text-foreground/60">{t(language, "common.missing")}</p>
                     )}
                   </div>
                 )
               })}
+              {selectedCareers.length < 4 && <div className="border-l border-foreground" />}
             </div>
-          </section>
 
-          {/* Responsibilities Section */}
-          <section className="border-b border-foreground pb-12">
-            <h2 className="mb-8 text-4xl font-bold">{t(language, "compare.sections.responsibilities")}</h2>
-            <div className={`grid gap-8 ${getGridCols()}`}>
+            {/* Responsibilities Row */}
+            <div className="grid border-b border-foreground" style={{ gridTemplateColumns: `200px repeat(${selectedCareers.length}, 1fr) ${selectedCareers.length < 4 ? "200px" : ""}` }}>
+              <div className="border-r border-foreground bg-surface1 p-4 font-semibold">
+                {t(language, "compare.sections.responsibilities")}
+              </div>
               {selectedCareers.map(career => {
                 const responsibilities = language === "es"
                   ? career.responsibilities?.es ?? career.responsibilities?.en
                   : career.responsibilities?.en
                 return (
-                  <div key={career._id}>
+                  <div key={career._id} className="border-r border-foreground p-4 last:border-r-0">
                     {responsibilities?.length ? (
-                      <BulletList items={responsibilities} />
+                      <BulletList items={responsibilities.slice(0, 4)} />
                     ) : (
                       <p className="text-foreground/60">{t(language, "common.missing")}</p>
                     )}
                   </div>
                 )
               })}
+              {selectedCareers.length < 4 && <div className="border-l border-foreground" />}
             </div>
-          </section>
 
-          {/* Work Environments Section */}
-          <section className="border-b border-foreground pb-12">
-            <h2 className="mb-8 text-4xl font-bold">{t(language, "compare.sections.workEnvironments")}</h2>
-            <div className={`grid gap-8 ${getGridCols()}`}>
+            {/* Work Environments Row */}
+            <div className="grid border-b border-foreground" style={{ gridTemplateColumns: `200px repeat(${selectedCareers.length}, 1fr) ${selectedCareers.length < 4 ? "200px" : ""}` }}>
+              <div className="border-r border-foreground bg-surface1 p-4 font-semibold">
+                {t(language, "compare.sections.workEnvironments")}
+              </div>
               {selectedCareers.map(career => {
                 const workEnvironments = language === "es"
                   ? career.workEnvironment?.es ?? career.workEnvironment?.en
                   : career.workEnvironment?.en
                 return (
-                  <div key={career._id}>
+                  <div key={career._id} className="border-r border-foreground p-4 last:border-r-0">
                     {workEnvironments?.length ? (
-                      <BulletList items={workEnvironments} />
+                      <BulletList items={workEnvironments.slice(0, 4)} />
                     ) : (
                       <p className="text-foreground/60">{t(language, "common.missing")}</p>
                     )}
                   </div>
                 )
               })}
+              {selectedCareers.length < 4 && <div className="border-l border-foreground" />}
             </div>
-          </section>
 
-          {/* Areas of Specialization Section */}
-          <section className="pb-12">
-            <h2 className="mb-8 text-4xl font-bold">{t(language, "compare.sections.areasOfSpecialization")}</h2>
-            <div className={`grid gap-8 ${getGridCols()}`}>
+            {/* Areas of Specialization Row */}
+            <div className="grid" style={{ gridTemplateColumns: `200px repeat(${selectedCareers.length}, 1fr) ${selectedCareers.length < 4 ? "120px" : ""}` }}>
+              <div className="border-r border-foreground bg-surface1 p-4 font-semibold">
+                {t(language, "compare.sections.areasOfSpecialization")}
+              </div>
               {selectedCareers.map(career => {
                 const specializations = language === "es"
                   ? career.specializations?.es ?? career.specializations?.en
                   : career.specializations?.en
                 return (
-                  <div key={career._id}>
+                  <div key={career._id} className="border-r border-foreground p-4 last:border-r-0">
                     {specializations?.length ? (
-                      <BulletList items={specializations} />
+                      <BulletList items={specializations.slice(0, 4)} />
                     ) : (
                       <p className="text-foreground/60">{t(language, "common.missing")}</p>
                     )}
                   </div>
                 )
               })}
+              {selectedCareers.length < 4 && <div className="border-l border-foreground" />}
             </div>
-          </section>
+          </div>
         </div>
       )}
 
-      {/* Click outside to close search */}
-      {showSearch && (
-        <div
-          className="fixed inset-0 z-[5]"
-          onClick={() => {
-            setShowSearch(false)
-            setSearchQuery("")
-          }}
-          aria-hidden="true"
-        />
-      )}
     </div>
   )
 }

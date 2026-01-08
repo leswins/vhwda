@@ -77,6 +77,7 @@ const dict: Dictionary = {
   "compare.salaryRange": { en: "Entry Level - Experienced", es: "Nivel inicial - Con experiencia" },
   "compare.projectedGrowth": { en: "Projected 10-Year Growth", es: "Crecimiento proyectado a 10 años" },
   "compare.noCareersFound": { en: "No careers found", es: "No se encontraron carreras" },
+  "compare.startTyping": { en: "Start typing to search careers...", es: "Comienza a escribir para buscar carreras..." },
   "quiz.title": { en: "Career Quiz", es: "Cuestionario" },
   "quiz.body": { en: "Placeholder page. Will guide users to recommended careers.", es: "Página temporal. Recomendará carreras a los usuarios." },
   "resources.title": { en: "Resources", es: "Recursos" },
