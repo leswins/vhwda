@@ -1,13 +1,20 @@
 import type { QuizVector } from "../../../sanity/queries/careers"
 
 export type HardFilter = {
-    type?: string
+    requiresLicensure?: boolean
+    requiresLifting?: boolean
+    requiresNightsWeekends?: boolean
+    requiresBloodNeedles?: boolean
+    requiresAcuteHighStress?: boolean
+    hasMinimumEducation?: boolean
     educationLevel?: string // "FF" | "CSC" | "CERT" | "AAS" | "BACH" | "GRAD"
-    excludeLicensure?: boolean
-    salaryMin?: number // Minimum starting salary in USD
-    dealbreakerType?: string // "exclude_requires_lifting" | "exclude_requires_nights_weekends" | "exclude_requires_blood_needles" | "exclude_requires_acute_stress"
+    hasMinimumSalary?: boolean // When true, uses career's salary.rangeMin
     region?: string
     description?: string
+    type?: string // Legacy field for backward compatibility
+    excludeLicensure?: boolean // Legacy field
+    salaryMin?: number // Legacy field
+    dealbreakerType?: string // Legacy field
 }
 
 export type QuestionOption = {

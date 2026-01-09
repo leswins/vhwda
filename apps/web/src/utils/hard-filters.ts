@@ -10,24 +10,26 @@ type CareerHardFilter = {
   region?: string
 }
 
-export function checkEducationCeiling(
+const educationOrder: Record<string, number> = {
+  FF: 0,
+  CSC: 1,
+  CERT: 2,
+  AAS: 3,
+  BACH: 4,
+  GRAD: 5
+}
+
+function checkEducationCeiling(
   filter: HardFilter,
   career: CareerForMatching
 ): boolean {
-  if (filter.type !== "education_ceiling" || !filter.educationLevel) {
+  const educationLevel = filter.educationLevel
+  
+  if (!educationLevel || (!filter.hasMinimumEducation && filter.type !== "education_ceiling")) {
     return false
   }
 
-  const educationOrder: Record<string, number> = {
-    FF: 0,
-    CSC: 1,
-    CERT: 2,
-    AAS: 3,
-    BACH: 4,
-    GRAD: 5
-  }
-
-  const userMaxLevel = educationOrder[filter.educationLevel] ?? 999
+  const userMaxLevel = educationOrder[educationLevel] ?? 999
 
   if (career.hardFilters && career.hardFilters.length > 0) {
     for (const careerFilter of career.hardFilters) {
@@ -51,11 +53,13 @@ export function checkEducationCeiling(
   return false
 }
 
-export function checkLicensureRule(
+function checkLicensureRule(
   filter: HardFilter,
   career: CareerForMatching
 ): boolean {
-  if (filter.type !== "licensure_rule" || !filter.excludeLicensure) {
+  const shouldCheck = filter.requiresLicensure || (filter.type === "licensure_rule" && filter.excludeLicensure)
+  
+  if (!shouldCheck) {
     return false
   }
 
@@ -70,18 +74,31 @@ export function checkLicensureRule(
   return career.licensureRequired === true
 }
 
-export function checkMinStartSalary(
+function checkMinStartSalary(
   filter: HardFilter,
-  career: CareerForMatching
+  career: CareerForMatching,
+  userMinSalary?: number
 ): boolean {
-  if (filter.type !== "min_start_salary" || !filter.salaryMin) {
+  const shouldCheck = filter.hasMinimumSalary || filter.type === "min_start_salary"
+  
+  if (!shouldCheck) {
+    return false
+  }
+
+  const filterSalaryMin = filter.salaryMin || userMinSalary
+  
+  if (!filterSalaryMin) {
     return false
   }
 
   if (career.hardFilters && career.hardFilters.length > 0) {
     for (const careerFilter of career.hardFilters) {
-      if (careerFilter.type === "min_start_salary" && careerFilter.minSalary) {
-        if (careerFilter.minSalary < filter.salaryMin) {
+      if (careerFilter.type === "min_start_salary") {
+        const careerMinSalary = careerFilter.minSalary ?? career.salary?.rangeMin
+        if (careerMinSalary === undefined) {
+          continue
+        }
+        if (careerMinSalary < filterSalaryMin) {
           return true
         }
       }
@@ -89,35 +106,47 @@ export function checkMinStartSalary(
   }
 
   const careerMinSalary = career.salary?.rangeMin
-  if (careerMinSalary) {
-    if (careerMinSalary < filter.salaryMin) {
-      return true
-    }
+  if (careerMinSalary !== undefined && careerMinSalary < filterSalaryMin) {
+    return true
   }
 
   return false
 }
 
-export function checkDealbreaker(
+function checkDealbreaker(
   filter: HardFilter,
   career: CareerForMatching
 ): boolean {
-  if (filter.type !== "dealbreaker" || !filter.dealbreakerType) {
+  let dealbreakerType: string | undefined
+
+  if (filter.requiresLifting) {
+    dealbreakerType = "exclude_requires_lifting"
+  } else if (filter.requiresNightsWeekends) {
+    dealbreakerType = "exclude_requires_nights_weekends"
+  } else if (filter.requiresBloodNeedles) {
+    dealbreakerType = "exclude_requires_blood_needles"
+  } else if (filter.requiresAcuteHighStress) {
+    dealbreakerType = "exclude_requires_acute_stress"
+  } else if (filter.type === "dealbreaker") {
+    dealbreakerType = filter.dealbreakerType
+  }
+
+  if (!dealbreakerType) {
     return false
   }
 
   if (career.hardFilters && career.hardFilters.length > 0) {
     for (const careerFilter of career.hardFilters) {
-      if (careerFilter.type === "dealbreaker_lifting" && filter.dealbreakerType === "exclude_requires_lifting") {
+      if (careerFilter.type === "dealbreaker_lifting" && dealbreakerType === "exclude_requires_lifting") {
         return true
       }
-      if (careerFilter.type === "dealbreaker_nights_weekends" && filter.dealbreakerType === "exclude_requires_nights_weekends") {
+      if (careerFilter.type === "dealbreaker_nights_weekends" && dealbreakerType === "exclude_requires_nights_weekends") {
         return true
       }
-      if (careerFilter.type === "dealbreaker_blood_needles" && filter.dealbreakerType === "exclude_requires_blood_needles") {
+      if (careerFilter.type === "dealbreaker_blood_needles" && dealbreakerType === "exclude_requires_blood_needles") {
         return true
       }
-      if (careerFilter.type === "dealbreaker_high_stress" && filter.dealbreakerType === "exclude_requires_acute_stress") {
+      if (careerFilter.type === "dealbreaker_high_stress" && dealbreakerType === "exclude_requires_acute_stress") {
         return true
       }
     }
@@ -135,7 +164,7 @@ export function checkDealbreaker(
     "exclude_requires_acute_stress": "requiresAcuteStress"
   }
 
-  const careerField = dealbreakerMap[filter.dealbreakerType]
+  const careerField = dealbreakerMap[dealbreakerType]
   if (!careerField) {
     return false
   }
@@ -143,11 +172,11 @@ export function checkDealbreaker(
   return hardRequirements[careerField] === true
 }
 
-export function checkRegion(
+function checkRegion(
   filter: HardFilter,
   career: CareerForMatching
 ): boolean {
-  if (filter.type !== "region" || !filter.region) {
+  if (!filter.region || (filter.type !== "region" && !filter.region)) {
     return false
   }
 
@@ -156,41 +185,65 @@ export function checkRegion(
 
 export function shouldExcludeCareer(
   hardFilters: HardFilter[],
-  career: CareerForMatching
+  career: CareerForMatching,
+  userMinSalary?: number
 ): boolean {
   if (!hardFilters || hardFilters.length === 0) {
     return false
   }
 
   for (const filter of hardFilters) {
-    if (!filter.type) continue
-
-    let excluded = false
-
-    switch (filter.type) {
-      case "education_ceiling":
-        excluded = checkEducationCeiling(filter, career)
-        break
-      case "licensure_rule":
-        excluded = checkLicensureRule(filter, career)
-        break
-      case "min_start_salary":
-        excluded = checkMinStartSalary(filter, career)
-        break
-      case "dealbreaker":
-        excluded = checkDealbreaker(filter, career)
-        break
-      case "region":
-        excluded = checkRegion(filter, career)
-        break
+    if (filter.hasMinimumEducation || filter.type === "education_ceiling") {
+      if (checkEducationCeiling(filter, career)) {
+        return true
+      }
     }
 
-    if (excluded) {
-      return true
+    if (filter.requiresLicensure || filter.type === "licensure_rule") {
+      if (checkLicensureRule(filter, career)) {
+        return true
+      }
+    }
+
+    if (filter.hasMinimumSalary || filter.type === "min_start_salary") {
+      if (checkMinStartSalary(filter, career, userMinSalary)) {
+        return true
+      }
+    }
+
+    if (
+      filter.requiresLifting ||
+      filter.requiresNightsWeekends ||
+      filter.requiresBloodNeedles ||
+      filter.requiresAcuteHighStress ||
+      filter.type === "dealbreaker"
+    ) {
+      if (checkDealbreaker(filter, career)) {
+        return true
+      }
+    }
+
+    if (filter.region || filter.type === "region") {
+      if (checkRegion(filter, career)) {
+        return true
+      }
     }
   }
 
   return false
+}
+
+function extractSalaryFromLabel(label: string): number | undefined {
+  const salaryPattern = /\$?\s*(\d{1,3}(?:,\d{3})*)/g
+  const matches = [...label.matchAll(salaryPattern)]
+  
+  if (matches.length > 0) {
+    const firstMatch = matches[0]
+    const value = parseInt(firstMatch[1].replace(/,/g, ""), 10)
+    return isNaN(value) ? undefined : value
+  }
+  
+  return undefined
 }
 
 export function collectHardFiltersFromAnswers(
@@ -200,12 +253,13 @@ export function collectHardFiltersFromAnswers(
     type?: string
     options: Array<{
       id: string
+      label?: string
       hardFilter?: HardFilter
     }>
   }>
 ): HardFilter[] {
   const filters: HardFilter[] = []
-  const seenFilters = new Set<string>()
+  const seenFilterKeys = new Set<string>()
 
   for (const [questionId, answerIds] of Object.entries(selectedAnswers)) {
     const question = questions.find(q => q.id === questionId)
@@ -217,21 +271,37 @@ export function collectHardFiltersFromAnswers(
       const option = question.options.find(o => o.id === answerId)
       if (!option || !option.hardFilter) continue
 
-      const filterKey = `${option.hardFilter.type}-${JSON.stringify({
-        educationLevel: option.hardFilter.educationLevel,
-        excludeLicensure: option.hardFilter.excludeLicensure,
-        salaryMin: option.hardFilter.salaryMin,
-        dealbreakerType: option.hardFilter.dealbreakerType,
-        region: option.hardFilter.region
-      })}`
+      const filter = { ...option.hardFilter }
       
-      if (!seenFilters.has(filterKey)) {
-        filters.push(option.hardFilter)
-        seenFilters.add(filterKey)
+      if (filter.hasMinimumSalary && !filter.salaryMin && option.label) {
+        const extractedSalary = extractSalaryFromLabel(option.label)
+        if (extractedSalary) {
+          filter.salaryMin = extractedSalary
+        }
+      }
+      
+      const filterKey = JSON.stringify({
+        requiresLicensure: filter.requiresLicensure,
+        requiresLifting: filter.requiresLifting,
+        requiresNightsWeekends: filter.requiresNightsWeekends,
+        requiresBloodNeedles: filter.requiresBloodNeedles,
+        requiresAcuteHighStress: filter.requiresAcuteHighStress,
+        hasMinimumEducation: filter.hasMinimumEducation,
+        educationLevel: filter.educationLevel,
+        hasMinimumSalary: filter.hasMinimumSalary,
+        salaryMin: filter.salaryMin,
+        region: filter.region,
+        type: filter.type,
+        excludeLicensure: filter.excludeLicensure,
+        dealbreakerType: filter.dealbreakerType
+      })
+      
+      if (!seenFilterKeys.has(filterKey)) {
+        filters.push(filter)
+        seenFilterKeys.add(filterKey)
       }
     }
   }
 
   return filters
 }
-

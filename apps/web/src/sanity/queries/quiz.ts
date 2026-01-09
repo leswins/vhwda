@@ -4,13 +4,20 @@ import type { QuizVector } from "./careers"
 import type { Question, QuestionOption } from "../../ui/widgets/quiz/questions"
 
 type SanityHardFilter = {
-  type?: string
+  requiresLicensure?: boolean
+  requiresLifting?: boolean
+  requiresNightsWeekends?: boolean
+  requiresBloodNeedles?: boolean
+  requiresAcuteHighStress?: boolean
+  hasMinimumEducation?: boolean
   educationLevel?: string
-  excludeLicensure?: boolean
-  salaryMin?: number
-  dealbreakerType?: string
+  hasMinimumSalary?: boolean
   region?: string
   description?: string
+  type?: string // Legacy
+  excludeLicensure?: boolean // Legacy
+  salaryMin?: number // Legacy
+  dealbreakerType?: string // Legacy
 }
 
 type SanityQuiz = {
@@ -52,13 +59,20 @@ const QUIZ_QUERY = /* groq */ `
       label,
       weights,
       hardFilter{
-        type,
+        requiresLicensure,
+        requiresLifting,
+        requiresNightsWeekends,
+        requiresBloodNeedles,
+        requiresAcuteHighStress,
+        hasMinimumEducation,
         educationLevel,
+        hasMinimumSalary,
+        region,
+        description,
+        type,
         excludeLicensure,
         salaryMin,
-        dealbreakerType,
-        region,
-        description
+        dealbreakerType
       }
     }
   }
@@ -90,15 +104,32 @@ function transformQuiz(sanityQuiz: SanityQuiz | null, language: "en" | "es"): Qu
               ? opt.label.es
               : (opt.label?.en || "")
 
-            const hardFilter = opt.hardFilter && opt.hardFilter.type
+            const hardFilter = opt.hardFilter && (
+              opt.hardFilter.requiresLicensure ||
+              opt.hardFilter.requiresLifting ||
+              opt.hardFilter.requiresNightsWeekends ||
+              opt.hardFilter.requiresBloodNeedles ||
+              opt.hardFilter.requiresAcuteHighStress ||
+              opt.hardFilter.hasMinimumEducation ||
+              opt.hardFilter.hasMinimumSalary ||
+              opt.hardFilter.region ||
+              opt.hardFilter.type // Legacy support
+            )
               ? {
-                  type: opt.hardFilter.type,
+                  requiresLicensure: opt.hardFilter.requiresLicensure,
+                  requiresLifting: opt.hardFilter.requiresLifting,
+                  requiresNightsWeekends: opt.hardFilter.requiresNightsWeekends,
+                  requiresBloodNeedles: opt.hardFilter.requiresBloodNeedles,
+                  requiresAcuteHighStress: opt.hardFilter.requiresAcuteHighStress,
+                  hasMinimumEducation: opt.hardFilter.hasMinimumEducation,
                   educationLevel: opt.hardFilter.educationLevel,
+                  hasMinimumSalary: opt.hardFilter.hasMinimumSalary,
+                  region: opt.hardFilter.region,
+                  description: opt.hardFilter.description,
+                  type: opt.hardFilter.type,
                   excludeLicensure: opt.hardFilter.excludeLicensure,
                   salaryMin: opt.hardFilter.salaryMin,
-                  dealbreakerType: opt.hardFilter.dealbreakerType,
-                  region: opt.hardFilter.region,
-                  description: opt.hardFilter.description
+                  dealbreakerType: opt.hardFilter.dealbreakerType
                 }
               : undefined
 

@@ -75,23 +75,6 @@ export const careerHardFilter = defineType({
         })
     }),
     defineField({
-      name: "minSalary",
-      title: "Minimum Starting Salary ($)",
-      type: "number",
-      description: "Minimum starting salary in USD (only for min_start_salary type). This should match or be higher than salary.rangeMin.",
-      hidden: ({ parent }) => parent?.type !== "min_start_salary",
-      validation: (r) => 
-        r.custom((value, context) => {
-          const parent = context.parent as { type?: string }
-          if (parent?.type === "min_start_salary") {
-            if (!value || value <= 0) {
-              return "Minimum salary is required and must be greater than 0 when filter type is 'Minimum Starting Salary'"
-            }
-          }
-          return true
-        })
-    }),
-    defineField({
       name: "region",
       title: "Region",
       type: "string",
@@ -104,22 +87,30 @@ export const careerHardFilter = defineType({
       type: "string",
       description: "Optional note for internal reference (not shown to users)",
       placeholder: "e.g., 'This is a critical requirement'"
+    }),
+    defineField({
+      name: "_salaryInfo",
+      title: "💡 Salary Information",
+      type: "string",
+      description: "When 'Minimum Starting Salary' is selected, the system will automatically use the 'Entry Level' salary value from the Salary section above (salary.rangeMin). Make sure that field is populated.",
+      readOnly: true,
+      hidden: ({ parent }) => parent?.type !== "min_start_salary",
+      initialValue: "This filter uses salary.rangeMin from the Salary section"
     })
   ],
   preview: {
     select: {
       type: "type",
       educationLevel: "educationLevel",
-      minSalary: "minSalary",
       region: "region"
     },
-    prepare({ type, educationLevel, minSalary, region }) {
+    prepare({ type, educationLevel, region }) {
       let subtitle = ""
       
       if (type === "education_ceiling") {
         subtitle = `Education: ${educationLevel || "Not set"}`
       } else if (type === "min_start_salary") {
-        subtitle = minSalary ? `Min Salary: $${minSalary.toLocaleString()}` : "Min Salary: Not set"
+        subtitle = "Uses Entry Level salary from Salary section"
       } else if (type === "licensure_required") {
         subtitle = "Requires licensure/certification"
       } else if (type?.startsWith("dealbreaker_")) {
@@ -152,4 +143,3 @@ export const careerHardFilter = defineType({
     }
   }
 })
-
