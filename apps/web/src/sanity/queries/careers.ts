@@ -5,7 +5,6 @@ export type LocalizedString = { en: string; es?: string }
 export type LocalizedText = { en: string; es?: string }
 export type LocalizedBulletList = { en: string[]; es?: string[] }
 
-// Minimal Portable Text typing (we'll add proper rendering/types later)
 export type PortableTextBlock = Record<string, unknown>
 export type LocalizedPortableText = { en: PortableTextBlock[]; es?: PortableTextBlock[] }
 
@@ -163,7 +162,6 @@ export function getLocalizedText(language: Language, value?: LocalizedText): str
   return language === "es" ? value.es ?? value.en : value.en
 }
 
-//Quiz data
 export type QuizVector = {
   w_patient_facing?: number
   w_tech_equipment?: number
@@ -194,7 +192,6 @@ export type QuizVector = {
   w_short_path?: number
 }
 
-// hard requirements to exclude from quiz
 export type HardRequirements = {
   requiresLicensure?: boolean
   requiresLifting?: boolean
@@ -252,14 +249,10 @@ const CAREERS_FOR_QUIZ_QUERY = /* groq */ `
 }
 `
 
-/**
- * Fetch all careers with quiz data for matching
- */
 export async function fetchCareersForQuiz(): Promise<CareerForMatching[]> {
   return await sanityClient.fetch<CareerForMatching[]>(CAREERS_FOR_QUIZ_QUERY)
 }
 
-// Query optimized for compare page - only fields needed for comparison
 const CAREERS_FOR_COMPARE_QUERY = /* groq */ `
 *[_type == "career"]{
   _id,
@@ -298,16 +291,10 @@ export type CareerForCompare = {
   licensureAndCerts?: LocalizedBulletList
 }
 
-/**
- * Fetch all careers for comparison page
- */
 export async function fetchCareersForCompare(): Promise<CareerForCompare[]> {
   return await sanityClient.fetch<CareerForCompare[]>(CAREERS_FOR_COMPARE_QUERY)
 }
 
-/**
- * Fetch specific careers by IDs for comparison
- */
 export async function fetchCareersByIds(ids: string[]): Promise<CareerForCompare[]> {
   if (!ids.length) return []
   return await sanityClient.fetch<CareerForCompare[]>(
@@ -332,9 +319,6 @@ export async function fetchCareersByIds(ids: string[]): Promise<CareerForCompare
   )
 }
 
-/**
- * Query for fetching all careers for search/browse page
- */
 const CAREERS_FOR_SEARCH_QUERY = /* groq */ `
 *[_type == "career"]{
   _id,
@@ -358,9 +342,6 @@ const CAREERS_FOR_SEARCH_QUERY = /* groq */ `
 }
 `
 
-/**
- * Fetch all careers for search/browse page
- */
 export async function fetchCareersForSearch(): Promise<CareerSummaryCard[]> {
   return await sanityClient.fetch<CareerSummaryCard[]>(CAREERS_FOR_SEARCH_QUERY)
 }
