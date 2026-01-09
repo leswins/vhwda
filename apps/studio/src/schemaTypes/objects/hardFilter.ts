@@ -4,37 +4,49 @@ export const hardFilter = defineType({
   name: "hardFilter",
   title: "Hard Filter",
   type: "object",
-  description: "Filter that excludes careers when this option is selected",
+  description: "Filter that excludes careers when this option is selected. Enable toggles to activate specific filters.",
   fields: [
     defineField({
-      name: "type",
-      title: "Filter Type",
-      type: "string",
-      description: "Type of hard filter to apply (leave empty if this option should not filter careers)",
-      options: {
-        list: [
-          { 
-            title: "Education Ceiling", 
-            value: "education_ceiling"
-          },
-          { 
-            title: "Licensure Rule", 
-            value: "licensure_rule"
-          },
-          { 
-            title: "Minimum Start Salary", 
-            value: "min_start_salary"
-          },
-          { 
-            title: "Deal-breaker", 
-            value: "dealbreaker"
-          },
-          { 
-            title: "Region", 
-            value: "region"
-          }
-        ]
-      }
+      name: "requiresLicensure",
+      title: "Requires Licensure",
+      type: "boolean",
+      description: "If true, users who refuse licensure will not see this career",
+      initialValue: false
+    }),
+    defineField({
+      name: "requiresLifting",
+      title: "Requires Lifting",
+      type: "boolean",
+      description: "If true, users who refuse lifting will not see this career",
+      initialValue: false
+    }),
+    defineField({
+      name: "requiresNightsWeekends",
+      title: "Requires Nights/Weekends",
+      type: "boolean",
+      description: "If true, users who refuse nights/weekends will not see this career",
+      initialValue: false
+    }),
+    defineField({
+      name: "requiresBloodNeedles",
+      title: "Requires Blood/Needles Exposure",
+      type: "boolean",
+      description: "If true, users who refuse blood/needles will not see this career",
+      initialValue: false
+    }),
+    defineField({
+      name: "requiresAcuteHighStress",
+      title: "Requires Acute/High Stress",
+      type: "boolean",
+      description: "If true, users who refuse high stress will not see this career",
+      initialValue: false
+    }),
+    defineField({
+      name: "hasMinimumEducation",
+      title: "Minimum Education",
+      type: "boolean",
+      description: "If true, users who select education below the required level will not see this career",
+      initialValue: false
     }),
     defineField({
       name: "educationLevel",
@@ -51,78 +63,28 @@ export const hardFilter = defineType({
           { title: "Graduate degree", value: "GRAD" }
         ]
       },
-      hidden: ({ parent }) => !parent?.type || parent?.type !== "education_ceiling",
+      hidden: ({ parent }) => !parent?.hasMinimumEducation,
       validation: (r) => 
         r.custom((value, context) => {
-          const parent = context.parent as { type?: string }
-          if (parent?.type === "education_ceiling" && !value) {
-            return "Education level is required when filter type is 'Education Ceiling'"
+          const parent = context.parent as { hasMinimumEducation?: boolean }
+          if (parent?.hasMinimumEducation && !value) {
+            return "Education level is required when 'Minimum Education' is enabled"
           }
           return true
         })
     }),
     defineField({
-      name: "excludeLicensure",
-      title: "Exclude Licensure Required",
+      name: "hasMinimumSalary",
+      title: "Minimum Starting Salary",
       type: "boolean",
-      description: "If true, excludes careers that require licensure/certification",
-      initialValue: true,
-      hidden: ({ parent }) => !parent?.type || parent?.type !== "licensure_rule",
-      validation: (r) => 
-        r.custom((value, context) => {
-          const parent = context.parent as { type?: string }
-          if (parent?.type === "licensure_rule" && value === undefined) {
-            return "Exclude licensure flag is required when filter type is 'Licensure Rule'"
-          }
-          return true
-        })
-    }),
-    defineField({
-      name: "salaryMin",
-      title: "Minimum Starting Salary ($)",
-      type: "number",
-      description: "Minimum starting salary in USD (excludes careers with lower starting salary)",
-      hidden: ({ parent }) => !parent?.type || parent?.type !== "min_start_salary",
-      validation: (r) => 
-        r.custom((value, context) => {
-          const parent = context.parent as { type?: string }
-          if (parent?.type === "min_start_salary") {
-            if (!value || value <= 0) {
-              return "Minimum salary is required and must be greater than 0 when filter type is 'Minimum Start Salary'"
-            }
-          }
-          return true
-        })
-    }),
-    defineField({
-      name: "dealbreakerType",
-      title: "Deal-breaker Type",
-      type: "string",
-      description: "Select which deal-breaker requirement to exclude",
-      options: {
-        list: [
-          { title: "Heavy Lifting / Patient Transfers", value: "exclude_requires_lifting" },
-          { title: "Nights / Weekends / Holidays", value: "exclude_requires_nights_weekends" },
-          { title: "Blood / Needles Exposure", value: "exclude_requires_blood_needles" },
-          { title: "High Stress / Emergencies", value: "exclude_requires_acute_stress" }
-        ]
-      },
-      hidden: ({ parent }) => !parent?.type || parent?.type !== "dealbreaker",
-      validation: (r) => 
-        r.custom((value, context) => {
-          const parent = context.parent as { type?: string }
-          if (parent?.type === "dealbreaker" && !value) {
-            return "Deal-breaker type is required when filter type is 'Deal-breaker'"
-          }
-          return true
-        })
+      description: "If true, uses the career's entry level salary (salary.rangeMin) as the minimum requirement. Users who select a lower minimum salary will not see this career.",
+      initialValue: false
     }),
     defineField({
       name: "region",
       title: "Region",
       type: "string",
-      description: "Geographic region filter",
-      hidden: ({ parent }) => !parent?.type || parent?.type !== "region"
+      description: "Geographic region filter"
     }),
     defineField({
       name: "description",
@@ -134,39 +96,36 @@ export const hardFilter = defineType({
   ],
   preview: {
     select: {
-      type: "type",
+      requiresLicensure: "requiresLicensure",
+      requiresLifting: "requiresLifting",
+      requiresNightsWeekends: "requiresNightsWeekends",
+      requiresBloodNeedles: "requiresBloodNeedles",
+      requiresAcuteHighStress: "requiresAcuteHighStress",
+      hasMinimumEducation: "hasMinimumEducation",
       educationLevel: "educationLevel",
-      salaryMin: "salaryMin",
-      excludeLicensure: "excludeLicensure",
-      dealbreakerType: "dealbreakerType",
+      hasMinimumSalary: "hasMinimumSalary",
       description: "description"
     },
-    prepare({ type, educationLevel, salaryMin, excludeLicensure, dealbreakerType, description }) {
-      let subtitle = ""
+    prepare({ requiresLicensure, requiresLifting, requiresNightsWeekends, requiresBloodNeedles, requiresAcuteHighStress, hasMinimumEducation, educationLevel, hasMinimumSalary, description }) {
+      const activeFilters: string[] = []
       
-      if (type === "education_ceiling") {
-        subtitle = `Education: ${educationLevel || "Not set"}`
-      } else if (type === "licensure_rule") {
-        subtitle = excludeLicensure ? "Exclude careers requiring licensure" : "Include all"
-      } else if (type === "min_start_salary") {
-        subtitle = salaryMin ? `Min salary: $${salaryMin.toLocaleString()}` : "Min salary: Not set"
-      } else if (type === "dealbreaker") {
-        const labels: Record<string, string> = {
-          "exclude_requires_lifting": "Exclude: Heavy Lifting",
-          "exclude_requires_nights_weekends": "Exclude: Nights/Weekends",
-          "exclude_requires_blood_needles": "Exclude: Blood/Needles",
-          "exclude_requires_acute_stress": "Exclude: High Stress"
-        }
-        subtitle = dealbreakerType ? labels[dealbreakerType] || "Deal-breaker" : "Deal-breaker: Not set"
-      } else if (type === "region") {
-        subtitle = "Region filter"
+      if (requiresLicensure) activeFilters.push("Requires Licensure")
+      if (requiresLifting) activeFilters.push("Requires Lifting")
+      if (requiresNightsWeekends) activeFilters.push("Requires Nights/Weekends")
+      if (requiresBloodNeedles) activeFilters.push("Requires Blood/Needles")
+      if (requiresAcuteHighStress) activeFilters.push("Requires High Stress")
+      if (hasMinimumEducation) {
+        const eduLabel = educationLevel ? ` (${educationLevel})` : ""
+        activeFilters.push(`Min Education${eduLabel}`)
       }
+      if (hasMinimumSalary) activeFilters.push("Min Salary")
+      
+      const subtitle = activeFilters.length > 0 ? activeFilters.join(", ") : "No filters enabled"
       
       return {
-        title: description || type || "Hard Filter",
+        title: description || "Hard Filter",
         subtitle
       }
     }
   }
 })
-
