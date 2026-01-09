@@ -87,15 +87,6 @@ export const careerHardFilter = defineType({
       type: "string",
       description: "Optional note for internal reference (not shown to users)",
       placeholder: "e.g., 'This is a critical requirement'"
-    }),
-    defineField({
-      name: "_salaryInfo",
-      title: "💡 Salary Information",
-      type: "string",
-      description: "When 'Minimum Starting Salary' is selected, the system will automatically use the 'Entry Level' salary value from the Salary section above (salary.rangeMin). Make sure that field is populated.",
-      readOnly: true,
-      hidden: ({ parent }) => parent?.type !== "min_start_salary",
-      initialValue: "This filter uses salary.rangeMin from the Salary section"
     })
   ],
   preview: {

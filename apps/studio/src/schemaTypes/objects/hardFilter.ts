@@ -11,42 +11,42 @@ export const hardFilter = defineType({
       title: "Requires Licensure",
       type: "boolean",
       description: "If true, users who refuse licensure will not see this career",
-      initialValue: false
+      initialValue: () => false
     }),
     defineField({
       name: "requiresLifting",
       title: "Requires Lifting",
       type: "boolean",
       description: "If true, users who refuse lifting will not see this career",
-      initialValue: false
+      initialValue: () => false
     }),
     defineField({
       name: "requiresNightsWeekends",
       title: "Requires Nights/Weekends",
       type: "boolean",
       description: "If true, users who refuse nights/weekends will not see this career",
-      initialValue: false
+      initialValue: () => false
     }),
     defineField({
       name: "requiresBloodNeedles",
       title: "Requires Blood/Needles Exposure",
       type: "boolean",
       description: "If true, users who refuse blood/needles will not see this career",
-      initialValue: false
+      initialValue: () => false
     }),
     defineField({
       name: "requiresAcuteHighStress",
       title: "Requires Acute/High Stress",
       type: "boolean",
       description: "If true, users who refuse high stress will not see this career",
-      initialValue: false
+      initialValue: () => false
     }),
     defineField({
       name: "hasMinimumEducation",
       title: "Minimum Education",
       type: "boolean",
       description: "If true, users who select education below the required level will not see this career",
-      initialValue: false
+      initialValue: () => false
     }),
     defineField({
       name: "educationLevel",
@@ -78,7 +78,7 @@ export const hardFilter = defineType({
       title: "Minimum Starting Salary",
       type: "boolean",
       description: "If true, uses the career's entry level salary (salary.rangeMin) as the minimum requirement. Users who select a lower minimum salary will not see this career.",
-      initialValue: false
+      initialValue: () => false
     }),
     defineField({
       name: "region",
