@@ -1,0 +1,26 @@
+{
+  "name": "vhwda-sora-video-generator",
+  "version": "1.0.0",
+  "description": "Generate career videos using OpenAI Sora API and upload to Supabase",
+  "type": "module",
+  "scripts": {
+    "start": "tsx generate-videos.ts",
+    "dry-run": "tsx generate-videos.ts --dry-run",
+    "resume": "tsx generate-videos.ts --resume"
+  },
+  "dependencies": {
+    "openai": "^4.77.0",
+    "@supabase/supabase-js": "^2.48.0",
+    "@sanity/client": "^6.24.1",
+    "csv-parse": "^5.6.0",
+    "dotenv": "^16.4.7",
+    "p-queue": "^8.0.1",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.5",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
+}
+

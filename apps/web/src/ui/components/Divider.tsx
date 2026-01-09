@@ -17,8 +17,8 @@ export function Divider({ orientation = "horizontal", className }: DividerProps)
       role="separator"
       aria-orientation={orientation}
       className={cx(
-        orientation === "horizontal" ? "h-px w-full" : "h-full w-px",
-        "bg-foreground/20",
+        orientation === "horizontal" ? "h-[0.5px] w-full" : "h-full w-[0.5px]",
+        "bg-foreground",
         className
       )}
     />

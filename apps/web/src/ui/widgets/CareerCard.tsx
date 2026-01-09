@@ -15,7 +15,7 @@ type Props = {
 
 export function CareerCard({ language, title, salary, to, imageUrl, showMatch, matchLabel }: Props) {
   return (
-    <div className="w-[360px] shrink-0 border border-foreground bg-surface">
+    <div className="group w-[420px] shrink-0 bg-surface">
       <Link to={to} className="block">
         <div className="relative h-[283px] w-full overflow-hidden bg-surface2">
           {imageUrl ? <img alt="" src={imageUrl} className="h-full w-full object-cover" /> : null}
@@ -27,10 +27,14 @@ export function CareerCard({ language, title, salary, to, imageUrl, showMatch, m
           ) : null}
         </div>
 
-        <div className="relative border-y border-foreground bg-surface1 px-5 py-5">
-          <div className="absolute left-0 top-1/2 h-[69px] w-px -translate-y-1/2 bg-foreground" aria-hidden="true" />
-          <div className="text-2xl font-bold leading-tight">{title}</div>
+        <div className="h-[0.5px] w-full bg-foreground" />
+
+        <div className="relative overflow-hidden bg-surface1 px-5 py-5">
+          <div className="absolute inset-0 translate-x-[-100%] bg-foreground transition-transform duration-300 ease-out group-hover:translate-x-0" />
+          <div className="relative z-10 text-2xl font-bold leading-tight text-foreground transition-colors duration-300 group-hover:text-surface">{title}</div>
         </div>
+
+        <div className="h-[0.5px] w-full bg-foreground" />
 
         <div className="px-5">
           <div className="flex items-center justify-between py-5 text-sm font-bold text-onSurfaceSecondary">
@@ -38,12 +42,14 @@ export function CareerCard({ language, title, salary, to, imageUrl, showMatch, m
             <span>{salary ?? "—"}</span>
           </div>
 
-          <div className="h-px w-full bg-foreground/20" />
+          <div className="h-[0.5px] w-full bg-foreground" />
 
           <div className="flex items-center justify-between py-5">
             <span className="text-sm text-muted">{t(language, "careerCard.learnMore")}</span>
             <span aria-hidden="true" className="text-xl text-foreground">
-              →
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M-4.92305e-07 11.2626L-3.81923e-07 8.73737L15.1515 8.73737L8.20707 1.79293L10 -4.37114e-07L20 10L10 20L8.20707 18.2071L15.1515 11.2626L-4.92305e-07 11.2626Z" fill="currentColor" />
+              </svg>
             </span>
           </div>
         </div>
