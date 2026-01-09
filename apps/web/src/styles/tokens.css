@@ -28,6 +28,62 @@
   /* Typography */
   --font-sans: "Gilroy", ui-sans-serif;
 
+  /* 
+   * Fluid Typography Scale - Scales smoothly from mobile (375px) to desktop (1512px)
+   * Using clamp(min, preferred, max) for responsive scaling
+   * Formula: clamp([mobile-size], [mobile-size] + ([desktop-size] - [mobile-size]) * ((100vw - 375px) / (1512 - 375)), [desktop-size])
+   */
+
+  /* H1: 36px @ 375px → 72px @ 1512px */
+  --text-h1: clamp(2.25rem, 1.5rem + 3.17vw, 4.5rem);
+  --leading-h1: 1.2;
+  --tracking-h1: -0.03em;
+
+  /* H2: 30px @ 375px → 48px @ 1512px */
+  --text-h2: clamp(1.875rem, 1.4rem + 1.58vw, 3rem);
+  --leading-h2: 1.2;
+  --tracking-h2: -0.03em;
+
+  /* H3: 24px @ 375px → 36px @ 1512px */
+  --text-h3: clamp(1.5rem, 1.2rem + 1.06vw, 2.25rem);
+  --leading-h3: 1.2;
+  --tracking-h3: -0.03em;
+
+  /* H4: 18px @ 375px → 24px @ 1512px */
+  --text-h4: clamp(1.125rem, 1rem + 0.53vw, 1.5rem);
+  --leading-h4: 1.2;
+  --tracking-h4: -0.03em;
+
+  /* H5: 16px @ 375px → 20px @ 1512px */
+  --text-h5: clamp(1rem, 0.9rem + 0.35vw, 1.25rem);
+  --leading-h5: 1.2;
+  --tracking-h5: -0.025em;
+
+  /* Subheading1: 18px @ 375px → 24px @ 1512px */
+  --text-sub1: clamp(1.125rem, 1rem + 0.53vw, 1.5rem);
+  --leading-sub1: 1.35;
+  --tracking-sub1: -0.025em;
+
+  /* Subheading2: 12px @ 375px → 16px @ 1512px */
+  --text-sub2: clamp(0.75rem, 0.65rem + 0.35vw, 1rem);
+  --leading-sub2: 1.35;
+  --tracking-sub2: 0.15em;
+
+  /* Body Large: 16px @ 375px → 20px @ 1512px */
+  --text-body-lg: clamp(1rem, 0.9rem + 0.35vw, 1.25rem);
+  --leading-body-lg: 1.35;
+  --tracking-body-lg: -0.025em;
+
+  /* Body Base: 14px @ 375px → 16px @ 1512px */
+  --text-body-base: clamp(0.875rem, 0.825rem + 0.18vw, 1rem);
+  --leading-body-base: 1.35;
+  --tracking-body-base: -0.025em;
+
+  /* Body Small: 12px @ 375px → 14px @ 1512px */
+  --text-body-sm: clamp(0.75rem, 0.7rem + 0.18vw, 0.875rem);
+  --leading-body-sm: 1.35;
+  --tracking-body-sm: -0.025em;
+
   /**
    * Spacing/radius weren’t surfaced as variables on this node.
    * Keep placeholders here until/if spacing variables are added in Figma.

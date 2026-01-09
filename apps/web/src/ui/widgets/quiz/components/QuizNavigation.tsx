@@ -1,4 +1,6 @@
 import React from "react"
+import { t } from "../../../../utils/i18n"
+import { useLanguageStore } from "../../../../zustand/useLanguageStore"
 
 type QuizNavigationProps = {
     hasPrevious: boolean
@@ -19,40 +21,59 @@ export function QuizNavigation({
     onNext,
     onFinish,
 }: QuizNavigationProps) {
+    const { language } = useLanguageStore()
+
     return (
-        <div style={{ marginTop: "20px" }}>
-            <button onClick={onCancel}>Cancel</button>
+        <div className="flex items-center gap-[20px]">
+            {/* Back button (only show if has previous) */}
             {hasPrevious && (
-                <button 
+                <button
                     onClick={onPrevious}
-                    style={{ marginLeft: "10px" }}
+                    className="
+                        px-[15px] py-[10px]
+                        border border-on-surface-primary
+                        bg-surface-background text-on-surface-primary
+                        hover:bg-surface-above-1
+                        transition-colors
+                        font-semibold text-body-default tracking-tight leading-snug
+                    "
                 >
-                    Previous
+                    {t(language, "quiz.back")}
                 </button>
             )}
+
+            {/* Next/Submit button */}
             {hasNext ? (
-                <button 
+                <button
                     onClick={onNext}
                     disabled={!isCurrentQuestionAnswered}
-                    style={{ 
-                        marginLeft: "10px",
-                        opacity: isCurrentQuestionAnswered ? 1 : 0.5,
-                        cursor: isCurrentQuestionAnswered ? "pointer" : "not-allowed"
-                    }}
+                    className={`
+                        px-[15px] py-[10px]
+                        font-semibold text-body-default tracking-tight leading-snug
+                        transition-colors
+                        ${isCurrentQuestionAnswered
+                            ? "bg-on-surface-primary text-surface-background hover:opacity-90 cursor-pointer"
+                            : "bg-surface-above-1 text-on-surface-primary opacity-50 cursor-not-allowed"
+                        }
+                    `}
                 >
-                    Next
+                    {t(language, "quiz.nextQuestion")}
                 </button>
             ) : (
-                <button 
+                <button
                     onClick={onFinish}
                     disabled={!isCurrentQuestionAnswered}
-                    style={{ 
-                        marginLeft: "10px",
-                        opacity: isCurrentQuestionAnswered ? 1 : 0.5,
-                        cursor: isCurrentQuestionAnswered ? "pointer" : "not-allowed"
-                    }}
+                    className={`
+                        px-[15px] py-[10px]
+                        font-semibold text-body-default tracking-tight leading-snug
+                        transition-colors
+                        ${isCurrentQuestionAnswered
+                            ? "bg-on-surface-primary text-surface-background hover:opacity-90 cursor-pointer"
+                            : "bg-surface-above-1 text-on-surface-primary opacity-50 cursor-not-allowed"
+                        }
+                    `}
                 >
-                    Finish Quiz
+                    {t(language, "quiz.submitAnswers")}
                 </button>
             )}
         </div>

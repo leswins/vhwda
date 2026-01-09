@@ -25,8 +25,23 @@ export default {
       fontFamily: {
         sans: ["var(--font-sans)", "system-ui", "sans-serif"]
       },
+      fontSize: {
+        h1: ["var(--text-h1)", { lineHeight: "var(--leading-h1)", letterSpacing: "var(--tracking-h1)", fontWeight: "700" }],
+        h2: ["var(--text-h2)", { lineHeight: "var(--leading-h2)", letterSpacing: "var(--tracking-h2)", fontWeight: "700" }],
+        h3: ["var(--text-h3)", { lineHeight: "var(--leading-h3)", letterSpacing: "var(--tracking-h3)", fontWeight: "700" }],
+        h4: ["var(--text-h4)", { lineHeight: "var(--leading-h4)", letterSpacing: "var(--tracking-h4)", fontWeight: "700" }],
+        h5: ["var(--text-h5)", { lineHeight: "var(--leading-h5)", letterSpacing: "var(--tracking-h5)", fontWeight: "700" }],
+        sub1: ["var(--text-sub1)", { lineHeight: "var(--leading-sub1)", letterSpacing: "var(--tracking-sub1)", fontWeight: "500" }],
+        sub2: ["var(--text-sub2)", { lineHeight: "var(--leading-sub2)", letterSpacing: "var(--tracking-sub2)", fontWeight: "700" }],
+        "body-lg": ["var(--text-body-lg)", { lineHeight: "var(--leading-body-lg)", letterSpacing: "var(--tracking-body-lg)", fontWeight: "500" }],
+        "body-base": ["var(--text-body-base)", { lineHeight: "var(--leading-body-base)", letterSpacing: "var(--tracking-body-base)", fontWeight: "500" }],
+        "body-sm": ["var(--text-body-sm)", { lineHeight: "var(--leading-body-sm)", letterSpacing: "var(--tracking-body-sm)", fontWeight: "500" }],
+      },
       borderRadius: {
         md: "var(--radius-md)"
+      },
+      borderWidth: {
+        DEFAULT: "0.5px"
       }
     }
   },
