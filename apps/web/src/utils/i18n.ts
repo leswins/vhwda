@@ -60,7 +60,25 @@ const dict: Dictionary = {
   "career.error": { en: "Something went wrong loading this career.", es: "Ocurrió un error al cargar esta carrera." },
   "common.missing": { en: "(missing)", es: "(falta)" },
   "compare.title": { en: "Compare Careers", es: "Comparar carreras" },
+  "compare.title.comparing": { en: "Comparing {count} career", es: "Comparando {count} carrera" },
+  "compare.title.comparingPlural": { en: "Comparing {count} careers", es: "Comparando {count} carreras" },
   "compare.body": { en: "Placeholder page. Will compare selected careers.", es: "Página temporal. Comparará carreras seleccionadas." },
+  "compare.addCareer": { en: "Add Career", es: "Agregar carrera" },
+  "compare.searchPlaceholder": { en: "Search for a specific career", es: "Buscar una carrera específica" },
+  "compare.sections.dayToDay": { en: "Day-to-Day", es: "Día a día" },
+  "compare.sections.overview": { en: "Overview", es: "Resumen" },
+  "compare.sections.salaryDetails": { en: "Salary Details", es: "Detalles salariales" },
+  "compare.sections.academicRequirements": { en: "Academic Requirements", es: "Requisitos académicos" },
+  "compare.sections.jobOutlook": { en: "Job Outlook", es: "Perspectiva laboral" },
+  "compare.sections.responsibilities": { en: "Responsibilities", es: "Responsabilidades" },
+  "compare.sections.workEnvironments": { en: "Work Environments", es: "Entornos de trabajo" },
+  "compare.sections.areasOfSpecialization": { en: "Areas of Specialization", es: "Áreas de especialización" },
+  "compare.addCareerToCompare": { en: "Add a career to compare", es: "Agrega una carrera para comparar" },
+  "compare.medianSalary": { en: "Median Salary", es: "Salario mediano" },
+  "compare.salaryRange": { en: "Entry Level - Experienced", es: "Nivel inicial - Con experiencia" },
+  "compare.projectedGrowth": { en: "Projected 10-Year Growth", es: "Crecimiento proyectado a 10 años" },
+  "compare.noCareersFound": { en: "No careers found", es: "No se encontraron carreras" },
+  "compare.startTyping": { en: "Start typing to search careers...", es: "Comienza a escribir para buscar carreras..." },
   "quiz.title": { en: "Career Quiz", es: "Cuestionario" },
   "quiz.body": { en: "Placeholder page. Will guide users to recommended careers.", es: "Página temporal. Recomendará carreras a los usuarios." },
   "resources.title": { en: "Resources", es: "Recursos" },
@@ -153,7 +171,59 @@ const dict: Dictionary = {
     es: "La Autoridad para el Desarrollo de la Fuerza Laboral de Salud de Virginia (VHWDA) fortalece la fuerza laboral de salud de Virginia al alinear educación, capacitación y recursos de empleo con las necesidades de la industria."
   },
   "footer.address": { en: "7818 E. Parham Road, Richmond, VA 23294", es: "7818 E. Parham Road, Richmond, VA 23294" },
-  
+  "planNextSteps.title": { en: "Plan Your Next Steps", es: "Planifica tus próximos pasos" },
+  "planNextSteps.description": {
+    en: "Find programs, prerequisites, and scholarships in Virginia to get started.",
+    es: "Encuentra programas, prerrequisitos y becas en Virginia para comenzar."
+  },
+  "planNextSteps.card.scholarships.title": {
+    en: "Scholarships & Financial Aid",
+    es: "Becas y Ayuda Financiera"
+  },
+  "planNextSteps.card.scholarships.description": {
+    en: "Explore federal aid and Virginia options like G3.",
+    es: "Explora ayuda federal y opciones de Virginia como G3."
+  },
+  "planNextSteps.card.professionalOrganizations.title": {
+    en: "Professional Organizations",
+    es: "Organizaciones Profesionales"
+  },
+  "planNextSteps.card.professionalOrganizations.description": {
+    en: "Join networks that support your field.",
+    es: "Únete a redes que apoyan tu campo."
+  },
+  "planNextSteps.card.schoolsPrerequisites.title": {
+    en: "Schools & Prerequisites",
+    es: "Escuelas y Prerrequisitos"
+  },
+  "planNextSteps.card.schoolsPrerequisites.description": {
+    en: "Find accredited programs in Virginia.",
+    es: "Encuentra programas acreditados en Virginia."
+  },
+  "filters.search": { en: "Filter", es: "Filtrar" },
+  "filters.currentStage": { en: "Current Stage", es: "Etapa Actual" },
+  "filters.currentStage.highSchool": { en: "High School Student", es: "Estudiante de Secundaria" },
+  "filters.currentStage.college": { en: "College Student", es: "Estudiante Universitario" },
+  "filters.currentStage.graduate": { en: "Graduate Student", es: "Estudiante de Posgrado" },
+  "filters.currentStage.workingProfessional": {
+    en: "Working Professional",
+    es: "Profesional en Activo"
+  },
+  "filters.currentStage.veteranMilitary": { en: "Veteran, Military", es: "Veterano, Militar" },
+  "filters.currentStage.adultReturning": {
+    en: "Adult Returning to School",
+    es: "Adulto que Regresa a la Escuela"
+  },
+  "filters.fundingType": { en: "Funding Type", es: "Tipo de Financiamiento" },
+  "filters.locationScope": { en: "Location & Scope", es: "Ubicación y Alcance" },
+  "filters.careerArea": { en: "Career Area", es: "Área de Carrera" },
+  "filters.membershipType": { en: "Membership Type", es: "Tipo de Membresía" },
+  "filters.membershipType.student": { en: "Student", es: "Estudiante" },
+  "filters.membershipType.professional": { en: "Professional", es: "Profesional" },
+  "filters.membershipType.employer": { en: "Employer", es: "Empleador" },
+  "filters.geographicFocus": { en: "Geographic Focus", es: "Enfoque Geográfico" },
+  "common.visitSite": { en: "Visit Site", es: "Visitar Sitio" },
+
   // Quiz-specific translations
   "quiz.section.interestsValues": { en: "Interests & Values", es: "Intereses y Valores" },
   "quiz.section.skillsAptitudes": { en: "Skills & Aptitudes", es: "Habilidades y Aptitudes" },

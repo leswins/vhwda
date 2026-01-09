@@ -255,3 +255,76 @@ export async function fetchCareersForQuiz(): Promise<CareerForMatching[]> {
   return await sanityClient.fetch<CareerForMatching[]>(CAREERS_FOR_QUIZ_QUERY)
 }
 
+// Query optimized for compare page - only fields needed for comparison
+const CAREERS_FOR_COMPARE_QUERY = /* groq */ `
+*[_type == "career"]{
+  _id,
+  "slug": slug.current,
+  title,
+  summary,
+  images[]{asset->{_id, url}},
+  videoUrl,
+  responsibilities,
+  workEnvironment,
+  specializations,
+  educationRequirements,
+  academicRequirementsHighlight,
+  programLengthHighlight,
+  salary{median, rangeMin, rangeMax, notes, source, year},
+  outlook{label, value, notes, source, year},
+  licensureAndCerts
+}
+`
+
+export type CareerForCompare = {
+  _id: string
+  slug?: string
+  title: LocalizedString
+  summary?: LocalizedText
+  images?: Array<{ asset?: { _id: string; url: string } }>
+  videoUrl?: string
+  responsibilities?: LocalizedBulletList
+  workEnvironment?: LocalizedBulletList
+  specializations?: LocalizedBulletList
+  educationRequirements?: LocalizedPortableText
+  academicRequirementsHighlight?: LocalizedString
+  programLengthHighlight?: LocalizedString
+  salary?: Salary
+  outlook?: Outlook
+  licensureAndCerts?: LocalizedBulletList
+}
+
+/**
+ * Fetch all careers for comparison page
+ */
+export async function fetchCareersForCompare(): Promise<CareerForCompare[]> {
+  return await sanityClient.fetch<CareerForCompare[]>(CAREERS_FOR_COMPARE_QUERY)
+}
+
+/**
+ * Fetch specific careers by IDs for comparison
+ */
+export async function fetchCareersByIds(ids: string[]): Promise<CareerForCompare[]> {
+  if (!ids.length) return []
+  return await sanityClient.fetch<CareerForCompare[]>(
+    `*[_type == "career" && _id in $ids]{
+      _id,
+      "slug": slug.current,
+      title,
+      summary,
+      images[]{asset->{_id, url}},
+      videoUrl,
+      responsibilities,
+      workEnvironment,
+      specializations,
+      educationRequirements,
+      academicRequirementsHighlight,
+      programLengthHighlight,
+      salary{median, rangeMin, rangeMax, notes, source, year},
+      outlook{label, value, notes, source, year},
+      licensureAndCerts
+    }`,
+    { ids }
+  )
+}
+
