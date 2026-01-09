@@ -17,17 +17,17 @@ export function Button({ className, variant = "primary", size = "md", type = "bu
     <button
       type={type}
       className={cx(
-        "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-semibold",
+        "inline-flex items-center justify-center gap-2 whitespace-nowrap font-semibold",
         "transition-colors",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/20",
         "disabled:pointer-events-none disabled:opacity-50",
-        variant === "primary" && "bg-primary text-onPrimary hover:bg-primary/90",
-        variant === "outline" && "border border-border bg-surface text-foreground hover:bg-surface1",
-        variant === "dark" && "bg-foreground text-surface hover:bg-foreground/90",
-        variant === "ghost" && "bg-transparent text-foreground hover:bg-surface1",
+        variant === "primary" && "rounded-md bg-primary text-sm text-onPrimary hover:bg-primary/90",
+        variant === "outline" && "rounded-md border border-border bg-surface text-sm text-foreground hover:bg-surface1",
+        variant === "dark" && "border border-foreground bg-foreground text-base text-surface hover:bg-foreground/90",
+        variant === "ghost" && "rounded-md bg-transparent text-sm text-foreground hover:bg-surface1",
         size === "sm" && "px-3 py-1.5",
-        size === "md" && "px-4 py-2",
-        size === "lg" && "px-5 py-3 text-base",
+        size === "md" && "px-[15px] py-2.5",
+        size === "lg" && "px-5 py-3",
         className
       )}
       {...props}

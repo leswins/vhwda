@@ -35,7 +35,7 @@ export function ChatCareerCard({ language, career }: Props) {
               <span>{t(language, "careerCard.typicalVaSalary")}</span>
               <span>{salary}</span>
             </div>
-            <div className="h-px w-full bg-foreground/20" />
+            <div className="h-[0.5px] w-full bg-foreground" />
           </>
         )}
         <div 
@@ -46,7 +46,9 @@ export function ChatCareerCard({ language, career }: Props) {
             {t(language, "careerCard.learnMore")}
           </span>
           <span aria-hidden="true" className="text-xl text-foreground">
-            →
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M-4.92305e-07 11.2626L-3.81923e-07 8.73737L15.1515 8.73737L8.20707 1.79293L10 -4.37114e-07L20 10L10 20L8.20707 18.2071L15.1515 11.2626L-4.92305e-07 11.2626Z" fill="currentColor" />
+            </svg>
           </span>
         </div>
       </div>

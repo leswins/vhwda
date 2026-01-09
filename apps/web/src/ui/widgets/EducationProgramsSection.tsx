@@ -7,6 +7,7 @@ import { t } from "../../utils/i18n"
 type Props = {
   language: Language
   items: CareerEducationInstitutionItem[]
+  title: string
 }
 
 function cx(...parts: Array<string | false | null | undefined>) {
@@ -43,7 +44,7 @@ function computeInitialView(items: CareerEducationInstitutionItem[]): { center: 
   return { center: [(minLng + maxLng) / 2, (minLat + maxLat) / 2], zoom: 6.8 }
 }
 
-export function EducationProgramsSection({ language, items }: Props) {
+export function EducationProgramsSection({ language, items, title }: Props) {
   const token = import.meta.env.VITE_MAPBOX_TOKEN as string | undefined
   const mapContainerRef = useRef<HTMLDivElement | null>(null)
   const mapRef = useRef<mapboxgl.Map | null>(null)
@@ -125,28 +126,35 @@ export function EducationProgramsSection({ language, items }: Props) {
 
   if (!token) {
     return (
-      <div className="grid gap-8 lg:grid-cols-[480px_1fr]">
-        <div className="max-h-[520px] overflow-auto border-t border-foreground pr-2 pt-6">
-          <ul className="divide-y divide-foreground/20">
-            {sorted.map((item) => {
-              const name = getItemName(item)
-              const href = getItemHref(item)
-              return (
-                <li key={item._key} className="flex items-center justify-between py-4">
-                  {href ? (
-                    <a className="text-xl hover:underline" href={href} target="_blank" rel="noreferrer">
-                      {name}
-                    </a>
-                  ) : (
-                    <span className="text-xl">{name}</span>
-                  )}
-                  <span aria-hidden="true">→</span>
-                </li>
-              )
-            })}
-          </ul>
+      <div className="grid h-[650px] max-h-[650px] overflow-hidden lg:grid-cols-[40%_60%]">
+        <div className="flex h-full min-h-0 flex-col pt-[50px] px-[50px]">
+          <h2 className="pb-[50px] text-4xl font-bold border-b border-foreground shrink-0">{title}</h2>
+          <div className="min-h-0 flex-1 overflow-auto pr-2">
+            <ul className="divide-y divide-foreground pb-[50px]">
+              {sorted.map((item) => {
+                const name = getItemName(item)
+                const href = getItemHref(item)
+                return (
+                  <li key={item._key} className="flex items-center justify-between py-[25px]">
+                    {href ? (
+                      <a className="text-xl hover:underline" href={href} target="_blank" rel="noreferrer">
+                        {name}
+                      </a>
+                    ) : (
+                      <span className="text-xl">{name}</span>
+                    )}
+                    <span aria-hidden="true">
+                      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M-4.92305e-07 11.2626L-3.81923e-07 8.73737L15.1515 8.73737L8.20707 1.79293L10 -4.37114e-07L20 10L10 20L8.20707 18.2071L15.1515 11.2626L-4.92305e-07 11.2626Z" fill="currentColor" />
+                      </svg>
+                    </span>
+                  </li>
+                )
+              })}
+            </ul>
+          </div>
         </div>
-        <div className="min-h-[520px] border border-foreground bg-surface1 p-4 text-sm text-foreground/70">
+        <div className="h-[650px] border-l border-foreground bg-surface1 p-4 text-sm text-foreground/70">
           {t(language, "career.map.noToken")}
         </div>
       </div>
@@ -154,43 +162,50 @@ export function EducationProgramsSection({ language, items }: Props) {
   }
 
   return (
-    <div className="grid gap-8 lg:grid-cols-[480px_1fr]">
-      <div className="max-h-[520px] overflow-auto border-t border-foreground pr-2 pt-6">
-        <ul className="divide-y divide-foreground/20">
-          {sorted.map((item) => {
-            const name = getItemName(item)
-            const href = getItemHref(item)
-            const isActive = item._key === activeKey
-            return (
-              <li key={item._key} className="py-4">
-                <button
-                  type="button"
-                  className={cx("flex w-full items-center justify-between text-left", isActive && "font-bold")}
-                  onClick={() => setActiveKey(item._key)}
-                >
-                  {href ? (
-                    <a
-                      className="text-xl hover:underline"
-                      href={href}
-                      target="_blank"
-                      rel="noreferrer"
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      {name}
-                    </a>
-                  ) : (
-                    <span className="text-xl">{name}</span>
-                  )}
-                  <span aria-hidden="true">→</span>
-                </button>
-              </li>
-            )
-          })}
-        </ul>
+    <div className="grid h-[650px] max-h-[650px] overflow-hidden lg:grid-cols-[40%_60%]">
+      <div className="flex h-full min-h-0 flex-col pt-[50px] px-[50px]">
+        <h2 className="pb-[50px] text-4xl font-bold border-b border-foreground shrink-0">{title}</h2>
+        <div className="min-h-0 flex-1 overflow-auto pr-2">
+          <ul className="divide-y divide-foreground pb-[50px]">
+            {sorted.map((item) => {
+              const name = getItemName(item)
+              const href = getItemHref(item)
+              const isActive = item._key === activeKey
+              return (
+                <li key={item._key} className="py-[25px]">
+                  <button
+                    type="button"
+                    className={cx("flex w-full items-center justify-between text-left", isActive && "font-bold")}
+                    onClick={() => setActiveKey(item._key)}
+                  >
+                    {href ? (
+                      <a
+                        className="text-xl hover:underline"
+                        href={href}
+                        target="_blank"
+                        rel="noreferrer"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        {name}
+                      </a>
+                    ) : (
+                      <span className="text-xl">{name}</span>
+                    )}
+                    <span aria-hidden="true">
+                      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M-4.92305e-07 11.2626L-3.81923e-07 8.73737L15.1515 8.73737L8.20707 1.79293L10 -4.37114e-07L20 10L10 20L8.20707 18.2071L15.1515 11.2626L-4.92305e-07 11.2626Z" fill="currentColor" />
+                      </svg>
+                    </span>
+                  </button>
+                </li>
+              )
+            })}
+          </ul>
+        </div>
       </div>
 
-      <div className="min-h-[520px] border border-foreground bg-surface1">
-        <div ref={mapContainerRef} className="h-[520px] w-full" />
+      <div className="h-[650px] border-l border-foreground bg-surface1">
+        <div ref={mapContainerRef} className="h-full w-full" />
       </div>
 
       <style>{`

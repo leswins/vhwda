@@ -40,6 +40,7 @@ const dict: Dictionary = {
   "career.sections.professionalAssociations": { en: "Professional Associations", es: "Asociaciones profesionales" },
   "career.sections.similarCareers": { en: "Similar Careers", es: "Carreras similares" },
   "career.cta.exploreEducationalPrograms": { en: "Explore educational programs", es: "Explorar programas educativos" },
+  "career.cta.searchForCareer": { en: "Search for a specific career", es: "Buscar una carrera específica" },
   "careerHighlight.typicalSalary": { en: "Typical Salary", es: "Salario típico" },
   "careerHighlight.programLength": { en: "Program Length", es: "Duración del programa" },
   "careerHighlight.projectedGrowth": { en: "Projected 10-Year Growth", es: "Crecimiento proyectado a 10 años" },
@@ -151,7 +152,26 @@ const dict: Dictionary = {
     en: "The Virginia Health Workforce Development Authority (VHWDA) strengthens Virginia’s healthcare workforce by aligning education, training, and employment resources with industry needs.",
     es: "La Autoridad para el Desarrollo de la Fuerza Laboral de Salud de Virginia (VHWDA) fortalece la fuerza laboral de salud de Virginia al alinear educación, capacitación y recursos de empleo con las necesidades de la industria."
   },
-  "footer.address": { en: "7818 E. Parham Road, Richmond, VA 23294", es: "7818 E. Parham Road, Richmond, VA 23294" }
+  "footer.address": { en: "7818 E. Parham Road, Richmond, VA 23294", es: "7818 E. Parham Road, Richmond, VA 23294" },
+  
+  // Quiz-specific translations
+  "quiz.section.interestsValues": { en: "Interests & Values", es: "Intereses y Valores" },
+  "quiz.section.skillsAptitudes": { en: "Skills & Aptitudes", es: "Habilidades y Aptitudes" },
+  "quiz.section.workEnvironment": { en: "Work Environment", es: "Ambiente de Trabajo" },
+  "quiz.section.scheduleLifestyle": { en: "Schedule & Lifestyle", es: "Horario y Estilo de Vida" },
+  "quiz.section.educationPath": { en: "Education Path", es: "Camino Educativo" },
+  "quiz.section.salaryOutlook": { en: "Salary & Outlook", es: "Salario y Perspectiva" },
+  "quiz.section.careerFeatures": { en: "Career Features", es: "Características de Carrera" },
+  "quiz.section.dealBreakers": { en: "Deal-breakers", es: "Factores Decisivos" },
+  "quiz.adjustSlider": { en: "Adjust the slider to set your preference", es: "Ajusta el control deslizante para establecer tu preferencia" },
+  "quiz.isDealbreaker": { en: "Is this a deal breaker?", es: "¿Es esto un factor decisivo?" },
+  "quiz.yes": { en: "Yes", es: "Sí" },
+  "quiz.no": { en: "No", es: "No" },
+  "quiz.back": { en: "Back", es: "Atrás" },
+  "quiz.nextQuestion": { en: "Next Question", es: "Siguiente Pregunta" },
+  "quiz.submitAnswers": { en: "Submit Answers", es: "Enviar Respuestas" },
+  "quiz.showVector": { en: "Show Debug Vector", es: "Mostrar Vector de Depuración" },
+  "quiz.vectorTitle": { en: "Current Vector (Debug)", es: "Vector Actual (Depuración)" }
 }
 
 export type TranslationKey = keyof typeof dict
