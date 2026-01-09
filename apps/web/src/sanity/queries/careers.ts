@@ -57,6 +57,10 @@ export type CareerSummaryCard = {
   salary?: Pick<Salary, "median" | "rangeMin" | "rangeMax">
   imageUrl?: string
   videoUrl?: string
+  categories?: Array<{ _id: string; title: string }>
+  educationMin?: string
+  outlook?: Outlook
+  quizVector?: QuizVector
 }
 
 export type CareerDetail = {
@@ -326,5 +330,38 @@ export async function fetchCareersByIds(ids: string[]): Promise<CareerForCompare
     }`,
     { ids }
   )
+}
+
+/**
+ * Query for fetching all careers for search/browse page
+ */
+const CAREERS_FOR_SEARCH_QUERY = /* groq */ `
+*[_type == "career"]{
+  _id,
+  "slug": slug.current,
+  title,
+  salary{median, rangeMin, rangeMax},
+  "imageUrl": images[0].asset->url,
+  videoUrl,
+  categories[]->{_id, title},
+  educationMin,
+  outlook{label, value},
+  quizVector{
+    w_env_hospital,
+    w_env_clinic,
+    w_env_community,
+    w_env_school,
+    w_env_lab,
+    w_env_office,
+    w_patient_facing
+  }
+}
+`
+
+/**
+ * Fetch all careers for search/browse page
+ */
+export async function fetchCareersForSearch(): Promise<CareerSummaryCard[]> {
+  return await sanityClient.fetch<CareerSummaryCard[]>(CAREERS_FOR_SEARCH_QUERY)
 }
 
