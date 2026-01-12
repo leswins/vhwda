@@ -65,6 +65,7 @@ export function QuizQuestion({
                     <BooleanToggle
                         questionId={question.id}
                         value={getCurrentValue()}
+                        options={question.options}
                         onChange={onAnswer}
                         language={language}
                     />
@@ -89,7 +90,7 @@ export function QuizQuestion({
     return (
         <div className="flex flex-col gap-[75px] items-center w-full max-w-[600px]">
             {/* Question prompt */}
-            <h2 className="text-h3 font-bold tracking-tight leading-tight text-on-surface-primary text-center w-full">
+            <h2 className="text-h3 text-foreground text-center w-full">
                 {question.prompt}
             </h2>
 

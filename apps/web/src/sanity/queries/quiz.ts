@@ -89,15 +89,62 @@ function transformQuiz(sanityQuiz: SanityQuiz | null, language: "en" | "es"): Qu
         ? q.prompt.es 
         : (q.prompt?.en || "")
 
-      return {
-        id: q._key || `q${index + 1}`,
-        order: q.order ?? index + 1,
-        section: q.section,
-        prompt,
-        type: q.type,
-        maxSelect: q.maxSelect,
-        isDealbreaker: q.isDealbreaker,
-        options: (q.options || [])
+      // For likert_5 and rating_1_5 questions, ensure we have options with IDs "1", "2", "3", "4", "5"
+      const isLikertOrRating = q.type === "likert_5" || q.type === "rating_1_5"
+      
+      let options: QuestionOption[]
+      
+      if (isLikertOrRating && q.options && q.options.length >= 4) {
+        // Map existing options to IDs "1", "2", "3", "4", "5" based on their order
+        // Take up to 5 options (some questions might have 4 or 5)
+        const optionCount = Math.min(q.options.length, 5)
+        options = q.options
+          .filter(opt => opt && opt._key)
+          .slice(0, optionCount) // Take first 4 or 5 options
+          .map((opt, optIndex) => {
+            const label = (language === "es" && opt.label?.es)
+              ? opt.label.es
+              : (opt.label?.en || "")
+
+            const hardFilter = opt.hardFilter && (
+              opt.hardFilter.requiresLicensure ||
+              opt.hardFilter.requiresLifting ||
+              opt.hardFilter.requiresNightsWeekends ||
+              opt.hardFilter.requiresBloodNeedles ||
+              opt.hardFilter.requiresAcuteHighStress ||
+              opt.hardFilter.hasMinimumEducation ||
+              opt.hardFilter.hasMinimumSalary ||
+              opt.hardFilter.region ||
+              opt.hardFilter.type // Legacy support
+            )
+              ? {
+                  requiresLicensure: opt.hardFilter.requiresLicensure,
+                  requiresLifting: opt.hardFilter.requiresLifting,
+                  requiresNightsWeekends: opt.hardFilter.requiresNightsWeekends,
+                  requiresBloodNeedles: opt.hardFilter.requiresBloodNeedles,
+                  requiresAcuteHighStress: opt.hardFilter.requiresAcuteHighStress,
+                  hasMinimumEducation: opt.hardFilter.hasMinimumEducation,
+                  educationLevel: opt.hardFilter.educationLevel,
+                  hasMinimumSalary: opt.hardFilter.hasMinimumSalary,
+                  region: opt.hardFilter.region,
+                  description: opt.hardFilter.description,
+                  type: opt.hardFilter.type,
+                  excludeLicensure: opt.hardFilter.excludeLicensure,
+                  salaryMin: opt.hardFilter.salaryMin,
+                  dealbreakerType: opt.hardFilter.dealbreakerType
+                }
+              : undefined
+
+            return {
+              id: String(optIndex + 1), // Use "1", "2", "3", "4", "5" as IDs
+              label,
+              weights: opt.weights || {},
+              hardFilter
+            }
+          })
+      } else {
+        // For other question types, use the original mapping
+        options = (q.options || [])
           .filter(opt => opt && opt._key)
           .map((opt, optIndex) => {
             const label = (language === "es" && opt.label?.es)
@@ -141,6 +188,17 @@ function transformQuiz(sanityQuiz: SanityQuiz | null, language: "en" | "es"): Qu
             }
           })
       }
+
+      return {
+        id: q._key || `q${index + 1}`,
+        order: q.order ?? index + 1,
+        section: q.section,
+        prompt,
+        type: q.type,
+        maxSelect: q.maxSelect,
+        isDealbreaker: q.isDealbreaker,
+        options
+      }
     })
     .filter(q => q.prompt && q.options.length > 0)
 }
@@ -148,14 +206,23 @@ function transformQuiz(sanityQuiz: SanityQuiz | null, language: "en" | "es"): Qu
 export async function fetchQuizQuestions(language: "en" | "es" = "en"): Promise<Question[]> {
   try {
     const quiz = await sanityClient.fetch<SanityQuiz | null>(QUIZ_QUERY)
-    console.log("📥 Raw quiz data from Sanity:", quiz)
     
     if (!quiz) {
       throw new Error("No quiz found in Sanity")
     }
     
     const transformed = transformQuiz(quiz, language)
-    console.log("✅ Transformed questions:", transformed)
+    
+    // Debug: Log likert/rating questions to verify transformation
+    transformed.forEach(q => {
+      if (q.type === "likert_5" || q.type === "rating_1_5") {
+        console.log(`🔍 ${q.type} question "${q.id}":`, {
+          optionCount: q.options.length,
+          optionIds: q.options.map(o => o.id),
+          optionLabels: q.options.map(o => o.label)
+        })
+      }
+    })
     
     if (transformed.length === 0) {
       throw new Error("Quiz has no valid questions after transformation")

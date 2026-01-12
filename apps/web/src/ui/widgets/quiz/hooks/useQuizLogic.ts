@@ -11,7 +11,7 @@ export type QuizStep = "intro" | "questions" | "results"
 
 export function useQuizLogic() {
     const { language } = useLanguageStore()
-    const [currentStep, setCurrentStep] = useState<QuizStep>("intro")
+    const [currentStep, setCurrentStep] = useState<QuizStep>("questions")
     const [userVector, setUserVector] = useState<QuizVector>(createEmptyVector())
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
     const [selectedAnswers, setSelectedAnswers] = useState<Record<string, string | string[]>>({})
@@ -30,6 +30,8 @@ export function useQuizLogic() {
                 const sanityQuestions = await fetchQuizQuestions(language)
                 if (sanityQuestions.length > 0) {
                     setQuestions(sanityQuestions)
+                    // Automatically start the quiz when questions are loaded
+                    setCurrentStep("questions")
                 } else {
                     setErrorLoadingQuestions("No questions found in Sanity. Please add questions to the quiz.")
                 }
@@ -56,7 +58,10 @@ export function useQuizLogic() {
 
     const handleAnswer = (questionId: string, optionId: string) => {
         const question = questions.find(q => q.id === questionId)
-        if (!question) return
+        if (!question) {
+            console.warn("Question not found:", questionId)
+            return
+        }
 
         const isMultiSelect = question.type === "multi_select"
         const currentSelection = selectedAnswers[questionId]
@@ -67,7 +72,14 @@ export function useQuizLogic() {
                 : []
 
         const newOption = question.options.find(o => o.id === optionId)
-        if (!newOption) return
+        if (!newOption) {
+            console.warn("Option not found:", { 
+                questionId, 
+                optionId, 
+                availableOptions: question.options.map(o => ({ id: o.id, label: o.label }))
+            })
+            return
+        }
 
         // For multi-select: toggle selection, respecting maxSelect
         if (isMultiSelect) {
@@ -79,8 +91,8 @@ export function useQuizLogic() {
                 newSelectedIds = currentSelectedIds.filter(id => id !== optionId)
             } else {
                 // Select: add to array if under maxSelect limit
-                const maxSelect = question.maxSelect || Infinity
-                if (currentSelectedIds.length >= maxSelect) {
+                const maxSelect = question.maxSelect
+                if (maxSelect != null && maxSelect > 0 && currentSelectedIds.length >= maxSelect) {
                     // Already at max, don't add
                     return
                 }

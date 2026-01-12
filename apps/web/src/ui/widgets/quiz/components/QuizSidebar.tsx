@@ -11,28 +11,37 @@ type QuizSidebarProps = {
 
 // Define quiz sections based on Figma design
 const QUIZ_SECTIONS = [
-    { id: "interests-values", labelKey: "quiz.section.interestsValues" as const },
-    { id: "skills-aptitudes", labelKey: "quiz.section.skillsAptitudes" as const },
-    { id: "work-environment", labelKey: "quiz.section.workEnvironment" as const },
-    { id: "schedule-lifestyle", labelKey: "quiz.section.scheduleLifestyle" as const },
-    { id: "education-path", labelKey: "quiz.section.educationPath" as const },
-    { id: "salary-outlook", labelKey: "quiz.section.salaryOutlook" as const },
-    { id: "career-features", labelKey: "quiz.section.careerFeatures" as const },
-    { id: "deal-breakers", labelKey: "quiz.section.dealBreakers" as const },
+    { id: "interests-values", labelKey: "quiz.section.interestsValues" as const, sanityValue: "Interests & Values" },
+    { id: "skills-aptitudes", labelKey: "quiz.section.skillsAptitudes" as const, sanityValue: "Skills & Aptitudes" },
+    { id: "work-environment", labelKey: "quiz.section.workEnvironment" as const, sanityValue: "Work Environment" },
+    { id: "schedule-lifestyle", labelKey: "quiz.section.scheduleLifestyle" as const, sanityValue: "Schedule & Lifestyle" },
+    { id: "education-path", labelKey: "quiz.section.educationPath" as const, sanityValue: "Education Path" },
+    { id: "salary-outlook", labelKey: "quiz.section.salaryOutlook" as const, sanityValue: "Salary & Outlook" },
+    { id: "career-features", labelKey: "quiz.section.careerFeatures" as const, sanityValue: "Career Features" },
+    { id: "deal-breakers", labelKey: "quiz.section.dealBreakers" as const, sanityValue: "Deal-breakers" },
 ]
 
+// Map Sanity section values to sidebar section IDs
+const getSectionId = (sanitySection: string | undefined): string | null => {
+    if (!sanitySection) return null
+    const section = QUIZ_SECTIONS.find(s => s.sanityValue === sanitySection)
+    return section?.id || null
+}
+
 export function QuizSidebar({ questions, currentQuestionIndex, selectedAnswers, language }: QuizSidebarProps) {
-    // Group questions by section
+    // Group questions by section ID (mapped from Sanity section values)
     const questionsBySection = questions.reduce((acc, q, index) => {
-        const section = q.section || "other"
-        if (!acc[section]) acc[section] = []
-        acc[section].push({ question: q, index })
+        const sectionId = getSectionId(q.section)
+        if (!sectionId) return acc // Skip questions without a valid section
+        if (!acc[sectionId]) acc[sectionId] = []
+        acc[sectionId].push({ question: q, index })
         return acc
     }, {} as Record<string, Array<{ question: Question; index: number }>>)
 
-    // Check if a section is completed
+    // Check if a section is completed (all questions in the section have answers)
     const isSectionCompleted = (sectionId: string) => {
         const sectionQuestions = questionsBySection[sectionId] || []
+        if (sectionQuestions.length === 0) return false // No questions in this section
         return sectionQuestions.every(({ question }) => {
             const answer = selectedAnswers[question.id]
             if (!answer) return false
@@ -48,9 +57,9 @@ export function QuizSidebar({ questions, currentQuestionIndex, selectedAnswers, 
     }
 
     return (
-        <div className="flex flex-col w-[380px] h-full border-r border-on-surface-primary">
-            <div className="bg-on-surface-primary text-surface-background p-[30px]">
-                <h2 className="text-h5 font-bold tracking-tight leading-tight">
+        <div className="flex flex-col w-[380px] h-full border-r border-foreground">
+            <div className="bg-foreground text-surface p-[30px]">
+                <h2 className="text-h5">
                     {t(language, "quiz.title")}
                 </h2>
             </div>
@@ -63,13 +72,13 @@ export function QuizSidebar({ questions, currentQuestionIndex, selectedAnswers, 
                         key={section.id}
                         className={`
                             flex items-center justify-between px-[30px] py-[25px] gap-[10px]
-                            border-t border-on-surface-primary
-                            ${isCurrent ? "bg-surface-above-1" : "bg-surface-background"}
+                            border-t border-foreground
+                            ${isCurrent ? "bg-surface1" : "bg-surface"}
                         `}
                     >
                         <p
                             className={`
-                                flex-1 text-body-default font-medium tracking-tight leading-snug
+                                flex-1 text-body-base
                                 ${!isCompleted && !isCurrent ? "opacity-50" : ""}
                             `}
                         >

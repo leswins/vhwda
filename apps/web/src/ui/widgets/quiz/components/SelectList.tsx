@@ -19,36 +19,67 @@ export function SelectList({
     onChange,
 }: SelectListProps) {
     return (
-        <div className="flex flex-col gap-[12px] w-full max-w-[530px]">
+        <div className="flex flex-col gap-[12px] w-full max-w-[530px] relative z-10">
             {options.map((option) => {
                 const isSelected = selectedValues.includes(option.id)
-                const isDisabled = isMultiSelect && !isSelected && maxSelect !== undefined && selectedValues.length >= maxSelect
+                // Only disable if: multi-select AND not selected AND maxSelect is defined (not null/undefined) AND we've reached the max
+                // For single-select, never disable (except if explicitly disabled)
+                const isDisabled = isMultiSelect 
+                    ? (!isSelected && maxSelect != null && maxSelect > 0 && selectedValues.length >= maxSelect)
+                    : false
+
+                const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+                    e.preventDefault()
+                    e.stopPropagation()
+                    
+                    // Early return if already disabled
+                    if (isDisabled) {
+                        return
+                    }
+                    
+                    // Double-check the disabled condition before allowing the click
+                    // This prevents race conditions where state hasn't updated yet
+                    const currentSelectedCount = selectedValues.length
+                    const wouldBeDisabled = isMultiSelect 
+                        ? (!isSelected && maxSelect != null && maxSelect > 0 && currentSelectedCount >= maxSelect)
+                        : false
+                    
+                    if (wouldBeDisabled) {
+                        return
+                    }
+                    
+                    // Only call onChange if we pass all checks
+                    onChange(questionId, option.id)
+                }
 
                 return (
                     <button
                         key={option.id}
-                        onClick={() => !isDisabled && onChange(questionId, option.id)}
-                        disabled={isDisabled}
+                        onClick={handleClick}
+                        type="button"
+                        aria-disabled={isDisabled}
+                        style={{ position: 'relative', zIndex: 10 }}
                         className={`
                             flex items-center gap-[16px] px-[24px] py-[18px]
-                            border border-on-surface-primary
+                            border border-foreground
                             text-left transition-all
+                            relative
                             ${isSelected 
-                                ? "bg-on-surface-primary text-surface-background" 
-                                : "bg-surface-background text-on-surface-primary hover:bg-surface-above-1"
+                                ? "bg-foreground text-surface" 
+                                : "bg-surface text-foreground hover:bg-surface1"
                             }
                             ${isDisabled ? "opacity-40 cursor-not-allowed" : "cursor-pointer"}
                         `}
                     >
                         {/* Checkbox/Radio indicator */}
-                        <div className="w-[24px] h-[24px] flex items-center justify-center flex-shrink-0">
+                        <div className="w-[24px] h-[24px] flex items-center justify-center flex-shrink-0 pointer-events-none">
                             {isMultiSelect ? (
                                 // Checkbox
                                 <div
                                     className={`
                                         w-[24px] h-[24px] border-2 flex items-center justify-center
                                         ${isSelected 
-                                            ? "bg-surface-background border-surface-background" 
+                                            ? "bg-surface border-surface" 
                                             : "bg-transparent border-current"
                                         }
                                     `}
@@ -61,7 +92,7 @@ export function SelectList({
                                                 strokeWidth="2"
                                                 strokeLinecap="round"
                                                 strokeLinejoin="round"
-                                                className="text-on-surface-primary"
+                                                className="text-foreground"
                                             />
                                         </svg>
                                     )}
@@ -72,20 +103,20 @@ export function SelectList({
                                     className={`
                                         w-[24px] h-[24px] rounded-full border-2 flex items-center justify-center
                                         ${isSelected 
-                                            ? "bg-surface-background border-surface-background" 
+                                            ? "bg-surface border-surface" 
                                             : "bg-transparent border-current"
                                         }
                                     `}
                                 >
                                     {isSelected && (
-                                        <div className="w-[10px] h-[10px] rounded-full bg-on-surface-primary" />
+                                        <div className="w-[10px] h-[10px] rounded-full bg-foreground" />
                                     )}
                                 </div>
                             )}
                         </div>
 
                         {/* Option label */}
-                        <span className="flex-1 text-body-default font-medium tracking-tight leading-snug">
+                        <span className="flex-1 text-body-base pointer-events-none">
                             {option.label}
                         </span>
                     </button>
