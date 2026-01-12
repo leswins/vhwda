@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useRef, useEffect, useState } from "react"
 
 export type SliderProps = {
     min: number
@@ -31,6 +31,28 @@ export function Slider({
     trackClassName = "",
     disabled = false,
 }: SliderProps) {
+    const sliderRef = useRef<HTMLInputElement>(null)
+    const [thumbPosition, setThumbPosition] = useState(0)
+    const [trackWidth, setTrackWidth] = useState(0)
+
+    useEffect(() => {
+        const updatePosition = () => {
+            if (sliderRef.current) {
+                const rect = sliderRef.current.getBoundingClientRect()
+                const trackWidth = rect.width - 18 // Subtract thumb width
+                setTrackWidth(trackWidth)
+                
+                const percentage = ((value - min) / (max - min)) * 100
+                const thumbLeft = (percentage / 100) * trackWidth + 9 // Add half thumb width
+                setThumbPosition(thumbLeft)
+            }
+        }
+
+        updatePosition()
+        window.addEventListener('resize', updatePosition)
+        return () => window.removeEventListener('resize', updatePosition)
+    }, [value, min, max])
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newValue = parseFloat(e.target.value)
         onChange(newValue)
@@ -40,10 +62,10 @@ export function Slider({
     const tickCount = max - min + 1
 
     return (
-        <div className={`flex items-center justify-center gap-6 w-full ${className}`}>
+        <div className={`flex flex-row items-center justify-center gap-6 w-full ${className}`}>
             {/* Left label */}
             {leftLabel && (
-                <div className="w-10 h-10 flex items-center justify-center flex-shrink-0">
+                <div className="flex-shrink-0">
                     {leftLabel}
                 </div>
             )}
@@ -51,22 +73,23 @@ export function Slider({
             {/* Slider track container */}
             <div className={`relative flex-1 h-[30px] flex items-center ${trackClassName}`}>
                 {/* Background track (unfilled portion) */}
-                <div className="absolute inset-0 h-[2px] bg-border top-1/2 -translate-y-1/2" />
+                <div className="absolute left-[9px] right-[9px] h-[2px] bg-border top-1/2 -translate-y-1/2" />
                 
-                {/* Filled track (progress bar) */}
+                {/* Filled track (progress bar) - fills up to thumb center */}
                 <div 
-                    className="absolute h-[2px] bg-foreground top-1/2 -translate-y-1/2 transition-all duration-200"
-                    style={{ width: `${percentage}%` }}
+                    className="absolute left-[9px] h-[2px] bg-foreground top-1/2 -translate-y-1/2 transition-all duration-200"
+                    style={{ 
+                        width: trackWidth > 0 ? `${thumbPosition}px` : `${percentage}%`
+                    }}
                 />
 
                 {/* Ticks/markers */}
                 {showTicks && (
-                    <div className="absolute inset-0 flex items-center pointer-events-none z-20">
+                    <div className="absolute left-[9px] right-[9px] top-0 bottom-0 flex items-center pointer-events-none z-20">
                         {Array.from({ length: tickCount }).map((_, index) => {
                             const tickValue = min + index
                             const tickPercentage = ((tickValue - min) / (max - min)) * 100
                             const isSelected = tickValue === value
-                            const isActive = tickValue <= value
 
                             return (
                                 <div
@@ -77,15 +100,11 @@ export function Slider({
                                         transform: "translate(-50%, -50%)" 
                                     }}
                                 >
-                                    <div
-                                        className={`rounded-full transition-all duration-200 ${
-                                            isSelected
-                                                ? "w-4 h-4 bg-foreground scale-125"
-                                                : isActive
-                                                ? "w-2.5 h-2.5 bg-foreground"
-                                                : "w-2.5 h-2.5 bg-border"
-                                        }`}
-                                    />
+                                    {!isSelected && (
+                                        <div
+                                            className="w-2 h-2 bg-foreground rounded-full transition-all duration-200"
+                                        />
+                                    )}
                                 </div>
                             )
                         })}
@@ -94,6 +113,7 @@ export function Slider({
 
                 {/* Slider input */}
                 <input
+                    ref={sliderRef}
                     type="range"
                     min={min}
                     max={max}
@@ -107,7 +127,7 @@ export function Slider({
 
             {/* Right label */}
             {rightLabel && (
-                <div className="w-10 h-10 flex items-center justify-center flex-shrink-0">
+                <div className="flex-shrink-0">
                     {rightLabel}
                 </div>
             )}

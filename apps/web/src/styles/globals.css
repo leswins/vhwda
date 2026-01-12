@@ -41,31 +41,52 @@ body {
   outline: none;
   border: none;
   background: transparent;
+  margin: 0;
+  padding: 0 9px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.quiz-slider::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 2px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.quiz-slider::-moz-range-track {
+  width: 100%;
+  height: 2px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
 }
 
 .quiz-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   background: rgb(var(--color-foreground));
   cursor: pointer;
-  border: 2px solid rgb(var(--color-surface));
+  border: none;
   border-radius: 50%;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
   transition: transform 0.15s ease, box-shadow 0.15s ease;
+  margin-top: -8px;
   position: relative;
   z-index: 40;
 }
 
 .quiz-slider::-moz-range-thumb {
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   background: rgb(var(--color-foreground));
   cursor: pointer;
-  border: 2px solid rgb(var(--color-surface));
+  border: none;
   border-radius: 50%;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
   transition: transform 0.15s ease, box-shadow 0.15s ease;
   position: relative;
   z-index: 40;

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react"
 import { t } from "../../../../utils/i18n"
 import { Slider } from "../../../components/Slider"
+import { SadFaceIcon } from "../../icons/SadFaceIcon"
+import { HappyFaceIcon } from "../../icons/HappyFaceIcon"
 
 type LikertSliderProps = {
     questionId: string
@@ -37,6 +39,8 @@ export function LikertSlider({ questionId, value, onChange, language }: LikertSl
                 value={sliderValue}
                 onChange={handleChange}
                 showTicks={true}
+                leftLabel={<SadFaceIcon />}
+                rightLabel={<HappyFaceIcon />}
             />
         </div>
     )
