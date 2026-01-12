@@ -32,7 +32,7 @@ export function NavHeader() {
 
   return (
     <header className="bg-surface text-foreground px-6">
-      <div className="mx-auto flex h-[75px] max-w-[1368px] items-stretch justify-between border-b border-l border-r border-foreground">
+      <div className="site-grid-container flex h-[75px] items-stretch justify-between border-b">
         <Link to="/" className="flex items-center pl-[30px]" aria-label={t(language, "brand.name")}>
           <svg width="133" height="41" viewBox="0 0 133 41" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
             <path d="M8.208 25.2L0 0H6.3L11.88 18.54L17.46 0H23.76L15.552 25.2H8.208Z" fill="currentColor"/>

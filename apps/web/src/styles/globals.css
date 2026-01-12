@@ -33,6 +33,10 @@ body {
   display: none;
 }
 
+.site-grid-container {
+  @apply mx-auto w-full max-w-[1368px] border-l border-r border-foreground;
+}
+
 /* Quiz slider styling */
 .quiz-slider {
   -webkit-appearance: none;
