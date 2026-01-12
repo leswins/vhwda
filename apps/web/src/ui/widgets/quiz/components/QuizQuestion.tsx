@@ -65,6 +65,7 @@ export function QuizQuestion({
                     <BooleanToggle
                         questionId={question.id}
                         value={getCurrentValue()}
+                        options={question.options}
                         onChange={onAnswer}
                         language={language}
                     />

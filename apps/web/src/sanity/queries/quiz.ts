@@ -89,16 +89,18 @@ function transformQuiz(sanityQuiz: SanityQuiz | null, language: "en" | "es"): Qu
         ? q.prompt.es 
         : (q.prompt?.en || "")
 
-      // For likert_5 and rating_1_5 questions, ensure we have 5 options with IDs "1", "2", "3", "4", "5"
+      // For likert_5 and rating_1_5 questions, ensure we have options with IDs "1", "2", "3", "4", "5"
       const isLikertOrRating = q.type === "likert_5" || q.type === "rating_1_5"
       
       let options: QuestionOption[]
       
-      if (isLikertOrRating && q.options && q.options.length >= 5) {
+      if (isLikertOrRating && q.options && q.options.length >= 4) {
         // Map existing options to IDs "1", "2", "3", "4", "5" based on their order
+        // Take up to 5 options (some questions might have 4 or 5)
+        const optionCount = Math.min(q.options.length, 5)
         options = q.options
           .filter(opt => opt && opt._key)
-          .slice(0, 5) // Take first 5 options
+          .slice(0, optionCount) // Take first 4 or 5 options
           .map((opt, optIndex) => {
             const label = (language === "es" && opt.label?.es)
               ? opt.label.es
@@ -204,14 +206,23 @@ function transformQuiz(sanityQuiz: SanityQuiz | null, language: "en" | "es"): Qu
 export async function fetchQuizQuestions(language: "en" | "es" = "en"): Promise<Question[]> {
   try {
     const quiz = await sanityClient.fetch<SanityQuiz | null>(QUIZ_QUERY)
-    console.log("📥 Raw quiz data from Sanity:", quiz)
     
     if (!quiz) {
       throw new Error("No quiz found in Sanity")
     }
     
     const transformed = transformQuiz(quiz, language)
-    console.log("✅ Transformed questions:", transformed)
+    
+    // Debug: Log likert/rating questions to verify transformation
+    transformed.forEach(q => {
+      if (q.type === "likert_5" || q.type === "rating_1_5") {
+        console.log(`🔍 ${q.type} question "${q.id}":`, {
+          optionCount: q.options.length,
+          optionIds: q.options.map(o => o.id),
+          optionLabels: q.options.map(o => o.label)
+        })
+      }
+    })
     
     if (transformed.length === 0) {
       throw new Error("Quiz has no valid questions after transformation")

@@ -19,27 +19,51 @@ export function SelectList({
     onChange,
 }: SelectListProps) {
     return (
-        <div className="flex flex-col gap-[12px] w-full max-w-[530px]">
+        <div className="flex flex-col gap-[12px] w-full max-w-[530px] relative z-10">
             {options.map((option) => {
                 const isSelected = selectedValues.includes(option.id)
-                const isDisabled = isMultiSelect && !isSelected && maxSelect !== undefined && selectedValues.length >= maxSelect
+                // Only disable if: multi-select AND not selected AND maxSelect is defined (not null/undefined) AND we've reached the max
+                // For single-select, never disable (except if explicitly disabled)
+                const isDisabled = isMultiSelect 
+                    ? (!isSelected && maxSelect != null && maxSelect > 0 && selectedValues.length >= maxSelect)
+                    : false
 
-                const handleClick = () => {
-                    if (!isDisabled) {
-                        onChange(questionId, option.id)
+                const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+                    e.preventDefault()
+                    e.stopPropagation()
+                    
+                    // Early return if already disabled
+                    if (isDisabled) {
+                        return
                     }
+                    
+                    // Double-check the disabled condition before allowing the click
+                    // This prevents race conditions where state hasn't updated yet
+                    const currentSelectedCount = selectedValues.length
+                    const wouldBeDisabled = isMultiSelect 
+                        ? (!isSelected && maxSelect != null && maxSelect > 0 && currentSelectedCount >= maxSelect)
+                        : false
+                    
+                    if (wouldBeDisabled) {
+                        return
+                    }
+                    
+                    // Only call onChange if we pass all checks
+                    onChange(questionId, option.id)
                 }
 
                 return (
                     <button
                         key={option.id}
                         onClick={handleClick}
-                        disabled={isDisabled}
                         type="button"
+                        aria-disabled={isDisabled}
+                        style={{ position: 'relative', zIndex: 10 }}
                         className={`
                             flex items-center gap-[16px] px-[24px] py-[18px]
                             border border-foreground
                             text-left transition-all
+                            relative
                             ${isSelected 
                                 ? "bg-foreground text-surface" 
                                 : "bg-surface text-foreground hover:bg-surface1"
@@ -48,7 +72,7 @@ export function SelectList({
                         `}
                     >
                         {/* Checkbox/Radio indicator */}
-                        <div className="w-[24px] h-[24px] flex items-center justify-center flex-shrink-0">
+                        <div className="w-[24px] h-[24px] flex items-center justify-center flex-shrink-0 pointer-events-none">
                             {isMultiSelect ? (
                                 // Checkbox
                                 <div
@@ -92,7 +116,7 @@ export function SelectList({
                         </div>
 
                         {/* Option label */}
-                        <span className="flex-1 text-body-base">
+                        <span className="flex-1 text-body-base pointer-events-none">
                             {option.label}
                         </span>
                     </button>
