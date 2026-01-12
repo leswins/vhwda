@@ -1,5 +1,6 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { t } from "../../../../utils/i18n"
+import { Slider } from "../../../components/Slider"
 
 type RatingSliderProps = {
     questionId: string
@@ -11,50 +12,39 @@ type RatingSliderProps = {
 export function RatingSlider({ questionId, value, onChange, language }: RatingSliderProps) {
     const [sliderValue, setSliderValue] = useState(value ?? 3)
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const newValue = parseInt(e.target.value)
+    // Sync with external value changes
+    useEffect(() => {
+        if (value !== null && value !== sliderValue) {
+            setSliderValue(value)
+        }
+    }, [value])
+
+    const handleChange = (newValue: number) => {
         setSliderValue(newValue)
         onChange(questionId, newValue.toString())
     }
 
     return (
-        <div className="flex flex-col gap-[32px] items-center w-full max-w-[530px]">
-            <p className="text-sm font-medium text-on-surface-tertiary text-center tracking-tight leading-snug">
+        <div className="flex flex-col gap-8 items-center w-full max-w-[530px]">
+            <p className="text-body-sm font-medium text-muted text-center tracking-tight leading-snug">
                 {t(language, "quiz.adjustSlider")}
             </p>
-            <div className="flex items-center justify-center gap-[24px] w-full">
-                {/* Rating number display - left */}
-                <div className="w-[40px] h-[40px] flex items-center justify-center flex-shrink-0">
-                    <span className="text-2xl font-bold text-on-surface-primary">1</span>
-                </div>
-
-                {/* Slider track */}
-                <div className="relative flex-1 h-[30px] flex items-center">
-                    <input
-                        type="range"
-                        min="1"
-                        max="5"
-                        step="1"
-                        value={sliderValue}
-                        onChange={handleChange}
-                        className="quiz-slider w-full h-[30px] cursor-pointer appearance-none bg-transparent"
-                        style={{
-                            background: `linear-gradient(to right, 
-                                var(--color-on-surface-primary) 0%, 
-                                var(--color-on-surface-primary) ${((sliderValue - 1) / 4) * 100}%, 
-                                var(--color-surface-above-1) ${((sliderValue - 1) / 4) * 100}%, 
-                                var(--color-surface-above-1) 100%)`,
-                        }}
-                    />
-                </div>
-
-                {/* Rating number display - right */}
-                <div className="w-[40px] h-[40px] flex items-center justify-center flex-shrink-0">
-                    <span className="text-2xl font-bold text-on-surface-primary">5</span>
-                </div>
-            </div>
+            <Slider
+                min={1}
+                max={5}
+                step={1}
+                value={sliderValue}
+                onChange={handleChange}
+                showTicks={true}
+                leftLabel={
+                    <span className="text-h4 font-bold text-foreground">1</span>
+                }
+                rightLabel={
+                    <span className="text-h4 font-bold text-foreground">5</span>
+                }
+            />
             <div className="text-center">
-                <span className="text-3xl font-bold text-on-surface-primary">{sliderValue}</span>
+                <span className="text-h3 font-bold text-foreground">{sliderValue}</span>
             </div>
         </div>
     )
