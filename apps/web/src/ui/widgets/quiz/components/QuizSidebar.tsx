@@ -48,9 +48,9 @@ export function QuizSidebar({ questions, currentQuestionIndex, selectedAnswers, 
     }
 
     return (
-        <div className="flex flex-col w-[380px] h-full border-r border-on-surface-primary">
-            <div className="bg-on-surface-primary text-surface-background p-[30px]">
-                <h2 className="text-h5 font-bold tracking-tight leading-tight">
+        <div className="flex flex-col w-[380px] h-full border-r border-foreground">
+            <div className="bg-foreground text-surface p-[30px]">
+                <h2 className="text-h5">
                     {t(language, "quiz.title")}
                 </h2>
             </div>
@@ -63,13 +63,13 @@ export function QuizSidebar({ questions, currentQuestionIndex, selectedAnswers, 
                         key={section.id}
                         className={`
                             flex items-center justify-between px-[30px] py-[25px] gap-[10px]
-                            border-t border-on-surface-primary
-                            ${isCurrent ? "bg-surface-above-1" : "bg-surface-background"}
+                            border-t border-foreground
+                            ${isCurrent ? "bg-surface1" : "bg-surface"}
                         `}
                     >
                         <p
                             className={`
-                                flex-1 text-body-default font-medium tracking-tight leading-snug
+                                flex-1 text-body-base
                                 ${!isCompleted && !isCurrent ? "opacity-50" : ""}
                             `}
                         >

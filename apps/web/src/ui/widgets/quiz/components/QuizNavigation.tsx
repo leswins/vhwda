@@ -31,11 +31,11 @@ export function QuizNavigation({
                     onClick={onPrevious}
                     className="
                         px-[15px] py-[10px]
-                        border border-on-surface-primary
-                        bg-surface-background text-on-surface-primary
-                        hover:bg-surface-above-1
+                        border border-foreground
+                        bg-surface text-foreground
+                        hover:bg-surface1
                         transition-colors
-                        font-semibold text-body-default tracking-tight leading-snug
+                        text-body-base font-semibold
                     "
                 >
                     {t(language, "quiz.back")}
@@ -49,11 +49,11 @@ export function QuizNavigation({
                     disabled={!isCurrentQuestionAnswered}
                     className={`
                         px-[15px] py-[10px]
-                        font-semibold text-body-default tracking-tight leading-snug
+                        text-body-base font-semibold
                         transition-colors
                         ${isCurrentQuestionAnswered
-                            ? "bg-on-surface-primary text-surface-background hover:opacity-90 cursor-pointer"
-                            : "bg-surface-above-1 text-on-surface-primary opacity-50 cursor-not-allowed"
+                            ? "bg-foreground text-surface hover:opacity-90 cursor-pointer"
+                            : "bg-surface1 text-foreground opacity-50 cursor-not-allowed"
                         }
                     `}
                 >
@@ -65,11 +65,11 @@ export function QuizNavigation({
                     disabled={!isCurrentQuestionAnswered}
                     className={`
                         px-[15px] py-[10px]
-                        font-semibold text-body-default tracking-tight leading-snug
+                        text-body-base font-semibold
                         transition-colors
                         ${isCurrentQuestionAnswered
-                            ? "bg-on-surface-primary text-surface-background hover:opacity-90 cursor-pointer"
-                            : "bg-surface-above-1 text-on-surface-primary opacity-50 cursor-not-allowed"
+                            ? "bg-foreground text-surface hover:opacity-90 cursor-pointer"
+                            : "bg-surface1 text-foreground opacity-50 cursor-not-allowed"
                         }
                     `}
                 >
