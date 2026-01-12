@@ -3,7 +3,6 @@ import { useQuizLogic } from "../ui/widgets/quiz/hooks/useQuizLogic"
 import {
     QuizLoading,
     QuizError,
-    QuizIntro,
     QuizEmpty,
     QuizQuestion,
     QuizNavigation,
@@ -39,15 +38,12 @@ export function QuizPage() {
         handleStartOver,
     } = useQuizLogic()
 
-    // Show loading/error/intro states in full width
-    if (loadingQuestions || errorLoadingQuestions || currentStep === "intro" || (questions.length === 0 && !loadingQuestions)) {
+    // Show loading/error states in full width
+    if (loadingQuestions || errorLoadingQuestions || (questions.length === 0 && !loadingQuestions)) {
         return (
             <div className="max-w-4xl mx-auto p-8">
                 {loadingQuestions && <QuizLoading />}
                 {errorLoadingQuestions && <QuizError message={errorLoadingQuestions} />}
-                {!loadingQuestions && !errorLoadingQuestions && currentStep === "intro" && questions.length > 0 && (
-                    <QuizIntro onStart={handleStart} />
-                )}
                 {!loadingQuestions && !errorLoadingQuestions && questions.length === 0 && <QuizEmpty />}
             </div>
         )
