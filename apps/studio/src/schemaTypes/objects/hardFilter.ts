@@ -63,7 +63,10 @@ export const hardFilter = defineType({
           { title: "Graduate degree", value: "GRAD" }
         ]
       },
-      hidden: ({ parent }) => !parent?.hasMinimumEducation,
+      hidden: ({ parent }) => {
+        const hasEducation = (parent as any)?.hasMinimumEducation === true
+        return !hasEducation
+      },
       validation: (r) => 
         r.custom((value, context) => {
           const parent = context.parent as { hasMinimumEducation?: boolean }

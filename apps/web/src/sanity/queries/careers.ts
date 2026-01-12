@@ -197,6 +197,10 @@ export type HardRequirements = {
   requiresNightsWeekends?: boolean
   requiresBloodNeedles?: boolean
   requiresAcuteStress?: boolean
+  hasMinimumEducation?: boolean
+  educationLevel?: string
+  hasMinimumSalary?: boolean
+  region?: string
 }
 
 
@@ -214,13 +218,20 @@ export type CareerForMatching = {
   }
   hardRequirements?: HardRequirements
   hardFilters?: Array<{
-    type: string
+    requiresLicensure?: boolean
+    requiresLifting?: boolean
+    requiresNightsWeekends?: boolean
+    requiresBloodNeedles?: boolean
+    requiresAcuteHighStress?: boolean
+    hasMinimumEducation?: boolean
     educationLevel?: string
-    minSalary?: number
-    dealbreakerType?: string
-    excludeLicensure?: boolean
+    hasMinimumSalary?: boolean
     region?: string
-  }>
+    type?: string // Legacy field for backward compatibility
+    minSalary?: number // Legacy field
+    dealbreakerType?: string // Legacy field
+    excludeLicensure?: boolean // Legacy field
+  }> // Legacy field - kept for backward compatibility
 }
 
 const CAREERS_FOR_QUIZ_QUERY = /* groq */ `
@@ -236,14 +247,31 @@ const CAREERS_FOR_QUIZ_QUERY = /* groq */ `
     rangeMax,
     median
   },
-  hardRequirements,
-  hardFilters[]{
-    type,
+  hardRequirements{
+    requiresLicensure,
+    requiresLifting,
+    requiresNightsWeekends,
+    requiresBloodNeedles,
+    requiresAcuteStress,
+    hasMinimumEducation,
     educationLevel,
+    hasMinimumSalary,
+    region
+  },
+  hardFilters[]{
+    requiresLicensure,
+    requiresLifting,
+    requiresNightsWeekends,
+    requiresBloodNeedles,
+    requiresAcuteHighStress,
+    hasMinimumEducation,
+    educationLevel,
+    hasMinimumSalary,
+    region,
+    type,
     minSalary,
     dealbreakerType,
-    excludeLicensure,
-    region
+    excludeLicensure
   }
 }
 `

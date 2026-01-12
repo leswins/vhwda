@@ -80,15 +80,6 @@ export const career = defineType({
     defineField({ name: "salary", title: "Salary", type: "salary" }),
     defineField({ name: "outlook", title: "Outlook", type: "outlook" }),
 
-    // Quiz fields - Hard Filters Checklist
-    defineField({
-      name: "hardFilters",
-      title: "Hard Filter Requirements (Checklist)",
-      type: "array",
-      description: "Add filters that will exclude this career if user's quiz answers don't match. Click 'Add item' to add a new requirement.",
-      of: [defineArrayMember({ type: "careerHardFilter" })],
-      validation: (r) => r.max(20).error("Maximum 20 filters allowed")
-    }),
     defineField({
       name: "quizVector",
       title: "Quiz Vector (Matching Weights)",
@@ -131,42 +122,94 @@ export const career = defineType({
         defineField({ name: "w_short_path", title: "Short Path Preference", type: "number", validation: (r) => r.min(-2).max(2) })
       ]
     }),
-    // Legacy hardRequirements object (deprecated - use hardFilters checklist instead)
     defineField({
       name: "hardRequirements",
-      title: "⚠️ Hard Requirements (Legacy - Use Hard Filters Checklist)",
+      title: "Hard Filter Requirements",
       type: "object",
-      description: "⚠️ DEPRECATED: Use 'Hard Filter Requirements' checklist instead. This field is kept for backward compatibility.",
+      description: "Hard requirements that exclude this career if user's quiz answers don't match. Enable toggles to activate specific filters.",
       fields: [
         defineField({
           name: "requiresLicensure",
           title: "Requires Licensure",
           type: "boolean",
-          description: "If true, users who refuse licensure will not see this career"
+          description: "If true, users who refuse licensure will not see this career",
+          initialValue: () => false
         }),
         defineField({
           name: "requiresLifting",
-          title: "Requires Lifting",
+          title: "Requires Heavy Lifting",
           type: "boolean",
-          description: "If true, users who refuse lifting will not see this career"
+          description: "If true, users who refuse lifting will not see this career",
+          initialValue: () => false
         }),
         defineField({
           name: "requiresNightsWeekends",
-          title: "Requires Nights/Weekends",
+          title: "Requires Nights/Weekends/Holidays",
           type: "boolean",
-          description: "If true, users who refuse nights/weekends will not see this career"
+          description: "If true, users who refuse nights/weekends will not see this career",
+          initialValue: () => false
         }),
         defineField({
           name: "requiresBloodNeedles",
           title: "Requires Blood/Needles Exposure",
           type: "boolean",
-          description: "If true, users who refuse blood/needles will not see this career"
+          description: "If true, users who refuse blood/needles will not see this career",
+          initialValue: () => false
         }),
         defineField({
           name: "requiresAcuteStress",
-          title: "Requires Acute/High Stress",
+          title: "Requires High Stress/Emergencies",
           type: "boolean",
-          description: "If true, users who refuse high stress will not see this career"
+          description: "If true, users who refuse high stress will not see this career",
+          initialValue: () => false
+        }),
+        defineField({
+          name: "hasMinimumEducation",
+          title: "Minimum Education Required",
+          type: "boolean",
+          description: "If true, users who select education below the required level will not see this career",
+          initialValue: () => false
+        }),
+        defineField({
+          name: "educationLevel",
+          title: "Education Level",
+          type: "string",
+          description: "Minimum education level required (only shown when 'Minimum Education Required' is enabled)",
+          options: {
+            list: [
+              { title: "FastForward / <6 months", value: "FF" },
+              { title: "Career Studies Certificate (~12-18 credits)", value: "CSC" },
+              { title: "Certificate", value: "CERT" },
+              { title: "Associate (AAS/2 years)", value: "AAS" },
+              { title: "Bachelor's (≈4 years)", value: "BACH" },
+              { title: "Graduate degree", value: "GRAD" }
+            ]
+          },
+          hidden: ({ parent }) => {
+            const hasEducation = (parent as any)?.hasMinimumEducation === true
+            return !hasEducation
+          },
+          validation: (r) => 
+            r.custom((value, context) => {
+              const parent = context.parent as { hasMinimumEducation?: boolean }
+              if (parent?.hasMinimumEducation && !value) {
+                return "Education level is required when 'Minimum Education Required' is enabled"
+              }
+              return true
+            })
+        }),
+        defineField({
+          name: "hasMinimumSalary",
+          title: "Minimum Starting Salary",
+          type: "boolean",
+          description: "If true, uses the career's entry level salary (salary.rangeMin) as the minimum requirement. Users who select a lower minimum salary will not see this career.",
+          initialValue: () => false
+        }),
+        defineField({
+          name: "region",
+          title: "Region",
+          type: "string",
+          description: "Geographic region filter (optional)"
         })
       ]
     }),

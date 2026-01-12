@@ -2,12 +2,19 @@ import type { CareerForMatching } from "../sanity/queries/careers"
 import type { HardFilter } from "../ui/widgets/quiz/questions"
 
 type CareerHardFilter = {
-  type: string
+  requiresLicensure?: boolean
+  requiresLifting?: boolean
+  requiresNightsWeekends?: boolean
+  requiresBloodNeedles?: boolean
+  requiresAcuteHighStress?: boolean
+  hasMinimumEducation?: boolean
   educationLevel?: string
-  minSalary?: number
-  dealbreakerType?: string
-  excludeLicensure?: boolean
+  hasMinimumSalary?: boolean
   region?: string
+  type?: string // Legacy field for backward compatibility
+  minSalary?: number // Legacy field
+  dealbreakerType?: string // Legacy field
+  excludeLicensure?: boolean // Legacy field
 }
 
 const educationOrder: Record<string, number> = {
@@ -31,9 +38,18 @@ function checkEducationCeiling(
 
   const userMaxLevel = educationOrder[educationLevel] ?? 999
 
+  // Check hardRequirements first (new format)
+  if (career.hardRequirements?.hasMinimumEducation && career.hardRequirements.educationLevel) {
+    const careerMinLevel = educationOrder[career.hardRequirements.educationLevel] ?? 999
+    if (careerMinLevel > userMaxLevel) {
+      return true
+    }
+  }
+
+  // Legacy support: check hardFilters array
   if (career.hardFilters && career.hardFilters.length > 0) {
     for (const careerFilter of career.hardFilters) {
-      if (careerFilter.type === "education_ceiling" && careerFilter.educationLevel) {
+      if ((careerFilter.hasMinimumEducation || careerFilter.type === "education_ceiling") && careerFilter.educationLevel) {
         const careerMinLevel = educationOrder[careerFilter.educationLevel] ?? 999
         if (careerMinLevel > userMaxLevel) {
           return true
@@ -63,9 +79,15 @@ function checkLicensureRule(
     return false
   }
 
+  // Check hardRequirements first (new format)
+  if (career.hardRequirements?.requiresLicensure) {
+    return true
+  }
+
+  // Legacy support: check hardFilters array
   if (career.hardFilters && career.hardFilters.length > 0) {
     for (const careerFilter of career.hardFilters) {
-      if (careerFilter.type === "licensure_required") {
+      if (careerFilter.requiresLicensure || careerFilter.type === "licensure_required") {
         return true
       }
     }
@@ -91,10 +113,19 @@ function checkMinStartSalary(
     return false
   }
 
+  // Check hardRequirements first (new format)
+  if (career.hardRequirements?.hasMinimumSalary) {
+    const careerMinSalary = career.salary?.rangeMin
+    if (careerMinSalary !== undefined && careerMinSalary < filterSalaryMin) {
+      return true
+    }
+  }
+
+  // Legacy support: check hardFilters array
   if (career.hardFilters && career.hardFilters.length > 0) {
     for (const careerFilter of career.hardFilters) {
-      if (careerFilter.type === "min_start_salary") {
-        const careerMinSalary = careerFilter.minSalary ?? career.salary?.rangeMin
+      if (careerFilter.hasMinimumSalary || careerFilter.type === "min_start_salary") {
+        const careerMinSalary = career.salary?.rangeMin
         if (careerMinSalary === undefined) {
           continue
         }
@@ -135,8 +166,39 @@ function checkDealbreaker(
     return false
   }
 
+  // Check hardRequirements first (new format)
+  const hardRequirements = career.hardRequirements
+  if (hardRequirements) {
+    if (hardRequirements.requiresLifting && dealbreakerType === "exclude_requires_lifting") {
+      return true
+    }
+    if (hardRequirements.requiresNightsWeekends && dealbreakerType === "exclude_requires_nights_weekends") {
+      return true
+    }
+    if (hardRequirements.requiresBloodNeedles && dealbreakerType === "exclude_requires_blood_needles") {
+      return true
+    }
+    if (hardRequirements.requiresAcuteStress && dealbreakerType === "exclude_requires_acute_stress") {
+      return true
+    }
+  }
+
+  // Legacy support: check hardFilters array
   if (career.hardFilters && career.hardFilters.length > 0) {
     for (const careerFilter of career.hardFilters) {
+      if (careerFilter.requiresLifting && dealbreakerType === "exclude_requires_lifting") {
+        return true
+      }
+      if (careerFilter.requiresNightsWeekends && dealbreakerType === "exclude_requires_nights_weekends") {
+        return true
+      }
+      if (careerFilter.requiresBloodNeedles && dealbreakerType === "exclude_requires_blood_needles") {
+        return true
+      }
+      if (careerFilter.requiresAcuteHighStress && dealbreakerType === "exclude_requires_acute_stress") {
+        return true
+      }
+      // Legacy support
       if (careerFilter.type === "dealbreaker_lifting" && dealbreakerType === "exclude_requires_lifting") {
         return true
       }
@@ -152,24 +214,22 @@ function checkDealbreaker(
     }
   }
 
-  const hardRequirements = career.hardRequirements
-  if (!hardRequirements) {
-    return false
+  // Legacy support: check old hardRequirements format
+  if (hardRequirements) {
+    const dealbreakerMap: Record<string, keyof typeof hardRequirements> = {
+      "exclude_requires_lifting": "requiresLifting",
+      "exclude_requires_nights_weekends": "requiresNightsWeekends",
+      "exclude_requires_blood_needles": "requiresBloodNeedles",
+      "exclude_requires_acute_stress": "requiresAcuteStress"
+    }
+
+    const careerField = dealbreakerMap[dealbreakerType]
+    if (careerField && hardRequirements[careerField] === true) {
+      return true
+    }
   }
 
-  const dealbreakerMap: Record<string, keyof typeof hardRequirements> = {
-    "exclude_requires_lifting": "requiresLifting",
-    "exclude_requires_nights_weekends": "requiresNightsWeekends",
-    "exclude_requires_blood_needles": "requiresBloodNeedles",
-    "exclude_requires_acute_stress": "requiresAcuteStress"
-  }
-
-  const careerField = dealbreakerMap[dealbreakerType]
-  if (!careerField) {
-    return false
-  }
-
-  return hardRequirements[careerField] === true
+  return false
 }
 
 function checkRegion(
