@@ -39,12 +39,14 @@ export function Slider({
         const updatePosition = () => {
             if (sliderRef.current) {
                 const rect = sliderRef.current.getBoundingClientRect()
-                const trackWidth = rect.width - 18 // Subtract thumb width
-                setTrackWidth(trackWidth)
+                // Calculate the effective track width (excluding thumb width)
+                const effectiveTrackWidth = rect.width - 24 // 24px is the thumb width
+                setTrackWidth(effectiveTrackWidth)
                 
                 const percentage = ((value - min) / (max - min)) * 100
-                const thumbLeft = (percentage / 100) * trackWidth + 9 // Add half thumb width
-                setThumbPosition(thumbLeft)
+                // Calculate thumb's center position relative to the start of the track
+                const thumbCenter = (percentage / 100) * effectiveTrackWidth + 12 // Add half thumb width (12px)
+                setThumbPosition(thumbCenter)
             }
         }
 
@@ -72,20 +74,20 @@ export function Slider({
 
             {/* Slider track container */}
             <div className={`relative flex-1 h-[30px] flex items-center ${trackClassName}`}>
-                {/* Background track (unfilled portion) */}
-                <div className="absolute left-[9px] right-[9px] h-[2px] bg-border top-1/2 -translate-y-1/2" />
+                {/* Background track (unfilled portion) - accounting for thumb padding */}
+                <div className="absolute left-[12px] right-[12px] h-[2px] bg-border top-1/2 -translate-y-1/2" />
                 
                 {/* Filled track (progress bar) - fills up to thumb center */}
                 <div 
-                    className="absolute left-[9px] h-[2px] bg-foreground top-1/2 -translate-y-1/2 transition-all duration-200"
+                    className="absolute left-[12px] h-[2px] bg-foreground top-1/2 -translate-y-1/2 transition-all duration-200"
                     style={{ 
                         width: trackWidth > 0 ? `${thumbPosition}px` : `${percentage}%`
                     }}
                 />
 
-                {/* Ticks/markers */}
+                {/* Ticks/markers - positioned accounting for thumb padding */}
                 {showTicks && (
-                    <div className="absolute left-[9px] right-[9px] top-0 bottom-0 flex items-center pointer-events-none z-20">
+                    <div className="absolute left-[12px] right-[12px] top-0 bottom-0 flex items-center pointer-events-none z-20">
                         {Array.from({ length: tickCount }).map((_, index) => {
                             const tickValue = min + index
                             const tickPercentage = ((tickValue - min) / (max - min)) * 100

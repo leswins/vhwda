@@ -24,11 +24,18 @@ export function SelectList({
                 const isSelected = selectedValues.includes(option.id)
                 const isDisabled = isMultiSelect && !isSelected && maxSelect !== undefined && selectedValues.length >= maxSelect
 
+                const handleClick = () => {
+                    if (!isDisabled) {
+                        onChange(questionId, option.id)
+                    }
+                }
+
                 return (
                     <button
                         key={option.id}
-                        onClick={() => !isDisabled && onChange(questionId, option.id)}
+                        onClick={handleClick}
                         disabled={isDisabled}
+                        type="button"
                         className={`
                             flex items-center gap-[16px] px-[24px] py-[18px]
                             border border-foreground
@@ -48,7 +55,7 @@ export function SelectList({
                                     className={`
                                         w-[24px] h-[24px] border-2 flex items-center justify-center
                                         ${isSelected 
-                                            ? "bg-surface-background border-surface-background" 
+                                            ? "bg-surface border-surface" 
                                             : "bg-transparent border-current"
                                         }
                                     `}
@@ -72,7 +79,7 @@ export function SelectList({
                                     className={`
                                         w-[24px] h-[24px] rounded-full border-2 flex items-center justify-center
                                         ${isSelected 
-                                            ? "bg-surface-background border-surface-background" 
+                                            ? "bg-surface border-surface" 
                                             : "bg-transparent border-current"
                                         }
                                     `}

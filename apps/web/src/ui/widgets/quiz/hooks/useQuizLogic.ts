@@ -56,7 +56,10 @@ export function useQuizLogic() {
 
     const handleAnswer = (questionId: string, optionId: string) => {
         const question = questions.find(q => q.id === questionId)
-        if (!question) return
+        if (!question) {
+            console.warn("Question not found:", questionId)
+            return
+        }
 
         const isMultiSelect = question.type === "multi_select"
         const currentSelection = selectedAnswers[questionId]
@@ -67,7 +70,12 @@ export function useQuizLogic() {
                 : []
 
         const newOption = question.options.find(o => o.id === optionId)
-        if (!newOption) return
+        if (!newOption) {
+            console.warn("Option not found:", { questionId, optionId, availableOptions: question.options.map(o => o.id) })
+            return
+        }
+        
+        console.log("handleAnswer:", { questionId, optionId, optionWeights: newOption.weights, questionType: question.type })
 
         // For multi-select: toggle selection, respecting maxSelect
         if (isMultiSelect) {

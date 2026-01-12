@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useRef } from "react"
 import { t } from "../../../../utils/i18n"
 import { Slider } from "../../../components/Slider"
 
@@ -11,13 +11,36 @@ type RatingSliderProps = {
 
 export function RatingSlider({ questionId, value, onChange, language }: RatingSliderProps) {
     const [sliderValue, setSliderValue] = useState(value ?? 3)
+    const prevQuestionIdRef = useRef<string>(questionId)
+    const hasInitializedRef = useRef<boolean>(false)
 
-    // Sync with external value changes
+    // Initialize value when questionId changes
     useEffect(() => {
-        if (value !== null && value !== sliderValue) {
+        if (questionId !== prevQuestionIdRef.current) {
+            // New question - reset initialization flag and update ref
+            hasInitializedRef.current = false
+            prevQuestionIdRef.current = questionId
+            // Set initial value for new question
+            const initialValue = value ?? 3
+            setSliderValue(initialValue)
+        }
+        
+        // Register initial value only once per question
+        if (!hasInitializedRef.current) {
+            const initialValue = value ?? 3
+            setSliderValue(initialValue)
+            // Register the initial value immediately
+            onChange(questionId, initialValue.toString())
+            hasInitializedRef.current = true
+        }
+    }, [questionId, value, onChange])
+
+    // Sync slider value when external value changes (but questionId hasn't changed)
+    useEffect(() => {
+        if (value !== null && questionId === prevQuestionIdRef.current) {
             setSliderValue(value)
         }
-    }, [value])
+    }, [value, questionId])
 
     const handleChange = (newValue: number) => {
         setSliderValue(newValue)

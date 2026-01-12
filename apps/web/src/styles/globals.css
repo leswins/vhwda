@@ -42,7 +42,7 @@ body {
   border: none;
   background: transparent;
   margin: 0;
-  padding: 0 9px;
+  padding: 0 12px;
   width: 100%;
   box-sizing: border-box;
 }
@@ -66,22 +66,22 @@ body {
 .quiz-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 18px;
-  height: 18px;
+  width: 24px;
+  height: 24px;
   background: rgb(var(--color-foreground));
   cursor: pointer;
   border: none;
   border-radius: 50%;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
   transition: transform 0.15s ease, box-shadow 0.15s ease;
-  margin-top: -8px;
+  margin-top: -11px;
   position: relative;
   z-index: 40;
 }
 
 .quiz-slider::-moz-range-thumb {
-  width: 18px;
-  height: 18px;
+  width: 24px;
+  height: 24px;
   background: rgb(var(--color-foreground));
   cursor: pointer;
   border: none;
