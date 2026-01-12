@@ -31,11 +31,11 @@ export function SelectList({
                         disabled={isDisabled}
                         className={`
                             flex items-center gap-[16px] px-[24px] py-[18px]
-                            border border-on-surface-primary
+                            border border-foreground
                             text-left transition-all
                             ${isSelected 
-                                ? "bg-on-surface-primary text-surface-background" 
-                                : "bg-surface-background text-on-surface-primary hover:bg-surface-above-1"
+                                ? "bg-foreground text-surface" 
+                                : "bg-surface text-foreground hover:bg-surface1"
                             }
                             ${isDisabled ? "opacity-40 cursor-not-allowed" : "cursor-pointer"}
                         `}
@@ -61,7 +61,7 @@ export function SelectList({
                                                 strokeWidth="2"
                                                 strokeLinecap="round"
                                                 strokeLinejoin="round"
-                                                className="text-on-surface-primary"
+                                                className="text-foreground"
                                             />
                                         </svg>
                                     )}
@@ -78,14 +78,14 @@ export function SelectList({
                                     `}
                                 >
                                     {isSelected && (
-                                        <div className="w-[10px] h-[10px] rounded-full bg-on-surface-primary" />
+                                        <div className="w-[10px] h-[10px] rounded-full bg-foreground" />
                                     )}
                                 </div>
                             )}
                         </div>
 
                         {/* Option label */}
-                        <span className="flex-1 text-body-default font-medium tracking-tight leading-snug">
+                        <span className="flex-1 text-body-base">
                             {option.label}
                         </span>
                     </button>

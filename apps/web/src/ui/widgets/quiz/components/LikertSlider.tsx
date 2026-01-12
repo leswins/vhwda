@@ -29,7 +29,7 @@ export function LikertSlider({ questionId, value, onChange, language }: LikertSl
 
     return (
         <div className="flex flex-col gap-8 items-center w-full max-w-[530px]">
-            <p className="text-body-sm font-medium text-muted text-center tracking-tight leading-snug">
+            <p className="text-body-sm text-muted text-center">
                 {t(language, "quiz.adjustSlider")}
             </p>
             <Slider

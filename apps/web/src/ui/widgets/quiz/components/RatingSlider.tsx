@@ -26,7 +26,7 @@ export function RatingSlider({ questionId, value, onChange, language }: RatingSl
 
     return (
         <div className="flex flex-col gap-8 items-center w-full max-w-[530px]">
-            <p className="text-body-sm font-medium text-muted text-center tracking-tight leading-snug">
+            <p className="text-body-sm text-muted text-center">
                 {t(language, "quiz.adjustSlider")}
             </p>
             <Slider
@@ -37,14 +37,14 @@ export function RatingSlider({ questionId, value, onChange, language }: RatingSl
                 onChange={handleChange}
                 showTicks={true}
                 leftLabel={
-                    <span className="text-h4 font-bold text-foreground">1</span>
+                    <span className="text-h4 text-foreground">1</span>
                 }
                 rightLabel={
-                    <span className="text-h4 font-bold text-foreground">5</span>
+                    <span className="text-h4 text-foreground">5</span>
                 }
             />
             <div className="text-center">
-                <span className="text-h3 font-bold text-foreground">{sliderValue}</span>
+                <span className="text-h3 text-foreground">{sliderValue}</span>
             </div>
         </div>
     )

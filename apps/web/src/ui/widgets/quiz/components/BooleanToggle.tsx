@@ -14,7 +14,7 @@ export function BooleanToggle({ questionId, value, onChange, language }: Boolean
 
     return (
         <div className="flex flex-col gap-12 items-center w-full max-w-[530px]">
-            <p className="text-body-sm font-medium text-muted text-center tracking-tight leading-snug">
+            <p className="text-body-sm text-muted text-center">
                 {t(language, "quiz.isDealbreaker")}
             </p>
             <div className="flex items-center gap-6">
@@ -40,7 +40,7 @@ export function BooleanToggle({ questionId, value, onChange, language }: Boolean
                             strokeLinejoin="round"
                         />
                     </svg>
-                    <span className="text-h4 font-bold tracking-tight leading-tight">
+                    <span className="text-h4">
                         {t(language, "quiz.yes")}
                     </span>
                 </button>
@@ -57,7 +57,7 @@ export function BooleanToggle({ questionId, value, onChange, language }: Boolean
                         }
                     `}
                 >
-                    <span className="text-h4 font-bold tracking-tight leading-tight">
+                    <span className="text-h4">
                         {t(language, "quiz.no")}
                     </span>
                     {/* Thumbs down icon */}
