@@ -11,7 +11,7 @@ export type QuizStep = "intro" | "questions" | "results"
 
 export function useQuizLogic() {
     const { language } = useLanguageStore()
-    const [currentStep, setCurrentStep] = useState<QuizStep>("intro")
+    const [currentStep, setCurrentStep] = useState<QuizStep>("questions")
     const [userVector, setUserVector] = useState<QuizVector>(createEmptyVector())
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
     const [selectedAnswers, setSelectedAnswers] = useState<Record<string, string | string[]>>({})
@@ -30,6 +30,8 @@ export function useQuizLogic() {
                 const sanityQuestions = await fetchQuizQuestions(language)
                 if (sanityQuestions.length > 0) {
                     setQuestions(sanityQuestions)
+                    // Automatically start the quiz when questions are loaded
+                    setCurrentStep("questions")
                 } else {
                     setErrorLoadingQuestions("No questions found in Sanity. Please add questions to the quiz.")
                 }
