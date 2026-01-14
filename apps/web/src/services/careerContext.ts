@@ -234,7 +234,7 @@ If a user expresses they CANNOT or DO NOT WANT these requirements, DO NOT recomm
 When recommending careers, respond in this format:
 
 1. SHORT introduction (1-2 sentences) - minimize tokens
-2. JSON with career slugs:
+2. JSON with career slugs ONLY in a code block:
 
 \`\`\`json
 {
@@ -245,6 +245,12 @@ When recommending careers, respond in this format:
   ]
 }
 \`\`\`
+
+**CRITICAL**: 
+- NEVER include JSON in the plain text response
+- ONLY include JSON inside the \`\`\`json code block
+- The text before the code block should be natural language ONLY
+- Do NOT repeat career information in the text if it's already in the JSON
 
 ## CRITICAL RULES
 - **MINIMIZE TOKENS**: Keep all text responses brief
