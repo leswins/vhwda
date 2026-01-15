@@ -21,11 +21,11 @@ export function AppShell() {
         {t(language, "a11y.skipToContent")}
       </a>
       <NavHeader />
-
-      <main id="main" className="mx-auto w-full max-w-[1368px] flex-1 px-6 py-0">
-        <Outlet />
+      <main id="main" className="flex-1 px-6">
+        <div className="site-grid-container min-h-full">
+          <Outlet />
+        </div>
       </main>
-
       <Footer />
     </div>
   )

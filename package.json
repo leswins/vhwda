@@ -20,9 +20,17 @@
     "sanity:deploy": "pnpm --filter studio run deploy",
     "studio:deploy": "pnpm --filter studio run deploy:studio",
     "tokens:pull": "node scripts/pull-figma-tokens.mjs",
+    "migrate:oews-salaries": "tsx scripts/migrate-oews-salaries.ts",
     "ci": "pnpm lint && pnpm typecheck && pnpm build"
   },
+  "dependencies": {
+    "@sanity/client": "^6.24.1",
+    "csv-parse": "^5.6.0",
+    "string-similarity": "^4.0.4"
+  },
   "devDependencies": {
-    "prettier": "^3.4.2"
+    "@types/string-similarity": "^4.0.2",
+    "prettier": "^3.4.2",
+    "tsx": "^4.19.2"
   }
 }

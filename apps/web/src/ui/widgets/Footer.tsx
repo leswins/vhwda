@@ -22,9 +22,9 @@ export function Footer() {
   ]
 
   return (
-    <footer className="bg-surface text-foreground">
-      <div className="mx-auto max-w-[1368px] border border-foreground">
-        <div className="grid md:grid-cols-2">
+    <footer className="bg-surface text-foreground px-6">
+      <div className="site-grid-container">
+        <div className="grid md:grid-cols-2 border-t border-foreground">
           {/* Left column - Brand & Info */}
           <div className="flex flex-col gap-[250px] pl-[35px] pr-[200px] py-[35px]">
             <svg width="133" height="41" viewBox="0 0 133 41" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label={t(language, "brand.name")}>

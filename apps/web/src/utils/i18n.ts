@@ -18,10 +18,30 @@ const dict: Dictionary = {
   "language.esShort": { en: "ES", es: "ES" },
   "language.english": { en: "English", es: "Inglés" },
   "language.spanish": { en: "Español", es: "Español" },
-  "home.title": { en: "Explore health careers in Virginia", es: "Explora carreras de salud en Virginia" },
-  "home.body": {
-    en: "This is the initial scaffold. Content will be powered by Sanity.",
-    es: "Este es el andamiaje inicial. El contenido será gestionado en Sanity."
+  "home.hero.title": { en: "Your health career starts here.", es: "Tu carrera de salud comienza aquí." },
+  "home.hero.subtitle": {
+    en: "Explore Virginia’s health career catalog, find your path, and plan your future.",
+    es: "Explora el catálogo de carreras de salud de Virginia, encuentra tu camino y planifica tu futuro."
+  },
+  "home.hero.browseCTA": { en: "Browse careers", es: "Explorar carreras" },
+  "home.hero.quizCTA": { en: "Take the quiz", es: "Hacer el cuestionario" },
+  "home.featuredCareers.title": { en: "Featured Careers", es: "Carreras destacadas" },
+  "home.featuredCareers.viewAll": { en: "View all careers", es: "Ver todas las carreras" },
+  "home.sections.explore.title": { en: "Explore your options", es: "Explora tus opciones" },
+  "home.sections.explore.browse.title": { en: "Explore the catalog", es: "Explora el catálogo" },
+  "home.sections.explore.browse.description": {
+    en: "Find in-depth information about roles, salaries, and training programs.",
+    es: "Encuentra información detallada sobre roles, salarios y programas de capacitación."
+  },
+  "home.sections.explore.quiz.title": { en: "Find your match", es: "Encuentra tu pareja ideal" },
+  "home.sections.explore.quiz.description": {
+    en: "Take a quick quiz to discover which healthcare careers align with your interests.",
+    es: "Responde un breve cuestionario para descubrir qué carreras de salud se alinean con tus intereses."
+  },
+  "home.sections.explore.resources.title": { en: "Plan your path", es: "Planifica tu camino" },
+  "home.sections.explore.resources.description": {
+    en: "Access scholarships, training programs, and professional resources in Virginia.",
+    es: "Accede a becas, programas de capacitación y recursos profesionales en Virginia."
   },
   "browse.title": { en: "Browse Careers", es: "Explorar carreras" },
   "browse.body": { en: "Placeholder page. Will query careers from Sanity.", es: "Página temporal. Consultará carreras desde Sanity." },

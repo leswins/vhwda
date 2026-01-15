@@ -20,7 +20,7 @@ interface SoraVideoResponse {
   progress?: number;
   url?: string;
   download_url?: string;
-  error?: string;
+  error?: string | object | any;
 }
 
 /**
@@ -107,7 +107,7 @@ export class SoraClient {
   /**
    * Poll Sora API until video is ready
    */
-  private async pollForCompletion(videoId: string, maxAttempts: number = 60): Promise<void> {
+  private async pollForCompletion(videoId: string, maxAttempts: number = 120): Promise<void> {
     const pollInterval = 10000; // 10 seconds
 
     for (let attempt = 1; attempt <= maxAttempts; attempt++) {
@@ -134,7 +134,11 @@ export class SoraClient {
           // Video is ready, exit polling loop
           return;
         } else if (status.status === 'failed') {
-          throw new Error(`Video generation failed: ${status.error || 'Unknown error'}`);
+          // Properly serialize the error object to see what went wrong
+          const errorMessage = typeof status.error === 'object'
+            ? JSON.stringify(status.error, null, 2)
+            : (status.error || 'Unknown error');
+          throw new Error(`Video generation failed: ${errorMessage}`);
         }
 
         // Still processing (status is 'queued' or 'processing')

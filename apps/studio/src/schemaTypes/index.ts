@@ -7,6 +7,7 @@ import { resource } from "./documents/resource"
 import { professionalOrganization } from "./documents/professional-organization"
 import { quiz } from "./documents/quiz"
 import { siteSettings } from "./documents/site-settings"
+import { homePage } from "./documents/home-page"
 
 import { localizedString } from "./objects/localized-string"
 import { localizedText } from "./objects/localized-text"
@@ -23,6 +24,7 @@ import { careerHardFilter } from "./objects/careerHardFilter"
 export const schemaTypes = [
   // documents
   siteSettings,
+  homePage,
   career,
   careerCategory,
   educationalInstitution,

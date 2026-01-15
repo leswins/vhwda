@@ -127,7 +127,7 @@ export function CareerDetailPage() {
   }
 
   return (
-    <div className="-mx-6 border-l border-r border-foreground px-0">
+    <div className="space-y-10">
       <div className="grid gap-x-0 gap-y-0 lg:grid-cols-[1fr_1fr]">
         <div className="overflow-hidden bg-surface1 flex items-center justify-center">
           {data?.videoUrl ? (
