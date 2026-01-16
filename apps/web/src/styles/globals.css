@@ -1,8 +1,9 @@
+@import "mapbox-gl/dist/mapbox-gl.css";
+@import "./tokens.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-@import "./tokens.css";
 
 /* Base */
 html,
@@ -22,4 +23,106 @@ body {
   outline-offset: 2px;
 }
 
+/* Hide scrollbar utility */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
 
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.site-grid-container {
+  @apply mx-auto w-full max-w-[1368px] border-l border-r border-foreground;
+}
+
+/* Quiz slider styling - using design tokens */
+.quiz-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 30px;
+  outline: none;
+  border: none;
+  background: transparent;
+  margin: 0;
+  padding: 0 12px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.quiz-slider::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 2px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.quiz-slider::-moz-range-track {
+  width: 100%;
+  height: 2px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.quiz-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 24px;
+  height: 24px;
+  background: rgb(var(--color-foreground));
+  cursor: pointer;
+  border: none;
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  margin-top: -11px;
+  position: relative;
+  z-index: 40;
+}
+
+.quiz-slider::-moz-range-thumb {
+  width: 24px;
+  height: 24px;
+  background: rgb(var(--color-foreground));
+  cursor: pointer;
+  border: none;
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  position: relative;
+  z-index: 40;
+}
+
+.quiz-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+}
+
+.quiz-slider::-moz-range-thumb:hover {
+  transform: scale(1.15);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+}
+
+.quiz-slider::-webkit-slider-thumb:active {
+  transform: scale(1.1);
+}
+
+.quiz-slider::-moz-range-thumb:active {
+  transform: scale(1.1);
+}
+
+.quiz-slider:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.quiz-slider:disabled::-webkit-slider-thumb {
+  cursor: not-allowed;
+}
+
+.quiz-slider:disabled::-moz-range-thumb {
+  cursor: not-allowed;
+}

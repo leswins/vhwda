@@ -3,10 +3,12 @@ import { createBrowserRouter } from "react-router-dom"
 import { AppShell } from "./ui/AppShell"
 import { HomePage } from "./views/HomePage"
 import { BrowseCareersPage } from "./views/BrowseCareersPage"
+import { SearchCareersPage } from "./views/SearchCareersPage"
 import { CareerDetailPage } from "./views/CareerDetailPage"
 import { ComparePage } from "./views/ComparePage"
 import { QuizPage } from "./views/QuizPage"
 import { ResourcesPage } from "./views/ResourcesPage"
+import { ChatPage } from "./views/ChatPage"
 
 export const router = createBrowserRouter([
   {
@@ -14,11 +16,12 @@ export const router = createBrowserRouter([
     element: <AppShell />,
     children: [
       { index: true, element: <HomePage /> },
-      { path: "careers", element: <BrowseCareersPage /> },
+      { path: "careers", element: <SearchCareersPage /> },
       { path: "careers/:slug", element: <CareerDetailPage /> },
       { path: "compare", element: <ComparePage /> },
       { path: "quiz", element: <QuizPage /> },
-      { path: "resources", element: <ResourcesPage /> }
+      { path: "resources", element: <ResourcesPage /> },
+      { path: "chat", element: <ChatPage /> }
     ]
   }
 ])

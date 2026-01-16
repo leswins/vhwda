@@ -1,9 +1,10 @@
 import type { StructureResolver } from "sanity/structure"
-import { CogIcon, TagIcon, ThLargeIcon } from "@sanity/icons"
+import { BookIcon, CogIcon, HomeIcon, TagIcon, ThLargeIcon } from "@sanity/icons"
 
-const SINGLETONS = ["siteSettings"]
+const SINGLETONS = ["siteSettings", "homePage"]
 const CUSTOM_NAV_TYPES = [
   "career",
+  "educationalInstitution",
   "program",
   "scholarship",
   "resource",
@@ -16,6 +17,11 @@ export const structure: StructureResolver = (S) =>
   S.list()
     .title("Content")
     .items([
+      S.listItem()
+        .title("Home Page")
+        .icon(HomeIcon)
+        .child(S.document().schemaType("homePage").documentId("homePage")),
+
       S.listItem()
         .title("Site Settings")
         .icon(CogIcon)
@@ -31,6 +37,11 @@ export const structure: StructureResolver = (S) =>
       S.listItem()
         .title("Programs")
         .child(S.documentTypeList("program").title("Programs")),
+
+      S.listItem()
+        .title("Educational Institutions")
+        .icon(BookIcon)
+        .child(S.documentTypeList("educationalInstitution").title("Educational Institutions")),
 
       S.listItem()
         .title("Scholarships")
