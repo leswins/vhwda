@@ -2,6 +2,7 @@ import React from "react"
 import type { QuizVector, CareerForMatching } from "../../../../sanity/queries/careers"
 import { CareerMatchList } from "./CareerMatchList"
 import { VectorDisplay } from "./VectorDisplay"
+import { QuizCalculatingResults } from "./QuizCalculatingResults"
 
 type CareerMatch = CareerForMatching & { score: number }
 
@@ -20,21 +21,20 @@ export function QuizResults({
     language,
     onStartOver,
 }: QuizResultsProps) {
+    // Show calculating screen while loading
+    if (loading) {
+        return <QuizCalculatingResults language={language} />
+    }
+    
     return (
         <div>
             <h1>Your Results</h1>
             
-            {loading && (
-                <p>Calculating your career matches...</p>
-            )}
-            
-            {!loading && (
-                <CareerMatchList 
-                    careers={matchedCareers}
-                    userVector={userVector}
-                    language={language}
-                />
-            )}
+            <CareerMatchList 
+                careers={matchedCareers}
+                userVector={userVector}
+                language={language}
+            />
             
             <VectorDisplay 
                 vector={userVector}

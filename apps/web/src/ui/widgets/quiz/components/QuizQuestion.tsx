@@ -4,6 +4,7 @@ import { LikertSlider } from "./LikertSlider"
 import { RatingSlider } from "./RatingSlider"
 import { SelectList } from "./SelectList"
 import { BooleanToggle } from "./BooleanToggle"
+import { t } from "../../../../utils/i18n"
 
 type QuizQuestionProps = {
     question: Question
@@ -89,10 +90,18 @@ export function QuizQuestion({
 
     return (
         <div className="flex flex-col gap-[75px] items-center w-full max-w-[600px]">
-            {/* Question prompt */}
-            <h2 className="text-h3 text-foreground text-center w-full">
-                {question.prompt}
-            </h2>
+            {/* Question prompt - larger and bolder to match screenshot */}
+            <div className="flex flex-col gap-4 items-center w-full">
+                <h2 className="text-h2 font-bold text-foreground text-center w-full">
+                    {question.prompt}
+                </h2>
+                {/* Show subtitle for deal-breaker questions */}
+                {question.type === "boolean" && (
+                    <p className="text-body-sm text-muted text-center">
+                        {t(language, "quiz.isDealbreaker")}
+                    </p>
+                )}
+            </div>
 
             {/* Question input component */}
             {renderQuestionInput()}

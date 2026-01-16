@@ -14,5 +14,6 @@ export { LikertSlider } from "./LikertSlider"
 export { RatingSlider } from "./RatingSlider"
 export { SelectList } from "./SelectList"
 export { BooleanToggle } from "./BooleanToggle"
+export { QuizCalculatingResults } from "./QuizCalculatingResults"
 
 

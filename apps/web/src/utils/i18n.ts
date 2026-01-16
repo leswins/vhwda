@@ -118,7 +118,7 @@ const dict: Dictionary = {
   "filters.yes": { en: "Yes", es: "Sí" },
   "filters.no": { en: "No", es: "No" },
   "filters.comingSoon": { en: "Coming soon", es: "Próximamente" },
-  "quiz.title": { en: "Career Quiz", es: "Cuestionario" },
+  "quiz.title": { en: "Career Discovery Quiz", es: "Cuestionario de Descubrimiento de Carreras" },
   "quiz.body": { en: "Placeholder page. Will guide users to recommended careers.", es: "Página temporal. Recomendará carreras a los usuarios." },
   "resources.title": { en: "Resources", es: "Recursos" },
   "resources.body": { en: "Placeholder page. Will list scholarships and resources.", es: "Página temporal. Listará becas y recursos." },
@@ -280,7 +280,9 @@ const dict: Dictionary = {
   "quiz.nextQuestion": { en: "Next Question", es: "Siguiente Pregunta" },
   "quiz.submitAnswers": { en: "Submit Answers", es: "Enviar Respuestas" },
   "quiz.showVector": { en: "Show Debug Vector", es: "Mostrar Vector de Depuración" },
-  "quiz.vectorTitle": { en: "Current Vector (Debug)", es: "Vector Actual (Depuración)" }
+  "quiz.vectorTitle": { en: "Current Vector (Debug)", es: "Vector Actual (Depuración)" },
+  "quiz.calculatingTitle": { en: "We're calculating your top career matches", es: "Estamos calculando tus mejores coincidencias de carrera" },
+  "quiz.calculatingSubtitle": { en: "Hang tight while we work our magic...", es: "Espera mientras trabajamos nuestra magia..." }
 }
 
 export type TranslationKey = keyof typeof dict

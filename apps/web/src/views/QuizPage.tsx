@@ -7,6 +7,7 @@ import {
     QuizQuestion,
     QuizNavigation,
     QuizResults,
+    QuizCalculatingResults,
 } from "../ui/widgets/quiz/components"
 import { QuizSidebar } from "../ui/widgets/quiz/components/QuizSidebar"
 import { VectorModal } from "../ui/widgets/quiz/components/VectorModal"
@@ -93,15 +94,36 @@ export function QuizPage() {
                     <VectorModal vector={userVector} language={language} />
                 </>
             ) : currentStep === "results" ? (
-                <div className="flex-1 overflow-y-auto p-8">
-                    <QuizResults
-                        loading={loadingResults}
-                        matchedCareers={matchedCareers}
-                        userVector={userVector}
+                <>
+                    {/* Left sidebar - keep visible during results */}
+                    <QuizSidebar
+                        questions={questions}
+                        currentQuestionIndex={currentQuestionIndex}
+                        selectedAnswers={selectedAnswers}
                         language={language}
-                        onStartOver={handleStartOver}
                     />
-                </div>
+
+                    {/* Right content area */}
+                    <div className="flex-1 flex flex-col overflow-hidden">
+                        {loadingResults ? (
+                            /* Show calculating screen while loading */
+                            <div className="flex-1 overflow-y-auto flex items-center justify-center p-12">
+                                <QuizCalculatingResults language={language} />
+                            </div>
+                        ) : (
+                            /* Show results when loaded */
+                            <div className="flex-1 overflow-y-auto p-8">
+                                <QuizResults
+                                    loading={loadingResults}
+                                    matchedCareers={matchedCareers}
+                                    userVector={userVector}
+                                    language={language}
+                                    onStartOver={handleStartOver}
+                                />
+                            </div>
+                        )}
+                    </div>
+                </>
             ) : null}
         </div>
     )
