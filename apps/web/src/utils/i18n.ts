@@ -18,13 +18,31 @@ const dict: Dictionary = {
   "language.esShort": { en: "ES", es: "ES" },
   "language.english": { en: "English", es: "Inglés" },
   "language.spanish": { en: "Español", es: "Español" },
-  "home.hero.title": { en: "Your health career starts here.", es: "Tu carrera de salud comienza aquí." },
+  "home.hero.title": { en: "Discover your health career in Virginia", es: "Descubre tu carrera de salud en Virginia" },
   "home.hero.subtitle": {
-    en: "Explore Virginia’s health career catalog, find your path, and plan your future.",
-    es: "Explora el catálogo de carreras de salud de Virginia, encuentra tu camino y planifica tu futuro."
+    en: "Clear, up-to-date steps on education, salary, demand, and programs so you can choose work that matters.",
+    es: "Pasos claros y actualizados sobre educación, salario, demanda y programas para que puedas elegir un trabajo que importe."
   },
+  "home.hero.primaryCTA": { en: "Find your path", es: "Encuentra tu camino" },
+  "home.hero.secondaryCTA": { en: "Explore careers", es: "Explorar carreras" },
   "home.hero.browseCTA": { en: "Browse careers", es: "Explorar carreras" },
   "home.hero.quizCTA": { en: "Take the quiz", es: "Hacer el cuestionario" },
+  "home.steps.heading": { en: "Start with these steps", es: "Empieza con estos pasos" },
+  "home.steps.quiz.title": { en: "Take the career finder quiz", es: "Haz el cuestionario para encontrar tu carrera" },
+  "home.steps.quiz.description": {
+    en: "A quick quiz that points you to roles that fit your goals and schedule.",
+    es: "Un breve cuestionario que te guía hacia roles que se ajustan a tus metas y horario."
+  },
+  "home.steps.browse.title": { en: "Browse & compare careers", es: "Explora y compara carreras" },
+  "home.steps.browse.description": {
+    en: "Filter by salary, education, program length, and outlook, then compare side-by-side.",
+    es: "Filtra por salario, educación, duración del programa y perspectiva, y luego compara lado a lado."
+  },
+  "home.steps.plan.title": { en: "Plan your next steps", es: "Planifica tus próximos pasos" },
+  "home.steps.plan.description": {
+    en: "Find programs, prerequisites, and scholarships in Virginia to get started.",
+    es: "Encuentra programas, prerrequisitos y becas en Virginia para comenzar."
+  },
   "home.featuredCareers.title": { en: "Featured Careers", es: "Carreras destacadas" },
   "home.featuredCareers.viewAll": { en: "View all careers", es: "Ver todas las carreras" },
   "home.sections.explore.title": { en: "Explore your options", es: "Explora tus opciones" },
