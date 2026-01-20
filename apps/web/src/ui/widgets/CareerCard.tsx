@@ -15,7 +15,7 @@ type Props = {
 
 export function CareerCard({ language, title, salary, to, imageUrl, showMatch, matchLabel }: Props) {
   return (
-    <div className="group w-[420px] shrink-0 bg-surface">
+    <div className="group w-[420px] shrink-0 border border-foreground bg-surface">
       <Link to={to} className="block">
         <div className="relative h-[283px] w-full overflow-hidden bg-surface2">
           {imageUrl ? <img alt="" src={imageUrl} className="h-full w-full object-cover" /> : null}

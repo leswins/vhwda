@@ -55,6 +55,7 @@ export function CareerFilters({ language, careers, filters, onFiltersChange }: P
     patientInteraction: false,
     specializations: false
   })
+  const [isSearchFocused, setIsSearchFocused] = useState(false)
 
   const toggleSection = (section: string) => {
     setExpandedSections(prev => ({ ...prev, [section]: !prev[section] }))
@@ -110,55 +111,27 @@ export function CareerFilters({ language, careers, filters, onFiltersChange }: P
 
   return (
     <aside className="w-full space-y-6 lg:w-64">
-      <div className="space-y-2">
-        <div className="flex gap-4 text-sm">
-          <button className="font-semibold text-foreground">Filter</button>
-          <button className="text-muted">Sort</button>
-        </div>
-        <div className="relative">
-          <input
-            type="text"
-            placeholder={t(language, "search.placeholder")}
-            value={filters.searchQuery}
-            onChange={(e) => handleSearchChange(e.target.value)}
-            className="w-full rounded-md border border-border bg-surface px-3 py-2 pl-10 text-sm focus:outline-none focus:ring-2 focus:ring-foreground/20"
-          />
-          <svg
-            className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-            />
-          </svg>
-        </div>
-      </div>
 
       <div className="space-y-4">
         <div className="border-b border-foreground/20 pb-4">
           <button
             onClick={() => toggleSection("careerGroup")}
-            className="flex w-full items-center justify-between text-sm font-medium"
+            className="flex w-full items-center justify-between"
           >
-            <span>{t(language, "filters.careerGroup")}</span>
-            <span className="text-lg leading-none">{expandedSections.careerGroup ? "−" : "+"}</span>
+            <span className="text-h5 font-bold text-foreground">{t(language, "filters.careerGroup")}</span>
+            <span className="text-lg leading-none text-foreground">{expandedSections.careerGroup ? "−" : "+"}</span>
           </button>
           {expandedSections.careerGroup && (
             <div className="mt-3 space-y-2">
               {categories.map(category => (
-                <label key={category} className="flex cursor-pointer items-center gap-2 text-sm">
+                <label key={category} className="flex cursor-pointer items-center gap-2">
                   <input
                     type="checkbox"
                     checked={filters.selectedCategories.includes(category)}
                     onChange={() => handleCategoryToggle(category)}
                     className="h-4 w-4 rounded border-border"
                   />
-                  <span>
+                  <span className="text-body-base font-medium text-foreground">
                     {category} ({getCategoryCount(category)})
                   </span>
                 </label>
