@@ -280,7 +280,12 @@ const dict: Dictionary = {
   "quiz.nextQuestion": { en: "Next Question", es: "Siguiente Pregunta" },
   "quiz.submitAnswers": { en: "Submit Answers", es: "Enviar Respuestas" },
   "quiz.showVector": { en: "Show Debug Vector", es: "Mostrar Vector de Depuración" },
-  "quiz.vectorTitle": { en: "Current Vector (Debug)", es: "Vector Actual (Depuración)" }
+  "quiz.vectorTitle": { en: "Current Vector (Debug)", es: "Vector Actual (Depuración)" },
+  "quiz.calculating.title": { en: "We're calculating your top career matches", es: "Estamos calculando tus mejores coincidencias de carrera" },
+  "quiz.calculating.subtitle": { en: "Hang tight while we work our magic...", es: "Espera mientras trabajamos nuestra magia..." },
+  "quiz.sidebar.title": { en: "Career Discovery Quiz", es: "Cuestionario de Descubrimiento de Carreras" },
+  "quiz.complete.title": { en: "HEALTH CAREERS CATALOG", es: "CATÁLOGO DE CARRERAS DE SALUD" },
+  "quiz.complete.message": { en: "Complete the quiz to discover careers for you", es: "Completa el cuestionario para descubrir carreras para ti" }
 }
 
 export type TranslationKey = keyof typeof dict

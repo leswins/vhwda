@@ -60,7 +60,7 @@ export function QuizSidebar({ questions, currentQuestionIndex, selectedAnswers, 
         <div className="flex flex-col w-[380px] h-full border-r border-foreground">
             <div className="bg-foreground text-surface p-[30px]">
                 <h2 className="text-h5">
-                    {t(language, "quiz.title")}
+                    {t(language, "quiz.sidebar.title")}
                 </h2>
             </div>
             {QUIZ_SECTIONS.map((section) => {
@@ -86,7 +86,7 @@ export function QuizSidebar({ questions, currentQuestionIndex, selectedAnswers, 
                         </p>
                         <div className="w-[25px] h-[25px] flex items-center justify-center">
                             {isCompleted ? (
-                                <svg width="25" height="25" viewBox="0 0 25 25" fill="none">
+                                <svg width="25" height="25" viewBox="0 0 25 25" fill="none" className="text-accentGreen">
                                     <path
                                         d="M9 12.5L11.5 15L16 10M21 12.5C21 17.4706 16.9706 21.5 12 21.5C7.02944 21.5 3 17.4706 3 12.5C3 7.52944 7.02944 3.5 12 3.5C16.9706 3.5 21 7.52944 21 12.5Z"
                                         stroke="currentColor"

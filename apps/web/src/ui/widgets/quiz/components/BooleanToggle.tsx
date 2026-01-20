@@ -65,7 +65,7 @@ export function BooleanToggle({ questionId, value, options, onChange, language }
                     `}
                 >
                     {/* Thumbs up icon */}
-                    <div className="pointer-events-none">
+                    <div className={`pointer-events-none ${isYesSelected ? "brightness-0 invert" : ""}`}>
                         <ThumbsUpIcon />
                     </div>
                     <span className="text-h4 pointer-events-none">
@@ -90,7 +90,7 @@ export function BooleanToggle({ questionId, value, options, onChange, language }
                         {t(language, "quiz.no")}
                     </span>
                     {/* Thumbs down icon */}
-                    <div className="pointer-events-none">
+                    <div className={`pointer-events-none ${isNoSelected ? "brightness-0 invert" : ""}`}>
                         <ThumbsDownIcon />
                     </div>
                 </button>
