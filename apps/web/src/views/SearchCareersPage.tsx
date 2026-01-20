@@ -151,29 +151,42 @@ export function SearchCareersPage() {
   if (loading) {
     return (
       <div className="space-y-8">
-        <div className="space-y-2">
-          <h1 className="text-2xl font-semibold">{t(language, "search.title")}</h1>
-          <p className="text-muted">{t(language, "search.subtitle")}</p>
+        <div className="flex items-center justify-between gap-4 pb-4">
+          <div className="space-y-1">
+            <h1 className="text-h2 font-bold text-foreground">{t(language, "search.title")}</h1>
+            <p className="text-body-lg text-foreground">{t(language, "search.subtitle")}</p>
+          </div>
+          <Link
+            to="/quiz"
+            className="shrink-0 rounded-md border border-foreground bg-primary px-6 py-3 text-body-base font-bold text-onPrimary hover:bg-primary/90 transition-colors"
+          >
+            {t(language, "home.hero.quizCTA")}
+          </Link>
         </div>
-        <p className="text-foreground/60">Loading careers...</p>
+        <div className="flex min-h-[400px] items-center justify-center">
+          <p className="text-body-lg text-muted">Loading careers...</p>
+        </div>
       </div>
     )
   }
 
   return (
-    <div className="space-y-8">
-      <div className="flex items-start justify-between gap-4">
-        <div className="space-y-2">
-          <h1 className="text-2xl font-semibold">{t(language, "search.title")}</h1>
-          <p className="text-muted">{t(language, "search.subtitle")}</p>
+    <div className="space-y-6 px-6 py-6">
+      <div className="flex items-end justify-between gap-8">
+        <div className="space-y-1">
+          <p className="text-sub2 font-bold uppercase text-foreground">{t(language, "search.title")}</p>
+          <h1 className="text-h2 font-bold text-foreground">{t(language, "search.subtitle")}</h1>
         </div>
         <Link
           to="/quiz"
-          className="rounded-md border border-foreground bg-primary px-4 py-2 text-sm font-medium text-onPrimary hover:bg-primary/90"
+          className="shrink-0 bg-accentPink/60 px-6 py-3 text-body-lg font-medium text-foreground hover:bg-accentPink/70 transition-colors"
+          style={{ lineHeight: "135%", letterSpacing: "-0.025em" }}
         >
-          {t(language, "nav.quiz")}
+          {t(language, "search.quizCTA")}
         </Link>
       </div>
+      
+      <div className="h-[1px] w-full bg-foreground" />
 
       <div className="flex gap-8">
         <CareerFilters
@@ -223,7 +236,8 @@ export function SearchCareersPage() {
                     {!isInCompare && careerIds.length < 4 && (
                       <button
                         onClick={() => addCareer(career._id)}
-                        className="absolute right-2 top-2 rounded bg-primary px-2 py-1 text-xs font-medium text-onPrimary hover:bg-primary/90"
+                        className="absolute right-2 top-2 rounded-full bg-primary px-2 py-1 text-xs font-medium text-onPrimary hover:bg-primary/90"
+                        aria-label={`Add ${title} to compare`}
                       >
                         +
                       </button>

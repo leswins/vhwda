@@ -25,6 +25,7 @@ const dict: Dictionary = {
   },
   "home.hero.browseCTA": { en: "Browse careers", es: "Explorar carreras" },
   "home.hero.quizCTA": { en: "Take the quiz", es: "Hacer el cuestionario" },
+  "search.quizCTA": { en: "Take the Career Quiz", es: "Hacer el cuestionario de carrera" },
   "home.featuredCareers.title": { en: "Featured Careers", es: "Carreras destacadas" },
   "home.featuredCareers.viewAll": { en: "View all careers", es: "Ver todas las carreras" },
   "home.sections.explore.title": { en: "Explore your options", es: "Explora tus opciones" },
