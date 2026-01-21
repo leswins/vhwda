@@ -123,6 +123,7 @@ export function SearchCareersPage() {
   const { language } = useLanguageStore()
   const { careers, loading, fetchCareers } = useCareersStore()
   const { addCareer, careerIds } = useCompareStore()
+  const [isSearchFocused, setIsSearchFocused] = useState(false)
 
   const [filters, setFilters] = useState<FilterState>({
     searchQuery: "",
@@ -151,29 +152,101 @@ export function SearchCareersPage() {
   if (loading) {
     return (
       <div className="space-y-8">
-        <div className="space-y-2">
-          <h1 className="text-2xl font-semibold">{t(language, "search.title")}</h1>
-          <p className="text-muted">{t(language, "search.subtitle")}</p>
+        <div className="flex items-center justify-between gap-4 pb-4">
+          <div className="space-y-1">
+            <h1 className="text-h2 font-bold text-foreground">{t(language, "search.title")}</h1>
+            <p className="text-body-lg text-foreground">{t(language, "search.subtitle")}</p>
+          </div>
+          <Link
+            to="/quiz"
+            className="shrink-0 rounded-md border border-foreground bg-primary px-6 py-3 text-body-base font-bold text-onPrimary hover:bg-primary/90 transition-colors"
+          >
+            {t(language, "home.hero.quizCTA")}
+          </Link>
         </div>
-        <p className="text-foreground/60">Loading careers...</p>
+        <div className="flex min-h-[400px] items-center justify-center">
+          <p className="text-body-lg text-muted">Loading careers...</p>
+        </div>
       </div>
     )
   }
 
   return (
-    <div className="space-y-8">
-      <div className="flex items-start justify-between gap-4">
-        <div className="space-y-2">
-          <h1 className="text-2xl font-semibold">{t(language, "search.title")}</h1>
-          <p className="text-muted">{t(language, "search.subtitle")}</p>
+    <div className="space-y-6 px-6 py-6">
+      <div className="flex items-end justify-between gap-8">
+        <div className="space-y-1">
+          <p className="text-sub2 font-bold uppercase text-foreground">{t(language, "search.title")}</p>
+          <h1 className="text-h2 font-bold text-foreground">{t(language, "search.subtitle")}</h1>
         </div>
         <Link
           to="/quiz"
-          className="rounded-md border border-foreground bg-primary px-4 py-2 text-sm font-medium text-onPrimary hover:bg-primary/90"
+          className="shrink-0 bg-accentPink/60 px-6 py-3 text-body-lg font-medium text-foreground hover:bg-accentPink/70 transition-colors"
+          style={{ lineHeight: "135%", letterSpacing: "-0.025em" }}
         >
-          {t(language, "nav.quiz")}
+          {t(language, "search.quizCTA")}
         </Link>
       </div>
+      
+      <div className="h-[1px] w-full bg-foreground" />
+
+      <div className="flex gap-8">
+        {/* Left column: Filter/Sort/Search - aligned with sidebar */}
+        <div className="w-full lg:w-64 shrink-0 flex items-center">
+          {!isSearchFocused && !filters.searchQuery && (
+            <div className="flex items-center gap-4 shrink-0">
+              <button className="text-body-base font-medium text-foreground underline underline-offset-4 decoration-foreground">Filter</button>
+              <div className="h-4 w-[1px] bg-foreground/20" />
+              <button className="text-body-base font-medium text-muted">Sort</button>
+            </div>
+          )}
+          <div className="relative flex-1 flex items-center min-w-0">
+            <input
+              type="text"
+              placeholder={isSearchFocused || filters.searchQuery ? t(language, "search.placeholder") : ""}
+              value={filters.searchQuery}
+              onChange={(e) => setFilters({ ...filters, searchQuery: e.target.value })}
+              onFocus={() => setIsSearchFocused(true)}
+              onBlur={() => setIsSearchFocused(false)}
+              className="w-full border-0 bg-transparent py-1 pr-10 pl-4 text-sm text-foreground placeholder:text-muted focus:outline-none focus:ring-0"
+            />
+            <svg
+              className="absolute right-4 top-1/2 h-5 w-5 -translate-y-1/2 text-foreground pointer-events-none"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              />
+            </svg>
+          </div>
+        </div>
+        
+        {/* Vertical separator line */}
+        <div className="hidden lg:block w-[1px] self-stretch bg-foreground/20 shrink-0" />
+        
+        {/* Right column: Showing/Compare - aligned with career cards */}
+        <div className="flex-1 flex items-center justify-between gap-4 min-w-0">
+          <p className="text-body-base font-medium text-foreground">
+            {filteredCareers.length === 1
+              ? t(language, "search.showing").replace("{count}", "1")
+              : t(language, "search.showingPlural").replace("{count}", filteredCareers.length.toString())}
+          </p>
+          {careerIds.length > 0 && (
+            <Link
+              to="/compare"
+              className="text-body-base font-medium text-foreground underline underline-offset-4 decoration-foreground hover:opacity-80"
+            >
+              {t(language, "search.compareCareers")}
+            </Link>
+          )}
+        </div>
+      </div>
+      
+      <div className="h-[1px] w-full bg-foreground" />
 
       <div className="flex gap-8">
         <CareerFilters
@@ -183,29 +256,14 @@ export function SearchCareersPage() {
           onFiltersChange={setFilters}
         />
 
-        <div className="flex-1 space-y-6">
-          <div className="flex items-center justify-between">
-            <p className="text-sm text-foreground/60">
-              {filteredCareers.length === 1
-                ? t(language, "search.showing").replace("{count}", "1")
-                : t(language, "search.showingPlural").replace("{count}", filteredCareers.length.toString())}
-            </p>
-            {careerIds.length > 0 && (
-              <Link
-                to="/compare"
-                className="rounded-md border border-foreground bg-surface1 px-4 py-2 text-sm font-medium hover:bg-surface2"
-              >
-                {t(language, "search.compareCareers")}
-              </Link>
-            )}
-          </div>
+        <div className="flex-1">
 
           {filteredCareers.length === 0 ? (
             <div className="flex min-h-[400px] items-center justify-center">
               <p className="text-foreground/60">{t(language, "search.noCareers")}</p>
             </div>
           ) : (
-            <div className="flex flex-wrap gap-6">
+            <div className="flex flex-wrap">
               {filteredCareers.map(career => {
                 const title = getLocalizedString(language, career.title) || ""
                 const salary = displaySalary(career)
@@ -223,7 +281,8 @@ export function SearchCareersPage() {
                     {!isInCompare && careerIds.length < 4 && (
                       <button
                         onClick={() => addCareer(career._id)}
-                        className="absolute right-2 top-2 rounded bg-primary px-2 py-1 text-xs font-medium text-onPrimary hover:bg-primary/90"
+                        className="absolute right-2 top-2 rounded-full bg-primary px-2 py-1 text-xs font-medium text-onPrimary hover:bg-primary/90"
+                        aria-label={`Add ${title} to compare`}
                       >
                         +
                       </button>

@@ -27,6 +27,7 @@ const dict: Dictionary = {
   "home.hero.secondaryCTA": { en: "Explore careers", es: "Explorar carreras" },
   "home.hero.browseCTA": { en: "Browse careers", es: "Explorar carreras" },
   "home.hero.quizCTA": { en: "Take the quiz", es: "Hacer el cuestionario" },
+  "search.quizCTA": { en: "Take the Career Quiz", es: "Hacer el cuestionario de carrera" },
   "home.steps.heading": { en: "Start with these steps", es: "Empieza con estos pasos" },
   "home.steps.quiz.title": { en: "Take the career finder quiz", es: "Haz el cuestionario para encontrar tu carrera" },
   "home.steps.quiz.description": {
@@ -352,6 +353,11 @@ const dict: Dictionary = {
   "quiz.submitAnswers": { en: "Submit Answers", es: "Enviar Respuestas" },
   "quiz.showVector": { en: "Show Debug Vector", es: "Mostrar Vector de Depuración" },
   "quiz.vectorTitle": { en: "Current Vector (Debug)", es: "Vector Actual (Depuración)" },
+  "quiz.calculating.title": { en: "We're calculating your top career matches", es: "Estamos calculando tus mejores coincidencias de carrera" },
+  "quiz.calculating.subtitle": { en: "Hang tight while we work our magic...", es: "Espera mientras trabajamos nuestra magia..." },
+  "quiz.sidebar.title": { en: "Career Discovery Quiz", es: "Cuestionario de Descubrimiento de Carreras" },
+  "quiz.complete.title": { en: "HEALTH CAREERS CATALOG", es: "CATÁLOGO DE CARRERAS DE SALUD" },
+  "quiz.complete.message": { en: "Complete the quiz to discover careers for you", es: "Completa el cuestionario para descubrir carreras para ti" },
   "quiz.calculatingTitle": { en: "We're calculating your top career matches", es: "Estamos calculando tus mejores coincidencias de carrera" },
   "quiz.calculatingSubtitle": { en: "Hang tight while we work our magic...", es: "Espera mientras trabajamos nuestra magia..." }
 }
