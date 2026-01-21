@@ -400,7 +400,10 @@ const dict: Dictionary = {
   "quiz.results.topMatches": { en: "Your Top Matches", es: "Tus Mejores Coincidencias" },
   "quiz.results.otherMatches": { en: "Other Strong Matches", es: "Otras Coincidencias Fuertes" },
   "quiz.results.retake": { en: "Retake Quiz", es: "Volver a Hacer el Cuestionario" },
-  "quiz.results.searchPlaceholder": { en: "Search for a specific career", es: "Buscar una carrera específica" }
+  "quiz.results.searchPlaceholder": { en: "Search for a specific career", es: "Buscar una carrera específica" },
+  "quiz.results.noMatches.title": { en: "Unfortunately, there are no careers that match your quiz selections.", es: "Desafortunadamente, no hay carreras que coincidan con tus selecciones del cuestionario." },
+  "quiz.results.noMatches.description": { en: "It is likely that your responses to \"deal-breaker\" questions filtered out all of the available career matches. Retake the quiz or search for a specific career to find a career that suits you.", es: "Es probable que tus respuestas a las preguntas de \"factores decisivos\" hayan filtrado todas las coincidencias de carrera disponibles. Vuelve a hacer el cuestionario o busca una carrera específica para encontrar una que se adapte a ti." },
+  "quiz.results.noMatches.searchCareer": { en: "Search for a specific career", es: "Buscar una carrera específica" }
 }
 
 export type TranslationKey = keyof typeof dict
