@@ -21,7 +21,7 @@ export function AppShell() {
         {t(language, "a11y.skipToContent")}
       </a>
       <NavHeader />
-      <main id="main" className="flex-1 px-6">
+      <main id="main" className="flex-1 px-[50px]">
         <div className="site-grid-container min-h-full">
           <Outlet />
         </div>

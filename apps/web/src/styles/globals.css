@@ -17,6 +17,10 @@ body {
   font-family: var(--font-sans);
 }
 
+.text-xs {
+  font-weight: var(--font-weight-xs);
+}
+
 /* Focus visibility baseline */
 :focus-visible {
   outline: 2px solid rgb(var(--color-primary));
@@ -35,6 +39,15 @@ body {
 
 .site-grid-container {
   @apply mx-auto w-full max-w-[1368px] border-l border-r border-foreground;
+}
+
+@keyframes wipe-right {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
+}
+
+.animate-wipe-right {
+  animation: wipe-right 500ms ease-in-out forwards;
 }
 
 /* Quiz slider styling - using design tokens */

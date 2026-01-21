@@ -70,3 +70,53 @@ If you need to rollback, you can manually:
 1. Remove items from the `hardFilters` array in Sanity Studio
 2. The legacy fields are still present (marked as deprecated)
 
+---
+
+## Professional Organizations Enrichment
+
+Populates missing `description`, `membershipType`, `geographicFocus`, and `careerAreas`
+for Professional Organization documents using Gemini.
+
+### Prerequisites
+
+1. **Sanity API Token** (Editor or higher):
+   ```
+   SANITY_API_TOKEN=your-token-here
+   ```
+
+2. **Gemini API Key**:
+   ```
+   GEMINI_API_KEY=your-key-here
+   ```
+
+### Running the script
+
+From the repo root:
+```bash
+pnpm --filter studio migrate:professional-orgs -- --dry-run --limit 10
+```
+
+Remove `--dry-run` to apply changes. Optionally set the model:
+```bash
+GEMINI_MODEL=gemini-1.5-flash pnpm --filter studio migrate:professional-orgs
+```
+
+---
+
+## Fix Missing Career Area Keys
+
+Adds missing `_key` values to `careerAreas` array items for Professional Organizations,
+then republishes the documents so changes are live.
+
+### Running the script
+
+From the repo root:
+```bash
+pnpm --filter studio fix:professional-org-career-keys -- --dry-run --limit 10
+```
+
+Remove `--dry-run` to apply changes:
+```bash
+pnpm --filter studio fix:professional-org-career-keys
+```
+

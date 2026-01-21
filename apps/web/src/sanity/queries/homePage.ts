@@ -2,11 +2,13 @@ import { sanityClient } from "../client"
 import { CareerSummaryCard } from "./careers"
 
 export type HomePageData = {
+  heroVideoUrl?: string
   featuredCareers: CareerSummaryCard[]
 }
 
 export const HOME_PAGE_QUERY = /* groq */ `
 *[_type == "homePage" && _id == "homePage"][0]{
+  heroVideoUrl,
   featuredCareers[]->{
     _id,
     "slug": slug.current,
