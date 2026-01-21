@@ -8,6 +8,7 @@ import { SectionNav } from "../ui/widgets/SectionNav"
 import { EducationProgramsSection } from "../ui/widgets/EducationProgramsSection"
 import { CareerCard } from "../ui/widgets/CareerCard"
 import { useLanguageStore } from "../zustand/useLanguageStore"
+import { useGlobalLoadingStore } from "../zustand/useGlobalLoadingStore"
 import { t } from "../utils/i18n"
 
 function formatMoney(value?: number): string | undefined {
@@ -76,6 +77,7 @@ function InlineDividerList({ items }: { items?: string[] }) {
 export function CareerDetailPage() {
   const { slug } = useParams()
   const { language } = useLanguageStore()
+  const { setLoading } = useGlobalLoadingStore()
   const [data, setData] = useState<CareerDetail | null>(null)
   const [status, setStatus] = useState<"idle" | "loading" | "ready" | "notFound" | "error">("idle")
 
@@ -83,6 +85,7 @@ export function CareerDetailPage() {
     if (!slug) return
     let cancelled = false
     setStatus("loading")
+    setLoading(true)
     fetchCareerDetailBySlug(slug)
       .then((res) => {
         if (cancelled) return
@@ -96,10 +99,15 @@ export function CareerDetailPage() {
         console.error("Failed to load career", { slug, err })
         setStatus("error")
       })
+      .finally(() => {
+        if (!cancelled) {
+          setLoading(false)
+        }
+      })
     return () => {
       cancelled = true
     }
-  }, [slug])
+  }, [slug, setLoading])
 
   const sections = useMemo(
     () => [
@@ -252,7 +260,8 @@ export function CareerDetailPage() {
 
       <SectionNav items={sections} offsetTopPx={0} ariaLabel={t(language, "career.sectionNavA11y")} />
 
-      {status === "loading" ? <p className="p-[50px] text-muted">{t(language, "career.loading")}</p> : null}
+      {/* Don't render loading state - global loading overlay will show */}
+      {status === "loading" ? null : null}
       {status === "notFound" ? <p className="p-[50px] text-muted">{t(language, "career.notFound")}</p> : null}
       {status === "error" ? <p className="p-[50px] text-muted">{t(language, "career.error")}</p> : null}
 

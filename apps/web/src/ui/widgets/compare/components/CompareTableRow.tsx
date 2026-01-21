@@ -35,25 +35,31 @@ export function CompareTableRow({
   canAddCareer = false,
   isLast = false,
 }: CompareTableRowProps) {
-  const gridCols = `200px repeat(${selectedCareers.length}, 1fr)${canAddCareer ? " 200px" : ""}`
-
   const renderCellContent = (career: CareerForCompare) => {
     switch (type) {
       case "dayToDay":
         return (
-          <div className="overflow-hidden rounded bg-surface1">
+          <div className="overflow-hidden">
             {career.videoUrl ? (
-              <video className="aspect-video w-full object-cover" controls>
+              <video 
+                className="aspect-square w-full object-cover [&::-webkit-media-controls]:hidden [&::-webkit-media-controls-enclosure]:hidden" 
+                autoPlay
+                loop
+                muted
+                playsInline
+                disablePictureInPicture
+                controlsList="nodownload nofullscreen noremoteplayback"
+              >
                 <source src={career.videoUrl} />
               </video>
             ) : career.images?.[0]?.asset?.url ? (
               <img
                 src={career.images[0].asset.url}
                 alt={getLocalizedString(language, career.title) || ""}
-                className="aspect-video w-full object-cover"
+                className="aspect-square w-full object-cover"
               />
             ) : (
-              <div className="aspect-video w-full bg-surface2" />
+              <div className="aspect-square w-full bg-surface2" />
             )}
           </div>
         )
@@ -61,9 +67,11 @@ export function CompareTableRow({
       case "overview": {
         const summary = getLocalizedText(language, career.summary)
         return summary ? (
-          <p className="text-foreground text-sm leading-relaxed">{summary}</p>
+          <p className="text-[length:var(--text-body-lg)] font-medium leading-[var(--leading-body-lg)] tracking-[var(--tracking-body-lg)]">
+            {summary}
+          </p>
         ) : (
-          <p className="text-foreground/60 text-sm">{t(language, "common.missing")}</p>
+          <p className="text-foreground/60 text-[length:var(--text-body-base)]">—</p>
         )
       }
 
@@ -72,7 +80,7 @@ export function CompareTableRow({
         const hasSalaryData = median !== undefined || (rangeMin !== undefined && rangeMax !== undefined)
 
         if (!hasSalaryData) {
-          return <p className="text-foreground/60 text-sm">{t(language, "common.missing")}</p>
+          return <p className="text-foreground/60 text-[length:var(--text-body-base)]">—</p>
         }
 
         const salaryRange =
@@ -81,18 +89,26 @@ export function CompareTableRow({
             : undefined
 
         return (
-          <div className="space-y-2">
+          <div className="flex flex-col gap-[30px]">
             {median !== undefined && (
-              <>
-                <div className="text-lg font-semibold">{formatMoney(median)}</div>
-                <div className="text-sm text-foreground/60">{t(language, "compare.medianSalary")}</div>
-              </>
+              <div className="flex flex-col gap-[5px]">
+                <div className="text-[length:var(--text-body-lg)] font-medium leading-[var(--leading-body-lg)] tracking-[var(--tracking-body-lg)]">
+                  {formatMoney(median)}
+                </div>
+                <div className="text-[length:var(--text-body-base)] font-medium leading-[var(--leading-body-base)] tracking-[var(--tracking-body-base)]">
+                  {t(language, "compare.medianSalary")}
+                </div>
+              </div>
             )}
             {salaryRange && (
-              <>
-                <div className="text-lg font-semibold">{salaryRange}</div>
-                <div className="text-sm text-foreground/60">{t(language, "compare.salaryRange")}</div>
-              </>
+              <div className="flex flex-col gap-[5px]">
+                <div className="text-[length:var(--text-body-lg)] font-medium leading-[var(--leading-body-lg)] tracking-[var(--tracking-body-lg)]">
+                  {salaryRange}
+                </div>
+                <div className="text-[length:var(--text-body-base)] font-medium leading-[var(--leading-body-base)] tracking-[var(--tracking-body-base)]">
+                  {t(language, "compare.salaryRange")}
+                </div>
+              </div>
             )}
           </div>
         )
@@ -102,11 +118,19 @@ export function CompareTableRow({
         const highlight = getLocalizedString(language, career.academicRequirementsHighlight)
         const programLength = getLocalizedString(language, career.programLengthHighlight)
         return (
-          <div className="space-y-1.5">
-            {highlight && <div className="font-semibold text-foreground">{highlight}</div>}
-            {programLength && <div className="text-foreground">{programLength}</div>}
+          <div className="flex flex-col gap-[5px]">
+            {highlight && (
+              <div className="text-[length:var(--text-body-lg)] font-medium leading-[var(--leading-body-lg)] tracking-[var(--tracking-body-lg)]">
+                {highlight}
+              </div>
+            )}
+            {programLength && (
+              <div className="text-[length:var(--text-body-base)] font-medium leading-[var(--leading-body-base)] tracking-[var(--tracking-body-base)]">
+                {programLength}
+              </div>
+            )}
             {!highlight && !programLength && (
-              <p className="text-foreground/60 text-sm">{t(language, "common.missing")}</p>
+              <p className="text-foreground/60 text-[length:var(--text-body-base)]">—</p>
             )}
           </div>
         )
@@ -115,12 +139,16 @@ export function CompareTableRow({
       case "outlook": {
         const outlookValue = career.outlook?.value
         if (outlookValue === undefined) {
-          return <p className="text-foreground/60 text-sm">{t(language, "common.missing")}</p>
+          return <p className="text-foreground/60 text-[length:var(--text-body-base)]">—</p>
         }
         return (
-          <div className="space-y-1">
-            <div className="text-lg font-semibold">{outlookValue}%</div>
-            <div className="text-sm text-foreground/60">{t(language, "compare.projectedGrowth")}</div>
+          <div className="flex flex-col gap-[5px]">
+            <div className="text-[length:var(--text-body-lg)] font-medium leading-[var(--leading-body-lg)] tracking-[var(--tracking-body-lg)]">
+              {outlookValue}%
+            </div>
+            <div className="text-[length:var(--text-body-base)] font-medium leading-[var(--leading-body-base)] tracking-[var(--tracking-body-base)]">
+              {t(language, "compare.projectedGrowth")}
+            </div>
           </div>
         )
       }
@@ -130,7 +158,7 @@ export function CompareTableRow({
         return items?.length ? (
           <BulletList items={items.slice(0, 4)} />
         ) : (
-          <p className="text-foreground/60 text-sm">{t(language, "common.missing")}</p>
+          <p className="text-foreground/60 text-[length:var(--text-body-base)]">—</p>
         )
       }
 
@@ -139,7 +167,7 @@ export function CompareTableRow({
         return items?.length ? (
           <BulletList items={items.slice(0, 4)} />
         ) : (
-          <p className="text-foreground/60 text-sm">{t(language, "common.missing")}</p>
+          <p className="text-foreground/60 text-[length:var(--text-body-base)]">—</p>
         )
       }
 
@@ -148,7 +176,7 @@ export function CompareTableRow({
         return items?.length ? (
           <BulletList items={items.slice(0, 4)} />
         ) : (
-          <p className="text-foreground/60 text-sm">{t(language, "common.missing")}</p>
+          <p className="text-foreground/60 text-[length:var(--text-body-base)]">—</p>
         )
       }
 
@@ -157,24 +185,27 @@ export function CompareTableRow({
     }
   }
 
-  const borderClass = isLast ? "" : "border-b border-foreground"
-
   return (
-    <div className={`grid ${borderClass}`} style={{ gridTemplateColumns: gridCols }}>
-      <div className="flex items-start border-r border-foreground bg-surface1 p-4 font-semibold">
-        {category}
-      </div>
-      {selectedCareers.map(career => (
-        <div key={career._id} className="flex items-start border-r border-foreground p-4 last:border-r-0">
-          <div className="w-full">
-            {renderCellContent(career)}
-          </div>
-        </div>
-      ))}
+    <div className="flex gap-[50px] py-[50px] pl-[50px] pr-[50px]" style={{ minWidth: "min-content" }}>
+      {selectedCareers.map((career, idx) => {
+        const isLast = idx === selectedCareers.length - 1
+        return (
+          <React.Fragment key={career._id}>
+            <div className="flex w-[300px] shrink-0 items-start">
+              {renderCellContent(career)}
+            </div>
+            {!isLast && <div className="h-full w-[0.5px] shrink-0 bg-foreground" />}
+          </React.Fragment>
+        )
+      })}
+
       {canAddCareer && (
-        <div className="flex items-start border-l border-foreground p-4">
-          <div className="text-foreground/40 text-sm">—</div>
-        </div>
+        <>
+          <div className="h-full w-[0.5px] shrink-0 bg-foreground" />
+          <div className="flex w-[300px] shrink-0 items-start">
+            <div className="text-foreground/40 text-[length:var(--text-body-base)]">—</div>
+          </div>
+        </>
       )}
     </div>
   )

@@ -1,0 +1,416 @@
+[
+  {
+    "csvCareer": "Dental Assistant",
+    "matchedId": "1f174276-bebf-4cda-b67b-665b66cd846e",
+    "matchedTitle": "Dental Assistant",
+    "score": 1
+  },
+  {
+    "csvCareer": "Dental Hygienist",
+    "matchedId": "3431a99b-8d73-4c42-9c15-2cbc8be3baa1",
+    "matchedTitle": "Dental Hygienist",
+    "score": 1
+  },
+  {
+    "csvCareer": "Dentist",
+    "matchedId": "99997fac-704c-4c4b-b199-56191102183a",
+    "matchedTitle": "Dentist",
+    "score": 1
+  },
+  {
+    "csvCareer": "Registered Dietitian",
+    "matchedId": "78339c1c-d0c1-428c-94bb-b70d21355fd8",
+    "matchedTitle": "Registered Dietitian",
+    "score": 1
+  },
+  {
+    "csvCareer": "Assisted Living Facility Administrator",
+    "matchedId": "e9c894c5-2041-40fc-a2e9-29faf553c97c",
+    "matchedTitle": "Assisted Living Facility Administrator",
+    "score": 1
+  },
+  {
+    "csvCareer": "Health Information Technician",
+    "matchedId": "9b044136-454d-4af7-bd5f-c72f6004c629",
+    "matchedTitle": "Health Information Technician",
+    "score": 1
+  },
+  {
+    "csvCareer": "Healthcare Administrator",
+    "matchedId": "0b3d3b46-12b5-440a-9e41-6f4e59257222",
+    "matchedTitle": "Healthcare Administrator",
+    "score": 1
+  },
+  {
+    "csvCareer": "Medical Transcriptionist",
+    "matchedId": "c9b67ac8-23cc-4d48-be49-d541a300ee2e",
+    "matchedTitle": "Medical Transcriptionist",
+    "score": 1
+  },
+  {
+    "csvCareer": "Nursing Home Administrator",
+    "matchedId": "78b9d597-ef68-4b28-badd-95957eda0e56",
+    "matchedTitle": "Nursing Home Administrator",
+    "score": 1
+  },
+  {
+    "csvCareer": "Clinical Laboratory Scientist",
+    "matchedId": "459ecf34-5f49-4f29-bba1-1cdb4c3fa9aa",
+    "matchedTitle": "Clinical Laboratory Scientist",
+    "score": 1
+  },
+  {
+    "csvCareer": "Phlebotomist",
+    "matchedId": "e8c83159-74b6-4a1f-9ac9-3a683c942db9",
+    "matchedTitle": "Phlebotomist",
+    "score": 1
+  },
+  {
+    "csvCareer": "Certified Personal Care Aide/Home Health Aide",
+    "matchedId": "b78d1438-ef8e-4174-86f1-81ec1d9b85d2",
+    "matchedTitle": "Certified Personal Care Aide/Home Health Aide",
+    "score": 1
+  },
+  {
+    "csvCareer": "Doula",
+    "matchedId": "3d5c2528-8e71-4f07-bdf4-57a5616b85b2",
+    "matchedTitle": "Doula",
+    "score": 1
+  },
+  {
+    "csvCareer": "Emergency Medical Technician",
+    "matchedId": "b22559e3-37eb-4b07-bb3e-90fca6fa1fec",
+    "matchedTitle": "Emergency Medical Technician",
+    "score": 1
+  },
+  {
+    "csvCareer": "Medical Interpreter",
+    "matchedId": "d9bd18b2-3f4d-43fe-8c2c-3f67a1c44e09",
+    "matchedTitle": "Medical Interpreter",
+    "score": 1
+  },
+  {
+    "csvCareer": "Paramedic",
+    "matchedId": "04ddca36-5c57-4c0b-9d50-1ea8ee0a6732",
+    "matchedTitle": "Paramedic",
+    "score": 1
+  },
+  {
+    "csvCareer": "Surgical Assistant",
+    "matchedId": "086fe37e-b656-4bd7-a065-bf86c2e8c6cf",
+    "matchedTitle": "Surgical Assistant",
+    "score": 1
+  },
+  {
+    "csvCareer": "Surgical Technologist",
+    "matchedId": "0927bd17-1abc-4876-908b-a954c54b03fc",
+    "matchedTitle": "Surgical Technologist",
+    "score": 1
+  },
+  {
+    "csvCareer": "Chiropractor",
+    "matchedId": "adda743c-b8bf-45a6-bec7-b08921e14ef3",
+    "matchedTitle": "Chiropractor",
+    "score": 1
+  },
+  {
+    "csvCareer": "Doctor of Medicine",
+    "matchedId": "d14a75db-3d94-4440-bee2-5eaae52cc499",
+    "matchedTitle": "Doctor of Medicine",
+    "score": 1
+  },
+  {
+    "csvCareer": "Doctor of Osteopathic Medicine",
+    "matchedId": "2319765f-5eda-4510-bd89-f0faacd6bdde",
+    "matchedTitle": "Doctor of Osteopathic Medicine",
+    "score": 1
+  },
+  {
+    "csvCareer": "Physician Assistant",
+    "matchedId": "8a1d4339-fe19-43aa-929c-b5cf99b28d5b",
+    "matchedTitle": "Physician Assistant",
+    "score": 1
+  },
+  {
+    "csvCareer": "Podiatrist",
+    "matchedId": "02d4e780-ee58-429a-964d-91347b1ddf49",
+    "matchedTitle": "Podiatrist",
+    "score": 1
+  },
+  {
+    "csvCareer": "Genetic Counselor",
+    "matchedId": "47794891-5cad-4d20-b3f9-0372a359714c",
+    "matchedTitle": "Genetic Counselor",
+    "score": 1
+  },
+  {
+    "csvCareer": "Licensed Professional Counselor",
+    "matchedId": "84d6c34a-c670-4464-9e2c-77084236df37",
+    "matchedTitle": "Licensed Professional Counselor",
+    "score": 1
+  },
+  {
+    "csvCareer": "Psychiatric Technician",
+    "matchedId": "c1837550-53fa-41e6-a799-7426cc8eb720",
+    "matchedTitle": "Psychiatric Technician",
+    "score": 1
+  },
+  {
+    "csvCareer": "Psychologist",
+    "matchedId": "fddcb5f4-5568-4780-935b-6a9c4fa8df79",
+    "matchedTitle": "Psychologist",
+    "score": 1
+  },
+  {
+    "csvCareer": "Social Worker",
+    "matchedId": "cf36d548-a0fc-48c1-99aa-83f58b45ea1f",
+    "matchedTitle": "Social Worker",
+    "score": 1
+  },
+  {
+    "csvCareer": "Qualified Mental Health Professional",
+    "matchedId": "e70792cc-c71d-4ef5-b476-edc8e0b6a1bc",
+    "matchedTitle": "Qualified Mental Health Professional",
+    "score": 1
+  },
+  {
+    "csvCareer": "Embalmer",
+    "matchedId": "f4d9a2ae-9787-4471-a875-df2b104004b7",
+    "matchedTitle": "Embalmer",
+    "score": 1
+  },
+  {
+    "csvCareer": "Funeral Director",
+    "matchedId": "643eb6d3-ae24-42ee-99cc-cc8bdb3b2368",
+    "matchedTitle": "Funeral Director",
+    "score": 1
+  },
+  {
+    "csvCareer": "Funeral Service Licensee",
+    "matchedId": "fdc921c2-2018-4090-8db0-c3474b4a8a45",
+    "matchedTitle": "Funeral Service Licensee",
+    "score": 1
+  },
+  {
+    "csvCareer": "Certified Nursing Assistant",
+    "matchedId": "036c2c9c-d632-4e59-9908-90778c60a668",
+    "matchedTitle": "Certified Nursing Assistant",
+    "score": 1
+  },
+  {
+    "csvCareer": "Licensed Practical Nurse",
+    "matchedId": "ea100988-a9b2-4337-a9ae-f8a6a2e8339d",
+    "matchedTitle": "Licensed Practical Nurse",
+    "score": 1
+  },
+  {
+    "csvCareer": "Registered Nurse",
+    "matchedId": "8a8ffd68-c651-4fdd-942f-1656205a2639",
+    "matchedTitle": "Registered Nurse",
+    "score": 1
+  },
+  {
+    "csvCareer": "Nurse Anesthetist",
+    "matchedId": "16e86af7-1ae8-46ba-98f7-e22b80455461",
+    "matchedTitle": "Nurse Anesthetist",
+    "score": 1
+  },
+  {
+    "csvCareer": "Nurse Midwife",
+    "matchedId": "c28bc37b-cce9-4c06-8dc1-87f5f3db462e",
+    "matchedTitle": "Nurse Midwife",
+    "score": 1
+  },
+  {
+    "csvCareer": "Nurse Practitioner",
+    "matchedId": "b4c1d4e0-9d0d-4b9a-9bb2-41046bafb95f",
+    "matchedTitle": "Nurse Practitioner",
+    "score": 1
+  },
+  {
+    "csvCareer": "Massage Therapist",
+    "matchedId": "8259a263-4e65-411e-b64c-47ef1b881fcd",
+    "matchedTitle": "Massage Therapist",
+    "score": 1
+  },
+  {
+    "csvCareer": "Pharmacist",
+    "matchedId": "3a42ee93-3216-44ed-bee8-9dd422aeb205",
+    "matchedTitle": "Pharmacist",
+    "score": 1
+  },
+  {
+    "csvCareer": "Pharmacy Technician",
+    "matchedId": "4d576e8d-85ef-41db-89a4-aec611bb2cad",
+    "matchedTitle": "Pharmacy Technician",
+    "score": 1
+  },
+  {
+    "csvCareer": "Certified Community Health Worker",
+    "matchedId": "d2468971-adec-4179-8c58-09aa9efc1292",
+    "matchedTitle": "Certified Community Health Worker",
+    "score": 1
+  },
+  {
+    "csvCareer": "Environmental Science & Protection Technician",
+    "matchedId": "f060b69d-4c57-4afa-8524-e67ada9543a1",
+    "matchedTitle": "Environmental Science & Protection Technician",
+    "score": 1
+  },
+  {
+    "csvCareer": "Epidemiologist",
+    "matchedId": "c55bdb56-5b70-484c-9d1e-0715624367d5",
+    "matchedTitle": "Epidemiologist",
+    "score": 1
+  },
+  {
+    "csvCareer": "Cardiovascular Technologist",
+    "matchedId": "1e8bd241-df8d-49b6-b2a5-17e4443dea5b",
+    "matchedTitle": "Cardiovascular Technologist",
+    "score": 1
+  },
+  {
+    "csvCareer": "Medical Sonographer",
+    "matchedId": "4d80e183-3cb7-4da9-a85d-a9c34d466ec1",
+    "matchedTitle": "Medical Sonographer",
+    "score": 1
+  },
+  {
+    "csvCareer": "Nuclear Medicine Technologist",
+    "matchedId": "1b3e1bbe-b0bd-4c37-ae40-a9111650c7b9",
+    "matchedTitle": "Nuclear Medicine Technologist",
+    "score": 1
+  },
+  {
+    "csvCareer": "Radiation Technologist",
+    "matchedId": "49367619-4afc-4a3b-93c1-1c783909f263",
+    "matchedTitle": "Radiation Technologist",
+    "score": 1
+  },
+  {
+    "csvCareer": "Radiation Therapist",
+    "matchedId": "1343404c-a707-45cc-865d-ef5fd422f4a5",
+    "matchedTitle": "Radiation Therapist",
+    "score": 1
+  },
+  {
+    "csvCareer": "Biological Technician",
+    "matchedId": "a72eb9c9-1178-455c-af35-84aac5e38a8b",
+    "matchedTitle": "Biological Technician",
+    "score": 1
+  },
+  {
+    "csvCareer": "Biomedical Equipment Technician",
+    "matchedId": "924e7d93-b8e5-4621-a35b-2802e1e49490",
+    "matchedTitle": "Biomedical Equipment Technician",
+    "score": 1
+  },
+  {
+    "csvCareer": "Chemical Technician",
+    "matchedId": "7630914c-a161-47e8-b8f2-7d4880dd6cd7",
+    "matchedTitle": "Chemical Technician",
+    "score": 1
+  },
+  {
+    "csvCareer": "Medical Scientist",
+    "matchedId": "ce252672-ba90-434e-b9b9-2fd03620968c",
+    "matchedTitle": "Medical Scientist",
+    "score": 1
+  },
+  {
+    "csvCareer": "Art Therapist",
+    "matchedId": "230d7f51-7ae2-47cd-a8e3-7b4d43862af0",
+    "matchedTitle": "Art Therapist",
+    "score": 1
+  },
+  {
+    "csvCareer": "Athletic Trainer",
+    "matchedId": "1762ad1b-a4b3-482f-9262-934722ca37df",
+    "matchedTitle": "Athletic Trainer",
+    "score": 1
+  },
+  {
+    "csvCareer": "Audiologist",
+    "matchedId": "b6e142c2-b019-4e94-98f8-8d639393dffa",
+    "matchedTitle": "Audiologist",
+    "score": 1
+  },
+  {
+    "csvCareer": "Exercise Physiologist",
+    "matchedId": "9b2611be-1fb2-4132-825b-947d100f9336",
+    "matchedTitle": "Exercise Physiologist",
+    "score": 1
+  },
+  {
+    "csvCareer": "Occupational Therapist",
+    "reason": "ambiguous_match",
+    "matchedTitle": "Occupational Therapist",
+    "score": 1
+  },
+  {
+    "csvCareer": "Occupational Therapy Assistant",
+    "matchedId": "cc89cbd0-9129-4190-a7f8-b89081381987",
+    "matchedTitle": "Occupational Therapy Assistant",
+    "score": 1
+  },
+  {
+    "csvCareer": "Orthotists & Prosthetists",
+    "matchedId": "daade31b-f0a4-446e-a195-cc532ecb0e69",
+    "matchedTitle": "Orthotists & Prosthetists",
+    "score": 1
+  },
+  {
+    "csvCareer": "Physical Therapist",
+    "matchedId": "b1f95eef-e5e3-4e34-861a-459935bc7204",
+    "matchedTitle": "Physical Therapist",
+    "score": 1
+  },
+  {
+    "csvCareer": "Physical Therapy Assistant",
+    "matchedId": "c7ba5ecf-e9af-4837-8e45-1a463646d185",
+    "matchedTitle": "Physical Therapy Assistant",
+    "score": 1
+  },
+  {
+    "csvCareer": "Recreational Therapist",
+    "matchedId": "396b6da2-0fc1-4dd0-94f9-3d17b2ba6970",
+    "matchedTitle": "Recreational Therapist",
+    "score": 1
+  },
+  {
+    "csvCareer": "Respiratory Therapist",
+    "matchedId": "f5f1c76b-9848-4544-b265-4c82c46ff25a",
+    "matchedTitle": "Respiratory Therapist",
+    "score": 1
+  },
+  {
+    "csvCareer": "Speech-Language Pathologist",
+    "matchedId": "a0af95a4-ec22-4268-983e-3623c6dc28e8",
+    "matchedTitle": "Speech-Language Pathologist",
+    "score": 1
+  },
+  {
+    "csvCareer": "Veterinarian",
+    "matchedId": "4304681b-3ea7-4cbe-b5bc-86a8c213caef",
+    "matchedTitle": "Veterinarian",
+    "score": 1
+  },
+  {
+    "csvCareer": "Veterinary Technician",
+    "matchedId": "e5a6b232-8ad0-4c36-a04d-386b95f3e87d",
+    "matchedTitle": "Veterinary Technician",
+    "score": 1
+  },
+  {
+    "csvCareer": "Optician",
+    "matchedId": "d9494966-a321-480e-b761-c6aba44cd87d",
+    "matchedTitle": "Optician",
+    "score": 1
+  },
+  {
+    "csvCareer": "Optometrist",
+    "matchedId": "29c6e8e7-5dd4-4b69-8481-8f91d571124b",
+    "matchedTitle": "Optometrist",
+    "score": 1
+  }
+]

@@ -31,23 +31,50 @@ const SECTIONS: SectionConfig[] = [
 export function CompareTable({ selectedCareers, language, canAddCareer = false }: CompareTableProps) {
 
   return (
-    <div className="overflow-x-auto overflow-y-visible">
-      <div className="min-w-full border border-foreground">
-        {SECTIONS.map((section, idx) => {
-          const isLast = idx === SECTIONS.length - 1
-          return (
-            <CompareTableRow
-              key={section.key}
-              category={t(language, section.translationKey)}
-              selectedCareers={selectedCareers}
-              language={language}
-              type={section.key}
-              canAddCareer={canAddCareer}
-              isLast={isLast}
-            />
-          )
-        })}
-      </div>
+    <div className="flex flex-col">
+      {SECTIONS.map((section, idx) => {
+        const isLast = idx === SECTIONS.length - 1
+        return (
+          <React.Fragment key={section.key}>
+            <div className="flex">
+              {/* Fixed left: category label */}
+              <div className="sticky left-0 z-10 flex w-[250px] shrink-0 items-start bg-surface px-[50px] py-[50px]">
+                <span className="text-[length:var(--text-h5)] font-bold leading-[var(--leading-h5)] tracking-[var(--tracking-h5)]">
+                  {t(language, section.translationKey)}
+                </span>
+              </div>
+
+              {/* Vertical divider */}
+              <div className="sticky left-[250px] z-10 w-[0.5px] shrink-0 bg-foreground" />
+
+              {/* Content area: career data */}
+              <div className="flex-1">
+                <CompareTableRow
+                  category={t(language, section.translationKey)}
+                  selectedCareers={selectedCareers}
+                  language={language}
+                  type={section.key}
+                  canAddCareer={canAddCareer}
+                  isLast={false}
+                />
+              </div>
+            </div>
+            {!isLast && (
+              <div className="flex">
+                <div className="sticky left-0 z-10 w-[250px] shrink-0 bg-surface px-[50px]">
+                  <div className="h-[0.5px] w-full bg-foreground" />
+                </div>
+                <div className="sticky left-[250px] z-10 w-[0.5px] shrink-0 bg-foreground" />
+                <div className="flex-1">
+                  <div className="px-[50px]">
+                    <div className="h-[0.5px] w-full bg-foreground" />
+                  </div>
+                </div>
+              </div>
+            )}
+          </React.Fragment>
+        )
+      })}
     </div>
   )
 }

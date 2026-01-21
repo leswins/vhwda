@@ -7,12 +7,14 @@ interface BulletListProps {
 export function BulletList({ items }: BulletListProps) {
   if (!items?.length) return null
   return (
-    <div className="space-y-2">
+    <div className="flex flex-col gap-[15px]">
       {items.map((item, idx) => (
-        <div key={idx} className="flex items-start gap-3">
-          <div className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-accentOrange" aria-hidden="true" />
-          <span className="text-sm leading-relaxed">{item}</span>
-        </div>
+        <p 
+          key={idx} 
+          className="text-[length:var(--text-body-base)] font-medium leading-[var(--leading-body-base)] tracking-[var(--tracking-body-base)]"
+        >
+          {item}
+        </p>
       ))}
     </div>
   )

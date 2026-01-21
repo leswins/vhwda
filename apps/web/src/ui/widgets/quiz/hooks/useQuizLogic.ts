@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react"
 import { useLanguageStore } from "../../../../zustand/useLanguageStore"
+import { useGlobalLoadingStore } from "../../../../zustand/useGlobalLoadingStore"
 import type { QuizVector, CareerForMatching } from "../../../../sanity/queries/careers"
 import { fetchCareersForQuiz } from "../../../../sanity/queries/careers"
 import type { Question } from "../questions"
@@ -11,6 +12,7 @@ export type QuizStep = "intro" | "questions" | "results"
 
 export function useQuizLogic() {
     const { language } = useLanguageStore()
+    const { setLoading } = useGlobalLoadingStore()
     const [currentStep, setCurrentStep] = useState<QuizStep>("questions")
     const [userVector, setUserVector] = useState<QuizVector>(createEmptyVector())
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
@@ -25,6 +27,7 @@ export function useQuizLogic() {
     useEffect(() => {
         async function loadQuestions() {
             setLoadingQuestions(true)
+            setLoading(true)
             setErrorLoadingQuestions(null)
             try {
                 const sanityQuestions = await fetchQuizQuestions(language)
@@ -44,10 +47,11 @@ export function useQuizLogic() {
                 setErrorLoadingQuestions(`Failed to load questions from Sanity: ${errorMessage}`)
             } finally {
                 setLoadingQuestions(false)
+                setLoading(false)
             }
         }
         loadQuestions()
-    }, [language])
+    }, [language, setLoading])
 
     const handleStart = () => {
         setUserVector(createEmptyVector())
@@ -187,6 +191,7 @@ export function useQuizLogic() {
     const handleFinish = async () => {
         setCurrentStep("results")
         setLoadingResults(true)
+        setLoading(true)
         
         try {
             // Fetch all careers with quiz data
@@ -231,6 +236,7 @@ export function useQuizLogic() {
             console.error("Error calculating career matches:", error)
         } finally {
             setLoadingResults(false)
+            setLoading(false)
         }
     }
 

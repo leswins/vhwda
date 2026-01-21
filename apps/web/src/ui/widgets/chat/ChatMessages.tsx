@@ -21,7 +21,7 @@ export function ChatMessages({ language, messages, isLoading }: Props) {
   if (messages.length === 0) return null
 
   return (
-    <div className="flex-1 space-y-4 overflow-y-auto px-6 py-4">
+    <div className="space-y-4 px-[25px] py-4">
       {messages.map((msg, index) => (
         <div key={index}>
           <ChatMessage type={msg.type} message={msg.message} />

@@ -120,3 +120,45 @@ Remove `--dry-run` to apply changes:
 pnpm --filter studio fix:professional-org-career-keys
 ```
 
+---
+
+## Career Quiz Vector Import
+
+Parses the quiz vector CSV and writes values to `career.quizVector` for matching careers.
+
+### Running the script
+
+From the repo root:
+```bash
+pnpm --filter studio migrate:career-quiz-vectors -- --dry-run --limit 10 --report quiz-vector-report.json
+```
+
+To import all rows:
+```bash
+pnpm --filter studio migrate:career-quiz-vectors
+```
+
+Optional CSV override:
+```bash
+pnpm --filter studio migrate:career-quiz-vectors -- --csv "data-migration/vhwda_career_vector_weights - vhwda_career_vector_weights.csv"
+```
+
+---
+
+## AHEC Region Assignment
+
+Uses Gemini (vision) to assign an AHEC region to each educational institution based on
+address + latitude/longitude. Requires the AHEC map image file.
+
+### Running the script
+
+From the repo root:
+```bash
+pnpm --filter studio migrate:ahec-regions -- --map "path/to/ahec-map.jpg" --dry-run --limit 10 --report ahec-region-report.json
+```
+
+To apply all updates:
+```bash
+pnpm --filter studio migrate:ahec-regions -- --map "path/to/ahec-map.jpg" --report ahec-region-report.json
+```
+
