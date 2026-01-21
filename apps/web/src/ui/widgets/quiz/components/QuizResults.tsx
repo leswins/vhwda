@@ -1,8 +1,8 @@
 import React from "react"
 import type { QuizVector, CareerForMatching } from "../../../../sanity/queries/careers"
-import { CareerMatchList } from "./CareerMatchList"
-import { VectorDisplay } from "./VectorDisplay"
-import { QuizCalculatingResults } from "./QuizCalculatingResults"
+import { QuizResultsHeader } from "./QuizResultsHeader"
+import { TopMatchesSection } from "./TopMatchesSection"
+import { OtherMatchesSection } from "./OtherMatchesSection"
 
 type CareerMatch = CareerForMatching & { score: number }
 
@@ -21,28 +21,18 @@ export function QuizResults({
     language,
     onStartOver,
 }: QuizResultsProps) {
-    // Show calculating screen while loading
     if (loading) {
-        return <QuizCalculatingResults language={language} />
+        return null
     }
     
+    const topMatches = matchedCareers.slice(0, 3)
+    const otherMatches = matchedCareers.slice(3)
+    
     return (
-        <div>
-            <h1>Your Results</h1>
-            
-            <CareerMatchList 
-                careers={matchedCareers}
-                userVector={userVector}
-                language={language}
-            />
-            
-            <VectorDisplay 
-                vector={userVector}
-                title="Your User Vector:"
-            />
-            
-            <button onClick={onStartOver} style={{ marginTop: "20px" }}>Start Over</button>
+        <div className="w-full">
+            <QuizResultsHeader language={language} onStartOver={onStartOver} />
+            <TopMatchesSection careers={topMatches} userVector={userVector} language={language} />
+            <OtherMatchesSection careers={otherMatches} userVector={userVector} language={language} />
         </div>
     )
 }
-

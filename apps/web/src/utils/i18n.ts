@@ -384,7 +384,11 @@ const dict: Dictionary = {
   "quiz.complete.title": { en: "HEALTH CAREERS CATALOG", es: "CATÁLOGO DE CARRERAS DE SALUD" },
   "quiz.complete.message": { en: "Complete the quiz to discover careers for you", es: "Completa el cuestionario para descubrir carreras para ti" },
   "quiz.calculatingTitle": { en: "We're calculating your top career matches", es: "Estamos calculando tus mejores coincidencias de carrera" },
-  "quiz.calculatingSubtitle": { en: "Hang tight while we work our magic...", es: "Espera mientras trabajamos nuestra magia..." }
+  "quiz.calculatingSubtitle": { en: "Hang tight while we work our magic...", es: "Espera mientras trabajamos nuestra magia..." },
+  "quiz.results.topMatches": { en: "Your Top Matches", es: "Tus Mejores Coincidencias" },
+  "quiz.results.otherMatches": { en: "Other Strong Matches", es: "Otras Coincidencias Fuertes" },
+  "quiz.results.retake": { en: "Retake Quiz", es: "Volver a Hacer el Cuestionario" },
+  "quiz.results.searchPlaceholder": { en: "Search for a specific career", es: "Buscar una carrera específica" }
 }
 
 export type TranslationKey = keyof typeof dict

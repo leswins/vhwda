@@ -217,6 +217,8 @@ export type CareerForMatching = {
     rangeMax?: number
     median?: number
   }
+  imageUrl?: string
+  videoUrl?: string
   hardRequirements?: HardRequirements
   hardFilters?: Array<{
     requiresLicensure?: boolean
@@ -248,6 +250,8 @@ const CAREERS_FOR_QUIZ_QUERY = /* groq */ `
     rangeMax,
     median
   },
+  "imageUrl": images[0].asset->url,
+  videoUrl,
   hardRequirements{
     requiresLicensure,
     requiresLifting,

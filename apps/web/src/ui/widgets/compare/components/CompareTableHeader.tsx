@@ -73,7 +73,7 @@ export function CompareTableHeader({
         {selectedCareers.length < 4 && (
           <>
             <div className="h-full w-[0.5px] shrink-0 bg-foreground" />
-            <div className="flex w-[300px] shrink-0 items-center" style={{ minWidth: "200px" }}>
+            <div className={`flex shrink-0 items-center ${showSearch ? 'w-[350px]' : 'w-[300px]'}`} style={{ minWidth: showSearch ? "350px" : "200px" }}>
               {!showSearch ? (
                 <button
                   onClick={onSearchFocus}

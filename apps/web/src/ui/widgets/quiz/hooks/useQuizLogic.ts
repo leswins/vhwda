@@ -241,7 +241,7 @@ export function useQuizLogic() {
     }
 
     const handleStartOver = () => {
-        setCurrentStep("intro")
+        setCurrentStep("questions")
         setUserVector(createEmptyVector())
         setCurrentQuestionIndex(0)
         setSelectedAnswers({})

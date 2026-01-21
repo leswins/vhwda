@@ -1,4 +1,5 @@
-import React from "react"
+import React, { useEffect, useRef, useState } from "react"
+import { createPortal } from "react-dom"
 import type { CareerForCompare } from "../../../../sanity/queries/careers"
 import { getLocalizedString } from "../../../../sanity/queries/careers"
 import { t } from "../../../../utils/i18n"
@@ -36,11 +37,73 @@ export function CareerSearchInput({
   // Limit to 4 careers
   const displayedCareers = filteredCareers.slice(0, 4)
   const hasResults = displayedCareers.length > 0
+  const containerRef = useRef<HTMLDivElement>(null)
+  const dropdownRef = useRef<HTMLDivElement>(null)
+  const [dropdownPosition, setDropdownPosition] = useState<{ top: number; left: number } | null>(null)
 
-  return (
-    <div className="relative w-full">
-      {showSearch ? (
-        <div className="absolute left-0 right-0 top-[-25px] z-[9999] border border-foreground bg-surface shadow-[0px_0px_20px_0px_rgba(0,0,0,0.05)]">
+  useEffect(() => {
+    if (!showSearch) {
+      setDropdownPosition(null)
+      return
+    }
+
+    const updatePosition = () => {
+      if (containerRef.current) {
+        const rect = containerRef.current.getBoundingClientRect()
+        setDropdownPosition({
+          top: rect.bottom - 25,
+          left: rect.left,
+        })
+      }
+    }
+
+    updatePosition()
+
+    // Update position on scroll and resize
+    window.addEventListener("scroll", updatePosition, true)
+    window.addEventListener("resize", updatePosition)
+
+    return () => {
+      window.removeEventListener("scroll", updatePosition, true)
+      window.removeEventListener("resize", updatePosition)
+    }
+  }, [showSearch])
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    if (!showSearch) return
+
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Node
+      
+      // Check if click is outside both container and dropdown
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(target) &&
+        dropdownRef.current &&
+        !dropdownRef.current.contains(target)
+      ) {
+        onEscape()
+      }
+    }
+
+    // Use capture phase to catch clicks before they bubble
+    document.addEventListener("mousedown", handleClickOutside, true)
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside, true)
+    }
+  }, [showSearch, onEscape])
+
+  const dropdownContent = showSearch && dropdownPosition ? (
+    <div
+      ref={dropdownRef}
+      className="fixed z-[99999] w-[350px] border border-foreground bg-surface shadow-[0px_0px_20px_0px_rgba(0,0,0,0.05)]"
+      style={{
+        top: `${dropdownPosition.top}px`,
+        left: `${dropdownPosition.left}px`,
+      }}
+    >
           <div className="flex items-center gap-[15px] border-b border-foreground p-[25px]">
             <SearchIcon className="size-[25px] shrink-0 text-foreground" />
             <input
@@ -94,30 +157,57 @@ export function CareerSearchInput({
             )}
           </div>
         </div>
-      ) : (
-        <div className="flex items-center gap-[15px]">
-          {showIcon && (
+      ) : null
+
+  return (
+    <>
+      <div ref={containerRef} className="relative w-full">
+        {!showSearch ? (
+          <div className="flex items-center gap-[15px]">
+            {showIcon && (
+              <SearchIcon className="size-[25px] shrink-0 text-foreground" />
+            )}
+            <input
+              type="text"
+              placeholder={placeholder || t(language, "compare.searchPlaceholder")}
+              value={searchQuery}
+              onChange={(e) => {
+                onSearchChange(e.target.value)
+                onSearchFocus()
+              }}
+              onFocus={onSearchFocus}
+              onKeyDown={(e) => {
+                if (e.key === "Escape") {
+                  onEscape()
+                }
+              }}
+              className="flex-1 border-0 bg-transparent text-[length:var(--text-body-base)] font-medium leading-[var(--leading-body-base)] tracking-[var(--tracking-body-base)] text-foreground placeholder:text-[rgb(var(--color-muted))] focus:outline-none"
+            />
+          </div>
+        ) : (
+          <div className="flex items-center gap-[15px]">
             <SearchIcon className="size-[25px] shrink-0 text-foreground" />
-          )}
-          <input
-            type="text"
-            placeholder={placeholder || t(language, "compare.searchPlaceholder")}
-            value={searchQuery}
-            onChange={(e) => {
-              onSearchChange(e.target.value)
-              onSearchFocus()
-            }}
-            onFocus={onSearchFocus}
-            onKeyDown={(e) => {
-              if (e.key === "Escape") {
-                onEscape()
-              }
-            }}
-            className="flex-1 border-0 bg-transparent text-[length:var(--text-body-base)] font-medium leading-[var(--leading-body-base)] tracking-[var(--tracking-body-base)] text-foreground placeholder:text-[rgb(var(--color-muted))] focus:outline-none"
-          />
-        </div>
-      )}
-    </div>
+            <input
+              type="text"
+              placeholder={placeholder || t(language, "compare.searchPlaceholder")}
+              value={searchQuery}
+              onChange={(e) => {
+                onSearchChange(e.target.value)
+                onSearchFocus()
+              }}
+              onFocus={onSearchFocus}
+              onKeyDown={(e) => {
+                if (e.key === "Escape") {
+                  onEscape()
+                }
+              }}
+              className="flex-1 border-0 bg-transparent text-[length:var(--text-body-base)] font-medium leading-[var(--leading-body-base)] tracking-[var(--tracking-body-base)] text-foreground placeholder:text-[rgb(var(--color-muted))] focus:outline-none"
+            />
+          </div>
+        )}
+      </div>
+      {dropdownContent && createPortal(dropdownContent, document.body)}
+    </>
   )
 }
 
