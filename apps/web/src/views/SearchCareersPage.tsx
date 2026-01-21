@@ -555,7 +555,6 @@ export function SearchCareersPage() {
             </div>
 
             <div className="h-[0.5px] w-full bg-foreground shrink-0" />
-
             <CareerFilters
               language={language}
               careers={careers}
