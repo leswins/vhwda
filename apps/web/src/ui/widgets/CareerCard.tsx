@@ -9,16 +9,43 @@ type Props = {
   salary?: string
   to: string
   imageUrl?: string
+  videoUrl?: string
   showMatch?: boolean
   matchLabel?: string
 }
 
-export function CareerCard({ language, title, salary, to, imageUrl, showMatch, matchLabel }: Props) {
+export function CareerCard({ language, title, salary, to, imageUrl, videoUrl, showMatch, matchLabel }: Props) {
+  const videoRef = React.useRef<HTMLVideoElement | null>(null)
+
+  const handleMouseEnter = () => {
+    const video = videoRef.current
+    if (!video) return
+    void video.play()
+  }
+
+  const handleMouseLeave = () => {
+    videoRef.current?.pause()
+  }
+
   return (
-    <div className="group w-[420px] shrink-0 border border-foreground bg-surface">
-      <Link to={to} className="block">
+    <div className="group w-[420px] shrink-0 bg-surface">
+      <Link to={to} className="block" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} onFocus={handleMouseEnter} onBlur={handleMouseLeave}>
         <div className="relative h-[283px] w-full overflow-hidden bg-surface2">
-          {imageUrl ? <img alt="" src={imageUrl} className="h-full w-full object-cover" /> : null}
+          {videoUrl ? (
+            <video
+              ref={videoRef}
+              className="h-full w-full object-cover"
+              muted
+              playsInline
+              preload="metadata"
+              loop
+              poster={imageUrl}
+            >
+              <source src={videoUrl} />
+            </video>
+          ) : imageUrl ? (
+            <img alt="" src={imageUrl} className="h-full w-full object-cover" />
+          ) : null}
 
           {showMatch ? (
             <div className="absolute left-0 top-0 bg-accentGreen px-2.5 py-2">
@@ -47,7 +74,7 @@ export function CareerCard({ language, title, salary, to, imageUrl, showMatch, m
           <div className="flex items-center justify-between py-5">
             <span className="text-sm text-muted">{t(language, "careerCard.learnMore")}</span>
             <span aria-hidden="true" className="text-xl text-foreground">
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <svg width="15" height="15" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M-4.92305e-07 11.2626L-3.81923e-07 8.73737L15.1515 8.73737L8.20707 1.79293L10 -4.37114e-07L20 10L10 20L8.20707 18.2071L15.1515 11.2626L-4.92305e-07 11.2626Z" fill="currentColor" />
               </svg>
             </span>

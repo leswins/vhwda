@@ -17,6 +17,10 @@ body {
   font-family: var(--font-sans);
 }
 
+.text-xs {
+  font-weight: var(--font-weight-xs);
+}
+
 /* Focus visibility baseline */
 :focus-visible {
   outline: 2px solid rgb(var(--color-primary));
@@ -35,6 +39,20 @@ body {
 
 .site-grid-container {
   @apply mx-auto w-full max-w-[1368px] border-l border-r border-foreground;
+}
+
+@keyframes wipe-right {
+  from {
+    transform: translateX(-100%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
+.animate-wipe-right {
+  animation: wipe-right 500ms ease-in-out forwards;
 }
 
 /* Quiz slider styling - using design tokens */
@@ -129,15 +147,20 @@ body {
 
 /* Quiz spinner animation - one square highlights and moves around */
 @keyframes quiz-spinner-active {
-  0%, 100% {
+
+  0%,
+  100% {
     opacity: 1;
   }
+
   25% {
     opacity: 0.3;
   }
+
   50% {
     opacity: 0.3;
   }
+
   75% {
     opacity: 0.3;
   }
@@ -147,15 +170,19 @@ body {
   0% {
     opacity: 0.3;
   }
+
   25% {
     opacity: 1;
   }
+
   50% {
     opacity: 0.3;
   }
+
   75% {
     opacity: 0.3;
   }
+
   100% {
     opacity: 0.3;
   }
@@ -165,15 +192,28 @@ body {
   0% {
     opacity: 0.3;
   }
+
   25% {
+    opacity: 1;
+  }
+}
+
+/* Quiz loading animation - 2x2 grid squares */
+@keyframes quiz-loading-pulse {
+
+  0%,
+  100% {
     opacity: 0.3;
   }
+
   50% {
     opacity: 1;
   }
+
   75% {
     opacity: 0.3;
   }
+
   100% {
     opacity: 0.3;
   }
@@ -183,15 +223,19 @@ body {
   0% {
     opacity: 0.3;
   }
+
   25% {
     opacity: 0.3;
   }
+
   50% {
     opacity: 0.3;
   }
+
   75% {
     opacity: 1;
   }
+
   100% {
     opacity: 0.3;
   }
@@ -215,4 +259,8 @@ body {
 
 .quiz-spinner-square:nth-child(4) {
   animation: quiz-spinner-next3 1.6s ease-in-out infinite;
+}
+
+.quiz-loading-square {
+  animation: quiz-loading-pulse 1.2s ease-in-out infinite;
 }

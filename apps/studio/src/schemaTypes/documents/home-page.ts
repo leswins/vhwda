@@ -8,6 +8,12 @@ export const homePage = defineType({
   icon: HomeIcon,
   fields: [
     defineField({
+      name: "heroVideoUrl",
+      title: "Hero Video URL",
+      description: "Optional video URL for the home page hero.",
+      type: "url"
+    }),
+    defineField({
       name: "featuredCareers",
       title: "Featured Careers",
       description: "Select careers to display in the homepage carousel.",

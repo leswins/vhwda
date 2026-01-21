@@ -10,9 +10,13 @@
     "typegen": "sanity typegen generate",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "lint": "echo \"lint not configured yet\" && exit 0",
-    "migrate:hard-filters": "tsx scripts/migrate-hard-filters.ts"
+    "migrate:hard-filters": "tsx scripts/migrate-hard-filters.ts",
+    "migrate:professional-orgs": "tsx scripts/enrich-professional-organizations.ts",
+    "fix:professional-org-career-keys": "tsx scripts/fix-professional-organization-career-keys.ts"
   },
   "dependencies": {
+    "dotenv": "^16.4.7",
+    "@google/generative-ai": "^0.17.1",
     "@sanity/client": "^6.29.0",
     "@sanity/icons": "^3.7.0",
     "react": "^18.3.1",

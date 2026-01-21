@@ -7,6 +7,7 @@ import {
     QuizQuestion,
     QuizNavigation,
     QuizResults,
+    QuizCalculatingResults,
 } from "../ui/widgets/quiz/components"
 import { QuizSidebar } from "../ui/widgets/quiz/components/QuizSidebar"
 import { VectorModal } from "../ui/widgets/quiz/components/VectorModal"
@@ -96,40 +97,40 @@ export function QuizPage() {
                         {/* Vector debug modal */}
                         <VectorModal vector={userVector} language={language} />
                     </>
-            ) : currentStep === "results" ? (
-                <>
-                    {/* Show sidebar when loading results */}
-                    {loadingResults && (
-                        <QuizSidebar
-                            questions={questions}
-                            currentQuestionIndex={questions.length}
-                            selectedAnswers={selectedAnswers}
-                            language={language}
-                        />
-                    )}
-                    
-                    {/* Results area - full width when loading, with sidebar when not */}
-                    <div className="flex-1 overflow-y-auto">
-                        {loadingResults ? (
-                            <div className="flex items-center justify-center min-h-full w-full">
-                                <QuizLoading />
-                            </div>
-                        ) : (
-                            <div className="p-8">
-                                <QuizResults
-                                    loading={loadingResults}
-                                    matchedCareers={matchedCareers}
-                                    userVector={userVector}
-                                    language={language}
-                                    onStartOver={handleStartOver}
-                                />
-                            </div>
+                ) : currentStep === "results" ? (
+                    <>
+                        {/* Show sidebar when loading results */}
+                        {loadingResults && (
+                            <QuizSidebar
+                                questions={questions}
+                                currentQuestionIndex={questions.length}
+                                selectedAnswers={selectedAnswers}
+                                language={language}
+                            />
                         )}
-                    </div>
-                </>
-            ) : null}
+
+                        {/* Results area - full width when loading, with sidebar when not */}
+                        <div className="flex-1 overflow-y-auto">
+                            {loadingResults ? (
+                                <div className="flex items-center justify-center min-h-full w-full">
+                                    <QuizLoading />
+                                </div>
+                            ) : (
+                                <div className="p-8">
+                                    <QuizResults
+                                        loading={loadingResults}
+                                        matchedCareers={matchedCareers}
+                                        userVector={userVector}
+                                        language={language}
+                                        onStartOver={handleStartOver}
+                                    />
+                                </div>
+                            )}
+                        </div>
+                    </>
+                ) : null}
             </div>
-            
+
             {/* Complete the quiz section - only show during questions step */}
             {currentStep === "questions" && currentQuestion && (
                 <div className="border-t border-foreground border-dashed bg-surface1">
@@ -145,9 +146,9 @@ export function QuizPage() {
                             </div>
                             {/* Decorative shapes image */}
                             <div className="hidden lg:flex items-end justify-end relative -mr-6 mb-[-24px]">
-                                <img 
-                                    src={shapesImage} 
-                                    alt="" 
+                                <img
+                                    src={shapesImage}
+                                    alt=""
                                     className="w-[200px] h-auto object-contain"
                                 />
                             </div>
