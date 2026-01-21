@@ -46,8 +46,7 @@ export function BooleanToggle({ questionId, value, options, onChange, language }
     }
 
     return (
-        <div className="flex flex-col gap-12 items-center w-full max-w-[530px]">
-            <div className="flex items-center gap-6">
+        <div className="flex items-center gap-6">
                 {/* Yes button */}
                 <button
                     type="button"
@@ -91,7 +90,6 @@ export function BooleanToggle({ questionId, value, options, onChange, language }
                         <ThumbsDownIcon />
                     </div>
                 </button>
-            </div>
         </div>
     )
 }
