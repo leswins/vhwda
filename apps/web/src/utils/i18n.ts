@@ -18,15 +18,66 @@ const dict: Dictionary = {
   "language.esShort": { en: "ES", es: "ES" },
   "language.english": { en: "English", es: "Inglés" },
   "language.spanish": { en: "Español", es: "Español" },
-  "home.hero.title": { en: "Your health career starts here.", es: "Tu carrera de salud comienza aquí." },
+  "home.hero.title": { en: "Discover your health career in Virginia", es: "Descubre tu carrera de salud en Virginia" },
   "home.hero.subtitle": {
-    en: "Explore Virginia’s health career catalog, find your path, and plan your future.",
-    es: "Explora el catálogo de carreras de salud de Virginia, encuentra tu camino y planifica tu futuro."
+    en: "Clear, up-to-date steps on education, salary, demand, and programs so you can choose work that matters.",
+    es: "Pasos claros y actualizados sobre educación, salario, demanda y programas para que puedas elegir un trabajo que importe."
   },
+  "home.hero.primaryCTA": { en: "Find your path", es: "Encuentra tu camino" },
+  "home.hero.secondaryCTA": { en: "Explore careers", es: "Explorar carreras" },
   "home.hero.browseCTA": { en: "Browse careers", es: "Explorar carreras" },
   "home.hero.quizCTA": { en: "Take the quiz", es: "Hacer el cuestionario" },
+  "home.steps.heading": { en: "Start with these steps", es: "Empieza con estos pasos" },
+  "home.steps.quiz.title": { en: "Take the career finder quiz", es: "Haz el cuestionario para encontrar tu carrera" },
+  "home.steps.quiz.description": {
+    en: "A quick quiz that points you to roles that fit your goals and schedule.",
+    es: "Un breve cuestionario que te guía hacia roles que se ajustan a tus metas y horario."
+  },
+  "home.steps.browse.title": { en: "Browse & compare careers", es: "Explora y compara carreras" },
+  "home.steps.browse.description": {
+    en: "Filter and compare careers by salary, education, program length, and outlook.",
+    es: "Filtra y compara carreras por salario, educación, duración del programa y perspectiva."
+  },
+  "home.steps.plan.title": { en: "Plan your next steps", es: "Planifica tus próximos pasos" },
+  "home.steps.plan.description": {
+    en: "Find programs, prerequisites, and scholarships in Virginia to get started.",
+    es: "Encuentra programas, prerrequisitos y becas en Virginia para comenzar."
+  },
+  "home.catalogBanner.left": {
+    en: "Virginia Health Workforce Development Authority",
+    es: "Autoridad de Desarrollo de la Fuerza Laboral de Salud de Virginia"
+  },
+  "home.catalogBanner.right": { en: "Health Careers Catalog", es: "Catalogo de carreras de salud" },
+  "home.catalogHighlights.careers.title": { en: "+120 Health Careers", es: "+120 Carreras de salud" },
+  "home.catalogHighlights.careers.description": {
+    en: "Jargon-free summaries for every role.",
+    es: "Resumenes sin jerga para cada rol."
+  },
+  "home.catalogHighlights.updated.title": { en: "Updated regularly", es: "Actualizado con regularidad" },
+  "home.catalogHighlights.updated.description": {
+    en: "Fresh salary, education, and demand data.",
+    es: "Datos recientes de salario, educacion y demanda."
+  },
+  "home.catalogHighlights.local.title": { en: "Built for Virginians", es: "Creado para virginianos" },
+  "home.catalogHighlights.local.description": {
+    en: "Programs, schools, and more in your region.",
+    es: "Programas, escuelas y mas en tu region."
+  },
   "home.featuredCareers.title": { en: "Featured Careers", es: "Carreras destacadas" },
   "home.featuredCareers.viewAll": { en: "View all careers", es: "Ver todas las carreras" },
+  "home.featuredCareers.kicker": { en: "Featured Careers", es: "Carreras destacadas" },
+  "home.featuredCareers.headline": { en: "Start fast, grow over time", es: "Empieza rapido, crece con el tiempo" },
+  "home.featuredCareers.ctaExplore": { en: "Explore all careers", es: "Explora todas las carreras" },
+  "home.featuredCareers.ctaFind": { en: "Find your career", es: "Encuentra tu carrera" },
+  "home.quizSection.left.title": { en: "Career Discovery Quiz", es: "Cuestionario de descubrimiento de carreras" },
+  "home.quizSection.left.cta": { en: "Start the quiz", es: "Empezar el cuestionario" },
+  "home.quizSection.right.kicker": { en: "FIND YOUR CAREER", es: "ENCUENTRA TU CARRERA" },
+  "home.quizSection.right.title": { en: "Not sure where to start? Take the quiz.", es: "¿No estás seguro de por dónde empezar? Haz el cuestionario." },
+  "home.quizSection.right.description": {
+    en: "Answer a few questions. We'll suggest careers that fit your interests, training goals, and timeline—then email you the results.",
+    es: "Responde a unas preguntas. Te sugeriremos carreras que se ajusten a tus intereses, objetivos de formación y cronograma—luego te enviaremos los resultados por correo electrónico."
+  },
+  "home.quizSection.right.estimate": { en: "Est. time to complete: 5 minutes", es: "Tiempo estimado para completar: 5 minutos" },
   "home.sections.explore.title": { en: "Explore your options", es: "Explora tus opciones" },
   "home.sections.explore.browse.title": { en: "Explore the catalog", es: "Explora el catálogo" },
   "home.sections.explore.browse.description": {
@@ -70,7 +121,7 @@ const dict: Dictionary = {
     es: "Falta el token de Mapbox. Crea apps/web/.env.local con VITE_MAPBOX_TOKEN=… y reinicia."
   },
   "career.sectionNavA11y": { en: "Career page sections", es: "Secciones de la página de carrera" },
-  "careerCard.typicalVaSalary": { en: "Typical VA Salary", es: "Salario típico en VA" },
+  "careerCard.typicalVaSalary": { en: "Typical Salary", es: "Salario típico" },
   "careerCard.learnMore": { en: "Learn more", es: "Ver más" },
   "career.salary.entryLevel": { en: "Entry Level", es: "Nivel inicial" },
   "career.salary.median": { en: "Median", es: "Mediana" },
@@ -238,6 +289,26 @@ const dict: Dictionary = {
   "planNextSteps.card.schoolsPrerequisites.description": {
     en: "Find accredited programs in Virginia.",
     es: "Encuentra programas acreditados en Virginia."
+  },
+  "home.shortcuts.heading": {
+    en: "Shortcuts to the most common tasks",
+    es: "Accesos directos a las tareas más comunes"
+  },
+  "home.shortcuts.browse.title": {
+    en: "Browse all careers",
+    es: "Ver todas las carreras"
+  },
+  "home.shortcuts.browse.description": {
+    en: "Filter by salary, education, job outlook, and program length.",
+    es: "Filtra por salario, educación, perspectiva laboral y duración del programa."
+  },
+  "home.shortcuts.compare.title": {
+    en: "Compare careers",
+    es: "Comparar carreras"
+  },
+  "home.shortcuts.compare.description": {
+    en: "See requirements and salary side-by-side.",
+    es: "Ver requisitos y salarios lado a lado."
   },
   "filters.search": { en: "Filter", es: "Filtrar" },
   "filters.currentStage": { en: "Current Stage", es: "Etapa Actual" },

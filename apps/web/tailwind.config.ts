@@ -16,6 +16,7 @@ export default {
         surface2: "rgb(var(--color-surface-2) / <alpha-value>)",
         onSurfaceSecondary: "rgb(var(--color-on-surface-secondary) / <alpha-value>)",
         onSurfaceDisabled: "rgb(var(--color-on-surface-disabled) / <alpha-value>)",
+        onSurfaceDisabledLight: "rgb(var(--color-on-surface-disabled-light) / <alpha-value>)",
         accentPink: "rgb(var(--color-accent-pink) / <alpha-value>)",
         accentOrange: "rgb(var(--color-accent-orange) / <alpha-value>)",
         accentYellow: "rgb(var(--color-accent-yellow) / <alpha-value>)",
@@ -28,8 +29,8 @@ export default {
       fontSize: {
         h1: ["var(--text-h1)", { lineHeight: "var(--leading-h1)", letterSpacing: "var(--tracking-h1)", fontWeight: "700" }],
         h2: ["var(--text-h2)", { lineHeight: "var(--leading-h2)", letterSpacing: "var(--tracking-h2)", fontWeight: "700" }],
-        h3: ["var(--text-h3)", { lineHeight: "var(--leading-h3)", letterSpacing: "var(--tracking-h3)", fontWeight: "700" }],
-        h4: ["var(--text-h4)", { lineHeight: "var(--leading-h4)", letterSpacing: "var(--tracking-h4)", fontWeight: "700" }],
+        h3: ["var(--text-h3)", { lineHeight: "var(--leading-h3)", letterSpacing: "var(--tracking-h3)", fontWeight: "500" }],
+        h4: ["var(--text-h4)", { lineHeight: "var(--leading-h4)", letterSpacing: "var(--tracking-h4)", fontWeight: "600" }],
         h5: ["var(--text-h5)", { lineHeight: "var(--leading-h5)", letterSpacing: "var(--tracking-h5)", fontWeight: "700" }],
         sub1: ["var(--text-sub1)", { lineHeight: "var(--leading-sub1)", letterSpacing: "var(--tracking-sub1)", fontWeight: "500" }],
         sub2: ["var(--text-sub2)", { lineHeight: "var(--leading-sub2)", letterSpacing: "var(--tracking-sub2)", fontWeight: "700" }],
