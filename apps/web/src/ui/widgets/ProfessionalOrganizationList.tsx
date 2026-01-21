@@ -57,7 +57,7 @@ export function ProfessionalOrganizationList({ language, filters, onCountChange 
   }
 
   return (
-    <div className="flex-1 space-y-4">
+    <div className="flex-1">
       {filteredOrganizations.length === 0 ? (
         <p className="text-muted">No organizations found.</p>
       ) : (

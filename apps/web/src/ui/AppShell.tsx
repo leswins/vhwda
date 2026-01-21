@@ -28,13 +28,20 @@ export function AppShell() {
       return () => clearTimeout(timer)
     } else if (navigation.state === "idle") {
       setLoading(false)
-      // Wait a moment before fading content back in
+    }
+  }, [navigation.state, setLoading])
+
+  // Sync content visibility with global loading state
+  useEffect(() => {
+    if (!isLoading && navigation.state === "idle") {
       const timer = setTimeout(() => {
         setContentVisible(true)
       }, 50)
       return () => clearTimeout(timer)
+    } else {
+      setContentVisible(false)
     }
-  }, [navigation.state, setLoading])
+  }, [isLoading, navigation.state])
 
   // Handle scroll locking when loading
   useEffect(() => {

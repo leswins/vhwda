@@ -57,7 +57,7 @@ export function ScholarshipList({ language, filters, onCountChange }: Props) {
   }
 
   return (
-    <div className="flex-1 space-y-4">
+    <div className="flex-1">
       {filteredScholarships.length === 0 ? (
         <p className="text-muted">No scholarships found.</p>
       ) : (

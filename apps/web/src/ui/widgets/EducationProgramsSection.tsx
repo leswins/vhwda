@@ -14,6 +14,148 @@ function cx(...parts: Array<string | false | null | undefined>) {
   return parts.filter(Boolean).join(" ")
 }
 
+const REGION_ORDER = [
+  "Northern VA",
+  "Blue Ridge",
+  "Rappahannock",
+  "Central",
+  "Southside",
+  "Eastern VA",
+  "South Central",
+  "Southwest"
+]
+
+function getRegionLabel(region?: string): string {
+  if (!region || !region.trim()) return "Other"
+  return region
+}
+
+type RegionGroup = {
+  region: string
+  items: CareerEducationInstitutionItem[]
+}
+
+function groupItemsByRegion(items: CareerEducationInstitutionItem[]): RegionGroup[] {
+  const grouped = new Map<string, CareerEducationInstitutionItem[]>()
+  items.forEach((item) => {
+    const region = getRegionLabel(item.institution?.region)
+    const list = grouped.get(region)
+    if (list) {
+      list.push(item)
+    } else {
+      grouped.set(region, [item])
+    }
+  })
+
+  const ordered: RegionGroup[] = []
+  REGION_ORDER.forEach((region) => {
+    const entries = grouped.get(region)
+    if (entries && entries.length) {
+      ordered.push({
+        region,
+        items: entries.slice().sort((a, b) => getItemName(a).localeCompare(getItemName(b)))
+      })
+      grouped.delete(region)
+    }
+  })
+
+  grouped.forEach((entries, region) => {
+    ordered.push({
+      region,
+      items: entries.slice().sort((a, b) => getItemName(a).localeCompare(getItemName(b)))
+    })
+  })
+
+  return ordered
+}
+
+type RegionListProps = {
+  groups: RegionGroup[]
+  activeKey: string | null
+  onSelect: (item: CareerEducationInstitutionItem) => void
+}
+
+function RegionList({ groups, activeKey, onSelect }: RegionListProps) {
+  const [expandedRegions, setExpandedRegions] = useState<string[]>([])
+
+  const toggleRegion = (region: string) => {
+    setExpandedRegions((prev) =>
+      prev.includes(region) ? prev.filter((r) => r !== region) : [...prev, region]
+    )
+  }
+
+  return (
+    <div className="flex h-full flex-col">
+      <ul>
+        {groups.map((group, index) => {
+          const isExpanded = expandedRegions.includes(group.region)
+          const isLast = index === groups.length - 1
+          return (
+            <li
+              key={group.region}
+              className={cx(
+                "border-b-[0.5px] border-foreground",
+                isLast && !isExpanded && "border-b-0"
+              )}
+            >
+              <button
+                type="button"
+                onClick={() => toggleRegion(group.region)}
+                className="flex w-full items-center justify-between py-[25px] text-left text-h4 font-semibold text-foreground"
+              >
+                <span>{group.region}</span>
+                <span aria-hidden="true">
+                  {isExpanded ? (
+                    <svg width="15" height="2" viewBox="0 0 15 2" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M0 1H7.5H15" stroke="currentColor" strokeWidth="2" />
+                    </svg>
+                  ) : (
+                    <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M7.5 0V7.5M7.5 7.5V15M7.5 7.5H0M7.5 7.5H15" stroke="currentColor" strokeWidth="2" />
+                    </svg>
+                  )}
+                </span>
+              </button>
+              {isExpanded && (
+                <ul className="border-t-[0.5px] border-foreground">
+                  {group.items.map((item, itemIndex) => {
+                    const isActive = item._key === activeKey
+                    const isLastItem = itemIndex === group.items.length - 1
+                    return (
+                      <li
+                        key={item._key}
+                        className={cx(
+                          "border-b-[0.5px] border-foreground last:border-b-0 pl-[25px] ml-[25px]",
+                          isLast && isLastItem && "border-b-0"
+                        )}
+                      >
+                        <button
+                          type="button"
+                          className={cx(
+                            "flex w-full items-center justify-between py-[25px] text-left text-body-lg",
+                            isActive && "font-semibold"
+                          )}
+                          onClick={() => onSelect(item)}
+                        >
+                          <span>{getItemName(item)}</span>
+                          <span aria-hidden="true">
+                            <svg width="15" height="15" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M-4.92305e-07 11.2626L-3.81923e-07 8.73737L15.1515 8.73737L8.20707 1.79293L10 -4.37114e-07L20 10L10 20L8.20707 18.2071L15.1515 11.2626L-4.92305e-07 11.2626Z" fill="currentColor" />
+                            </svg>
+                          </span>
+                        </button>
+                      </li>
+                    )
+                  })}
+                </ul>
+              )}
+            </li>
+          )
+        })}
+      </ul>
+    </div>
+  )
+}
 function getItemName(item: CareerEducationInstitutionItem): string {
   return item.label || item.institution?.name || ""
 }
@@ -53,6 +195,7 @@ export function EducationProgramsSection({ language, items, title }: Props) {
   const [activeKey, setActiveKey] = useState<string | null>(items[0]?._key ?? null)
 
   const sorted = useMemo(() => items.slice().filter((i) => getItemName(i).trim().length > 0), [items])
+  const groupedRegions = useMemo(() => groupItemsByRegion(sorted), [sorted])
 
   useEffect(() => {
     if (!token) return
@@ -127,34 +270,17 @@ export function EducationProgramsSection({ language, items, title }: Props) {
   if (!token) {
     return (
       <div className="grid h-[650px] max-h-[650px] overflow-hidden lg:grid-cols-[40%_60%]">
-        <div className="flex h-full min-h-0 flex-col pt-[50px] px-[50px]">
-          <h2 className="pb-[50px] text-4xl font-bold border-b border-foreground shrink-0">{title}</h2>
-          <div className="min-h-0 flex-1 overflow-auto pr-2">
-            <ul className="divide-y divide-foreground pb-[50px]">
-              {sorted.map((item) => {
-                const name = getItemName(item)
-                const href = getItemHref(item)
-                return (
-                  <li key={item._key} className="flex items-center justify-between py-[25px]">
-                    {href ? (
-                      <a className="text-xl hover:underline" href={href} target="_blank" rel="noreferrer">
-                        {name}
-                      </a>
-                    ) : (
-                      <span className="text-xl">{name}</span>
-                    )}
-                    <span aria-hidden="true">
-                      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M-4.92305e-07 11.2626L-3.81923e-07 8.73737L15.1515 8.73737L8.20707 1.79293L10 -4.37114e-07L20 10L10 20L8.20707 18.2071L15.1515 11.2626L-4.92305e-07 11.2626Z" fill="currentColor" />
-                      </svg>
-                    </span>
-                  </li>
-                )
-              })}
-            </ul>
+        <div className="flex h-full min-h-0 flex-col">
+          <h2 className="p-[50px] text-h3 border-b-[0.5px] border-foreground shrink-0">{title}</h2>
+          <div className="min-h-0 flex-1 overflow-auto px-[25px] pb-[25px] pt-0 border-r-[0.5px] border-foreground">
+            <RegionList
+              groups={groupedRegions}
+              activeKey={activeKey}
+              onSelect={(item) => setActiveKey(item._key)}
+            />
           </div>
         </div>
-        <div className="h-[650px] border-l border-foreground bg-surface1 p-4 text-sm text-foreground/70">
+        <div className="h-[650px] bg-surface1 p-4 text-sm text-foreground/70">
           {t(language, "career.map.noToken")}
         </div>
       </div>
@@ -163,48 +289,18 @@ export function EducationProgramsSection({ language, items, title }: Props) {
 
   return (
     <div className="grid h-[650px] max-h-[650px] overflow-hidden lg:grid-cols-[40%_60%]">
-      <div className="flex h-full min-h-0 flex-col pt-[50px] px-[50px]">
-        <h2 className="pb-[50px] text-4xl font-bold border-b border-foreground shrink-0">{title}</h2>
-        <div className="min-h-0 flex-1 overflow-auto pr-2">
-          <ul className="divide-y divide-foreground pb-[50px]">
-            {sorted.map((item) => {
-              const name = getItemName(item)
-              const href = getItemHref(item)
-              const isActive = item._key === activeKey
-              return (
-                <li key={item._key} className="py-[25px]">
-                  <button
-                    type="button"
-                    className={cx("flex w-full items-center justify-between text-left", isActive && "font-bold")}
-                    onClick={() => setActiveKey(item._key)}
-                  >
-                    {href ? (
-                      <a
-                        className="text-xl hover:underline"
-                        href={href}
-                        target="_blank"
-                        rel="noreferrer"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        {name}
-                      </a>
-                    ) : (
-                      <span className="text-xl">{name}</span>
-                    )}
-                    <span aria-hidden="true">
-                      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M-4.92305e-07 11.2626L-3.81923e-07 8.73737L15.1515 8.73737L8.20707 1.79293L10 -4.37114e-07L20 10L10 20L8.20707 18.2071L15.1515 11.2626L-4.92305e-07 11.2626Z" fill="currentColor" />
-                      </svg>
-                    </span>
-                  </button>
-                </li>
-              )
-            })}
-          </ul>
+      <div className="flex h-full min-h-0 flex-col">
+        <h2 className="p-[50px] text-h3 border-b-[0.5px] border-foreground shrink-0">{title}</h2>
+        <div className="min-h-0 flex-1 overflow-auto px-[25px] pb-[25px] pt-0 border-r-[0.5px] border-foreground">
+          <RegionList
+            groups={groupedRegions}
+            activeKey={activeKey}
+            onSelect={(item) => setActiveKey(item._key)}
+          />
         </div>
       </div>
 
-      <div className="h-[650px] border-l border-foreground bg-surface1">
+      <div className="h-[650px] bg-surface1">
         <div ref={mapContainerRef} className="h-full w-full" />
       </div>
 

@@ -7,6 +7,7 @@ import { Button } from "../ui/components/Button"
 import { CareerCard } from "../ui/widgets/CareerCard"
 import { fetchHomePageData, HomePageData } from "../sanity/queries/homePage"
 import { getLocalizedString } from "../sanity/queries/careers"
+import { useGlobalLoadingStore } from "../zustand/useGlobalLoadingStore"
 import quizHoverAnimation from "../assets/lottie/quiz-hover.json"
 
 const StepIconQuiz = () => (
@@ -177,10 +178,18 @@ const accentClasses = ["bg-accentPink", "bg-accentOrange", "bg-accentYellow", "b
 export function HomePage() {
   const { language } = useLanguageStore()
   const navigate = useNavigate()
+  const { setLoading, isLoading } = useGlobalLoadingStore()
   const [data, setData] = useState<HomePageData | null>(null)
   const lottieRef = useRef<LottieRefCurrentProps>(null)
   const [colorIndex, setColorIndex] = useState(0)
   const [hasHovered, setHasHovered] = useState(false)
+  const [isMounted, setIsMounted] = useState(false)
+
+  // Show global loading on mount to hide video loading
+  useEffect(() => {
+    setIsMounted(true)
+    setLoading(true)
+  }, [setLoading])
 
   useEffect(() => {
     if (hasHovered) return
@@ -215,8 +224,19 @@ export function HomePage() {
   ]
 
   useEffect(() => {
-    fetchHomePageData().then(setData)
-  }, [])
+    fetchHomePageData().then((res) => {
+      setData(res)
+      // If there's no hero video, we can stop loading now
+      if (!res?.heroVideoUrl) {
+        setLoading(false)
+      }
+    })
+  }, [setLoading])
+
+  // Don't render content during initial mount or while global loading is active
+  if (!isMounted || (isLoading && !data)) {
+    return null
+  }
 
   return (
     <div className="flex flex-col">
@@ -261,6 +281,8 @@ export function HomePage() {
                     muted
                     loop
                     playsInline
+                    onLoadedData={() => setLoading(false)}
+                    onError={() => setLoading(false)}
                   />
                 ) : (
                   <div className="h-full w-full bg-surface2" aria-hidden="true" />

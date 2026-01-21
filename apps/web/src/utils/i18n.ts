@@ -121,6 +121,7 @@ const dict: Dictionary = {
   "browse.body": { en: "Placeholder page. Will query careers from Sanity.", es: "Página temporal. Consultará carreras desde Sanity." },
   "career.title": { en: "Career Detail", es: "Detalle de carrera" },
   "career.body": { en: "Placeholder page. Will show a career by slug.", es: "Página temporal. Mostrará una carrera por slug." },
+  "resources.kicker": { en: "Career Resources", es: "Recursos Profesionales" },
   "career.slugLabel": { en: "Slug", es: "Slug" },
   "career.back": { en: "Back", es: "Atrás" },
   "career.compare": { en: "Compare with other careers", es: "Comparar con otras carreras" },
@@ -408,7 +409,6 @@ const dict: Dictionary = {
   "quiz.results.otherMatches": { en: "Other Strong Matches", es: "Otras Coincidencias Fuertes" },
   "quiz.results.retake": { en: "Retake Quiz", es: "Volver a Hacer el Cuestionario" },
   "quiz.results.searchPlaceholder": { en: "Search for a specific career", es: "Buscar una carrera específica" },
-<<<<<<< HEAD
 
   // About page translations
   "about.kicker": { en: "About the health careers catalog", es: "Acerca del catálogo de carreras de salud" },
@@ -549,12 +549,10 @@ const dict: Dictionary = {
   "about.updateCadence.emailButton": {
     en: "Send us an email",
     es: "Envíanos un correo electrónico"
-  }
-=======
+  },
   "quiz.results.noMatches.title": { en: "Unfortunately, there are no careers that match your quiz selections.", es: "Desafortunadamente, no hay carreras que coincidan con tus selecciones del cuestionario." },
   "quiz.results.noMatches.description": { en: "It is likely that your responses to \"deal-breaker\" questions filtered out all of the available career matches. Retake the quiz or search for a specific career to find a career that suits you.", es: "Es probable que tus respuestas a las preguntas de \"factores decisivos\" hayan filtrado todas las coincidencias de carrera disponibles. Vuelve a hacer el cuestionario o busca una carrera específica para encontrar una que se adapte a ti." },
   "quiz.results.noMatches.searchCareer": { en: "Search for a specific career", es: "Buscar una carrera específica" }
->>>>>>> origin/main
 }
 
 export type TranslationKey = keyof typeof dict
@@ -562,5 +560,3 @@ export type TranslationKey = keyof typeof dict
 export function t(language: Language, key: TranslationKey): string {
   return dict[key][language]
 }
-
-
