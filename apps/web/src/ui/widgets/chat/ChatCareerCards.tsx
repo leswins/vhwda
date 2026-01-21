@@ -12,9 +12,9 @@ export function ChatCareerCards({ language, careers }: Props) {
   if (careers.length === 0) return null
 
   return (
-    <div className="mt-4 flex gap-4 overflow-x-auto pb-2">
-      {careers.map((career) => (
-        <ChatCareerCard key={career._id} language={language} career={career} />
+    <div className="mt-4 mr-auto max-w-[492px] flex flex-col gap-2">
+      {careers.map((career, index) => (
+        <ChatCareerCard key={career._id} language={language} career={career} isSelected={index === 1} />
       ))}
     </div>
   )

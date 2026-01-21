@@ -9,7 +9,7 @@ export function ChatMessage({ type, message }: Props) {
   const getMessageStyles = () => {
     switch (type) {
       case "user":
-        return "ml-auto max-w-[80%] bg-primary text-on-primary"
+        return "ml-auto max-w-[80%] bg-foreground text-surface"
       case "bot":
         return "mr-auto max-w-[80%] bg-surface-2"
       default:

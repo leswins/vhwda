@@ -24,7 +24,9 @@ export function ChatMessages({ language, messages, isLoading }: Props) {
     <div className="space-y-4 px-[25px] py-4">
       {messages.map((msg, index) => (
         <div key={index}>
-          <ChatMessage type={msg.type} message={msg.message} />
+          {msg.message && msg.message.trim() && (
+            <ChatMessage type={msg.type} message={msg.message} />
+          )}
           {msg.type === "bot" && msg.careers && msg.careers.length > 0 && (
             <ChatCareerCards language={language} careers={msg.careers} />
           )}
