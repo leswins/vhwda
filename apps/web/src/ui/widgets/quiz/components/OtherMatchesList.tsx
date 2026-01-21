@@ -63,7 +63,7 @@ export function OtherMatchesList({ careers, userVector, language, maxResults = 2
   return (
     <div className="bg-surface">
       {rows.map((row, rowIndex) => (
-        <div key={rowIndex} className="flex">
+        <div key={rowIndex} className="flex relative">
           {row.map((career, colIndex) => {
             const matchPercentage = Math.round(calculateMatchPercentage(userVector, career.quizVector || {}))
             const title = getLocalizedString(language, career.title) ?? ""
@@ -71,7 +71,7 @@ export function OtherMatchesList({ careers, userVector, language, maxResults = 2
             const education = formatEducationLevel(career.educationMin)
             
             return (
-              <div key={career._id} className={`flex-1 flex ${colIndex === 0 && row.length === 2 ? 'border-r-[0.5px] border-foreground' : ''}`}>
+              <React.Fragment key={career._id}>
                 <Link
                   to={`/careers/${career.slug ?? ""}`}
                   className="flex-1 flex items-center p-6 hover:bg-surface1 transition-colors"
@@ -79,7 +79,7 @@ export function OtherMatchesList({ careers, userVector, language, maxResults = 2
                   <div className="flex items-center justify-center w-20 h-20 bg-accentBlue mr-4 flex-shrink-0 p-2">
                     <div className="text-center w-full">
                       <div className="text-sub2 font-bold leading-[135%] tracking-[0.15em] whitespace-nowrap text-foreground">{matchPercentage}%</div>
-                      <div className="text-xs font-bold uppercase tracking-[0.1em] mt-1 whitespace-nowrap" style={{ fontSize: '0.95rem' }}>MATCH</div>
+                      <div className="text-xs font-bold uppercase tracking-[0.1em] mt-1 whitespace-nowrap text-muted" style={{ fontSize: '0.95rem' }}>MATCH</div>
                     </div>
                   </div>
                   <div className="flex-1 min-w-0">
@@ -93,7 +93,10 @@ export function OtherMatchesList({ careers, userVector, language, maxResults = 2
                     </p>
                   </div>
                 </Link>
-              </div>
+                {colIndex === 0 && row.length === 2 && (
+                  <div className="absolute left-1/2 top-0 bottom-0 w-[0.5px] bg-foreground/30 -translate-x-1/2 pointer-events-none" />
+                )}
+              </React.Fragment>
             )
           })}
           {/* Fill empty space in last row if odd number of items */}
