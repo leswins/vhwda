@@ -365,6 +365,11 @@ const dict: Dictionary = {
   "filters.membershipType.professional": { en: "Professional", es: "Profesional" },
   "filters.membershipType.employer": { en: "Employer", es: "Empleador" },
   "filters.geographicFocus": { en: "Geographic Focus", es: "Enfoque Geográfico" },
+  "filters.geographicFocus.virginiaStatewide": { en: "Virginia Statewide", es: "Todo Virginia" },
+  "filters.geographicFocus.regional": { en: "Regional", es: "Regional" },
+  "filters.geographicFocus.national": { en: "National", es: "Nacional" },
+  "filters.geographicFocus.international": { en: "International", es: "Internacional" },
+  "filters.geographicFocus.local": { en: "Local", es: "Local" },
   "common.visitSite": { en: "Visit Site", es: "Visitar Sitio" },
 
   // Quiz-specific translations

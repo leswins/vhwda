@@ -3,6 +3,7 @@ import { useLanguageStore } from "../../zustand/useLanguageStore"
 import { t } from "../../utils/i18n"
 import { ResourceCard } from "./ResourceCard"
 import { FilterSidebar } from "./FilterSidebar"
+import { OrganizationFilters as OrganizationFiltersComponent } from "./OrganizationFilters"
 import { ScholarshipList } from "./ScholarshipList"
 import { ProfessionalOrganizationList } from "./ProfessionalOrganizationList"
 import { EducationalInstitutionsList } from "./EducationalInstitutionsList"
@@ -24,15 +25,14 @@ export function PlanYourNextStepsSection() {
   })
 
   const [organizationFilters, setOrganizationFilters] = useState<OrganizationFilters>({
-    searchQuery: ""
+    searchQuery: "",
+    selectedMembershipTypes: [],
+    selectedGeographicFocus: [],
+    selectedCareerAreas: []
   })
 
   const handleScholarshipSearchChange = (query: string) => {
     setScholarshipFilters({ searchQuery: query })
-  }
-
-  const handleOrganizationSearchChange = (query: string) => {
-    setOrganizationFilters({ searchQuery: query })
   }
 
   return (
@@ -81,10 +81,10 @@ export function PlanYourNextStepsSection() {
           icon={<ProfessionalOrganizationIcon />}
         />
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-[256px_1fr]">
-          <FilterSidebar
+          <OrganizationFiltersComponent
             language={language}
-            searchPlaceholderKey="filters.search"
-            onSearchChange={handleOrganizationSearchChange}
+            filters={organizationFilters}
+            onFiltersChange={setOrganizationFilters}
           />
           <ProfessionalOrganizationList
             language={language}
