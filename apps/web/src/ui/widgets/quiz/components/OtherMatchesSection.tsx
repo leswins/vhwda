@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import type { QuizVector, CareerForMatching } from "../../../../sanity/queries/careers"
-import { CareerMatchList } from "./CareerMatchList"
+import { OtherMatchesList } from "./OtherMatchesList"
 import { getLocalizedString } from "../../../../sanity/queries/careers"
 import { t } from "../../../../utils/i18n"
 
@@ -36,7 +36,7 @@ export function OtherMatchesSection({ careers, userVector, language }: OtherMatc
           />
         </div>
       </div>
-      <CareerMatchList
+      <OtherMatchesList
         careers={filteredCareers}
         userVector={userVector}
         language={language}

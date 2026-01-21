@@ -20,7 +20,7 @@ export function QuizResultsHeader({ language, onStartOver }: QuizResultsHeaderPr
         </div>
         <button
           onClick={onStartOver}
-          className="flex items-center gap-2 px-3 py-1.5 rounded-sm border border-foreground/20 bg-surface2 hover:bg-surface2/90 text-body-base text-foreground transition-colors"
+          className="flex items-center gap-2 bg-surface hover:bg-surface1 text-body-base text-foreground underline transition-colors"
         >
           <img src={reloadIcon} alt="" className="w-4 h-4" />
           <span>{t(language, "quiz.results.retake")}</span>
