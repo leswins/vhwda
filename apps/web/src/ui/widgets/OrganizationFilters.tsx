@@ -62,10 +62,6 @@ export function OrganizationFilters({ language, filters, onFiltersChange }: Prop
   return (
     <aside className="w-full lg:w-64 space-y-6">
       <div className="space-y-2">
-        <div className="flex gap-4 text-sm">
-          <button className="font-semibold text-foreground">Filter</button>
-          <button className="text-muted">Sort</button>
-        </div>
         <div className="relative">
           <input
             type="text"
