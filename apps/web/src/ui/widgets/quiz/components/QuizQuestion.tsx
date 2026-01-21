@@ -88,6 +88,8 @@ export function QuizQuestion({
         }
     }
 
+    const isDealBreakerQuestion = question.section === "Deal-breakers"
+
     return (
         <div className="flex flex-col gap-[75px] items-center w-full max-w-[600px]">
             {/* Question prompt - larger and bolder to match screenshot */}
@@ -95,16 +97,19 @@ export function QuizQuestion({
                 <h2 className="text-h2 font-bold text-foreground text-center w-full">
                     {question.prompt}
                 </h2>
-                {/* Show subtitle for deal-breaker questions */}
-                {question.type === "boolean" && (
-                    <p className="text-body-sm text-muted text-center">
-                        {t(language, "quiz.isDealbreaker")}
-                    </p>
-                )}
             </div>
 
             {/* Question input component */}
-            {renderQuestionInput()}
+            {isDealBreakerQuestion && question.type === "boolean" ? (
+                <div className="flex flex-col items-center gap-6 w-full">
+                    <p className="text-sub1 font-medium leading-[135%] tracking-[-0.025em] text-foreground text-center">
+                        {t(language, "quiz.isDealbreaker")}
+                    </p>
+                    {renderQuestionInput()}
+                </div>
+            ) : (
+                renderQuestionInput()
+            )}
         </div>
     )
 }
