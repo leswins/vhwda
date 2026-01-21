@@ -13,8 +13,8 @@ export function ChatCareerCards({ language, careers }: Props) {
 
   return (
     <div className="mt-4 mr-auto max-w-[492px] flex flex-col gap-2">
-      {careers.map((career, index) => (
-        <ChatCareerCard key={career._id} language={language} career={career} isSelected={index === 1} />
+      {careers.map((career) => (
+        <ChatCareerCard key={career._id} language={language} career={career} />
       ))}
     </div>
   )
