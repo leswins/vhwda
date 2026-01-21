@@ -30,6 +30,7 @@
     "string-similarity": "^4.0.4"
   },
   "devDependencies": {
+    "@types/node": "^22.10.5",
     "@types/string-similarity": "^4.0.2",
     "prettier": "^3.4.2",
     "tsx": "^4.19.2"

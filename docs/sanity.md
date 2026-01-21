@@ -28,4 +28,27 @@ When working via MCP tools, follow this sequence:
 ## CORS / local dev
 If your web app will read from the Content Lake directly, ensure CORS allows your local dev origin (e.g. `http://localhost:5173`) in the Sanity project settings or via MCP (`add_cors_origin`).
 
+## Slack notifications for new careers
+This project uses a Vercel Serverless Function to send a Slack message only when a new `career` document is created.
+
+### Environment variables
+- Local: create `.env.local` at the repo root with:
+  - `SLACK_WEBHOOK_URL=...`
+- Vercel: set `SLACK_WEBHOOK_URL` in Project Settings -> Environment Variables.
+
+### Sanity webhook setup
+Configure a Sanity webhook (Sanity Manage -> API -> Webhooks):
+- **Name:** Slack New Career Notifications
+- **URL:** `https://<your-site>.vercel.app/api/sanity-webhook`
+- **Dataset:** `production`
+- **Trigger on:** Create and Update (updates are ignored by the function)
+- **Filter:** `_type == "career"`
+- **HTTP method:** POST
+- **Include drafts:** No
+
+### Local testing
+- Run `vercel dev` (from `apps/web`) if you have the Vercel CLI installed.
+- Send a test payload:
+  - `curl -X POST http://localhost:3000/api/sanity-webhook -H "Content-Type: application/json" -d '{"_id":"test123","_type":"career","title":{"en":"Test Career"}}'`
+
 

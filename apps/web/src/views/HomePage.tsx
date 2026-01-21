@@ -362,7 +362,10 @@ export function HomePage() {
         <div className="flex gap-0 overflow-x-auto snap-x snap-mandatory scrollbar-hide">
           {data?.featuredCareers && data.featuredCareers.length > 0 ? (
             data.featuredCareers.map((career) => (
-              <div key={career._id} className="snap-start border-r-[0.5px] border-foreground last:border-r-0">
+              <div
+                key={career._id}
+                className="snap-start shrink-0 w-[30%] min-w-[30%] border-r-[0.5px] border-foreground last:border-r-0"
+              >
                 <CareerCard
                   language={language}
                   title={getLocalizedString(language, career.title) || ""}
@@ -376,7 +379,10 @@ export function HomePage() {
           ) : (
             // Placeholder cards if no data
             [1, 2, 3].map((i) => (
-              <div key={i} className="h-[480px] w-[420px] shrink-0 bg-surface2 border border-foreground animate-pulse" />
+              <div
+                key={i}
+                className="h-[480px] w-[30%] min-w-[30%] shrink-0 bg-surface2 border border-foreground animate-pulse"
+              />
             ))
           )}
         </div>
