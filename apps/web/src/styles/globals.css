@@ -139,3 +139,17 @@ body {
 .quiz-slider:disabled::-moz-range-thumb {
   cursor: not-allowed;
 }
+
+/* Quiz loading animation - 2x2 grid squares */
+@keyframes quiz-loading-pulse {
+  0%, 100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.quiz-loading-square {
+  animation: quiz-loading-pulse 1.2s ease-in-out infinite;
+}

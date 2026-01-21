@@ -47,9 +47,6 @@ export function BooleanToggle({ questionId, value, options, onChange, language }
 
     return (
         <div className="flex flex-col gap-12 items-center w-full max-w-[530px]">
-            <p className="text-body-sm text-muted text-center">
-                {t(language, "quiz.isDealbreaker")}
-            </p>
             <div className="flex items-center gap-6">
                 {/* Yes button */}
                 <button
