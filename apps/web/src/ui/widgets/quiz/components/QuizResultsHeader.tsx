@@ -1,7 +1,7 @@
 import React from "react"
 import type { Language } from "../../../../utils/i18n"
 import { t } from "../../../../utils/i18n"
-import reloadIcon from "../shapes/reload.png"
+import reloadIcon from "../../icons/shapes/reload.png"
 
 type QuizResultsHeaderProps = {
   language: Language

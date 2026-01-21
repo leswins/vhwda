@@ -11,7 +11,7 @@ import { QuizSidebar } from "../ui/widgets/quiz/components/QuizSidebar"
 import { VectorModal } from "../ui/widgets/quiz/components/VectorModal"
 import { useLanguageStore } from "../zustand/useLanguageStore"
 import { t } from "../utils/i18n"
-import shapesImage from "../ui/widgets/quiz/shapes/shapes.png"
+import shapesImage from "../ui/widgets/icons/shapes/shapes.png"
 
 export function QuizPage() {
     const {

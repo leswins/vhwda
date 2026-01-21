@@ -5,7 +5,7 @@ import { calculateMatchPercentage } from "../../../../utils/vector-aux"
 import { getLocalizedString } from "../../../../sanity/queries/careers"
 import { t } from "../../../../utils/i18n"
 import { pickTypicalSalary } from "../../../../utils/salary"
-import shapesLong from "../shapes/shapes-long.png"
+import shapesLong from "../../icons/shapes/shapes-long.png"
 
 type CareerMatch = CareerForMatching & { score: number }
 
