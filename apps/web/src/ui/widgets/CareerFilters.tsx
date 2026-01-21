@@ -47,7 +47,6 @@ const WORK_ENVIRONMENTS = [
 
 export function CareerFilters({ language, careers, filters, onFiltersChange }: Props) {
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
-    careerGroup: true,
     education: false,
     salary: false,
     outlook: false,
@@ -59,21 +58,6 @@ export function CareerFilters({ language, careers, filters, onFiltersChange }: P
 
   const toggleSection = (section: string) => {
     setExpandedSections(prev => ({ ...prev, [section]: !prev[section] }))
-  }
-
-  const categories = Array.from(
-    new Set(
-      careers
-        .flatMap(c => c.categories?.map(cat => cat.title) || [])
-        .filter(Boolean)
-    )
-  ).sort()
-
-  const handleCategoryToggle = (category: string) => {
-    const newCategories = filters.selectedCategories.includes(category)
-      ? filters.selectedCategories.filter(c => c !== category)
-      : [...filters.selectedCategories, category]
-    onFiltersChange({ ...filters, selectedCategories: newCategories })
   }
 
   const handleEducationToggle = (education: string) => {
@@ -105,206 +89,261 @@ export function CareerFilters({ language, careers, filters, onFiltersChange }: P
     onFiltersChange({ ...filters, searchQuery: query })
   }
 
-  const getCategoryCount = (category: string) => {
-    return careers.filter(c => c.categories?.some(cat => cat.title === category)).length
-  }
-
   return (
-    <aside className="w-full space-y-6 lg:w-64">
-
-      <div className="space-y-4">
-        <div className="border-b border-foreground/20 pb-4">
-          <button
-            onClick={() => toggleSection("careerGroup")}
-            className="flex w-full items-center justify-between"
-          >
-            <span className="text-h5 font-bold text-foreground">{t(language, "filters.careerGroup")}</span>
-            <span className="text-lg leading-none text-foreground">{expandedSections.careerGroup ? "−" : "+"}</span>
-          </button>
-          {expandedSections.careerGroup && (
-            <div className="mt-3 space-y-2">
-              {categories.map(category => (
-                <label key={category} className="flex cursor-pointer items-center gap-2">
-                  <input
-                    type="checkbox"
-                    checked={filters.selectedCategories.includes(category)}
-                    onChange={() => handleCategoryToggle(category)}
-                    className="h-4 w-4 rounded border-border"
-                  />
-                  <span className="text-body-base font-medium text-foreground">
-                    {category} ({getCategoryCount(category)})
-                  </span>
-                </label>
-              ))}
-            </div>
+    <aside className="w-full flex flex-col gap-[20px]">
+      <div className="flex flex-col gap-[20px]">
+        <button
+          onClick={() => toggleSection("education")}
+          className="flex w-full items-center justify-between"
+        >
+          <span className="text-h5 font-bold text-foreground">{t(language, "filters.requiredEducation")}</span>
+          {expandedSections.education ? (
+            <svg width="15" height="2" viewBox="0 0 15 2" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M0 1H7.5H15" stroke="#09090B" strokeWidth="2"/>
+            </svg>
+          ) : (
+            <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M7.5 0V7.5M7.5 7.5V15M7.5 7.5H0M7.5 7.5H15" stroke="#09090B" strokeWidth="2"/>
+            </svg>
           )}
-        </div>
-
-        <div className="border-b border-foreground/20 pb-4">
-          <button
-            onClick={() => toggleSection("education")}
-            className="flex w-full items-center justify-between text-sm font-medium"
-          >
-            <span>{t(language, "filters.requiredEducation")}</span>
-            <span className="text-lg leading-none">{expandedSections.education ? "−" : "+"}</span>
-          </button>
+        </button>
           {expandedSections.education && (
-            <div className="mt-3 space-y-2">
+            <div className="flex flex-col gap-[15px]">
               {EDUCATION_LEVELS.map(level => (
-                <label key={level.value} className="flex cursor-pointer items-center gap-2 text-sm">
-                  <input
-                    type="checkbox"
-                    checked={filters.selectedEducation.includes(level.value)}
-                    onChange={() => handleEducationToggle(level.value)}
-                    className="h-4 w-4 rounded border-border"
-                  />
-                  <span>{language === "es" ? level.label.es : level.label.en}</span>
+                <label key={level.value} className="flex cursor-pointer items-center gap-[15px]">
+                  <div className="relative h-5 w-5 shrink-0">
+                    <input
+                      type="checkbox"
+                      checked={filters.selectedEducation.includes(level.value)}
+                      onChange={() => handleEducationToggle(level.value)}
+                      className="peer h-5 w-5 appearance-none border-[0.5px] border-foreground bg-surface1 checked:bg-surface1"
+                    />
+                    {filters.selectedEducation.includes(level.value) && (
+                      <svg className="pointer-events-none absolute inset-0 h-5 w-5 text-foreground" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M4 10L8 14L16 6" />
+                      </svg>
+                    )}
+                  </div>
+                  <span className="text-body-base font-medium text-muted">{language === "es" ? level.label.es : level.label.en}</span>
                 </label>
               ))}
             </div>
           )}
-        </div>
+      </div>
 
-        <div className="border-b border-foreground/20 pb-4">
-          <button
-            onClick={() => toggleSection("salary")}
-            className="flex w-full items-center justify-between text-sm font-medium"
-          >
-            <span>{t(language, "filters.salaryRange")}</span>
-            <span className="text-lg leading-none">{expandedSections.salary ? "−" : "+"}</span>
-          </button>
+      <div className="h-[0.5px] w-full bg-foreground shrink-0" />
+
+      <div className="flex flex-col gap-[20px]">
+        <button
+          onClick={() => toggleSection("salary")}
+          className="flex w-full items-center justify-between"
+        >
+          <span className="text-h5 font-bold text-foreground">{t(language, "filters.salaryRange")}</span>
+          {expandedSections.salary ? (
+            <svg width="15" height="2" viewBox="0 0 15 2" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M0 1H7.5H15" stroke="#09090B" strokeWidth="2"/>
+            </svg>
+          ) : (
+            <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M7.5 0V7.5M7.5 7.5V15M7.5 7.5H0M7.5 7.5H15" stroke="#09090B" strokeWidth="2"/>
+            </svg>
+          )}
+        </button>
           {expandedSections.salary && (
-            <div className="mt-3 space-y-3">
-              <div className="flex gap-2">
-                <input
-                  type="number"
-                  placeholder={t(language, "filters.minSalary")}
-                  value={filters.salaryRange.min || ""}
-                  onChange={(e) => {
-                    const min = e.target.value ? Number(e.target.value) : undefined
-                    onFiltersChange({
-                      ...filters,
-                      salaryRange: { ...filters.salaryRange, min }
-                    })
-                  }}
-                  className="w-full rounded border border-border bg-surface px-2 py-1 text-sm"
-                />
-                <input
-                  type="number"
-                  placeholder={t(language, "filters.maxSalary")}
-                  value={filters.salaryRange.max || ""}
-                  onChange={(e) => {
-                    const max = e.target.value ? Number(e.target.value) : undefined
-                    onFiltersChange({
-                      ...filters,
-                      salaryRange: { ...filters.salaryRange, max }
-                    })
-                  }}
-                  className="w-full rounded border border-border bg-surface px-2 py-1 text-sm"
-                />
-              </div>
+            <div className="flex gap-2">
+              <input
+                type="number"
+                placeholder={t(language, "filters.minSalary")}
+                value={filters.salaryRange.min || ""}
+                onChange={(e) => {
+                  const min = e.target.value ? Number(e.target.value) : undefined
+                  onFiltersChange({
+                    ...filters,
+                    salaryRange: { ...filters.salaryRange, min }
+                  })
+                }}
+                className="w-full border-[0.5px] border-foreground bg-surface px-2 py-1 text-sm"
+              />
+              <input
+                type="number"
+                placeholder={t(language, "filters.maxSalary")}
+                value={filters.salaryRange.max || ""}
+                onChange={(e) => {
+                  const max = e.target.value ? Number(e.target.value) : undefined
+                  onFiltersChange({
+                    ...filters,
+                    salaryRange: { ...filters.salaryRange, max }
+                  })
+                }}
+                className="w-full border-[0.5px] border-foreground bg-surface px-2 py-1 text-sm"
+              />
             </div>
           )}
-        </div>
+      </div>
 
-        <div className="border-b border-foreground/20 pb-4">
-          <button
-            onClick={() => toggleSection("outlook")}
-            className="flex w-full items-center justify-between text-sm font-medium"
-          >
-            <span>{t(language, "filters.jobOutlook")}</span>
-            <span className="text-lg leading-none">{expandedSections.outlook ? "−" : "+"}</span>
-          </button>
+      <div className="h-[0.5px] w-full bg-foreground shrink-0" />
+
+      <div className="flex flex-col gap-[20px]">
+        <button
+          onClick={() => toggleSection("outlook")}
+          className="flex w-full items-center justify-between"
+        >
+          <span className="text-h5 font-bold text-foreground">{t(language, "filters.jobOutlook")}</span>
+          {expandedSections.outlook ? (
+            <svg width="15" height="2" viewBox="0 0 15 2" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M0 1H7.5H15" stroke="#09090B" strokeWidth="2"/>
+            </svg>
+          ) : (
+            <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M7.5 0V7.5M7.5 7.5V15M7.5 7.5H0M7.5 7.5H15" stroke="#09090B" strokeWidth="2"/>
+            </svg>
+          )}
+        </button>
           {expandedSections.outlook && (
-            <div className="mt-3 space-y-2">
+            <div className="flex flex-col gap-[15px]">
               {Object.entries(OUTLOOK_LABELS).map(([key, label]) => (
-                <label key={key} className="flex cursor-pointer items-center gap-2 text-sm">
-                  <input
-                    type="checkbox"
-                    checked={filters.selectedOutlook.includes(key)}
-                    onChange={() => handleOutlookToggle(key)}
-                    className="h-4 w-4 rounded border-border"
-                  />
-                  <span>{language === "es" ? label.es : label.en}</span>
+                <label key={key} className="flex cursor-pointer items-center gap-[15px]">
+                  <div className="relative h-5 w-5 shrink-0">
+                    <input
+                      type="checkbox"
+                      checked={filters.selectedOutlook.includes(key)}
+                      onChange={() => handleOutlookToggle(key)}
+                      className="peer h-5 w-5 appearance-none border-[0.5px] border-foreground bg-surface1 checked:bg-surface1"
+                    />
+                    {filters.selectedOutlook.includes(key) && (
+                      <svg className="pointer-events-none absolute inset-0 h-5 w-5 text-foreground" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M4 10L8 14L16 6" />
+                      </svg>
+                    )}
+                  </div>
+                  <span className="text-body-base font-medium text-muted">{language === "es" ? label.es : label.en}</span>
                 </label>
               ))}
             </div>
           )}
-        </div>
+      </div>
 
-        <div className="border-b border-foreground/20 pb-4">
-          <button
-            onClick={() => toggleSection("workEnvironment")}
-            className="flex w-full items-center justify-between text-sm font-medium"
-          >
-            <span>{t(language, "filters.workEnvironment")}</span>
-            <span className="text-lg leading-none">{expandedSections.workEnvironment ? "−" : "+"}</span>
-          </button>
+      <div className="h-[0.5px] w-full bg-foreground shrink-0" />
+
+      <div className="flex flex-col gap-[20px]">
+        <button
+          onClick={() => toggleSection("workEnvironment")}
+          className="flex w-full items-center justify-between"
+        >
+          <span className="text-h5 font-bold text-foreground">{t(language, "filters.workEnvironment")}</span>
+          {expandedSections.workEnvironment ? (
+            <svg width="15" height="2" viewBox="0 0 15 2" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M0 1H7.5H15" stroke="#09090B" strokeWidth="2"/>
+            </svg>
+          ) : (
+            <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M7.5 0V7.5M7.5 7.5V15M7.5 7.5H0M7.5 7.5H15" stroke="#09090B" strokeWidth="2"/>
+            </svg>
+          )}
+        </button>
           {expandedSections.workEnvironment && (
-            <div className="mt-3 space-y-2">
+            <div className="flex flex-col gap-[15px]">
               {WORK_ENVIRONMENTS.map(env => (
-                <label key={env.value} className="flex cursor-pointer items-center gap-2 text-sm">
-                  <input
-                    type="checkbox"
-                    checked={filters.selectedWorkEnvironments.includes(env.value)}
-                    onChange={() => handleWorkEnvironmentToggle(env.value)}
-                    className="h-4 w-4 rounded border-border"
-                  />
-                  <span>{language === "es" ? env.label.es : env.label.en}</span>
+                <label key={env.value} className="flex cursor-pointer items-center gap-[15px]">
+                  <div className="relative h-5 w-5 shrink-0">
+                    <input
+                      type="checkbox"
+                      checked={filters.selectedWorkEnvironments.includes(env.value)}
+                      onChange={() => handleWorkEnvironmentToggle(env.value)}
+                      className="peer h-5 w-5 appearance-none border-[0.5px] border-foreground bg-surface1 checked:bg-surface1"
+                    />
+                    {filters.selectedWorkEnvironments.includes(env.value) && (
+                      <svg className="pointer-events-none absolute inset-0 h-5 w-5 text-foreground" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M4 10L8 14L16 6" />
+                      </svg>
+                    )}
+                  </div>
+                  <span className="text-body-base font-medium text-muted">{language === "es" ? env.label.es : env.label.en}</span>
                 </label>
               ))}
             </div>
           )}
-        </div>
+      </div>
 
-        <div className="border-b border-foreground/20 pb-4">
-          <button
-            onClick={() => toggleSection("patientInteraction")}
-            className="flex w-full items-center justify-between text-sm font-medium"
-          >
-            <span>{t(language, "filters.patientInteraction")}</span>
-            <span className="text-lg leading-none">{expandedSections.patientInteraction ? "−" : "+"}</span>
-          </button>
+      <div className="h-[0.5px] w-full bg-foreground shrink-0" />
+
+      <div className="flex flex-col gap-[20px]">
+        <button
+          onClick={() => toggleSection("patientInteraction")}
+          className="flex w-full items-center justify-between"
+        >
+          <span className="text-h5 font-bold text-foreground">{t(language, "filters.patientInteraction")}</span>
+          {expandedSections.patientInteraction ? (
+            <svg width="15" height="2" viewBox="0 0 15 2" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M0 1H7.5H15" stroke="#09090B" strokeWidth="2"/>
+            </svg>
+          ) : (
+            <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M7.5 0V7.5M7.5 7.5V15M7.5 7.5H0M7.5 7.5H15" stroke="#09090B" strokeWidth="2"/>
+            </svg>
+          )}
+        </button>
           {expandedSections.patientInteraction && (
-            <div className="mt-3 space-y-2">
-              <label className="flex cursor-pointer items-center gap-2 text-sm">
-                <input
-                  type="radio"
-                  name="patientFacing"
-                  checked={filters.patientFacing === "yes"}
-                  onChange={() => handlePatientFacingChange("yes")}
-                  className="h-4 w-4 rounded border-border"
-                />
-                <span>{t(language, "filters.yes")}</span>
+            <div className="flex flex-col gap-[15px]">
+              <label className="flex cursor-pointer items-center gap-[15px]">
+                <div className="relative h-5 w-5 shrink-0">
+                  <input
+                    type="radio"
+                    name="patientFacing"
+                    checked={filters.patientFacing === "yes"}
+                    onChange={() => handlePatientFacingChange("yes")}
+                    className="peer h-5 w-5 appearance-none rounded-full border-[0.5px] border-foreground bg-surface1 checked:bg-surface1"
+                  />
+                  {filters.patientFacing === "yes" && (
+                    <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+                      <div className="h-2.5 w-2.5 rounded-full bg-foreground" />
+                    </div>
+                  )}
+                </div>
+                <span className="text-body-base font-medium text-muted">{t(language, "filters.yes")}</span>
               </label>
-              <label className="flex cursor-pointer items-center gap-2 text-sm">
-                <input
-                  type="radio"
-                  name="patientFacing"
-                  checked={filters.patientFacing === "no"}
-                  onChange={() => handlePatientFacingChange("no")}
-                  className="h-4 w-4 rounded border-border"
-                />
-                <span>{t(language, "filters.no")}</span>
+              <label className="flex cursor-pointer items-center gap-[15px]">
+                <div className="relative h-5 w-5 shrink-0">
+                  <input
+                    type="radio"
+                    name="patientFacing"
+                    checked={filters.patientFacing === "no"}
+                    onChange={() => handlePatientFacingChange("no")}
+                    className="peer h-5 w-5 appearance-none rounded-full border-[0.5px] border-foreground bg-surface1 checked:bg-surface1"
+                  />
+                  {filters.patientFacing === "no" && (
+                    <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+                      <div className="h-2.5 w-2.5 rounded-full bg-foreground" />
+                    </div>
+                  )}
+                </div>
+                <span className="text-body-base font-medium text-muted">{t(language, "filters.no")}</span>
               </label>
             </div>
           )}
-        </div>
+      </div>
 
-        <div className="border-b border-foreground/20 pb-4">
-          <button
-            onClick={() => toggleSection("specializations")}
-            className="flex w-full items-center justify-between text-sm font-medium"
-          >
-            <span>{t(language, "filters.areasOfSpecialization")}</span>
-            <span className="text-lg leading-none">{expandedSections.specializations ? "−" : "+"}</span>
-          </button>
-          {expandedSections.specializations && (
-            <div className="mt-3 space-y-2">
-              <p className="text-sm text-foreground/60">{t(language, "filters.comingSoon")}</p>
-            </div>
+      <div className="h-[0.5px] w-full bg-foreground shrink-0" />
+
+      <div className="flex flex-col gap-[20px]">
+        <button
+          onClick={() => toggleSection("specializations")}
+          className="flex w-full items-center justify-between"
+        >
+          <span className="text-h5 font-bold text-foreground">{t(language, "filters.areasOfSpecialization")}</span>
+          {expandedSections.specializations ? (
+            <svg width="15" height="2" viewBox="0 0 15 2" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M0 1H7.5H15" stroke="#09090B" strokeWidth="2"/>
+            </svg>
+          ) : (
+            <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M7.5 0V7.5M7.5 7.5V15M7.5 7.5H0M7.5 7.5H15" stroke="#09090B" strokeWidth="2"/>
+            </svg>
           )}
-        </div>
+        </button>
+        {expandedSections.specializations && (
+          <p className="text-body-base text-muted">{t(language, "filters.comingSoon")}</p>
+        )}
       </div>
     </aside>
   )

@@ -4,6 +4,8 @@ import { getLocalizedString } from "../../../../sanity/queries/careers"
 import type { Language } from "../../../../utils/i18n"
 import { t } from "../../../../utils/i18n"
 import { CareerSearchInput } from "./CareerSearchInput"
+import { CloseIcon } from "../../../icons/CloseIcon"
+import { PlusIcon } from "../../../icons/PlusIcon"
 
 interface CompareTableHeaderProps {
   selectedCareers: CareerForCompare[]
@@ -32,44 +34,55 @@ export function CompareTableHeader({
   onClearSearch,
   onEscapeSearch,
 }: CompareTableHeaderProps) {
-  const gridCols = `200px repeat(${selectedCareers.length}, 1fr)${selectedCareers.length < 4 ? " 200px" : ""}`
-
   return (
-    <div className="overflow-x-auto overflow-y-visible">
-      <div className="min-w-full border-b border-foreground">
-        <div className="grid" style={{ gridTemplateColumns: gridCols }}>
-          <div className="border-r border-foreground bg-surface1 p-4 font-semibold">
-            Category
-          </div>
+    <div className="flex border-b border-foreground bg-surface">
+      {/* Fixed left: "Career" label */}
+      <div className="sticky left-0 z-30 flex w-[250px] shrink-0 items-center bg-surface px-[50px] py-[25px]">
+        <span className="text-[length:var(--text-body-lg)] font-medium leading-[var(--leading-body-lg)] tracking-[var(--tracking-body-lg)]">
+          {t(language, "compare.category")}
+        </span>
+      </div>
 
-          {selectedCareers.map(career => {
-            const title = getLocalizedString(language, career.title) || ""
-            return (
-              <div
-                key={career._id}
-                className="flex items-center justify-between border-r border-foreground bg-surface1 p-4 last:border-r-0"
-              >
-                <span className="font-semibold">{title}</span>
+      {/* Vertical divider */}
+      <div className="sticky left-[250px] z-30 w-[0.5px] shrink-0 bg-foreground" />
+
+      {/* Content: Career titles and add button */}
+      <div className="flex gap-[50px] pl-[50px] pr-[50px] py-[25px]">
+        {selectedCareers.map((career, idx) => {
+          const title = getLocalizedString(language, career.title) || ""
+          const isLast = idx === selectedCareers.length - 1
+          return (
+            <React.Fragment key={career._id}>
+              <div className="flex w-[300px] shrink-0 items-center gap-[25px]">
+                <span className="text-[length:var(--text-h5)] font-bold leading-[var(--leading-h5)] tracking-[var(--tracking-h5)]">
+                  {title}
+                </span>
                 <button
                   onClick={() => onRemoveCareer(career._id)}
-                  className="hover:bg-foreground/10 ml-2 shrink-0 rounded p-1"
+                  className="shrink-0 text-[rgb(var(--color-accent-orange))] transition-opacity hover:opacity-80"
                   aria-label={`Remove ${title}`}
                 >
-                  <span className="text-lg leading-none" aria-hidden="true">×</span>
+                  <CloseIcon />
                 </button>
               </div>
-            )
-          })}
+              {!isLast && <div className="h-full w-[0.5px] shrink-0 bg-foreground" />}
+            </React.Fragment>
+          )
+        })}
 
-          {selectedCareers.length < 4 && (
-            <div className="relative border-l border-foreground bg-surface1 p-4" style={{ minWidth: "200px" }}>
+        {selectedCareers.length < 4 && (
+          <>
+            <div className="h-full w-[0.5px] shrink-0 bg-foreground" />
+            <div className="flex w-[300px] shrink-0 items-center" style={{ minWidth: "200px" }}>
               {!showSearch ? (
                 <button
                   onClick={onSearchFocus}
-                  className="flex w-full items-center justify-center gap-1 rounded border border-foreground bg-primary px-3 py-2 text-sm font-medium text-onPrimary hover:bg-primary/90"
+                  className="flex items-center gap-[25px] text-[length:var(--text-h5)] font-bold leading-[var(--leading-h5)] tracking-[var(--tracking-h5)] transition-opacity hover:opacity-80"
                 >
-                  <span className="text-lg leading-none" aria-hidden="true">+</span>
-                  {t(language, "compare.addCareer")}
+                  <span>{t(language, "compare.addCareer")}</span>
+                  <span className="text-[rgb(var(--color-accent-green))]">
+                    <PlusIcon />
+                  </span>
                 </button>
               ) : (
                 <CareerSearchInput
@@ -85,8 +98,8 @@ export function CompareTableHeader({
                 />
               )}
             </div>
-          )}
-        </div>
+          </>
+        )}
       </div>
     </div>
   )

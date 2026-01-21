@@ -27,7 +27,23 @@ export const educationalInstitution = defineType({
       type: "url",
       validation: (r) => r.uri({ scheme: ["http", "https"] })
     }),
-    defineField({ name: "region", title: "Region", type: "string" })
+    defineField({
+      name: "region",
+      title: "Region",
+      type: "string",
+      options: {
+        list: [
+          { title: "Northern VA", value: "Northern VA" },
+          { title: "Blue Ridge", value: "Blue Ridge" },
+          { title: "Rappahannock", value: "Rappahannock" },
+          { title: "Central", value: "Central" },
+          { title: "Southside", value: "Southside" },
+          { title: "Eastern VA", value: "Eastern VA" },
+          { title: "South Central", value: "South Central" },
+          { title: "Southwest", value: "Southwest" }
+        ]
+      }
+    })
   ],
   preview: {
     select: { title: "name", subtitle: "region" }

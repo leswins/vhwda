@@ -12,7 +12,9 @@
     "lint": "echo \"lint not configured yet\" && exit 0",
     "migrate:hard-filters": "tsx scripts/migrate-hard-filters.ts",
     "migrate:professional-orgs": "tsx scripts/enrich-professional-organizations.ts",
-    "fix:professional-org-career-keys": "tsx scripts/fix-professional-organization-career-keys.ts"
+    "fix:professional-org-career-keys": "tsx scripts/fix-professional-organization-career-keys.ts",
+    "migrate:career-quiz-vectors": "tsx scripts/import-career-quiz-vectors.ts",
+    "migrate:ahec-regions": "tsx scripts/assign-ahec-regions.ts"
   },
   "dependencies": {
     "dotenv": "^16.4.7",

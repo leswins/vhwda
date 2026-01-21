@@ -1,13 +1,11 @@
 import React from "react"
 import { useQuizLogic } from "../ui/widgets/quiz/hooks/useQuizLogic"
 import {
-    QuizLoading,
     QuizError,
     QuizEmpty,
     QuizQuestion,
     QuizNavigation,
     QuizResults,
-    QuizCalculatingResults,
 } from "../ui/widgets/quiz/components"
 import { QuizSidebar } from "../ui/widgets/quiz/components/QuizSidebar"
 import { VectorModal } from "../ui/widgets/quiz/components/VectorModal"
@@ -42,11 +40,15 @@ export function QuizPage() {
         handleStartOver,
     } = useQuizLogic()
 
-    // Show loading/error states in full width
-    if (loadingQuestions || errorLoadingQuestions || (questions.length === 0 && !loadingQuestions)) {
+    // Show error/empty states in full width (loading is handled by global loading overlay)
+    if (loadingQuestions) {
+        // Don't render anything while loading - global loading overlay will show
+        return null
+    }
+
+    if (errorLoadingQuestions || (questions.length === 0 && !loadingQuestions)) {
         return (
             <div className="max-w-4xl mx-auto p-8">
-                {loadingQuestions && <QuizLoading />}
                 {errorLoadingQuestions && <QuizError message={errorLoadingQuestions} />}
                 {!loadingQuestions && !errorLoadingQuestions && questions.length === 0 && <QuizEmpty />}
             </div>
@@ -99,23 +101,9 @@ export function QuizPage() {
                     </>
                 ) : currentStep === "results" ? (
                     <>
-                        {/* Show sidebar when loading results */}
-                        {loadingResults && (
-                            <QuizSidebar
-                                questions={questions}
-                                currentQuestionIndex={questions.length}
-                                selectedAnswers={selectedAnswers}
-                                language={language}
-                            />
-                        )}
-
-                        {/* Results area - full width when loading, with sidebar when not */}
-                        <div className="flex-1 overflow-y-auto">
-                            {loadingResults ? (
-                                <div className="flex items-center justify-center min-h-full w-full">
-                                    <QuizLoading />
-                                </div>
-                            ) : (
+                        {/* Don't render anything while loading results - global loading overlay will show */}
+                        {loadingResults ? null : (
+                            <div className="flex-1 overflow-y-auto">
                                 <div className="p-8">
                                     <QuizResults
                                         loading={loadingResults}
@@ -125,8 +113,8 @@ export function QuizPage() {
                                         onStartOver={handleStartOver}
                                     />
                                 </div>
-                            )}
-                        </div>
+                            </div>
+                        )}
                     </>
                 ) : null}
             </div>

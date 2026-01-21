@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react"
+import { useNavigate } from "react-router-dom"
 import { useLanguageStore } from "../zustand/useLanguageStore"
+import { useGlobalLoadingStore } from "../zustand/useGlobalLoadingStore"
 import { generateContent, type ChatMessage } from "../services/Model"
 import { getCareersContext, createChatSystemPrompt, getCareersBySlugs, fetchCareersForChat, type CareerSummary } from "../services/careerContext"
 import { parseAIResponse } from "../services/parseAIResponse"
-import { ChatHeader } from "../ui/widgets/chat/ChatHeader"
 import { ChatEmptyState } from "../ui/widgets/chat/ChatEmptyState"
 import { QuickPrompts } from "../ui/widgets/chat/QuickPrompts"
 import { ChatMessages } from "../ui/widgets/chat/ChatMessages"
@@ -18,6 +19,8 @@ type Message = {
 
 export function ChatPage() {
   const { language } = useLanguageStore()
+  const { setLoading } = useGlobalLoadingStore()
+  const navigate = useNavigate()
   const [userInput, setUserInput] = useState("")
   const [response, setResponse] = useState<Message[]>([])
   const [isLoading, setIsLoading] = useState(false)
@@ -29,6 +32,7 @@ export function ChatPage() {
     async function loadCareersContext() {
       try {
         setLoadingCareers(true)
+        setLoading(true)
         const careers = await fetchCareersForChat()
         setCareersCache(careers)
         const careersContext = await getCareersContext(language, careers)
@@ -39,11 +43,12 @@ export function ChatPage() {
         setCareersCache([])
       } finally {
         setLoadingCareers(false)
+        setLoading(false)
       }
     }
 
     loadCareersContext()
-  }, [language])
+  }, [language, setLoading])
 
   const handleSubmit = async (promptToSend: string = userInput) => {
     if (!promptToSend.trim()) {
@@ -94,30 +99,32 @@ export function ChatPage() {
 
   const handleQuickPromptClick = (prompt: string) => {
     setUserInput(prompt)
-  }
-
-  const handleClear = () => {
-    setUserInput("")
-    setResponse([])
-    setIsLoading(false)
+    handleSubmit(prompt)
   }
 
   const showEmptyState = response.length === 0 && !loadingCareers
   const showQuickPrompts = response.length === 0 && !loadingCareers
   const showMessages = response.length > 0
 
-  return (
-    <div className="flex h-screen flex-col bg-surface">
-      <ChatHeader />
-      
-      {loadingCareers && (
-        <div className="flex-1 flex items-center justify-center">
-          <p className="text-muted">{t(language, "chat.loadingCareers")}</p>
-        </div>
-      )}
+  // Don't render page content while loading careers - global loading overlay will show
+  if (loadingCareers) {
+    return null
+  }
 
-      {showEmptyState && <ChatEmptyState language={language} />}
-      
+  return (
+    <div className="relative flex flex-col bg-surface" style={{ height: "calc(100vh - 75px)" }}>
+      <div className="flex-1 overflow-y-auto">
+        {showEmptyState && <ChatEmptyState language={language} />}
+        
+        {showMessages && (
+          <ChatMessages
+            language={language}
+            messages={response}
+            isLoading={isLoading}
+          />
+        )}
+      </div>
+
       {showQuickPrompts && (
         <QuickPrompts
           language={language}
@@ -126,20 +133,11 @@ export function ChatPage() {
         />
       )}
 
-      {showMessages && (
-        <ChatMessages
-          language={language}
-          messages={response}
-          isLoading={isLoading}
-        />
-      )}
-
       <ChatInput
         language={language}
         value={userInput}
         onChange={setUserInput}
         onSubmit={() => handleSubmit()}
-        onClear={handleClear}
         disabled={isLoading || loadingCareers}
       />
     </div>

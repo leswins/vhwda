@@ -1,17 +1,17 @@
 import React from "react"
 import type { Language } from "../../../utils/i18n"
 import { t } from "../../../utils/i18n"
+import messageIcon from "../../../assets/icons/message.svg"
 
 type Props = {
   language: Language
   value: string
   onChange: (value: string) => void
   onSubmit: () => void
-  onClear?: () => void
   disabled?: boolean
 }
 
-export function ChatInput({ language, value, onChange, onSubmit, onClear, disabled }: Props) {
+export function ChatInput({ language, value, onChange, onSubmit, disabled }: Props) {
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && !disabled) {
       e.preventDefault()
@@ -20,34 +20,37 @@ export function ChatInput({ language, value, onChange, onSubmit, onClear, disabl
   }
 
   return (
-    <div className="border-t border-border px-6 py-4">
-      <div className="flex gap-2">
-        {onClear && (
-          <button
-            onClick={onClear}
-            className="rounded-md border border-border bg-surface px-4 py-2 text-sm hover:bg-surface-1"
-          >
-            {t(language, "chat.clear")}
-          </button>
-        )}
-        <input
-          type="text"
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          onKeyDown={handleKeyPress}
-          placeholder={t(language, "chat.placeholder")}
-          disabled={disabled}
-          className="flex-1 rounded-md border border-border bg-surface px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-50"
-        />
-        <button
-          onClick={onSubmit}
-          disabled={disabled}
-          className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-on-primary hover:opacity-90 disabled:opacity-50"
-        >
-          {t(language, "chat.send")}
-        </button>
-      </div>
+    <div
+      className="sticky bottom-0 flex items-center justify-between border-t-[0.5px] border-foreground px-[25px] py-[25px]"
+      style={{
+        backgroundColor: "rgba(255, 255, 255, 0.85)",
+        backdropFilter: "blur(2.5px)",
+        WebkitBackdropFilter: "blur(2.5px)"
+      }}
+    >
+      <input
+        type="text"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        onKeyDown={handleKeyPress}
+        placeholder={t(language, "chat.placeholder")}
+        disabled={disabled}
+        className="flex-1 border-0 bg-transparent text-foreground placeholder:text-muted focus:outline-none focus:ring-0 disabled:opacity-50"
+        style={{
+          fontSize: "var(--text-body-lg)",
+          lineHeight: "var(--leading-body-lg)",
+          letterSpacing: "var(--tracking-body-lg)",
+          fontWeight: "500"
+        }}
+      />
+      <button
+        onClick={onSubmit}
+        disabled={disabled}
+        className="flex h-[30px] w-[30px] shrink-0 items-center justify-center disabled:opacity-50"
+        aria-label={t(language, "chat.send")}
+      >
+        <img src={messageIcon} alt="" className="h-[25px] w-[25px]" />
+      </button>
     </div>
   )
 }
-

@@ -1,5 +1,3 @@
-export { QuizLoading } from "./QuizLoading"
-export { QuizSpinner } from "./QuizSpinner"
 export { QuizError } from "./QuizError"
 export { QuizIntro } from "./QuizIntro"
 export { QuizEmpty } from "./QuizEmpty"

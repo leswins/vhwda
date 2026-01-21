@@ -1,0 +1,70 @@
+Career,Category,Patient Facing,Tech/Equipment,Lab/Research,Counseling/Education,Pediatrics,Geriatrics,Exposure Tolerance,Analytical,Administrative,Procedural Dexterity,Collaboration,Pace: Routine,Pace: Fast,Schedule Flexibility,Stress Tolerance,Physical: Light,Physical: On Feet,Physical: Lifting,Environment: Hospital,Environment: Clinic,Environment: Community,Environment: School,Environment: Lab,Environment: Office,Multiple Environments,Outlook Importance,Short Path Preference
+Dental Assistant,Dentistry,2,1,0,0,0,0,0,1,0,1,1,0,0,0,0,0,2,0,0,2,0,0,0,0,0,1,2
+Dental Hygienist,Dentistry,2,1,0,0,0,0,0,1,0,2,1,0,0,0,0,0,2,0,0,2,0,0,0,0,0,1,1
+Dentist,Dentistry,2,1,0,0,0,0,0,1,1,2,1,1,0,0,0,0,0,0,0,2,0,0,0,0,0,1,-2
+Registered Dietitian,Dietetics,0,0,0,1,1,1,0,0,0,0,1,0,0,1,0,2,0,0,0,1,2,0,0,0,0,1,0
+Assisted Living Facility Administrator,Healthcare Administration & Information Services,0,0,0,0,0,2,0,1,2,0,2,0,0,1,1,2,0,0,0,0,1,0,0,2,0,1,0
+Health Information Technician,Healthcare Administration & Information Services,-2,1,0,0,0,0,0,1,2,0,1,2,0,1,0,2,0,0,0,0,0,0,0,2,0,1,0
+Healthcare Administrator,Healthcare Administration & Information Services,0,0,0,0,0,0,0,1,2,0,1,0,0,1,0,2,0,0,0,0,0,0,0,2,0,1,0
+Medical Transcriptionist,Healthcare Administration & Information Services,-2,1,0,0,0,0,0,1,2,0,1,2,0,1,0,2,0,0,0,0,0,0,0,2,0,1,2
+Nursing Home Administrator,Healthcare Administration & Information Services,0,0,0,0,0,2,0,1,2,0,2,0,0,1,1,2,0,0,0,0,1,0,0,2,0,1,0
+Clinical Laboratory Scientist,Laboratory Science,-2,0,2,0,0,0,1,2,0,0,1,2,0,0,0,2,0,0,2,0,0,0,2,0,0,2,0
+Phlebotomist,Laboratory Science,1,0,2,0,0,0,1,2,0,2,1,2,1,0,0,2,0,0,1,1,0,0,2,0,2,2,2
+Certified Personal Care Aide/Home Health Aide,Medical Support,2,1,0,0,0,2,2,0,0,2,1,0,2,1,2,0,2,2,0,0,2,0,0,0,2,2,2
+Doula,Medical Support,2,1,0,2,0,1,2,0,0,2,1,0,2,-1,2,0,1,2,0,0,2,0,0,0,2,2,0
+Emergency Medical Technician,Medical Support,2,1,0,0,0,1,2,0,0,2,1,0,2,-1,2,0,2,2,1,0,2,0,0,0,2,2,2
+Medical Interpreter,Medical Support,2,1,0,1,0,1,-1,1,0,2,1,1,2,-1,2,2,2,2,1,1,1,0,0,0,2,2,2
+Paramedic,Medical Support,2,1,0,0,0,1,2,0,0,2,1,0,2,-1,2,0,2,2,1,0,2,0,0,0,2,2,2
+Surgical Assistant,Medical Support,2,1,0,0,0,1,2,0,0,2,1,0,2,-1,2,0,2,2,2,0,2,0,0,0,2,2,0
+Surgical Technologist,Medical Support,2,1,0,0,0,1,2,0,0,2,1,0,2,-1,2,0,2,2,2,0,2,0,0,0,2,2,2
+Chiropractor,Medicine,2,0,0,0,0,0,2,2,0,1,1,1,2,1,2,0,1,0,2,2,0,0,0,1,2,1,-1
+Doctor of Medicine,Medicine,2,0,0,0,0,0,2,2,0,2,1,0,1,-2,2,0,2,0,2,1,0,0,0,0,2,1,-2
+Doctor of Osteopathic Medicine,Medicine,2,0,0,0,0,0,2,2,0,2,1,0,1,-2,2,0,2,0,2,1,0,0,0,0,2,1,-2
+Physician Assistant,Medicine,2,0,0,0,0,0,2,2,0,1,1,0,1,-1,2,0,0,0,2,2,0,0,0,0,2,1,-1
+Podiatrist,Medicine,2,0,0,0,0,0,2,2,0,2,1,0,2,-1,2,0,0,0,1,2,0,0,0,0,2,1,-1
+Genetic Counselor,Mental Health & Social Services,2,0,0,2,1,1,0,2,0,0,1,1,0,1,2,2,0,0,1,1,2,0,0,2,0,2,0
+Licensed Professional Counselor,Mental Health & Social Services,2,0,0,2,1,1,0,0,0,0,1,1,0,0,2,2,0,0,0,0,2,1,0,2,0,2,0
+Psychiatric Technician,Mental Health & Social Services,2,0,0,2,1,1,1,0,0,0,1,0,1,0,2,0,2,1,2,0,2,0,0,0,0,2,0
+Psychologist,Mental Health & Social Services,2,0,0,2,1,1,0,1,0,0,1,0,0,0,2,2,0,0,0,0,2,1,0,2,0,2,-1
+Social Worker,Mental Health & Social Services,2,0,0,2,1,1,0,0,0,0,1,0,0,1,2,0,0,0,0,0,2,0,0,1,2,2,0
+Qualified Mental Health Professional,Mental Health & Social Services,2,0,0,2,1,1,0,0,0,0,1,0,0,0,2,0,0,0,0,0,2,0,0,0,2,2,0
+Embalmer,Mortuary Science,-1,0,0,0,0,0,2,0,0,2,1,1,0,0,2,0,0,2,0,0,1,0,0,2,0,1,0
+Funeral Director,Mortuary Science,-1,0,0,1,0,0,1,0,0,0,1,1,0,0,2,0,0,1,0,0,1,0,0,2,0,1,0
+Funeral Service Licensee,Mortuary Science,-1,0,0,1,0,0,1,0,0,0,1,1,0,0,2,0,0,1,0,0,1,0,0,2,0,1,0
+Certified Nursing Assistant,Nursing,2,1,0,0,0,1,2,0,0,2,1,0,2,-1,2,0,2,2,2,1,0,0,0,0,2,2,2
+Licensed Practical Nurse,Nursing,2,1,0,0,0,1,2,0,0,2,1,0,2,-1,2,0,2,2,2,1,0,0,0,0,2,2,1
+Registered Nurse,Nursing,2,1,0,0,0,1,2,1,0,2,1,0,2,-1,2,0,2,2,2,1,0,0,0,0,2,2,0
+Nurse Anesthetist,Nursing,2,2,0,0,0,1,2,0,0,2,1,0,2,-1,2,0,2,2,2,1,0,0,0,0,2,2,-2
+Nurse Midwife,Nursing,2,1,0,0,0,1,2,0,0,2,1,0,2,-1,2,0,2,2,1,2,0,0,0,0,2,2,-1
+Nurse Practitioner,Nursing,2,1,0,0,0,1,2,2,0,2,1,0,2,0,2,0,2,2,1,2,0,0,0,0,2,2,-1
+Massage Therapist,Nursing,2,0,0,0,0,1,-1,0,0,1,1,2,2,1,2,0,1,2,2,1,1,0,0,0,2,2,0
+Pharmacist,Pharmacy,1,1,0,0,0,0,0,2,0,0,1,1,1,0,0,2,1,0,2,1,0,0,0,1,0,1,-1
+Pharmacy Technician,Pharmacy,1,1,0,0,0,0,0,1,0,0,1,2,1,0,0,2,2,0,1,2,0,0,0,0,0,1,2
+Certified Community Health Worker,Public Health,2,0,1,2,0,0,0,2,0,0,1,0,0,0,0,0,1,0,0,0,2,0,0,0,2,2,2
+Environmental Science & Protection Technician,Public Health,-2,0,1,1,0,0,0,2,0,0,1,0,0,0,0,0,1,0,0,0,2,0,1,0,2,2,1
+Epidemiologist,Public Health,-2,0,2,1,0,0,0,2,0,0,1,0,0,0,0,0,0,0,0,0,1,0,1,2,2,2,-1
+Cardiovascular Technologist,Radiologic & Imaging Science,2,2,0,0,0,0,2,0,0,2,1,0,1,-1,2,0,2,0,2,1,0,0,0,0,2,2,0
+Medical Sonographer,Radiologic & Imaging Science,2,2,0,0,0,0,2,0,0,2,1,1,1,-1,2,0,2,0,2,1,0,0,0,0,2,2,0
+Nuclear Medicine Technologist,Radiologic & Imaging Science,2,2,0,0,0,0,2,0,0,2,1,0,1,-1,2,0,2,0,2,1,0,0,0,0,2,2,0
+Radiation Technologist,Radiologic & Imaging Science,2,2,0,0,0,0,2,0,0,2,1,0,1,-1,2,0,2,0,2,1,0,0,0,0,2,2,0
+Radiation Therapist,Radiologic & Imaging Science,2,2,0,0,0,0,2,0,0,2,1,1,1,-1,2,0,2,0,2,1,0,0,0,0,2,2,0
+Biological Technician,Science & Engineering,-2,2,2,0,0,0,0,2,0,0,1,0,0,0,0,2,0,0,0,0,0,0,2,0,0,1,0
+Biomedical Equipment Technician,Science & Engineering,-1,2,2,0,0,0,0,2,0,0,1,0,0,0,0,2,1,0,1,0,0,0,2,0,2,1,0
+Chemical Technician,Science & Engineering,-2,2,2,0,0,0,1,2,0,0,1,0,0,0,0,2,0,0,0,0,0,0,2,0,0,1,0
+Medical Scientist,Science & Engineering,-2,2,2,0,0,0,0,2,0,0,1,0,0,0,0,2,0,0,0,0,0,0,2,1,0,1,-2
+Art Therapist,Therapy & Rehabilitation,2,0,0,2,1,1,0,1,0,1,1,1,0,1,0,0,1,0,0,1,2,1,0,0,0,2,0
+Athletic Trainer,Therapy & Rehabilitation,2,1,0,2,1,1,0,1,0,1,1,0,1,1,0,0,2,0,0,1,2,1,0,0,2,2,0
+Audiologist,Therapy & Rehabilitation,2,2,0,2,1,1,0,1,0,1,1,0,0,1,0,2,2,0,0,2,0,1,0,0,0,2,-1
+Exercise Physiologist,Therapy & Rehabilitation,2,1,0,2,1,1,0,1,0,1,1,0,0,1,0,0,2,0,0,1,1,1,0,0,0,2,0
+Occupational Therapist,Therapy & Rehabilitation,2,0,0,2,1,1,0,1,0,1,1,0,0,1,0,0,2,0,0,2,0,1,0,0,2,2,-1
+Occupational Therapy Assistant,Therapy & Rehabilitation,2,0,0,2,1,1,0,1,0,1,1,0,0,1,0,0,2,0,0,2,0,1,0,0,2,2,1
+Orthotists & Prosthetists,Therapy & Rehabilitation,2,2,0,2,1,1,0,1,0,2,1,0,0,1,0,0,2,0,0,2,0,1,0,0,0,2,0
+Physical Therapist,Therapy & Rehabilitation,2,0,0,2,1,1,0,1,0,1,1,0,0,1,0,0,2,0,0,2,0,1,0,0,2,2,-1
+Physical Therapy Assistant,Therapy & Rehabilitation,2,0,0,2,1,1,0,1,0,1,1,0,0,1,0,0,2,0,0,2,0,1,0,0,2,2,1
+Recreational Therapist,Therapy & Rehabilitation,2,0,0,2,1,1,0,1,0,1,1,1,0,1,0,0,1,0,0,1,2,1,0,0,0,2,0
+Respiratory Therapist,Therapy & Rehabilitation,2,2,0,2,1,1,2,1,0,1,1,0,2,1,0,0,2,0,2,1,0,1,0,0,0,2,0
+Speech-Language Pathologist,Therapy & Rehabilitation,2,0,0,2,2,1,0,1,0,1,1,0,0,1,0,0,2,0,0,2,0,1,0,0,2,2,-1
+Veterinarian,Veterinary Medicine,2,1,0,0,0,0,2,0,0,2,1,0,0,0,0,0,2,1,1,2,0,0,0,0,2,1,-2
+Veterinary Technician,Veterinary Medicine,2,2,0,0,0,0,2,0,0,2,1,0,0,0,0,0,2,2,1,2,0,0,0,0,2,1,1
+Optician,Vision Care,2,0,0,0,0,0,0,0,0,1,1,2,0,1,0,2,1,0,0,2,0,0,0,0,0,1,2
+Optometrist,Vision Care,2,0,0,0,0,0,0,1,0,1,1,1,0,1,0,2,0,0,0,2,0,0,0,0,0,1,-1
