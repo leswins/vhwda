@@ -2,6 +2,7 @@ import React from "react"
 import type { CareerForMatching, QuizVector } from "../../../../sanity/queries/careers"
 import { calculateMatchPercentage } from "../../../../utils/vector-aux"
 import { getLocalizedString } from "../../../../sanity/queries/careers"
+import { pickTypicalSalary } from "../../../../utils/salary"
 import { CareerCard } from "../../CareerCard"
 
 type CareerMatch = CareerForMatching & { score: number }
@@ -11,19 +12,6 @@ type CareerMatchListProps = {
     userVector: QuizVector
     language: "en" | "es"
     maxResults?: number
-}
-
-function formatMoney(value?: number): string | undefined {
-    if (value === undefined || value === null) return undefined
-    try {
-        return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(value)
-    } catch {
-        return `$${value}`
-    }
-}
-
-function pickTypicalSalary(salary?: { median?: number; rangeMin?: number; rangeMax?: number }): string | undefined {
-    return formatMoney(salary?.median ?? salary?.rangeMin ?? salary?.rangeMax)
 }
 
 export function CareerMatchList({ careers, userVector, language, maxResults = 20 }: CareerMatchListProps) {
