@@ -81,7 +81,7 @@ export function Slider({
                 <div 
                     className="absolute left-[12px] h-[2px] bg-foreground top-1/2 -translate-y-1/2 transition-all duration-200"
                     style={{ 
-                        width: trackWidth > 0 ? `${thumbPosition}px` : `${percentage}%`
+                        width: trackWidth > 0 ? `${Math.max(thumbPosition - 12, 0)}px` : `${percentage}%`
                     }}
                 />
 

@@ -57,7 +57,7 @@ export function QuizSidebar({ questions, currentQuestionIndex, selectedAnswers, 
     }
 
     return (
-        <div className="flex flex-col w-[380px] h-full border-r border-foreground">
+        <div className="flex flex-col w-[380px] border-r border-foreground self-stretch">
             <div className="bg-foreground text-surface p-[30px]">
                 <h2 className="text-h5">
                     {t(language, "quiz.sidebar.title")}

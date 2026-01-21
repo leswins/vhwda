@@ -9,6 +9,7 @@ import { ComparePage } from "./views/ComparePage"
 import { QuizPage } from "./views/QuizPage"
 import { ResourcesPage } from "./views/ResourcesPage"
 import { ChatPage } from "./views/ChatPage"
+import { AboutPage } from "./views/AboutPage"
 
 export const router = createBrowserRouter([
   {
@@ -21,7 +22,8 @@ export const router = createBrowserRouter([
       { path: "compare", element: <ComparePage /> },
       { path: "quiz", element: <QuizPage /> },
       { path: "resources", element: <ResourcesPage /> },
-      { path: "chat", element: <ChatPage /> }
+      { path: "chat", element: <ChatPage /> },
+      { path: "about", element: <AboutPage /> }
     ]
   }
 ])

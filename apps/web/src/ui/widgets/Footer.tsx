@@ -16,6 +16,7 @@ export function Footer() {
 
   const helpLinks: Array<{ key: TranslationKey; to?: string }> = [
     { key: "footer.link.compareCareers", to: "/compare" },
+    { key: "footer.link.about", to: "/about" },
     // TODO: add routes when pages exist
     { key: "footer.link.glossary" },
     { key: "footer.link.contact" }

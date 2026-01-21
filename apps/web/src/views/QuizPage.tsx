@@ -11,7 +11,7 @@ import { QuizSidebar } from "../ui/widgets/quiz/components/QuizSidebar"
 import { VectorModal } from "../ui/widgets/quiz/components/VectorModal"
 import { useLanguageStore } from "../zustand/useLanguageStore"
 import { t } from "../utils/i18n"
-import shapesImage from "../ui/widgets/icons/shapes/shapes.png"
+import shapeClusterImage from "../assets/icons/shape-cluster.svg"
 
 export function QuizPage() {
     const {
@@ -83,7 +83,7 @@ export function QuizPage() {
                             </div>
 
                             {/* Navigation area - fixed at bottom */}
-                            <div className="border-t border-foreground p-8 flex justify-center">
+                            <div className="p-8 flex justify-center">
                                 <QuizNavigation
                                     hasPrevious={hasPrevious}
                                     hasNext={hasNext}
@@ -121,27 +121,20 @@ export function QuizPage() {
 
             {/* Complete the quiz section - only show during questions step */}
             {currentStep === "questions" && currentQuestion && (
-                <div className="border-t border-foreground border-dashed bg-surface1">
-                    <div className="mx-auto max-w-[1200px] px-6 py-12">
-                        <div className="flex items-end justify-between gap-8">
-                            <div className="flex-1">
-                                <p className="text-sub2 font-bold uppercase text-foreground mb-4">
-                                    {t(language, "quiz.complete.title")}
-                                </p>
-                                <h3 className="text-h3 text-foreground">
-                                    {t(language, "quiz.complete.message")}
-                                </h3>
-                            </div>
-                            {/* Decorative shapes image */}
-                            <div className="hidden lg:flex items-end justify-end relative -mr-6 mb-[-24px]">
-                                <img
-                                    src={shapesImage}
-                                    alt=""
-                                    className="w-[200px] h-auto object-contain"
-                                />
-                            </div>
-                        </div>
+                <div className="relative border-t border-foreground border-dashed bg-surface1">
+                    <div className="w-full p-[50px]">
+                        <p className="text-sub2 font-bold uppercase text-foreground mb-4">
+                            {t(language, "quiz.complete.title")}
+                        </p>
+                        <h3 className="text-h3 text-foreground">
+                            {t(language, "quiz.complete.message")}
+                        </h3>
                     </div>
+                    <img
+                        src={shapeClusterImage}
+                        alt=""
+                        className="hidden lg:block absolute bottom-0 right-0 w-[200px] h-auto object-contain"
+                    />
                 </div>
             )}
         </div>

@@ -16,6 +16,12 @@ const dict: Dictionary = {
   "header.searchA11y": { en: "Search", es: "Buscar" },
   "header.menuA11y": { en: "Menu", es: "Menú" },
   "header.searchCloseA11y": { en: "Close search", es: "Cerrar búsqueda" },
+  "header.selectAPage": { en: "Select a page", es: "Selecciona una página" },
+  "header.menu.home": { en: "Home", es: "Inicio" },
+  "header.menu.quiz": { en: "Quiz", es: "Cuestionario" },
+  "header.menu.careers": { en: "Careers", es: "Carreras" },
+  "header.menu.resources": { en: "Resources", es: "Recursos" },
+  "header.menu.about": { en: "About", es: "Acerca de" },
   "header.searchFieldA11y": { en: "Search input", es: "Campo de búsqueda" },
   "header.searchPlaceholder": {
     en: "Search for a career, keyword, organization, etc.",
@@ -115,6 +121,7 @@ const dict: Dictionary = {
   "browse.body": { en: "Placeholder page. Will query careers from Sanity.", es: "Página temporal. Consultará carreras desde Sanity." },
   "career.title": { en: "Career Detail", es: "Detalle de carrera" },
   "career.body": { en: "Placeholder page. Will show a career by slug.", es: "Página temporal. Mostrará una carrera por slug." },
+  "resources.kicker": { en: "Career Resources", es: "Recursos Profesionales" },
   "career.slugLabel": { en: "Slug", es: "Slug" },
   "career.back": { en: "Back", es: "Atrás" },
   "career.compare": { en: "Compare with other careers", es: "Comparar con otras carreras" },
@@ -287,6 +294,7 @@ const dict: Dictionary = {
   "footer.link.resources": { en: "Resources", es: "Recursos" },
   "footer.link.scholarship": { en: "Scholarship", es: "Becas" },
   "footer.link.compareCareers": { en: "Compare careers", es: "Comparar carreras" },
+  "footer.link.about": { en: "About", es: "Acerca de" },
   "footer.link.glossary": { en: "Glossary", es: "Glosario" },
   "footer.link.contact": { en: "Contact", es: "Contacto" },
   "footer.about": {
@@ -401,6 +409,147 @@ const dict: Dictionary = {
   "quiz.results.otherMatches": { en: "Other Strong Matches", es: "Otras Coincidencias Fuertes" },
   "quiz.results.retake": { en: "Retake Quiz", es: "Volver a Hacer el Cuestionario" },
   "quiz.results.searchPlaceholder": { en: "Search for a specific career", es: "Buscar una carrera específica" },
+
+  // About page translations
+  "about.kicker": { en: "About the health careers catalog", es: "Acerca del catálogo de carreras de salud" },
+  "about.title": { en: "A resource to explore health careers in Virginia.", es: "Un recurso para explorar carreras de salud en Virginia." },
+  "about.sectionNavA11y": { en: "About page sections", es: "Secciones de la página Acerca de" },
+
+  "about.sections.aboutVhwda": { en: "About VHWDA", es: "Acerca de VHWDA" },
+  "about.sections.dataSources": { en: "Data Sources", es: "Fuentes de Datos" },
+  "about.sections.quizMethodology": { en: "Quiz Methodology", es: "Metodología del Cuestionario" },
+  "about.sections.aiFeatures": { en: "AI Features Disclosure", es: "Divulgación de Características de IA" },
+  "about.sections.updateCadence": { en: "Update Cadence & Feedback", es: "Frecuencia de Actualización y Comentarios" },
+
+  "about.aboutVhwda.heading": {
+    en: "The Virginia Health Workforce Development Authority (VHWDA) strengthens Virginia's healthcare workforce by aligning education, training, and employment resources with industry needs.",
+    es: "La Autoridad para el Desarrollo de la Fuerza Laboral de Salud de Virginia (VHWDA) fortalece la fuerza laboral de salud de Virginia al alinear los recursos de educación, capacitación y empleo con las necesidades de la industria."
+  },
+  "about.aboutVhwda.paragraph": {
+    en: "The Health Careers Catalog is part of VHWDA's work to support a strong, resilient healthcare workforce across the Commonwealth. This site helps students, career changers, educators, and advisors explore health careers, compare pathways, and find relevant programs and professional resources. VHWDA and partners periodically update the catalog so information stays useful as education options and workforce needs evolve.",
+    es: "El Catálogo de Carreras de Salud es parte del trabajo de VHWDA para apoyar una fuerza laboral de atención médica sólida y resiliente en todo el Commonwealth. Este sitio ayuda a estudiantes, personas que cambian de carrera, educadores y asesores a explorar carreras de salud, comparar caminos y encontrar programas y recursos profesionales relevantes. VHWDA y sus socios actualizan periódicamente el catálogo para que la información siga siendo útil a medida que evolucionan las opciones educativas y las necesidades de la fuerza laboral."
+  },
+
+  "about.aiFeatures.item3": {
+    en: "Data Verification: All salary figures, education requirements, and job outlook data come directly from authoritative sources and are not AI-generated",
+    es: "Verificación de Datos: Todas las cifras salariales, requisitos educativos y datos de perspectiva laboral provienen directamente de fuentes autorizadas y no son generados por IA"
+  },
+  "about.aiFeatures.item4": {
+    en: "Continuous Improvement: We regularly review and update AI-assisted features to ensure accuracy, fairness, and usefulness for all users",
+    es: "Mejora Continua: Revisamos y actualizamos regularmente las características asistidas por IA para garantizar precisión, equidad y utilidad para todos los usuarios"
+  },
+
+  "about.dataSources.careerInfo.title": { en: "Career information", es: "Información de carrera" },
+  "about.dataSources.careerInfo.description": {
+    en: "Career pages summarize responsibilities, work environment, education requirements, and related details based on the Health Careers Catalog content and partner-provided references. Content is maintained through an internal content management system so it can be reviewed and updated over time.",
+    es: "Las páginas de carrera resumen las responsabilidades, el entorno laboral, los requisitos educativos y los detalles relacionados según el contenido del Catálogo de Carreras de Salud y las referencias proporcionadas por los socios. El contenido se mantiene a través de un sistema interno de gestión de contenidos para que pueda ser revisado y actualizado con el tiempo."
+  },
+  "about.dataSources.salaryOutlook.title": { en: "Salary and job outlook", es: "Salario y perspectiva laboral" },
+  "about.dataSources.salaryOutlook.description": {
+    en: "Salary and outlook fields are populated primarily using Virginia Works workforce datasets where roles can be reliably matched. When a role does not map cleanly to a dataset category, values may be added or refined manually after review.",
+    es: "Los campos de salario y perspectivas se completan principalmente utilizando conjuntos de datos de la fuerza laboral de Virginia Works donde los roles se pueden combinar de manera confiable. Cuando un rol no se asigna claramente a una categoría de conjunto de datos, los valores se pueden agregar o refinar manualmente después de la revisión."
+  },
+  "about.dataSources.educationPrograms.title": { en: "Education programs", es: "Programas de educación" },
+  "about.dataSources.educationPrograms.description": {
+    en: "Education programs listed on the site reflect cataloged Virginia-based programs and training opportunities. Program links take you to external school or program websites, which may change independently of this site.",
+    es: "Los programas educativos enumerados en el sitio reflejan programas y oportunidades de capacitación catalogados con sede en Virginia. Los enlaces del programa lo llevan a sitios web externos de escuelas o programas, que pueden cambiar independientemente de este sitio."
+  },
+  "about.dataSources.profOrgs.title": { en: "Professional organizations", es: "Organizaciones profesionales" },
+  "about.dataSources.profOrgs.description": {
+    en: "Professional organizations are included to help users learn more about standards, continuing education, and career communities. Organization listings are associated to careers and include outbound links for the most current information.",
+    es: "Se incluyen organizaciones profesionales para ayudar a los usuarios a aprender más sobre estándares, educación continua y comunidades profesionales. Los listados de organizaciones están asociados a carreras e incluyen enlaces externos para obtener la información más actualizada."
+  },
+
+  "about.quizMethodology.intro": {
+    en: "The quiz is designed to help users explore careers that align with their interests, preferences, and constraints. It combines preference-based scoring with straightforward filters that can remove careers that don't fit a user's needs.",
+    es: "El cuestionario está diseñado para ayudar a los usuarios a explorar carreras que se alineen con sus intereses, preferencias y limitaciones. Combina una puntuación basada en preferencias con filtros directos que pueden eliminar las carreras que no se ajustan a las necesidades del usuario."
+  },
+  "about.quizMethodology.softScoring.title": { en: "1. Soft Scoring", es: "1. Puntuación suave" },
+  "about.quizMethodology.softScoring.item1": {
+    en: "Your answers build a preference profile across multiple dimensions (for example: patient interaction, work style, and areas of interest).",
+    es: "Sus respuestas crean un perfil de preferencias en múltiples dimensiones (por ejemplo: interacción con el paciente, estilo de trabajo y áreas de interés)."
+  },
+  "about.quizMethodology.softScoring.item2": {
+    en: "Each career has its own profile across those same dimensions, based on the catalog and structured review.",
+    es: "Cada carrera tiene su propio perfil en esas mismas dimensiones, basado en el catálogo y la revisión estructurada."
+  },
+  "about.quizMethodology.softScoring.item3": {
+    en: "The quiz calculates a match score by comparing your profile to each career profile, then ranks careers accordingly.",
+    es: "El cuestionario calcula una puntuación de coincidencia al comparar su perfil con cada perfil de carrera, luego clasifica las carreras en consecuencia."
+  },
+  "about.quizMethodology.hardFilters.title": { en: "2. Hard Filters", es: "2. Filtros estrictos" },
+  "about.quizMethodology.hardFilters.item1": {
+    en: "Some questions act as \"must-have\" or \"must-avoid\" constraints (for example: licensure requirements, exposure considerations, or schedule constraints).",
+    es: "Algunas preguntas actúan como restricciones de \"debe tener\" o \"debe evitar\" (por ejemplo: requisitos de licencia, consideraciones de exposición o restricciones de horario)."
+  },
+  "about.quizMethodology.hardFilters.item2": {
+    en: "If a career conflicts with a hard filter, it may be excluded even if the match score is otherwise strong.",
+    es: "Si una carrera entra en conflicto con un filtro estricto, puede ser excluida incluso si la puntuación de coincidencia es fuerte en otros aspectos."
+  },
+  "about.quizMethodology.hardFilters.item3": {
+    en: "Filters are intended to reduce irrelevant options and make results more practical.",
+    es: "Los filtros están destinados a reducir opciones irrelevantes y hacer que los resultados sean más prácticos."
+  },
+  "about.quizMethodology.outro": {
+    en: "Results are meant to support exploration and advising conversations—not replace them.",
+    es: "Los resultados están destinados a apoyar la exploración y las conversaciones de asesoramiento, no a reemplazarlas."
+  },
+
+  "about.aiFeatures.intro": {
+    en: "Some features use AI to make the catalog easier to navigate and faster to understand. AI outputs are provided to support discovery and should be validated using the career details and official program resources on each page.",
+    es: "Algunas funciones utilizan IA para que el catálogo sea más fácil de navegar y más rápido de entender. Los resultados de la IA se proporcionan para apoyar el descubrimiento y deben validarse utilizando los detalles de la carrera y los recursos oficiales del programa en cada página."
+  },
+  "about.aiFeatures.aiChat.title": { en: "1. AI Chat", es: "1. Chat de IA" },
+  "about.aiFeatures.aiChat.item1": {
+    en: "The chat helps users find relevant careers using natural language (for example: \"careers like nursing\" or \"low blood exposure roles\").",
+    es: "El chat ayuda a los usuarios a encontrar carreras relevantes utilizando un lenguaje natural (por ejemplo: \"carreras como enfermería\" o \"roles con baja exposición a la sangre\")."
+  },
+  "about.aiFeatures.aiChat.item2": {
+    en: "It suggests options and follow-up questions to narrow results, then links directly to career pages.",
+    es: "Sugiere opciones y preguntas de seguimiento para limitar los resultados, luego enlaza directamente a las páginas de carrera."
+  },
+  "about.aiFeatures.aiChat.item3": {
+    en: "Responses may be incomplete or imperfect; users should confirm details on the career page and linked resources.",
+    es: "Las respuestas pueden estar incompletas o ser imperfectas; los usuarios deben confirmar los detalles en la página de la carrera y los recursos enlazados."
+  },
+  "about.aiFeatures.careerVideos.title": { en: "2. Career Videos", es: "2. Vídeos de carreras" },
+  "about.aiFeatures.careerVideos.item1": {
+    en: "Career videos are generated from structured prompts designed to reflect common tasks and settings for each role.",
+    es: "Los vídeos de carreras se generan a partir de indicaciones estructuradas diseñadas para reflejar tareas y entornos comunes para cada función."
+  },
+  "about.aiFeatures.careerVideos.item2": {
+    en: "Videos are reviewed and can be regenerated or updated if something looks inaccurate or out of date.",
+    es: "Los vídeos se revisan y pueden regenerarse o actualizarse si algo parece inexacto o desactualizado."
+  },
+  "about.aiFeatures.careerVideos.item3": {
+    en: "Videos are illustrative and not a substitute for program guidance, job shadowing, or employer-specific expectations.",
+    es: "Los vídeos son ilustrativos y no sustituyen la orientación del programa, la observación del trabajo o las expectativas específicas del empleador."
+  },
+  "about.aiFeatures.quizScoring.title": { en: "3. Quiz Scoring", es: "3. Puntuación del cuestionario" },
+  "about.aiFeatures.quizScoring.item1": {
+    en: "AI-assisted workflows were used to accelerate initial career profiling across quiz dimensions.",
+    es: "Se utilizaron flujos de trabajo asistidos por IA para acelerar el perfilado inicial de las carreras en todas las dimensiones del cuestionario."
+  },
+  "about.aiFeatures.quizScoring.item2": {
+    en: "All career profiles remain editable and can be updated as catalog information evolves.",
+    es: "Todos los perfiles de carrera siguen siendo editables y pueden actualizarse a medida que evoluciona la información del catálogo."
+  },
+  "about.aiFeatures.quizScoring.item3": {
+    en: "Quiz results reflect the current profiles, filters, and weighting strategy configured by the program team.",
+    es: "Los resultados del cuestionario reflejan los perfiles, filtros y estrategias de ponderación actuales configurados por el equipo del programa."
+  },
+  "about.updateCadence.paragraph1": {
+    en: "Content is updated periodically as new information becomes available or as programs and workforce data refresh. Last updated: January 2026.",
+    es: "El contenido se actualiza periódicamente a medida que hay nueva información disponible o a medida que se actualizan los programas y los datos de la fuerza laboral. Última actualización: enero de 2026."
+  },
+  "about.updateCadence.contactHeading": {
+    en: "See something that needs updating or doesn't look right? Contact us.",
+    es: "¿Ves algo que deba actualizarse o que no parezca correcto? Contáctanos."
+  },
+  "about.updateCadence.emailButton": {
+    en: "Send us an email",
+    es: "Envíanos un correo electrónico"
+  },
   "quiz.results.noMatches.title": { en: "Unfortunately, there are no careers that match your quiz selections.", es: "Desafortunadamente, no hay carreras que coincidan con tus selecciones del cuestionario." },
   "quiz.results.noMatches.description": { en: "It is likely that your responses to \"deal-breaker\" questions filtered out all of the available career matches. Retake the quiz or search for a specific career to find a career that suits you.", es: "Es probable que tus respuestas a las preguntas de \"factores decisivos\" hayan filtrado todas las coincidencias de carrera disponibles. Vuelve a hacer el cuestionario o busca una carrera específica para encontrar una que se adapte a ti." },
   "quiz.results.noMatches.searchCareer": { en: "Search for a specific career", es: "Buscar una carrera específica" }
@@ -411,5 +560,3 @@ export type TranslationKey = keyof typeof dict
 export function t(language: Language, key: TranslationKey): string {
   return dict[key][language]
 }
-
-

@@ -31,8 +31,15 @@ export function useQuizLogic() {
             setErrorLoadingQuestions(null)
             try {
                 const sanityQuestions = await fetchQuizQuestions(language)
-                if (sanityQuestions.length > 0) {
-                    setQuestions(sanityQuestions)
+                const filteredQuestions = sanityQuestions.filter(question => {
+                    const prompt = question.prompt.trim()
+                    const isRegionPreferencePrompt =
+                        prompt === "Where do you want to study/work first? (Choose region or 'Anywhere in VA/Online')" ||
+                        prompt === "¿Dónde quieres estudiar/trabajar primero? (Elige región o 'En cualquier lugar de VA/En línea')"
+                    return !isRegionPreferencePrompt
+                })
+                if (filteredQuestions.length > 0) {
+                    setQuestions(filteredQuestions)
                     // Automatically start the quiz when questions are loaded
                     setCurrentStep("questions")
                 } else {

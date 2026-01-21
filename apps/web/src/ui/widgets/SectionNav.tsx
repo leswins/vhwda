@@ -73,7 +73,7 @@ export function SectionNav({ items, offsetTopPx = 0, ariaLabel }: Props) {
 
   return (
     <div
-      className="sticky z-20 border-y border-foreground bg-surface py-5"
+      className="sticky z-20 border-y-[0.5px] border-foreground bg-surface py-5"
       style={{ top: offsetTopPx }}
       role="navigation"
       aria-label={ariaLabel}
