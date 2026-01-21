@@ -99,7 +99,6 @@ export function ChatPage() {
 
   const handleQuickPromptClick = (prompt: string) => {
     setUserInput(prompt)
-    handleSubmit(prompt)
   }
 
   const showEmptyState = response.length === 0 && !loadingCareers

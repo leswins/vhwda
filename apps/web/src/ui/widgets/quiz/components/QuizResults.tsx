@@ -3,6 +3,7 @@ import type { QuizVector, CareerForMatching } from "../../../../sanity/queries/c
 import { QuizResultsHeader } from "./QuizResultsHeader"
 import { TopMatchesSection } from "./TopMatchesSection"
 import { OtherMatchesSection } from "./OtherMatchesSection"
+import { QuizNoResults } from "./QuizNoResults"
 
 type CareerMatch = CareerForMatching & { score: number }
 
@@ -23,6 +24,10 @@ export function QuizResults({
 }: QuizResultsProps) {
     if (loading) {
         return null
+    }
+    
+    if (matchedCareers.length === 0) {
+        return <QuizNoResults language={language} onStartOver={onStartOver} />
     }
     
     const topMatches = matchedCareers.slice(0, 3)

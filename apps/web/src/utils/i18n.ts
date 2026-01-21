@@ -188,6 +188,13 @@ const dict: Dictionary = {
   "search.career": { en: "Career", es: "Carrera" },
   "filters.filter": { en: "Filter", es: "Filtrar" },
   "filters.sort": { en: "Sort", es: "Ordenar" },
+  "filters.sort.requiredEducation": { en: "Required Education", es: "Educación requerida" },
+  "filters.sort.salaryRange": { en: "Salary Range", es: "Rango salarial" },
+  "filters.sort.jobOutlook": { en: "Job Outlook", es: "Perspectiva laboral" },
+  "filters.sort.mostToLeast": { en: "Most to least", es: "De más a menos" },
+  "filters.sort.leastToMost": { en: "Least to most", es: "De menos a más" },
+  "filters.sort.highToLow": { en: "High to low", es: "De alto a bajo" },
+  "filters.sort.lowToHigh": { en: "Low to high", es: "De bajo a alto" },
   "filters.careerGroup": { en: "Career Group", es: "Grupo de carreras" },
   "filters.requiredEducation": { en: "Required Education", es: "Educación requerida" },
   "filters.salaryRange": { en: "Salary Range", es: "Rango salarial" },
@@ -365,6 +372,11 @@ const dict: Dictionary = {
   "filters.membershipType.professional": { en: "Professional", es: "Profesional" },
   "filters.membershipType.employer": { en: "Employer", es: "Empleador" },
   "filters.geographicFocus": { en: "Geographic Focus", es: "Enfoque Geográfico" },
+  "filters.geographicFocus.virginiaStatewide": { en: "Virginia Statewide", es: "Todo Virginia" },
+  "filters.geographicFocus.regional": { en: "Regional", es: "Regional" },
+  "filters.geographicFocus.national": { en: "National", es: "Nacional" },
+  "filters.geographicFocus.international": { en: "International", es: "Internacional" },
+  "filters.geographicFocus.local": { en: "Local", es: "Local" },
   "common.visitSite": { en: "Visit Site", es: "Visitar Sitio" },
 
   // Quiz-specific translations
@@ -396,6 +408,7 @@ const dict: Dictionary = {
   "quiz.results.otherMatches": { en: "Other Strong Matches", es: "Otras Coincidencias Fuertes" },
   "quiz.results.retake": { en: "Retake Quiz", es: "Volver a Hacer el Cuestionario" },
   "quiz.results.searchPlaceholder": { en: "Search for a specific career", es: "Buscar una carrera específica" },
+<<<<<<< HEAD
 
   // About page translations
   "about.kicker": { en: "About the health careers catalog", es: "Acerca del catálogo de carreras de salud" },
@@ -537,6 +550,11 @@ const dict: Dictionary = {
     en: "Send us an email",
     es: "Envíanos un correo electrónico"
   }
+=======
+  "quiz.results.noMatches.title": { en: "Unfortunately, there are no careers that match your quiz selections.", es: "Desafortunadamente, no hay carreras que coincidan con tus selecciones del cuestionario." },
+  "quiz.results.noMatches.description": { en: "It is likely that your responses to \"deal-breaker\" questions filtered out all of the available career matches. Retake the quiz or search for a specific career to find a career that suits you.", es: "Es probable que tus respuestas a las preguntas de \"factores decisivos\" hayan filtrado todas las coincidencias de carrera disponibles. Vuelve a hacer el cuestionario o busca una carrera específica para encontrar una que se adapte a ti." },
+  "quiz.results.noMatches.searchCareer": { en: "Search for a specific career", es: "Buscar una carrera específica" }
+>>>>>>> origin/main
 }
 
 export type TranslationKey = keyof typeof dict
