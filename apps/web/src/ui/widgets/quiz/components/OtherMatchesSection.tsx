@@ -25,7 +25,7 @@ export function OtherMatchesSection({ careers, userVector, language }: OtherMatc
   return (
     <div>
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
-        <h2 className="text-h2 font-bold text-foreground">{t(language, "quiz.results.otherMatches")}</h2>
+        <h2 className="text-h3 font-bold text-foreground">{t(language, "quiz.results.otherMatches")}</h2>
         <div className="w-full md:w-auto md:min-w-[300px]">
           <input
             type="text"

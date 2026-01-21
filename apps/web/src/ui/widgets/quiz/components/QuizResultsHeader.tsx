@@ -13,7 +13,7 @@ export function QuizResultsHeader({ language, onStartOver }: QuizResultsHeaderPr
     <>
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
-          <span className="text-body-base font-medium text-foreground">{t(language, "quiz.sidebar.title")}</span>
+          <span className="text-h5 font-bold text-foreground">{t(language, "quiz.sidebar.title")}</span>
           <span className="px-2.5 py-1 bg-accentOrange text-foreground text-xs font-bold uppercase tracking-wider">
             {t(language, "quiz.title").split(" ").pop()}
           </span>
@@ -26,7 +26,7 @@ export function QuizResultsHeader({ language, onStartOver }: QuizResultsHeaderPr
           <span>{t(language, "quiz.results.retake")}</span>
         </button>
       </div>
-      <div className="border-b border-dashed border-foreground/30 mb-8" />
+      <div className="border-b border-foreground/30 mb-8" />
     </>
   )
 }
