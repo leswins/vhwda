@@ -253,11 +253,12 @@ export function shouldExcludeCareer(
   }
 
   for (const filter of hardFilters) {
-    if (filter.hasMinimumEducation || filter.type === "education_ceiling") {
-      if (checkEducationCeiling(filter, career)) {
-        return true
-      }
-    }
+    // Education ceiling filter removed - no longer excluding careers based on education level
+    // if (filter.hasMinimumEducation || filter.type === "education_ceiling") {
+    //   if (checkEducationCeiling(filter, career)) {
+    //     return true
+    //   }
+    // }
 
     if (filter.requiresLicensure || filter.type === "licensure_rule") {
       if (checkLicensureRule(filter, career)) {
