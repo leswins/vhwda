@@ -256,7 +256,6 @@ export function shouldExcludeCareer(
     // Education ceiling filter removed - no longer excluding careers based on education level
     // if (filter.hasMinimumEducation || filter.type === "education_ceiling") {
     //   if (checkEducationCeiling(filter, career)) {
-    //     console.log(`      🚫 Hard filter: Education ceiling - User max: ${filter.educationLevel}, Career requires higher`)
     //     return true
     //   }
     // }
