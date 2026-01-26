@@ -47,27 +47,26 @@ function ensureGtag() {
   }
 
   if (!window.gtag) {
-    window.gtag = function gtag(...args: unknown[]) {
-      window.dataLayer?.push(args)
+    window.gtag = function gtag() {
+      // Use Array.from to ensure we push a real array, not the arguments object
+      window.dataLayer?.push(Array.from(arguments))
     }
   }
 
-  if (!document.getElementById("ga4-script")) {
-    const script = document.createElement("script")
-    script.id = "ga4-script"
-    script.async = true
-    script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`
-    document.head.appendChild(script)
-  }
-
   if (!window.__gaInitialized) {
+    // 1. "js" call MUST be the first thing to spark the engine
     window.gtag?.("js", new Date())
+    
+    // 2. config call
     window.gtag?.("config", GA_MEASUREMENT_ID, {
       send_page_view: false,
       debug_mode: GA_DEBUG_MODE ? true : undefined
     })
+    
     window.__gaInitialized = true
   }
+
+  if (!document.getElementById("ga4-script")) {
 }
 
 export function initAnalytics() {
