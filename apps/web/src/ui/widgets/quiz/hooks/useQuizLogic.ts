@@ -195,7 +195,6 @@ export function useQuizLogic() {
             }))
         }
 
-        // Mark question as visited when answered
         setVisitedQuestions(prev => new Set(prev).add(questionId))
     }
 
@@ -206,19 +205,16 @@ export function useQuizLogic() {
     }
 
     const handleSkip = () => {
-        // Skip current question by clearing any selected answer and moving to next
         const currentQuestion = questions[currentQuestionIndex]
         if (!currentQuestion) return
 
         const currentSelection = selectedAnswers[currentQuestion.id]
         
-        // If there's a selection, we need to revert the vector changes
         if (currentSelection) {
             const currentSelectedIds = Array.isArray(currentSelection) 
                 ? currentSelection 
                 : [currentSelection]
 
-            // Revert vector: remove weights from all selected options
             setUserVector(prev => {
                 const updated = { ...prev }
                 
@@ -235,7 +231,6 @@ export function useQuizLogic() {
                 return updated
             })
 
-            // Remove the answer from selectedAnswers
             setSelectedAnswers(prev => {
                 const updated = { ...prev }
                 delete updated[currentQuestion.id]
@@ -243,10 +238,8 @@ export function useQuizLogic() {
             })
         }
 
-        // Mark question as visited (skipped)
         setVisitedQuestions(prev => new Set(prev).add(currentQuestion.id))
 
-        // Move to next question
         if (currentQuestionIndex < questions.length - 1) {
             setCurrentQuestionIndex(prev => prev + 1)
         }

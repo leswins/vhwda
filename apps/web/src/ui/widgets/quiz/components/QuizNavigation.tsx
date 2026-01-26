@@ -28,14 +28,12 @@ export function QuizNavigation({
 }: QuizNavigationProps) {
     const { language } = useLanguageStore()
 
-    // Show skip button only for multi_select and single_select questions
     const shouldShowSkip = currentQuestion && 
         (currentQuestion.type === "multi_select" || currentQuestion.type === "single_select") &&
         onSkip
 
     return (
         <div className="flex items-center gap-[20px]">
-            {/* Back button (only show if has previous) */}
             {hasPrevious && (
                 <button
                     onClick={onPrevious}
@@ -52,7 +50,6 @@ export function QuizNavigation({
                 </button>
             )}
 
-            {/* Next/Submit button */}
             {hasNext ? (
                 <button
                     onClick={onNext}
@@ -87,7 +84,6 @@ export function QuizNavigation({
                 </button>
             )}
 
-            {/* Skip button (only show for multi_select and single_select questions) */}
             {shouldShowSkip && (
                 <button
                     onClick={onSkip}

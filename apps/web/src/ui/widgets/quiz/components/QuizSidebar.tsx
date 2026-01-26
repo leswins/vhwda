@@ -39,12 +39,10 @@ export function QuizSidebar({ questions, currentQuestionIndex, selectedAnswers, 
         return acc
     }, {} as Record<string, Array<{ question: Question; index: number }>>)
 
-    // Check if a section is completed (all questions in the section have been visited - answered or skipped)
     const isSectionCompleted = (sectionId: string) => {
         const sectionQuestions = questionsBySection[sectionId] || []
-        if (sectionQuestions.length === 0) return false // No questions in this section
+        if (sectionQuestions.length === 0) return false
         return sectionQuestions.every(({ question }) => {
-            // A question is considered completed if it has been visited (answered or skipped)
             return visitedQuestions.has(question.id)
         })
     }
