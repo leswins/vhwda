@@ -3,6 +3,7 @@ import type { Language } from "../../utils/i18n"
 import { t } from "../../utils/i18n"
 import type { ProfessionalOrganization } from "../../sanity/queries/professionalOrganizations"
 import { getLocalizedText } from "../../sanity/queries/careers"
+import { trackEvent, trackOutboundClick } from "../../utils/analytics"
 
 const EducationIcon = () => (
   <svg viewBox="0 0 50 50" className="h-[25px] w-[25px]" fill="currentColor" aria-hidden="true">
@@ -45,6 +46,21 @@ export function ProfessionalOrganizationCard({ language, organization }: Props) 
             target="_blank"
             rel="noopener noreferrer"
             className="shrink-0 bg-[rgb(var(--color-accent-pink))] px-4 py-2 text-sm font-medium text-foreground transition-colors hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/20"
+            onClick={() => {
+              trackEvent("resource_click", {
+                resource_type: "professional_organization",
+                resource_id: organization._id,
+                resource_title: organization.name,
+                language
+              })
+              trackOutboundClick({
+                outbound_url: organization.link,
+                resource_type: "professional_organization",
+                resource_id: organization._id,
+                resource_title: organization.name,
+                language
+              })
+            }}
           >
             {t(language, "common.visitSite")}
           </a>

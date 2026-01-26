@@ -15,9 +15,10 @@ type Props = {
   isInCompare?: boolean
   canAddToCompare?: boolean
   onToggleCompare?: () => void
+  onClick?: () => void
 }
 
-export function CareerCard({ language, title, salary, to, imageUrl, videoUrl, showMatch, matchLabel, isInCompare = false, canAddToCompare = false, onToggleCompare }: Props) {
+export function CareerCard({ language, title, salary, to, imageUrl, videoUrl, showMatch, matchLabel, isInCompare = false, canAddToCompare = false, onToggleCompare, onClick }: Props) {
   const videoRef = React.useRef<HTMLVideoElement | null>(null)
 
   const handleMouseEnter = () => {
@@ -58,7 +59,7 @@ export function CareerCard({ language, title, salary, to, imageUrl, videoUrl, sh
           )}
         </button>
       )}
-      <Link to={to} className="block" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} onFocus={handleMouseEnter} onBlur={handleMouseLeave}>
+      <Link to={to} className="block" onClick={onClick} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} onFocus={handleMouseEnter} onBlur={handleMouseLeave}>
         <div className="relative h-[283px] w-full overflow-hidden bg-surface2">
           {videoUrl ? (
             <video

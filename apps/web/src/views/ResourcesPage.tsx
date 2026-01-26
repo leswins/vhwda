@@ -2,6 +2,7 @@ import React from "react"
 import { useLanguageStore } from "../zustand/useLanguageStore"
 import { t } from "../utils/i18n"
 import { PlanYourNextStepsSection } from "../ui/widgets/PlanYourNextStepsSection"
+import { trackEvent } from "../utils/analytics"
 
 const ArrowIndicator = () => (
   <div className="relative flex h-full aspect-square items-center justify-center overflow-hidden self-stretch" aria-hidden="true">
@@ -37,6 +38,10 @@ export function ResourcesPage() {
     const section = document.getElementById(sectionId)
     if (!section) return
     section.scrollIntoView({ behavior: "smooth", block: "start" })
+    trackEvent("resource_section_jump", {
+      section_id: sectionId,
+      language
+    })
   }
 
   return (

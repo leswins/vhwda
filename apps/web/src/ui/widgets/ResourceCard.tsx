@@ -1,6 +1,7 @@
 import React from "react"
 import type { Language } from "../../utils/i18n"
 import { t } from "../../utils/i18n"
+import { trackEvent } from "../../utils/analytics"
 
 type ResourceType = "scholarships" | "professionalOrganizations" | "schoolsPrerequisites"
 
@@ -137,6 +138,11 @@ export function ResourceCard({ language, type }: Props) {
     if (element) {
       element.scrollIntoView({ behavior: "smooth", block: "start" })
     }
+    trackEvent("resource_section_jump", {
+      section_id: sectionId,
+      resource_type: type,
+      language
+    })
   }
 
   return (

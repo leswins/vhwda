@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { useLanguageStore } from "../../../../zustand/useLanguageStore"
 import { useGlobalLoadingStore } from "../../../../zustand/useGlobalLoadingStore"
 import type { QuizVector, CareerForMatching } from "../../../../sanity/queries/careers"
@@ -7,6 +7,7 @@ import type { Question } from "../questions"
 import { fetchQuizQuestions } from "../../../../sanity/queries/quiz"
 import { createEmptyVector, calculateMatchingScore } from "../../../../utils/vector-aux"
 import { collectHardFiltersFromAnswers, shouldExcludeCareer } from "../../../../utils/hard-filters"
+import { trackEvent } from "../../../../utils/analytics"
 
 export type QuizStep = "intro" | "questions" | "results"
 
@@ -22,6 +23,8 @@ export function useQuizLogic() {
     const [errorLoadingQuestions, setErrorLoadingQuestions] = useState<string | null>(null)
     const [matchedCareers, setMatchedCareers] = useState<Array<CareerForMatching & { score: number }>>([])
     const [loadingResults, setLoadingResults] = useState(false)
+    const quizStartTrackedRef = useRef(false)
+    const quizResultsTrackedRef = useRef(false)
 
     // Load questions from Sanity when component mounts
     useEffect(() => {
@@ -60,11 +63,23 @@ export function useQuizLogic() {
         loadQuestions()
     }, [language, setLoading])
 
+    useEffect(() => {
+        if (questions.length > 0 && currentStep === "questions" && !quizStartTrackedRef.current) {
+            trackEvent("quiz_start", {
+                questions_count: questions.length,
+                language
+            })
+            quizStartTrackedRef.current = true
+        }
+    }, [currentStep, language, questions.length])
+
     const handleStart = () => {
         setUserVector(createEmptyVector())
         setCurrentQuestionIndex(0)
         setSelectedAnswers({})
         setCurrentStep("questions")
+        quizStartTrackedRef.current = false
+        quizResultsTrackedRef.current = false
     }
 
     const handleAnswer = (questionId: string, optionId: string) => {
@@ -196,6 +211,11 @@ export function useQuizLogic() {
     }
 
     const handleFinish = async () => {
+        trackEvent("quiz_complete", {
+            questions_count: questions.length,
+            answered_count: Object.keys(selectedAnswers).length,
+            language
+        })
         setCurrentStep("results")
         setLoadingResults(true)
         setLoading(true)
@@ -247,12 +267,25 @@ export function useQuizLogic() {
         }
     }
 
+    useEffect(() => {
+        if (currentStep !== "results" || loadingResults) return
+        if (quizResultsTrackedRef.current) return
+
+        trackEvent("quiz_results_view", {
+            matched_count: matchedCareers.length,
+            language
+        })
+        quizResultsTrackedRef.current = true
+    }, [currentStep, language, loadingResults, matchedCareers.length])
+
     const handleStartOver = () => {
         setCurrentStep("questions")
         setUserVector(createEmptyVector())
         setCurrentQuestionIndex(0)
         setSelectedAnswers({})
         setMatchedCareers([])
+        quizStartTrackedRef.current = false
+        quizResultsTrackedRef.current = false
     }
 
     const currentQuestion = questions[currentQuestionIndex]

@@ -3,6 +3,7 @@ import type { Language } from "../../utils/i18n"
 import { t } from "../../utils/i18n"
 import type { Scholarship } from "../../sanity/queries/scholarships"
 import { getLocalizedString, getLocalizedText } from "../../sanity/queries/careers"
+import { trackEvent, trackOutboundClick } from "../../utils/analytics"
 
 type Props = {
   language: Language
@@ -30,6 +31,21 @@ export function ScholarshipCard({ language, scholarship }: Props) {
           target="_blank"
           rel="noopener noreferrer"
           className="shrink-0 bg-[rgb(var(--color-accent-green))] px-4 py-2 text-sm font-medium text-foreground transition-colors hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/20"
+          onClick={() => {
+            trackEvent("resource_click", {
+              resource_type: "scholarship",
+              resource_id: scholarship._id,
+              resource_title: scholarship.name,
+              language
+            })
+            trackOutboundClick({
+              outbound_url: scholarship.link,
+              resource_type: "scholarship",
+              resource_id: scholarship._id,
+              resource_title: scholarship.name,
+              language
+            })
+          }}
         >
           {t(language, "common.visitSite")}
         </a>

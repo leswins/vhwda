@@ -10,6 +10,7 @@ import { QuickPrompts } from "../ui/widgets/chat/QuickPrompts"
 import { ChatMessages } from "../ui/widgets/chat/ChatMessages"
 import { ChatInput } from "../ui/widgets/chat/ChatInput"
 import { t } from "../utils/i18n"
+import { trackEvent } from "../utils/analytics"
 
 type Message = {
   type: "user" | "bot" | "system"
@@ -50,6 +51,10 @@ export function ChatPage() {
     loadCareersContext()
   }, [language, setLoading])
 
+  useEffect(() => {
+    trackEvent("ai_chat_open", { language })
+  }, [language])
+
   const handleSubmit = async (promptToSend: string = userInput) => {
     if (!promptToSend.trim()) {
       setResponse([{ type: "system", message: t(language, "chat.pleaseEnterPrompt") }])
@@ -66,6 +71,10 @@ export function ChatPage() {
     }
 
     setIsLoading(true)
+    trackEvent("ai_chat_message_sent", {
+      message_length: promptToSend.length,
+      language
+    })
     try {
       const conversationHistory: ChatMessage[] = response
         .filter((msg) => msg.type === "user" || msg.type === "bot")
@@ -98,6 +107,10 @@ export function ChatPage() {
   }
 
   const handleQuickPromptClick = (prompt: string) => {
+    trackEvent("ai_chat_quick_prompt_click", {
+      prompt,
+      language
+    })
     setUserInput(prompt)
   }
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react"
+import React, { useEffect, useMemo, useRef, useState } from "react"
 import { Link, useParams } from "react-router-dom"
 import type { CareerDetail } from "../sanity/queries/careers"
 import { fetchCareerDetailBySlug, getLocalizedString, getLocalizedText } from "../sanity/queries/careers"
@@ -10,6 +10,7 @@ import { CareerCard } from "../ui/widgets/CareerCard"
 import { useLanguageStore } from "../zustand/useLanguageStore"
 import { useGlobalLoadingStore } from "../zustand/useGlobalLoadingStore"
 import { t } from "../utils/i18n"
+import { trackEvent, trackOutboundClick } from "../utils/analytics"
 
 function formatMoney(value?: number): string | undefined {
   if (value === undefined || value === null) return undefined
@@ -80,6 +81,7 @@ export function CareerDetailPage() {
   const { setLoading } = useGlobalLoadingStore()
   const [data, setData] = useState<CareerDetail | null>(null)
   const [status, setStatus] = useState<"idle" | "loading" | "ready" | "notFound" | "error">("idle")
+  const viewKeyRef = useRef<string | null>(null)
 
   useEffect(() => {
     if (!slug) return
@@ -126,6 +128,20 @@ export function CareerDetailPage() {
 
   const title = data ? getLocalizedString(language, data.title) : undefined
   const summary = data ? getLocalizedText(language, data.summary) : undefined
+
+  useEffect(() => {
+    if (status !== "ready" || !data) return
+    if (viewKeyRef.current === data._id) return
+
+    trackEvent("career_detail_view", {
+      career_id: data._id,
+      career_slug: slug ?? undefined,
+      career_title: title ?? undefined,
+      language
+    })
+
+    viewKeyRef.current = data._id
+  }, [data, language, slug, status, title])
 
   const scrollToSection = (id: string) => {
     const el = document.getElementById(id)
@@ -333,7 +349,24 @@ export function CareerDetailPage() {
             <div className="grid md:grid-cols-[1fr_auto_1fr] gap-x-[50px] gap-y-8">
               <div className="space-y-8">
                 {(data.professionalOrgs ?? []).filter((_, i) => i % 2 === 0).map((org) => (
-                  <a key={org._id} href={org.link} className="flex items-center justify-between py-2 hover:opacity-70">
+                  <a
+                    key={org._id}
+                    href={org.link}
+                    className="flex items-center justify-between py-2 hover:opacity-70"
+                    onClick={() => {
+                      if (!org.link) return
+                      trackOutboundClick({
+                        outbound_url: org.link,
+                        resource_type: "professional_org",
+                        resource_id: org._id,
+                        resource_title: org.name,
+                        career_id: data._id,
+                        career_slug: slug ?? undefined,
+                        career_title: title ?? undefined,
+                        language
+                      })
+                    }}
+                  >
                     <span className="text-sub1">{org.name}</span>
                     <span aria-hidden="true">
                       <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -346,7 +379,24 @@ export function CareerDetailPage() {
               <div className="hidden md:block w-[0.5px] bg-foreground" />
               <div className="space-y-8">
                 {(data.professionalOrgs ?? []).filter((_, i) => i % 2 === 1).map((org) => (
-                  <a key={org._id} href={org.link} className="flex items-center justify-between py-2 hover:opacity-70">
+                  <a
+                    key={org._id}
+                    href={org.link}
+                    className="flex items-center justify-between py-2 hover:opacity-70"
+                    onClick={() => {
+                      if (!org.link) return
+                      trackOutboundClick({
+                        outbound_url: org.link,
+                        resource_type: "professional_org",
+                        resource_id: org._id,
+                        resource_title: org.name,
+                        career_id: data._id,
+                        career_slug: slug ?? undefined,
+                        career_title: title ?? undefined,
+                        language
+                      })
+                    }}
+                  >
                     <span className="text-sub1">{org.name}</span>
                     <span aria-hidden="true">
                       <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -376,6 +426,15 @@ export function CareerDetailPage() {
                       to={c.slug ? `/careers/${c.slug}` : "/careers"}
                       imageUrl={c.imageUrl}
                       showMatch={false}
+                      onClick={() => {
+                        trackEvent("career_click", {
+                          source: "career_detail_similar",
+                          career_id: c._id,
+                          career_slug: c.slug ?? undefined,
+                          career_title: getLocalizedString(language, c.title) ?? undefined,
+                          language
+                        })
+                      }}
                     />
                   )
 

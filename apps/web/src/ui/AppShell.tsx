@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react"
-import { Outlet, useNavigation } from "react-router-dom"
+import { Outlet, useLocation, useNavigation } from "react-router-dom"
 import { useLanguageStore } from "../zustand/useLanguageStore"
 import { useGlobalLoadingStore } from "../zustand/useGlobalLoadingStore"
 import { t } from "../utils/i18n"
+import { trackPageView } from "../utils/analytics"
 import { Footer } from "./widgets/Footer"
 import { NavHeader } from "./widgets/NavHeader"
 import { GlobalLoading } from "./widgets/GlobalLoading"
@@ -10,12 +11,23 @@ import { GlobalLoading } from "./widgets/GlobalLoading"
 export function AppShell() {
   const { language } = useLanguageStore()
   const navigation = useNavigation()
+  const location = useLocation()
   const { isLoading, setLoading } = useGlobalLoadingStore()
   const [contentVisible, setContentVisible] = useState(true)
 
   useEffect(() => {
     document.title = t(language, "app.title")
   }, [language])
+
+  useEffect(() => {
+    const path = `${location.pathname}${location.search}${location.hash}`
+    trackPageView({
+      page_path: path,
+      page_location: window.location.href,
+      page_title: document.title,
+      language
+    })
+  }, [language, location.hash, location.pathname, location.search])
 
   // Track navigation state and update loading
   useEffect(() => {
