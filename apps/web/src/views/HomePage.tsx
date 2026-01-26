@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom"
 import Lottie, { LottieRefCurrentProps } from "lottie-react"
 import { useLanguageStore } from "../zustand/useLanguageStore"
 import { t } from "../utils/i18n"
+import { trackEvent } from "../utils/analytics"
 import { Button } from "../ui/components/Button"
 import { CareerCard } from "../ui/widgets/CareerCard"
 import { fetchHomePageData, HomePageData } from "../sanity/queries/homePage"
@@ -395,6 +396,15 @@ export function HomePage() {
                   to={`/careers/${career.slug}`}
                   imageUrl={career.imageUrl}
                   videoUrl={career.videoUrl}
+                  onClick={() => {
+                    trackEvent("career_click", {
+                      source: "home_featured",
+                      career_id: career._id,
+                      career_slug: career.slug ?? undefined,
+                      career_title: getLocalizedString(language, career.title) || "",
+                      language
+                    })
+                  }}
                 />
               </div>
             ))

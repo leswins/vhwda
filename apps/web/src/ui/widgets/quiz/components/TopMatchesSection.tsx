@@ -5,6 +5,7 @@ import { calculateMatchPercentage } from "../../../../utils/vector-aux"
 import { getLocalizedString } from "../../../../sanity/queries/careers"
 import { t } from "../../../../utils/i18n"
 import { pickTypicalSalary } from "../../../../utils/salary"
+import { trackEvent } from "../../../../utils/analytics"
 import shapesLong from "../../icons/shapes/shapes-long.png"
 
 type CareerMatch = CareerForMatching & { score: number }
@@ -42,6 +43,16 @@ export function TopMatchesSection({ careers, userVector, language }: TopMatchesS
                 videoUrl={career.videoUrl}
                 showMatch={true}
                 matchLabel={`${matchPercentage}% MATCH`}
+                onClick={() => {
+                  trackEvent("quiz_recommendation_click", {
+                    source: "quiz_top_matches",
+                    career_id: career._id,
+                    career_slug: career.slug ?? undefined,
+                    career_title: title,
+                    match_percent: matchPercentage,
+                    language
+                  })
+                }}
               />
             </div>
           )

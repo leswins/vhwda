@@ -1,11 +1,12 @@
 
 
-import React, { useEffect, useMemo, useState } from "react"
+import React, { useEffect, useMemo, useRef, useState } from "react"
 import { Link } from "react-router-dom"
 import { useLanguageStore } from "../zustand/useLanguageStore"
 import { useCareersStore } from "../zustand/useCareersStore"
 import { useCompareStore } from "../zustand/useCompareStore"
 import { t } from "../utils/i18n"
+import { trackEvent } from "../utils/analytics"
 import { CareerFilters } from "../ui/widgets/CareerFilters"
 import { CareerCard } from "../ui/widgets/CareerCard"
 import { getLocalizedString } from "../sanity/queries/careers"
@@ -120,6 +121,27 @@ function applyFilters(careers: CareerSummaryCard[], filters: FilterState, langua
   return filtered
 }
 
+function countActiveFilters(filters: FilterState): number {
+  let count = 0
+  count += filters.selectedCategories.length
+  count += filters.selectedEducation.length
+  count += filters.selectedOutlook.length
+  count += filters.selectedWorkEnvironments.length
+  count += filters.selectedSpecializations.length
+  if (filters.patientFacing) count += 1
+  if (filters.salaryRange.min !== undefined) count += 1
+  if (filters.salaryRange.max !== undefined) count += 1
+  return count
+}
+
+function areArraysEqual(a: string[], b: string[]): boolean {
+  if (a.length !== b.length) return false
+  for (let i = 0; i < a.length; i += 1) {
+    if (a[i] !== b[i]) return false
+  }
+  return true
+}
+
 export function SearchCareersPage() {
   const { language } = useLanguageStore()
   const { careers, loading, fetchCareers } = useCareersStore()
@@ -186,6 +208,85 @@ export function SearchCareersPage() {
 
     return sorted
   }, [filteredCareersBase, sortBy, sortDirection])
+
+  const filtersRef = useRef<FilterState | null>(null)
+  const sortRef = useRef<{ sortBy: typeof sortBy; sortDirection: typeof sortDirection }>({ sortBy, sortDirection })
+
+  useEffect(() => {
+    if (!filtersRef.current) {
+      filtersRef.current = filters
+      return
+    }
+
+    const prev = filtersRef.current
+    const changedKeys: string[] = []
+
+    if (!areArraysEqual(prev.selectedCategories, filters.selectedCategories)) {
+      changedKeys.push("categories")
+    }
+    if (!areArraysEqual(prev.selectedEducation, filters.selectedEducation)) {
+      changedKeys.push("education")
+    }
+    if (!areArraysEqual(prev.selectedOutlook, filters.selectedOutlook)) {
+      changedKeys.push("outlook")
+    }
+    if (!areArraysEqual(prev.selectedWorkEnvironments, filters.selectedWorkEnvironments)) {
+      changedKeys.push("work_environments")
+    }
+    if (!areArraysEqual(prev.selectedSpecializations, filters.selectedSpecializations)) {
+      changedKeys.push("specializations")
+    }
+    if (prev.patientFacing !== filters.patientFacing) {
+      changedKeys.push("patient_facing")
+    }
+    if (prev.salaryRange.min !== filters.salaryRange.min || prev.salaryRange.max !== filters.salaryRange.max) {
+      changedKeys.push("salary_range")
+    }
+
+    if (changedKeys.length > 0) {
+      trackEvent("career_filter_apply", {
+        filter_keys: changedKeys.join(","),
+        filters_active_count: countActiveFilters(filters),
+        results_count: filteredCareers.length,
+        language
+      })
+    }
+
+    filtersRef.current = filters
+  }, [filters, filteredCareers.length, language])
+
+  useEffect(() => {
+    const query = filters.searchQuery.trim()
+    if (!query) return
+
+    const timer = setTimeout(() => {
+      trackEvent("career_search", {
+        query,
+        results_count: filteredCareers.length,
+        filters_active_count: countActiveFilters(filters),
+        language
+      })
+    }, 500)
+
+    return () => clearTimeout(timer)
+  }, [filters.searchQuery, filteredCareers.length, filters, language])
+
+  useEffect(() => {
+    if (sortRef.current.sortBy === sortBy && sortRef.current.sortDirection === sortDirection) {
+      return
+    }
+
+    if (sortBy) {
+      trackEvent("career_sort_change", {
+        sort_by: sortBy,
+        sort_direction: sortDirection,
+        results_count: filteredCareers.length,
+        language
+      })
+    }
+
+    sortRef.current = { sortBy, sortDirection }
+  }, [sortBy, sortDirection, filteredCareers.length, language])
 
   const displaySalary = (career: CareerSummaryCard) => {
     return formatMoney(career.salary?.median) ?? formatMoney(career.salary?.rangeMin) ?? undefined
@@ -600,8 +701,24 @@ export function SearchCareersPage() {
                 const handleToggleCompare = () => {
                   if (isInCompare) {
                     removeCareer(career._id)
+                    trackEvent("compare_remove", {
+                      source: "browse",
+                      career_id: career._id,
+                      career_slug: career.slug ?? undefined,
+                      career_title: title,
+                      compare_count: Math.max(careerIds.length - 1, 0),
+                      language
+                    })
                   } else {
                     addCareer(career._id)
+                    trackEvent("compare_add", {
+                      source: "browse",
+                      career_id: career._id,
+                      career_slug: career.slug ?? undefined,
+                      career_title: title,
+                      compare_count: Math.min(careerIds.length + 1, 4),
+                      language
+                    })
                   }
                 }
 
@@ -617,6 +734,16 @@ export function SearchCareersPage() {
                       isInCompare={isInCompare}
                       canAddToCompare={canAddToCompare}
                       onToggleCompare={handleToggleCompare}
+                      onClick={() => {
+                        trackEvent("career_click", {
+                          source: "browse",
+                          career_id: career._id,
+                          career_slug: career.slug ?? undefined,
+                          career_title: title,
+                          results_count: filteredCareers.length,
+                          language
+                        })
+                      }}
                     />
                   </div>
                 )

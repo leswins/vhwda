@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import type { Language } from "../../utils/i18n"
 import { t } from "../../utils/i18n"
 import { useLanguageStore } from "../../zustand/useLanguageStore"
@@ -9,6 +9,7 @@ import { EducationalInstitutionsList } from "./EducationalInstitutionsList"
 import { SectionHeader } from "./SectionHeader"
 import type { ScholarshipFilters } from "./filters/scholarshipFilters"
 import type { OrganizationFilters } from "./filters/organizationFilters"
+import { trackEvent } from "../../utils/analytics"
 import helpIcon from "../../assets/icons/Help.svg"
 import doctorIcon from "../../assets/icons/Doctor.svg"
 import educationIcon from "../../assets/icons/Education.svg"
@@ -99,6 +100,7 @@ export function PlanYourNextStepsSection() {
   const [scholarshipCount, setScholarshipCount] = useState(0)
   const [organizationCount, setOrganizationCount] = useState(0)
   const [institutionCount, setInstitutionCount] = useState(0)
+  const organizationFiltersRef = useRef<OrganizationFilters | null>(null)
   
   const [scholarshipFilters, setScholarshipFilters] = useState<ScholarshipFilters>({
     searchQuery: ""
@@ -118,6 +120,65 @@ export function PlanYourNextStepsSection() {
   const handleOrganizationSearchChange = (query: string) => {
     setOrganizationFilters((prev) => ({ ...prev, searchQuery: query }))
   }
+
+  useEffect(() => {
+    const query = scholarshipFilters.searchQuery.trim()
+    if (!query) return
+    const timer = window.setTimeout(() => {
+      trackEvent("resource_search", {
+        resource_type: "scholarship",
+        query,
+        results_count: scholarshipCount,
+        language
+      })
+    }, 400)
+    return () => window.clearTimeout(timer)
+  }, [language, scholarshipCount, scholarshipFilters.searchQuery])
+
+  useEffect(() => {
+    const query = organizationFilters.searchQuery.trim()
+    if (!query) return
+    const timer = window.setTimeout(() => {
+      trackEvent("resource_search", {
+        resource_type: "professional_organization",
+        query,
+        results_count: organizationCount,
+        language
+      })
+    }, 400)
+    return () => window.clearTimeout(timer)
+  }, [language, organizationCount, organizationFilters.searchQuery])
+
+  useEffect(() => {
+    if (!organizationFiltersRef.current) {
+      organizationFiltersRef.current = organizationFilters
+      return
+    }
+
+    const prev = organizationFiltersRef.current
+    const changedKeys: string[] = []
+
+    if (prev.selectedMembershipTypes !== organizationFilters.selectedMembershipTypes) {
+      changedKeys.push("membership_types")
+    }
+    if (prev.selectedGeographicFocus !== organizationFilters.selectedGeographicFocus) {
+      changedKeys.push("geographic_focus")
+    }
+    if (prev.selectedCareerAreas !== organizationFilters.selectedCareerAreas) {
+      changedKeys.push("career_areas")
+    }
+
+    if (changedKeys.length > 0) {
+      trackEvent("resource_filter_apply", {
+        resource_type: "professional_organization",
+        filter_keys: changedKeys.join(","),
+        results_count: organizationCount,
+        language
+      })
+    }
+
+    organizationFiltersRef.current = organizationFilters
+  }, [language, organizationCount, organizationFilters])
 
   return (
     <div className="space-y-0">

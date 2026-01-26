@@ -8,6 +8,7 @@ import type { GlobalSearchResult } from "../../sanity/queries/globalSearch"
 import { GlobalSearchDropdown } from "./GlobalSearchDropdown"
 import { Button } from "../components/Button"
 import { Divider } from "../components/Divider"
+import { trackEvent, trackOutboundClick } from "../../utils/analytics"
 import closeIcon from "../../assets/icons/close.svg"
 
 function IconButton({
@@ -112,8 +113,29 @@ export function NavHeader() {
     return [...careerResults, ...scholarshipResults, ...organizationResults]
   }, [careers, scholarships, organizations, language, searchQuery])
 
+  useEffect(() => {
+    const query = searchQuery.trim()
+    if (!query) return
+    const timer = window.setTimeout(() => {
+      trackEvent("career_search", {
+        source: "global_search",
+        query,
+        results_count: filteredResults.length,
+        language
+      })
+    }, 400)
+    return () => window.clearTimeout(timer)
+  }, [filteredResults.length, language, searchQuery])
+
   const handleResultClick = (result: GlobalSearchResult) => {
     if (result._type === "career") {
+      trackEvent("career_click", {
+        source: "global_search",
+        career_id: result._id,
+        career_slug: result.slug ?? undefined,
+        career_title: getLocalizedString(language, result.title) ?? undefined,
+        language
+      })
       navigate(`/careers/${result.slug || result._id}`)
       handleCloseSearch()
       return
@@ -121,6 +143,13 @@ export function NavHeader() {
 
     const externalLink = result.link
     if (externalLink) {
+      trackOutboundClick({
+        outbound_url: externalLink,
+        resource_type: result._type,
+        resource_id: result._id,
+        resource_title: result.name,
+        language
+      })
       window.open(externalLink, "_blank", "noopener,noreferrer")
     }
 
@@ -216,7 +245,13 @@ export function NavHeader() {
             <div className="flex items-center gap-[15px] px-[15px] py-[15px]">
               <button
                 type="button"
-                onClick={() => setLanguage("en")}
+                onClick={() => {
+                  trackEvent("language_change", {
+                    language: "en",
+                    previous_language: language
+                  })
+                  setLanguage("en")
+                }}
                 className={`flex items-center justify-center transition-all duration-250 ease-out ${language === "en"
                   ? "text-base font-bold text-foreground"
                   : "text-base font-medium text-foreground/60 hover:text-foreground"
@@ -227,7 +262,13 @@ export function NavHeader() {
               <Divider orientation="vertical" className="h-5 bg-foreground" />
               <button
                 type="button"
-                onClick={() => setLanguage("es")}
+                onClick={() => {
+                  trackEvent("language_change", {
+                    language: "es",
+                    previous_language: language
+                  })
+                  setLanguage("es")
+                }}
                 className={`flex items-center justify-center transition-all duration-250 ease-out ${language === "es"
                   ? "text-base font-bold text-foreground"
                   : "text-base font-medium text-foreground/60 hover:text-foreground"
