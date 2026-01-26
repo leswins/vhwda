@@ -1,14 +1,17 @@
 import React from "react"
 import { t } from "../../../../utils/i18n"
 import { useLanguageStore } from "../../../../zustand/useLanguageStore"
+import type { Question } from "../questions"
 
 type QuizNavigationProps = {
     hasPrevious: boolean
     hasNext: boolean
     isCurrentQuestionAnswered: boolean
+    currentQuestion?: Question
     onCancel: () => void
     onPrevious: () => void
     onNext: () => void
+    onSkip?: () => void
     onFinish: () => void
 }
 
@@ -16,16 +19,21 @@ export function QuizNavigation({
     hasPrevious,
     hasNext,
     isCurrentQuestionAnswered,
+    currentQuestion,
     onCancel,
     onPrevious,
     onNext,
+    onSkip,
     onFinish,
 }: QuizNavigationProps) {
     const { language } = useLanguageStore()
 
+    const shouldShowSkip = currentQuestion && 
+        (currentQuestion.type === "multi_select" || currentQuestion.type === "single_select") &&
+        onSkip
+
     return (
         <div className="flex items-center gap-[20px]">
-            {/* Back button (only show if has previous) */}
             {hasPrevious && (
                 <button
                     onClick={onPrevious}
@@ -42,7 +50,6 @@ export function QuizNavigation({
                 </button>
             )}
 
-            {/* Next/Submit button */}
             {hasNext ? (
                 <button
                     onClick={onNext}
@@ -74,6 +81,22 @@ export function QuizNavigation({
                     `}
                 >
                     {t(language, "quiz.submitAnswers")}
+                </button>
+            )}
+
+            {shouldShowSkip && (
+                <button
+                    onClick={onSkip}
+                    className="
+                        px-[15px] py-[10px]
+                        border border-foreground
+                        bg-surface text-foreground
+                        hover:bg-surface1
+                        transition-colors
+                        text-body-base font-semibold
+                    "
+                >
+                    {t(language, "quiz.skip")}
                 </button>
             )}
         </div>

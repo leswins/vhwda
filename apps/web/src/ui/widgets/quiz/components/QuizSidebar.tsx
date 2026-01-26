@@ -6,6 +6,7 @@ type QuizSidebarProps = {
     questions: Question[]
     currentQuestionIndex: number
     selectedAnswers: Record<string, string | string[]>
+    visitedQuestions: Set<string>
     language: "en" | "es"
 }
 
@@ -28,7 +29,7 @@ const getSectionId = (sanitySection: string | undefined): string | null => {
     return section?.id || null
 }
 
-export function QuizSidebar({ questions, currentQuestionIndex, selectedAnswers, language }: QuizSidebarProps) {
+export function QuizSidebar({ questions, currentQuestionIndex, selectedAnswers, visitedQuestions, language }: QuizSidebarProps) {
     // Group questions by section ID (mapped from Sanity section values)
     const questionsBySection = questions.reduce((acc, q, index) => {
         const sectionId = getSectionId(q.section)
@@ -38,15 +39,11 @@ export function QuizSidebar({ questions, currentQuestionIndex, selectedAnswers, 
         return acc
     }, {} as Record<string, Array<{ question: Question; index: number }>>)
 
-    // Check if a section is completed (all questions in the section have answers)
     const isSectionCompleted = (sectionId: string) => {
         const sectionQuestions = questionsBySection[sectionId] || []
-        if (sectionQuestions.length === 0) return false // No questions in this section
+        if (sectionQuestions.length === 0) return false
         return sectionQuestions.every(({ question }) => {
-            const answer = selectedAnswers[question.id]
-            if (!answer) return false
-            if (Array.isArray(answer)) return answer.length > 0
-            return typeof answer === "string" && answer.length > 0
+            return visitedQuestions.has(question.id)
         })
     }
 

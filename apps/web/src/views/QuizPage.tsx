@@ -20,6 +20,7 @@ export function QuizPage() {
         userVector,
         currentQuestionIndex,
         selectedAnswers,
+        visitedQuestions,
         questions,
         loadingQuestions,
         errorLoadingQuestions,
@@ -34,6 +35,7 @@ export function QuizPage() {
         handleStart,
         handleAnswer,
         handleNext,
+        handleSkip,
         handlePrevious,
         handleCancel,
         handleFinish,
@@ -65,6 +67,7 @@ export function QuizPage() {
                             questions={questions}
                             currentQuestionIndex={currentQuestionIndex}
                             selectedAnswers={selectedAnswers}
+                            visitedQuestions={visitedQuestions}
                             language={language}
                         />
 
@@ -88,9 +91,11 @@ export function QuizPage() {
                                     hasPrevious={hasPrevious}
                                     hasNext={hasNext}
                                     isCurrentQuestionAnswered={isCurrentQuestionAnswered}
+                                    currentQuestion={currentQuestion}
                                     onCancel={handleCancel}
                                     onPrevious={handlePrevious}
                                     onNext={handleNext}
+                                    onSkip={handleSkip}
                                     onFinish={handleFinish}
                                 />
                             </div>

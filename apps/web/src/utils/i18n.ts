@@ -395,6 +395,7 @@ const dict: Dictionary = {
   "quiz.no": { en: "No", es: "No" },
   "quiz.back": { en: "Back", es: "Atrás" },
   "quiz.nextQuestion": { en: "Next Question", es: "Siguiente Pregunta" },
+  "quiz.skip": { en: "Skip", es: "Omitir" },
   "quiz.submitAnswers": { en: "Submit Answers", es: "Enviar Respuestas" },
   "quiz.showVector": { en: "Show Debug Vector", es: "Mostrar Vector de Depuración" },
   "quiz.vectorTitle": { en: "Current Vector (Debug)", es: "Vector Actual (Depuración)" },

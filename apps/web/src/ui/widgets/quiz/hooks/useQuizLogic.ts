@@ -18,6 +18,7 @@ export function useQuizLogic() {
     const [userVector, setUserVector] = useState<QuizVector>(createEmptyVector())
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
     const [selectedAnswers, setSelectedAnswers] = useState<Record<string, string | string[]>>({})
+    const [visitedQuestions, setVisitedQuestions] = useState<Set<string>>(new Set())
     const [questions, setQuestions] = useState<Question[]>([])
     const [loadingQuestions, setLoadingQuestions] = useState(true)
     const [errorLoadingQuestions, setErrorLoadingQuestions] = useState<string | null>(null)
@@ -77,6 +78,7 @@ export function useQuizLogic() {
         setUserVector(createEmptyVector())
         setCurrentQuestionIndex(0)
         setSelectedAnswers({})
+        setVisitedQuestions(new Set())
         setCurrentStep("questions")
         quizStartTrackedRef.current = false
         quizResultsTrackedRef.current = false
@@ -192,9 +194,52 @@ export function useQuizLogic() {
                 [questionId]: optionId
             }))
         }
+
+        setVisitedQuestions(prev => new Set(prev).add(questionId))
     }
 
     const handleNext = () => {
+        if (currentQuestionIndex < questions.length - 1) {
+            setCurrentQuestionIndex(prev => prev + 1)
+        }
+    }
+
+    const handleSkip = () => {
+        const currentQuestion = questions[currentQuestionIndex]
+        if (!currentQuestion) return
+
+        const currentSelection = selectedAnswers[currentQuestion.id]
+        
+        if (currentSelection) {
+            const currentSelectedIds = Array.isArray(currentSelection) 
+                ? currentSelection 
+                : [currentSelection]
+
+            setUserVector(prev => {
+                const updated = { ...prev }
+                
+                currentSelectedIds.forEach(optionId => {
+                    const option = currentQuestion.options.find(o => o.id === optionId)
+                    if (option?.weights) {
+                        Object.entries(option.weights).forEach(([dimension, value]) => {
+                            const dim = dimension as keyof QuizVector
+                            updated[dim] = (updated[dim] || 0) - (value || 0)
+                        })
+                    }
+                })
+                
+                return updated
+            })
+
+            setSelectedAnswers(prev => {
+                const updated = { ...prev }
+                delete updated[currentQuestion.id]
+                return updated
+            })
+        }
+
+        setVisitedQuestions(prev => new Set(prev).add(currentQuestion.id))
+
         if (currentQuestionIndex < questions.length - 1) {
             setCurrentQuestionIndex(prev => prev + 1)
         }
@@ -283,6 +328,7 @@ export function useQuizLogic() {
         setUserVector(createEmptyVector())
         setCurrentQuestionIndex(0)
         setSelectedAnswers({})
+        setVisitedQuestions(new Set())
         setMatchedCareers([])
         quizStartTrackedRef.current = false
         quizResultsTrackedRef.current = false
@@ -308,6 +354,7 @@ export function useQuizLogic() {
         userVector,
         currentQuestionIndex,
         selectedAnswers,
+        visitedQuestions,
         questions,
         loadingQuestions,
         errorLoadingQuestions,
@@ -322,6 +369,7 @@ export function useQuizLogic() {
         handleStart,
         handleAnswer,
         handleNext,
+        handleSkip,
         handlePrevious,
         handleCancel,
         handleFinish,
