@@ -2,8 +2,8 @@ export {}
 
 declare global {
   interface Window {
-    dataLayer?: unknown[]
-    gtag?: (...args: unknown[]) => void
+    dataLayer?: any[]
+    gtag?: (...args: any[]) => void
     __gaInitialized?: boolean
   }
 }
@@ -44,36 +44,34 @@ const IS_ENABLED = Boolean(GA_MEASUREMENT_ID) && (import.meta.env.PROD || GA_DEB
 function ensureGtag() {
   if (!IS_ENABLED || !GA_MEASUREMENT_ID || typeof window === "undefined") return
 
-  if (!window.dataLayer) {
-    window.dataLayer = []
-  }
+  // 1. Initialize dataLayer
+  window.dataLayer = window.dataLayer || []
 
+  // 2. Initialize gtag function (using the native 'arguments' object as GA expects)
   if (!window.gtag) {
     window.gtag = function gtag() {
-      // Use Array.from to ensure we push a real array, not the arguments object
-      window.dataLayer?.push(Array.from(arguments))
+      // @ts-ignore - GA expects the raw arguments object
+      window.dataLayer?.push(arguments)
     }
   }
 
-  if (!window.__gaInitialized) {
-    // 1. "js" call MUST be the first thing to spark the engine
-    window.gtag?.("js", new Date())
-    
-    // 2. config call
-    window.gtag?.("config", GA_MEASUREMENT_ID, {
-      send_page_view: false,
-      debug_mode: GA_DEBUG_MODE ? true : undefined
-    })
-    
-    window.__gaInitialized = true
-  }
-
+  // 3. Inject script IMMEDIATELY if missing
   if (!document.getElementById("ga4-script")) {
     const script = document.createElement("script")
     script.id = "ga4-script"
     script.async = true
     script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`
     document.head.appendChild(script)
+  }
+
+  // 4. Fire initialization sequence
+  if (!window.__gaInitialized) {
+    window.gtag("js", new Date())
+    window.gtag("config", GA_MEASUREMENT_ID, {
+      send_page_view: false, // We handle this manually in AppShell
+      debug_mode: GA_DEBUG_MODE ? true : undefined
+    })
+    window.__gaInitialized = true
   }
 }
 
