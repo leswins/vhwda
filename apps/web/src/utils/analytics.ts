@@ -1,3 +1,13 @@
+export {}
+
+declare global {
+  interface Window {
+    dataLayer?: unknown[]
+    gtag?: (...args: unknown[]) => void
+    __gaInitialized?: boolean
+  }
+}
+
 type AnalyticsEventName =
   | "page_view"
   | "career_search"
@@ -31,14 +41,6 @@ const GA_MEASUREMENT_ID = import.meta.env.VITE_GA_MEASUREMENT_ID as string | und
 const GA_DEBUG_MODE = (import.meta.env.VITE_GA_DEBUG_MODE as string | undefined) === "true"
 const IS_ENABLED = Boolean(GA_MEASUREMENT_ID) && (import.meta.env.PROD || GA_DEBUG_MODE)
 
-declare global {
-  interface Window {
-    dataLayer?: unknown[]
-    gtag?: (...args: unknown[]) => void
-    __gaInitialized?: boolean
-  }
-}
-
 function ensureGtag() {
   if (!IS_ENABLED || !GA_MEASUREMENT_ID || typeof window === "undefined") return
 
@@ -67,6 +69,12 @@ function ensureGtag() {
   }
 
   if (!document.getElementById("ga4-script")) {
+    const script = document.createElement("script")
+    script.id = "ga4-script"
+    script.async = true
+    script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`
+    document.head.appendChild(script)
+  }
 }
 
 export function initAnalytics() {
