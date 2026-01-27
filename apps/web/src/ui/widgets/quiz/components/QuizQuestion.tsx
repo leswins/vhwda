@@ -40,6 +40,7 @@ export function QuizQuestion({
 
     const isDealBreakerQuestion = question.section === "Deal-breakers"
     const isSkillsAptitudes = question.section === "Skills & Aptitudes"
+    const isSliderQuestion = question.type === "likert_5" || question.type === "rating_1_5"
 
     // Render the appropriate input component based on question type
     const renderQuestionInput = () => {
@@ -96,9 +97,8 @@ export function QuizQuestion({
     const isSelectQuestion = question.type === "multi_select" || question.type === "single_select"
 
     return (
-        <div className={`flex flex-col items-center w-full max-w-[600px] ${isSelectQuestion ? "gap-fluid-50" : "gap-[75px]"}`}>
-            {/* Question prompt - larger and bolder to match screenshot */}
-            <div className="flex flex-col gap-fluid-25 items-center w-full">
+        <div className={`flex flex-col items-stretch lg:items-center w-full max-w-full lg:max-w-[600px] ${isSelectQuestion ? "gap-fluid-50" : "gap-[75px]"}`}>
+            <div className={`flex flex-col gap-fluid-25 items-center w-full ${isSliderQuestion ? "h-[132px] justify-center" : ""}`}>
                 {isSkillsAptitudes && (
                     <p className="text-sub1 font-medium text-foreground text-center">
                         {t(language, "quiz.skillsAptitudes.prompt")}

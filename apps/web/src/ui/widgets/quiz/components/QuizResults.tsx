@@ -34,7 +34,7 @@ export function QuizResults({
     const otherMatches = matchedCareers.slice(3)
     
     return (
-        <div className="w-full">
+        <div className="w-full overflow-x-hidden">
             <QuizResultsHeader language={language} onStartOver={onStartOver} />
             <TopMatchesSection careers={topMatches} userVector={userVector} language={language} />
             <OtherMatchesSection careers={otherMatches} userVector={userVector} language={language} />

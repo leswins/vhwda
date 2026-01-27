@@ -54,58 +54,51 @@ export function OtherMatchesList({ careers, userVector, language, maxResults = 2
 
   const displayCareers = careers.slice(0, maxResults)
 
-  // Group careers into rows (2 per row)
-  const rows: CareerMatch[][] = []
-  for (let i = 0; i < displayCareers.length; i += 2) {
-    rows.push(displayCareers.slice(i, i + 2))
-  }
-
   return (
-    <div className="bg-surface">
-      {rows.map((row, rowIndex) => (
-        <div key={rowIndex} className="flex">
-          {row.map((career, colIndex) => {
-            const matchPercentage = Math.round(calculateMatchPercentage(userVector, career.quizVector || {}))
-            const title = getLocalizedString(language, career.title) ?? ""
-            const salaryRange = formatSalaryRange(career.salary)
-            const education = formatEducationLevel(career.educationMin)
-            const isLeft = colIndex === 0
-            const hasDivider = row.length === 2
-            const paddingClass = hasDivider ? (isLeft ? "pr-[50px]" : "pl-[50px]") : ""
+    <div className="bg-surface border-[0.5px] border-foreground divide-y-[0.5px] divide-foreground/30">
+      {displayCareers.map((career) => {
+        const matchPercentage = Math.round(calculateMatchPercentage(userVector, career.quizVector || {}))
+        const title = getLocalizedString(language, career.title) ?? ""
+        const salaryRange = formatSalaryRange(career.salary)
+        const education = formatEducationLevel(career.educationMin)
 
-            return (
-              <React.Fragment key={career._id}>
-                <Link
-                  to={`/careers/${career.slug ?? ""}`}
-                  className={`group flex-1 flex items-center py-[25px] ${paddingClass} transition-colors`}
+        return (
+          <Link
+            key={career._id}
+            to={`/careers/${career.slug ?? ""}`}
+            className="group flex items-center py-[25px] px-fluid-30 transition-colors"
+          >
+            <div className="relative flex items-center justify-center w-20 h-20 bg-accentBlue mr-[30px] flex-shrink-0 p-2 overflow-hidden">
+              <div className="absolute inset-0 translate-x-[-100%] bg-foreground transition-transform duration-300 ease-out group-hover:translate-x-0" />
+              <div className="relative text-center w-full">
+                <div className="text-sub2 font-bold leading-[135%] tracking-[0.15em] whitespace-nowrap text-foreground transition-colors duration-300 group-hover:text-surface">
+                  {matchPercentage}%
+                </div>
+                <div
+                  className="text-xs font-bold uppercase tracking-[0.1em] mt-1 whitespace-nowrap text-foreground transition-colors duration-300 group-hover:text-surface"
+                  style={{ fontSize: "0.95rem" }}
                 >
-                  <div className="relative flex items-center justify-center w-20 h-20 bg-accentBlue mr-[30px] flex-shrink-0 p-2 overflow-hidden">
-                    <div className="absolute inset-0 translate-x-[-100%] bg-foreground transition-transform duration-300 ease-out group-hover:translate-x-0" />
-                    <div className="relative text-center w-full">
-                      <div className="text-sub2 font-bold leading-[135%] tracking-[0.15em] whitespace-nowrap text-foreground transition-colors duration-300 group-hover:text-surface">{matchPercentage}%</div>
-                      <div className="text-xs font-bold uppercase tracking-[0.1em] mt-1 whitespace-nowrap text-foreground transition-colors duration-300 group-hover:text-surface" style={{ fontSize: "0.95rem" }}>MATCH</div>
-                    </div>
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <h3 className="text-h4 font-bold text-foreground mb-2 leading-[120%] tracking-[-0.03em]">{title}</h3>
-                    <p className="text-body-lg text-muted leading-[135%] tracking-[-0.025em]">
-                      {[
-                        "Hospital/Clinic", // TODO: Get from career data
-                        education && education,
-                        salaryRange && salaryRange
-                      ].filter(Boolean).join(" • ")}
-                    </p>
-                  </div>
-                </Link>
-                {isLeft && hasDivider && (
-                  <div className="w-[0.5px] bg-foreground/30 my-[25px]" />
-                )}
-              </React.Fragment>
-            )
-          })}
-          {row.length === 1 && <div className="flex-1" />}
-        </div>
-      ))}
+                  MATCH
+                </div>
+              </div>
+            </div>
+            <div className="flex-1 min-w-0">
+              <h3 className="text-h4 font-bold text-foreground mb-2 leading-[120%] tracking-[-0.03em]">
+                {title}
+              </h3>
+              <p className="text-body-lg text-muted leading-[135%] tracking-[-0.025em]">
+                {[
+                  "Hospital/Clinic", // TODO: Get from career data
+                  education && education,
+                  salaryRange && salaryRange
+                ]
+                  .filter(Boolean)
+                  .join(" • ")}
+              </p>
+            </div>
+          </Link>
+        )
+      })}
     </div>
   )
 }

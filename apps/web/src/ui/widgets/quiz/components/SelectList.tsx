@@ -19,7 +19,7 @@ export function SelectList({
     onChange,
 }: SelectListProps) {
     return (
-        <div className="flex flex-col gap-[12px] w-full max-w-[530px] relative z-10">
+        <div className="flex flex-col gap-[12px] w-full max-w-full lg:max-w-[530px] relative z-10">
             {options.map((option) => {
                 const isSelected = selectedValues.includes(option.id)
                 // Only disable if: multi-select AND not selected AND maxSelect is defined (not null/undefined) AND we've reached the max

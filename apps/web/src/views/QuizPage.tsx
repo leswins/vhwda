@@ -1,11 +1,12 @@
 import React from "react"
 import { useQuizLogic } from "../ui/widgets/quiz/hooks/useQuizLogic"
 import {
-    QuizError,
-    QuizEmpty,
-    QuizQuestion,
-    QuizNavigation,
-    QuizResults,
+  QuizError,
+  QuizEmpty,
+  QuizQuestion,
+  QuizNavigation,
+  QuizResults,
+  MobileQuizSteps,
 } from "../ui/widgets/quiz/components"
 import { QuizSidebar } from "../ui/widgets/quiz/components/QuizSidebar"
 import { VectorModal } from "../ui/widgets/quiz/components/VectorModal"
@@ -15,7 +16,6 @@ import shapeClusterImage from "../assets/icons/shape-cluster.svg"
 
 export function QuizPage() {
     const {
-        // State
         currentStep,
         userVector,
         currentQuestionIndex,
@@ -32,7 +32,6 @@ export function QuizPage() {
         hasPrevious,
         isCurrentQuestionAnswered,
         language,
-        // Actions
         handleStart,
         handleAnswer,
         handleNext,
@@ -59,11 +58,10 @@ export function QuizPage() {
     }
 
     return (
-        <div className="flex flex-col min-h-[calc(100vh-123px)] bg-surface">
+        <div className="flex flex-col min-h-[calc(100vh-123px)] bg-surface overflow-x-hidden">
             <div className="flex flex-1 min-h-0">
                 {currentStep === "questions" && currentQuestion ? (
                     <>
-                        {/* Left sidebar */}
                         <QuizSidebar
                             questions={questions}
                             currentQuestionIndex={currentQuestionIndex}
@@ -72,10 +70,15 @@ export function QuizPage() {
                             language={language}
                         />
 
-                        {/* Right content area */}
                         <div className="flex-1 flex flex-col overflow-hidden">
-                            {/* Question area - scrollable */}
-                            <div className="flex-1 overflow-y-auto flex items-center justify-center px-12 pb-12 pt-[75px]">
+                            <MobileQuizSteps
+                                questions={questions}
+                                currentQuestionIndex={currentQuestionIndex}
+                                visitedQuestions={visitedQuestions}
+                                language={language}
+                            />
+
+                            <div className="flex-1 overflow-y-auto flex px-fluid-30 pb-fluid-30 pt-fluid-50 lg:items-center lg:justify-center lg:px-12 lg:pb-12 lg:pt-[75px]">
                                 <QuizQuestion
                                     question={currentQuestion}
                                     questionNumber={currentQuestionIndex + 1}
@@ -86,8 +89,7 @@ export function QuizPage() {
                                 />
                             </div>
 
-                            {/* Navigation area - fixed at bottom */}
-                            <div className="p-8 flex justify-center">
+                            <div className="p-fluid-30 lg:p-8 flex justify-center">
                                 <QuizNavigation
                                     hasPrevious={hasPrevious}
                                     hasNext={hasNext}
@@ -102,45 +104,44 @@ export function QuizPage() {
                             </div>
                         </div>
 
-                        {/* Vector debug modal */}
                         <VectorModal vector={userVector} language={language} />
                     </>
                 ) : currentStep === "results" ? (
-                    <>
-                        {/* Don't render anything while loading results - global loading overlay will show */}
-                        {loadingResults || !resultsDelayReady ? null : (
-                            <div className="flex-1 overflow-y-auto">
-                                <div className="p-0">
-                                    <QuizResults
-                                        loading={loadingResults}
-                                        matchedCareers={matchedCareers}
-                                        userVector={userVector}
-                                        language={language}
-                                        onStartOver={handleStartOver}
-                                    />
-                                </div>
+                    loadingResults || !resultsDelayReady ? null : (
+                        <div className="flex-1 overflow-y-auto">
+                            <div className="p-0">
+                                <QuizResults
+                                    loading={loadingResults}
+                                    matchedCareers={matchedCareers}
+                                    userVector={userVector}
+                                    language={language}
+                                    onStartOver={handleStartOver}
+                                />
                             </div>
-                        )}
-                    </>
+                        </div>
+                    )
                 ) : null}
             </div>
 
-            {/* Complete the quiz section - only show during questions step */}
             {currentStep === "questions" && currentQuestion && (
-                <div className="relative border-t-[0.5px] border-foreground bg-surface1">
-                    <div className="w-full p-fluid-50">
+                <div className="relative border-t-[0.5px] border-foreground bg-surface1 overflow-hidden">
+                    <div className="w-full p-fluid-50 relative">
                         <p className="text-sub2 font-bold uppercase text-foreground mb-4">
                             {t(language, "quiz.complete.title")}
                         </p>
                         <h3 className="text-h3 text-foreground">
                             {t(language, "quiz.complete.message")}
                         </h3>
+                        <img
+                            src={shapeClusterImage}
+                            alt=""
+                            className="block lg:hidden w-[130px] h-auto object-contain absolute right-fluid-20 bottom-0"
+                        />
                     </div>
                     <img
                         src={shapeClusterImage}
                         alt=""
-                        className="hidden lg:block absolute right-0 w-[200px] h-auto object-contain"
-                        style={{ bottom: "-0.5px" }}
+                        className="hidden lg:block absolute right-0 w-[170px] h-auto object-contain bottom-0"
                     />
                 </div>
             )}

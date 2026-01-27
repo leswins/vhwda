@@ -55,7 +55,7 @@ export function QuizSidebar({ questions, currentQuestionIndex, selectedAnswers, 
     }
 
     return (
-        <div className="flex flex-col w-[380px] border-r border-foreground self-stretch">
+        <div className="hidden lg:flex flex-col w-[380px] border-r border-foreground self-stretch">
             <div className="bg-foreground text-surface p-fluid-30">
                 <h2 className="text-h5">
                     {t(language, "quiz.sidebar.title")}
@@ -77,6 +77,7 @@ export function QuizSidebar({ questions, currentQuestionIndex, selectedAnswers, 
                         <p
                             className={`
                                 flex-1 text-body-base
+                                ${isCurrent ? "text-foreground" : "text-muted"}
                                 ${!isCompleted && !isCurrent ? "opacity-50" : ""}
                             `}
                         >

@@ -110,8 +110,8 @@ export function TopMatchesSection({ careers, userVector, language }: TopMatchesS
     <div>
       <div className="flex items-center p-fluid-50">
         <h1 className="text-h2 font-bold text-foreground whitespace-nowrap">{t(language, "quiz.results.topMatches")}</h1>
-        <div className="ml-fluid-50 flex-1 min-w-0">
-          <PatternBar />
+        <div className="hidden sm:block ml-fluid-50 flex-1 min-w-0 overflow-hidden">
+          <PatternBar iconSize={32} height="2.5rem" />
         </div>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 bg-surface border-y-[0.5px] border-foreground">

@@ -50,7 +50,7 @@ export function RatingSlider({ questionId, value, onChange, language, helperText
     }
 
     return (
-        <div className="flex flex-col gap-8 items-center w-full max-w-[530px]">
+        <div className="flex flex-col gap-8 items-stretch lg:items-center w-full max-w-full lg:max-w-[530px]">
             <p className="text-body-sm text-muted text-center">
                 {helperText ?? t(language, "quiz.adjustSlider")}
             </p>

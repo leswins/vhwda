@@ -46,7 +46,7 @@ export function BooleanToggle({ questionId, value, options, onChange, language }
     }
 
     return (
-        <div className="flex items-center gap-6">
+        <div className="flex w-full justify-center gap-6 flex-wrap">
             {/* Yes button */}
             <button
                 type="button"
