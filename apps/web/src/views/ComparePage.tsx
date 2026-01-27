@@ -151,7 +151,7 @@ export function ComparePage() {
   const canAddCareer = selectedCareers.length < 4
 
   return (
-    <div className="py-[50px]">
+    <div className="py-fluid-40 lg:py-[50px]">
       <ComparePageHeader language={language} />
 
       {!hasSelectedCareers ? (

@@ -21,7 +21,7 @@ export function ChatInput({ language, value, onChange, onSubmit, disabled }: Pro
 
   return (
     <div
-      className="sticky bottom-0 flex items-center justify-between border-t-[0.5px] border-foreground px-[25px] py-[25px]"
+      className="sticky bottom-0 flex items-center justify-between border-t-[0.5px] border-foreground px-fluid-20 py-fluid-15 lg:px-[25px] lg:py-[35px]"
       style={{
         backgroundColor: "rgba(255, 255, 255, 0.85)",
         backdropFilter: "blur(2.5px)",

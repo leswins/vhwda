@@ -42,7 +42,7 @@ export function CompareTableRow({
           <div className="overflow-hidden">
             {career.videoUrl ? (
               <video 
-                className="aspect-square w-full object-cover [&::-webkit-media-controls]:hidden [&::-webkit-media-controls-enclosure]:hidden" 
+                className="aspect-square w-full max-w-[260px] mx-auto object-cover [&::-webkit-media-controls]:hidden [&::-webkit-media-controls-enclosure]:hidden" 
                 autoPlay
                 loop
                 muted
@@ -56,7 +56,7 @@ export function CompareTableRow({
               <img
                 src={career.images[0].asset.url}
                 alt={getLocalizedString(language, career.title) || ""}
-                className="aspect-square w-full object-cover"
+                className="aspect-square w-full max-w-[260px] mx-auto object-cover"
               />
             ) : (
               <div className="aspect-square w-full bg-surface2" />
@@ -67,7 +67,7 @@ export function CompareTableRow({
       case "overview": {
         const summary = getLocalizedText(language, career.summary)
         return summary ? (
-          <p className="text-[length:var(--text-body-lg)] font-medium leading-[var(--leading-body-lg)] tracking-[var(--tracking-body-lg)]">
+          <p className="text-[length:var(--text-body-base)] lg:text-[length:var(--text-body-lg)] font-medium leading-[var(--leading-body-base)] lg:leading-[var(--leading-body-lg)] tracking-[var(--tracking-body-base)] lg:tracking-[var(--tracking-body-lg)]">
             {summary}
           </p>
         ) : (
@@ -89,20 +89,20 @@ export function CompareTableRow({
             : undefined
 
         return (
-          <div className="flex flex-col gap-[30px]">
+          <div className="flex flex-col gap-fluid-15 lg:gap-[30px]">
             {median !== undefined && (
               <div className="flex flex-col gap-[5px]">
-                <div className="text-[length:var(--text-body-lg)] font-medium leading-[var(--leading-body-lg)] tracking-[var(--tracking-body-lg)]">
+                <div className="text-[length:var(--text-body-base)] lg:text-[length:var(--text-body-lg)] font-medium leading-[var(--leading-body-base)] lg:leading-[var(--leading-body-lg)] tracking-[var(--tracking-body-base)] lg:tracking-[var(--tracking-body-lg)]">
                   {formatMoney(median)}
                 </div>
-                <div className="text-[length:var(--text-body-base)] font-medium leading-[var(--leading-body-base)] tracking-[var(--tracking-body-base)]">
+                <div className="text-[length:var(--text-body-sm)] lg:text-[length:var(--text-body-base)] font-medium leading-[var(--leading-body-base)] tracking-[var(--tracking-body-base)]">
                   {t(language, "compare.medianSalary")}
                 </div>
               </div>
             )}
             {salaryRange && (
               <div className="flex flex-col gap-[5px]">
-                <div className="text-[length:var(--text-body-lg)] font-medium leading-[var(--leading-body-lg)] tracking-[var(--tracking-body-lg)]">
+                <div className="text-[length:var(--text-body-base)] lg:text-[length:var(--text-body-lg)] font-medium leading-[var(--leading-body-base)] lg:leading-[var(--leading-body-lg)] tracking-[var(--tracking-body-base)] lg:tracking-[var(--tracking-body-lg)]">
                   {salaryRange}
                 </div>
                 <div className="text-[length:var(--text-body-base)] font-medium leading-[var(--leading-body-base)] tracking-[var(--tracking-body-base)]">
@@ -143,7 +143,7 @@ export function CompareTableRow({
         }
         return (
           <div className="flex flex-col gap-[5px]">
-            <div className="text-[length:var(--text-body-lg)] font-medium leading-[var(--leading-body-lg)] tracking-[var(--tracking-body-lg)]">
+            <div className="text-[length:var(--text-body-base)] lg:text-[length:var(--text-body-lg)] font-medium leading-[var(--leading-body-base)] lg:leading-[var(--leading-body-lg)] tracking-[var(--tracking-body-base)] lg:tracking-[var(--tracking-body-lg)]">
               {outlookValue}%
             </div>
             <div className="text-[length:var(--text-body-base)] font-medium leading-[var(--leading-body-base)] tracking-[var(--tracking-body-base)]">
@@ -186,12 +186,12 @@ export function CompareTableRow({
   }
 
   return (
-    <div className="flex gap-[50px] py-[50px] pl-[50px] pr-[50px]" style={{ minWidth: "min-content" }}>
+    <div className="flex gap-fluid-20 lg:gap-[50px] py-fluid-25 lg:py-[50px] pl-fluid-20 lg:pl-[50px] pr-fluid-20 lg:pr-[50px]" style={{ minWidth: "min-content" }}>
       {selectedCareers.map((career, idx) => {
         const isLast = idx === selectedCareers.length - 1
         return (
           <React.Fragment key={career._id}>
-            <div className="flex w-[300px] shrink-0 items-start">
+            <div className="flex w-[220px] lg:w-[300px] shrink-0 items-start">
               {renderCellContent(career)}
             </div>
             {!isLast && <div className="h-full w-[0.5px] shrink-0 bg-foreground" />}
@@ -202,7 +202,7 @@ export function CompareTableRow({
       {canAddCareer && (
         <>
           <div className="h-full w-[0.5px] shrink-0 bg-foreground" />
-          <div className="flex w-[300px] shrink-0 items-start">
+          <div className="flex w-[220px] lg:w-[300px] shrink-0 items-start">
             <div className="text-foreground/40 text-[length:var(--text-body-base)]">—</div>
           </div>
         </>
