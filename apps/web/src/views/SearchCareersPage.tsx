@@ -36,6 +36,32 @@ function formatMoney(value?: number): string | undefined {
   }
 }
 
+const EDUCATION_ORDER: Record<string, number> = {
+  FF: 0,
+  CSC: 1,
+  CERT: 2,
+  AAS: 3,
+  BACH: 4,
+  GRAD: 5
+}
+
+function getCareerEducationLevel(career: CareerSummaryCard): string | undefined {
+  if (career.educationMin) {
+    return career.educationMin
+  }
+
+  if (career.hardRequirements?.educationLevel) {
+    return career.hardRequirements.educationLevel
+  }
+
+  const fromHardFilters = career.hardFilters?.find(filter => filter.educationLevel)
+  if (fromHardFilters?.educationLevel) {
+    return fromHardFilters.educationLevel
+  }
+
+  return undefined
+}
+
 function applyFilters(careers: CareerSummaryCard[], filters: FilterState, language: "en" | "es"): CareerSummaryCard[] {
   let filtered = [...careers]
   if (filters.searchQuery.trim()) {
@@ -54,8 +80,9 @@ function applyFilters(careers: CareerSummaryCard[], filters: FilterState, langua
 
   if (filters.selectedEducation.length > 0) {
     filtered = filtered.filter(career => {
-      if (!career.educationMin) return false
-      return filters.selectedEducation.includes(career.educationMin)
+      const educationLevel = getCareerEducationLevel(career)
+      if (!educationLevel) return false
+      return filters.selectedEducation.includes(educationLevel)
     })
   }
 
@@ -178,16 +205,10 @@ export function SearchCareersPage() {
 
     const sorted = [...filteredCareersBase].sort((a, b) => {
       if (sortBy === "education") {
-        const educationOrder: Record<string, number> = {
-          "FF": 0,
-          "CSC": 1,
-          "CERT": 2,
-          "AAS": 3,
-          "BACH": 4,
-          "GRAD": 5
-        }
-        const aVal = a.educationMin ? (educationOrder[a.educationMin] ?? 999) : 999
-        const bVal = b.educationMin ? (educationOrder[b.educationMin] ?? 999) : 999
+        const aLevel = getCareerEducationLevel(a)
+        const bLevel = getCareerEducationLevel(b)
+        const aVal = aLevel ? (EDUCATION_ORDER[aLevel] ?? 999) : 999
+        const bVal = bLevel ? (EDUCATION_ORDER[bLevel] ?? 999) : 999
         return sortDirection === "desc" ? bVal - aVal : aVal - bVal
       } else if (sortBy === "salary") {
         const aSalary = a.salary?.median ?? a.salary?.rangeMin ?? 0
