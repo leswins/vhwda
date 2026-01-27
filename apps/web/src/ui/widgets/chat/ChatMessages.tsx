@@ -21,7 +21,7 @@ export function ChatMessages({ language, messages, isLoading }: Props) {
   if (messages.length === 0) return null
 
   return (
-    <div className="space-y-4 px-[25px] py-4">
+    <div className="space-y-fluid-10 px-fluid-20 py-fluid-15 lg:px-[25px] lg:py-4">
       {messages.map((msg, index) => (
         <div key={index}>
           {msg.message && msg.message.trim() && (

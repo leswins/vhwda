@@ -18,10 +18,10 @@ export function GlobalLoading() {
   }, [isLoading])
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 top-[75px] z-[999] bg-surface px-[50px]">
-      <div className="site-grid-container flex h-full items-center justify-center border-b-[0.5px] border-foreground">
-        <div className="flex flex-col items-center">
-          <div className="w-[282px] max-w-[90vw]">
+    <div className="fixed bottom-0 left-0 right-0 top-[75px] z-[999] bg-surface px-0 lg:px-[50px]">
+      <div className="flex h-full items-center justify-center border-b-[0.5px] border-foreground lg:site-grid-container">
+        <div className="flex flex-col items-center px-fluid-20 lg:px-0">
+          <div className="w-[200px] lg:w-[282px] max-w-[90vw]">
           <Lottie
             lottieRef={lottieRef}
             animationData={logoLoadingAnimation}
@@ -30,9 +30,9 @@ export function GlobalLoading() {
           />
         </div>
           {variant === "quizResults" && (
-            <div className="mt-[25px] text-center">
-              <h3 className="text-h3 text-foreground">{t(language, "quiz.loading.title")}</h3>
-              <p className="mt-[10px] text-body-lg text-muted">{t(language, "quiz.loading.subtitle")}</p>
+            <div className="mt-fluid-20 lg:mt-[25px] text-center px-fluid-20 lg:px-0">
+              <h3 className="text-h3 lg:text-h3 text-foreground">{t(language, "quiz.loading.title")}</h3>
+              <p className="mt-fluid-10 lg:mt-[10px] text-body-base lg:text-body-lg text-muted">{t(language, "quiz.loading.subtitle")}</p>
             </div>
           )}
         </div>

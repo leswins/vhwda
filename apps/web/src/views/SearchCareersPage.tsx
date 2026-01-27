@@ -190,6 +190,8 @@ export function SearchCareersPage() {
     patientFacing: null,
     selectedSpecializations: []
   })
+  const [visibleCount, setVisibleCount] = useState(10)
+  const [isPanelOpen, setIsPanelOpen] = useState(false)
 
   useEffect(() => {
     fetchCareers()
@@ -232,6 +234,10 @@ export function SearchCareersPage() {
 
   const filtersRef = useRef<FilterState | null>(null)
   const sortRef = useRef<{ sortBy: typeof sortBy; sortDirection: typeof sortDirection }>({ sortBy, sortDirection })
+
+  useEffect(() => {
+    setVisibleCount(10)
+  }, [filters, sortBy, language, careers.length])
 
   useEffect(() => {
     if (!filtersRef.current) {
@@ -340,35 +346,67 @@ export function SearchCareersPage() {
     return null
   }
 
+  const handleTabClick = (tab: "filter" | "sort") => {
+    setIsPanelOpen(prev => (activeTab === tab ? !prev : true))
+    setActiveTab(tab)
+  }
+
   return (
     <div>
-      <div className="flex flex-col gap-[15px] p-[50px] border-b border-foreground">
+      <div className="flex flex-col gap-[15px] p-fluid-40 lg:p-[50px] border-b border-foreground">
         <p className="text-sub2 font-bold uppercase text-foreground">{t(language, "search.title")}</p>
-        <h1 className="text-h2 font-bold text-foreground">{t(language, "search.subtitle")}</h1>
+        <h1 className="text-h3 lg:text-h2 font-bold text-foreground">{t(language, "search.subtitle")}</h1>
       </div>
 
-      <div className="flex">
-        <div className="w-full lg:w-[30%] shrink-0 border-r-[0.5px] border-foreground sticky top-0 h-screen overflow-hidden flex flex-col">
-          <div className="sticky top-0 z-10 bg-surface border-b-[0.5px] border-foreground shrink-0">
+      <div className="flex flex-col lg:flex-row">
+        <div className="w-full lg:w-[30%] shrink-0 border-b-[0.5px] lg:border-b-0 lg:border-r-[0.5px] border-foreground lg:sticky lg:top-0 lg:h-screen lg:overflow-hidden flex flex-col">
+          <div className="bg-surface border-b-[0.5px] border-foreground shrink-0">
             <div className="relative flex items-center gap-[20px] p-[25px] h-[72px]">
               <div
                 className={`flex items-center gap-[20px] transition-opacity duration-300 ${isSearchActive ? 'opacity-0 pointer-events-none' : 'opacity-100'
                   }`}
               >
                 <button 
-                  onClick={() => setActiveTab("filter")}
-                  className={`text-body-base font-medium hover:underline hover:underline-offset-4 ${activeTab === "filter" ? 'text-foreground hover:decoration-foreground' : 'text-muted hover:decoration-muted'}`}
+                  onClick={() => handleTabClick("filter")}
+                  className={`text-body-base font-medium ${
+                    isPanelOpen && activeTab === "filter" ? 'text-foreground underline underline-offset-4' : 'text-muted'
+                  } lg:text-foreground lg:hover:underline lg:hover:underline-offset-4`}
                 >
                   {t(language, "filters.filter")}
                 </button>
                 <div className="h-[20px] w-[0.5px] bg-foreground" />
                 <button 
-                  onClick={() => setActiveTab("sort")}
-                  className={`text-body-base font-medium hover:underline hover:underline-offset-4 ${activeTab === "sort" ? 'text-foreground hover:decoration-foreground' : 'text-muted hover:decoration-muted'}`}
+                  onClick={() => handleTabClick("sort")}
+                  className={`text-body-base font-medium ${
+                    isPanelOpen && activeTab === "sort" ? 'text-foreground underline underline-offset-4' : 'text-muted'
+                  } lg:text-foreground lg:hover:underline lg:hover:underline-offset-4`}
                 >
                   {t(language, "filters.sort")}
                 </button>
               </div>
+
+              {isPanelOpen && (
+                <button
+                  type="button"
+                  onClick={() => setIsPanelOpen(false)}
+                  className="ml-auto flex h-6 w-6 items-center justify-center rounded-full border-[0.5px] border-foreground text-foreground lg:hidden"
+                  aria-label="Close filters and sort"
+                >
+                  <svg
+                    width="12"
+                    height="12"
+                    viewBox="0 0 17 17"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M0.79541 0.795532L15.7954 15.7955M0.79541 15.7955L15.7954 0.795532"
+                      stroke="currentColor"
+                      strokeWidth="1.75"
+                    />
+                  </svg>
+                </button>
+              )}
 
               <button
                 onClick={() => setIsSearchActive(true)}
@@ -416,7 +454,7 @@ export function SearchCareersPage() {
             </div>
           </div>
 
-          <div className="flex flex-col gap-[25px] p-[25px] overflow-y-auto flex-1 scrollbar-hide">
+          <div className={`gap-[25px] p-[25px] overflow-y-auto scrollbar-hide ${isPanelOpen ? "flex" : "hidden"} lg:flex lg:flex-1`}>
             {activeTab === "sort" && (
               <div className="flex flex-col gap-[20px]">
                 <div className="flex flex-col gap-[15px]">
@@ -619,71 +657,12 @@ export function SearchCareersPage() {
               </div>
             )}
             {activeTab === "filter" && (
-              <>
-            <div className="flex flex-col gap-[20px]">
-              <button
-                onClick={() => setIsCategoryGroupExpanded(!isCategoryGroupExpanded)}
-                className="flex w-full items-center justify-between gap-[10px]"
-              >
-                <span className="text-h5 font-bold text-foreground">{t(language, "filters.careerGroup")}</span>
-                {isCategoryGroupExpanded ? (
-                  <svg width="15" height="2" viewBox="0 0 15 2" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M0 1H7.5H15" stroke="#09090B" strokeWidth="2" />
-                  </svg>
-                ) : (
-                  <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M7.5 0V7.5M7.5 7.5V15M7.5 7.5H0M7.5 7.5H15" stroke="#09090B" strokeWidth="2" />
-                  </svg>
-                )}
-              </button>
-              {isCategoryGroupExpanded && (
-                <div className="flex flex-col gap-[15px]">
-                  {categories.map(category => {
-                    const count = getCategoryCount(category)
-                    const isDisabled = count === 0
-                    return (
-                      <label
-                        key={category}
-                        className={`flex items-center gap-[15px] ${isDisabled ? 'cursor-not-allowed' : 'cursor-pointer'}`}
-                      >
-                        <div className="relative h-5 w-5 shrink-0">
-                          <input
-                            type="checkbox"
-                            checked={filters.selectedCategories.includes(category)}
-                            onChange={() => !isDisabled && handleCategoryToggle(category)}
-                            disabled={isDisabled}
-                            className="peer h-5 w-5 appearance-none border-[0.5px] border-foreground bg-surface1 checked:bg-surface1 disabled:opacity-50"
-                          />
-                          {filters.selectedCategories.includes(category) && !isDisabled && (
-                            <svg
-                              className="pointer-events-none absolute inset-0 h-5 w-5 text-foreground"
-                              viewBox="0 0 20 20"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="2"
-                            >
-                              <path d="M4 10L8 14L16 6" />
-                            </svg>
-                          )}
-                        </div>
-                        <span className={`text-body-base font-medium ${isDisabled ? 'text-onSurfaceDisabled' : 'text-foreground'}`}>
-                          {category} ({count})
-                        </span>
-                      </label>
-                    )
-                  })}
-                </div>
-              )}
-            </div>
-
-            <div className="h-[0.5px] w-full bg-foreground shrink-0" />
-            <CareerFilters
-              language={language}
-              careers={careers}
-              filters={filters}
-              onFiltersChange={setFilters}
-            />
-            </>
+              <CareerFilters
+                language={language}
+                careers={careers}
+                filters={filters}
+                onFiltersChange={setFilters}
+              />
             )}
           </div>
         </div>
@@ -712,8 +691,9 @@ export function SearchCareersPage() {
               <p className="text-foreground/60">{t(language, "search.noCareers")}</p>
             </div>
           ) : (
+            <>
             <div className="grid grid-cols-1 lg:grid-cols-2 bg-surface">
-              {filteredCareers.map(career => {
+              {filteredCareers.slice(0, visibleCount).map(career => {
                 const title = getLocalizedString(language, career.title) || ""
                 const salary = displaySalary(career)
                 const isInCompare = careerIds.includes(career._id)
@@ -770,6 +750,18 @@ export function SearchCareersPage() {
                 )
               })}
             </div>
+            {visibleCount < filteredCareers.length && (
+              <div className="bg-surface border-t-[0.5px] border-foreground flex justify-center py-fluid-30">
+                <button
+                  type="button"
+                  onClick={() => setVisibleCount(count => Math.min(count + 10, filteredCareers.length))}
+                  className="px-fluid-30 py-fluid-15 border-[0.5px] border-foreground bg-surface1 text-body-base font-medium text-foreground hover:bg-surface2 transition-colors"
+                >
+                  {t(language, "search.showMore")}
+                </button>
+              </div>
+            )}
+            </>
           )}
         </div>
       </div>

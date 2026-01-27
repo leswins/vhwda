@@ -37,23 +37,23 @@ export function CompareTableHeader({
   return (
     <div className="flex border-b border-foreground bg-surface">
       {/* Fixed left: "Career" label */}
-      <div className="sticky left-0 z-30 flex w-[250px] shrink-0 items-center bg-surface px-[50px] py-[25px]">
+      <div className="sticky left-0 z-30 flex w-[140px] lg:w-[250px] shrink-0 items-center bg-surface px-fluid-20 py-fluid-15 lg:px-[50px] lg:py-[25px]">
         <span className="text-[length:var(--text-body-lg)] font-medium leading-[var(--leading-body-lg)] tracking-[var(--tracking-body-lg)]">
           {t(language, "compare.category")}
         </span>
       </div>
 
       {/* Vertical divider */}
-      <div className="sticky left-[250px] z-30 w-[0.5px] shrink-0 bg-foreground" />
+      <div className="sticky left-[140px] lg:left-[250px] z-30 w-[0.5px] shrink-0 bg-foreground" />
 
       {/* Content: Career titles and add button */}
-      <div className="flex gap-[50px] pl-[50px] pr-[50px] py-[25px]">
+      <div className="flex gap-fluid-20 pl-fluid-20 pr-fluid-20 py-fluid-15 lg:gap-[50px] lg:pl-[50px] lg:pr-[50px] lg:py-[25px]">
         {selectedCareers.map((career, idx) => {
           const title = getLocalizedString(language, career.title) || ""
           const isLast = idx === selectedCareers.length - 1
           return (
             <React.Fragment key={career._id}>
-              <div className="flex w-[300px] shrink-0 items-center gap-[25px]">
+              <div className="flex w-[220px] lg:w-[300px] shrink-0 items-center gap-[15px] lg:gap-[25px]">
                 <span className="text-[length:var(--text-h5)] font-bold leading-[var(--leading-h5)] tracking-[var(--tracking-h5)]">
                   {title}
                 </span>
@@ -73,7 +73,12 @@ export function CompareTableHeader({
         {selectedCareers.length < 4 && (
           <>
             <div className="h-full w-[0.5px] shrink-0 bg-foreground" />
-            <div className={`flex shrink-0 items-center ${showSearch ? 'w-[350px]' : 'w-[300px]'}`} style={{ minWidth: showSearch ? "350px" : "200px" }}>
+            <div
+              className={`flex shrink-0 items-center ${
+                showSearch ? 'w-[260px] lg:w-[350px]' : 'w-[220px] lg:w-[300px]'
+              }`}
+              style={{ minWidth: showSearch ? "260px" : "200px" }}
+            >
               {!showSearch ? (
                 <button
                   onClick={onSearchFocus}

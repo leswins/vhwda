@@ -76,7 +76,7 @@ export function MobileQuizSteps({
 
   return (
     <div className="lg:hidden border-b-[0.5px] border-foreground bg-surface1">
-      <div className="px-fluid-20 py-fluid-15 flex gap-fluid-15 overflow-x-auto scrollbar-hide">
+      <div className="px-fluid-20 py-fluid-15 flex gap-fluid-15 overflow-x-auto scrollbar-hide snap-x snap-mandatory">
         {QUIZ_SECTIONS.map(section => {
           const isCompleted = isSectionCompleted(section.id)
           const isCurrent = isCurrentSection(section.id)
@@ -87,7 +87,7 @@ export function MobileQuizSteps({
               ref={el => {
                 itemRefs.current[section.id] = el
               }}
-              className={`flex items-center gap-fluid-7 whitespace-nowrap ${
+              className={`flex items-center gap-fluid-7 whitespace-nowrap snap-start flex-shrink-0 ${
                 !isCompleted && !isCurrent ? "opacity-50" : ""
               }`}
             >
