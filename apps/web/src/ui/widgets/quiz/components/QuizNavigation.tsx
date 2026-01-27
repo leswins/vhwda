@@ -33,12 +33,12 @@ export function QuizNavigation({
         onSkip
 
     return (
-        <div className="flex items-center gap-[20px]">
+        <div className="flex items-center gap-fluid-20">
             {hasPrevious && (
                 <button
                     onClick={onPrevious}
                     className="
-                        px-[15px] py-[10px]
+                        px-fluid-15 py-fluid-10
                         border border-foreground
                         bg-surface text-foreground
                         hover:bg-surface1
@@ -55,12 +55,12 @@ export function QuizNavigation({
                     onClick={onNext}
                     disabled={!isCurrentQuestionAnswered}
                     className={`
-                        px-[15px] py-[10px]
+                        px-fluid-15 py-fluid-10
                         text-body-base font-semibold
                         transition-colors
                         ${isCurrentQuestionAnswered
                             ? "bg-foreground text-surface hover:opacity-90 cursor-pointer"
-                            : "bg-surface1 text-foreground opacity-50 cursor-not-allowed"
+                            : "bg-surface2 text-foreground opacity-50 cursor-not-allowed"
                         }
                     `}
                 >
@@ -71,12 +71,12 @@ export function QuizNavigation({
                     onClick={onFinish}
                     disabled={!isCurrentQuestionAnswered}
                     className={`
-                        px-[15px] py-[10px]
+                        px-fluid-15 py-fluid-10
                         text-body-base font-semibold
                         transition-colors
                         ${isCurrentQuestionAnswered
                             ? "bg-foreground text-surface hover:opacity-90 cursor-pointer"
-                            : "bg-surface1 text-foreground opacity-50 cursor-not-allowed"
+                            : "bg-surface2 text-foreground opacity-50 cursor-not-allowed"
                         }
                     `}
                 >
@@ -88,7 +88,7 @@ export function QuizNavigation({
                 <button
                     onClick={onSkip}
                     className="
-                        px-[15px] py-[10px]
+                        px-fluid-15 py-fluid-10
                         border border-foreground
                         bg-surface text-foreground
                         hover:bg-surface1

@@ -58,6 +58,7 @@ export function AppShell() {
   // Handle scroll locking when loading
   useEffect(() => {
     if (isLoading) {
+      window.scrollTo({ top: 0, left: 0, behavior: "auto" })
       document.body.style.overflow = "hidden"
     } else {
       document.body.style.overflow = ""

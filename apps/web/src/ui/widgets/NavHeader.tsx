@@ -10,6 +10,7 @@ import { Button } from "../components/Button"
 import { Divider } from "../components/Divider"
 import { trackEvent, trackOutboundClick } from "../../utils/analytics"
 import closeIcon from "../../assets/icons/close.svg"
+import aiStarIcon from "../../assets/icons/AIstar.svg"
 
 function IconButton({
   label,
@@ -157,9 +158,9 @@ export function NavHeader() {
   }
 
   return (
-    <header className="relative z-[1000] bg-surface text-foreground px-[50px] border-t-[0.5px] border-foreground">
+    <header className="relative z-[1000] bg-surface text-foreground px-fluid-50 border-t-[0.5px] border-foreground">
       <div className="site-grid-container relative flex h-[75px] items-stretch justify-between border-b">
-        <Link to="/" className="flex items-center px-[30px]" aria-label={t(language, "brand.name")}>
+        <Link to="/" className="flex items-center px-fluid-30" aria-label={t(language, "brand.name")}>
           <svg width="150" height="41" viewBox="0 0 404 111" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
             <path d="M130.787 87.5906C134.824 87.5908 138.388 89.6401 140.281 92.794L136.529 94.9706C135.456 93.015 133.31 91.816 130.787 91.8158C126.466 91.8158 123.628 94.813 123.627 99.0708C123.627 103.298 126.465 106.296 130.787 106.296C133.31 106.296 135.488 105.098 136.529 103.174L140.281 105.351C138.42 108.504 134.856 110.554 130.787 110.554C124.1 110.554 119.304 105.506 119.304 99.0708C119.304 92.6049 124.1 87.5906 130.787 87.5906Z" fill="currentColor" />
             <path d="M242.836 87.5906C246.463 87.5906 249.238 89.4507 250.721 92.5413L247.064 94.6554C246.275 92.9836 245.075 91.8158 242.836 91.8158C241.006 91.8159 239.934 92.7633 239.934 94.025C239.934 95.3814 240.785 96.1079 244.129 97.1173C247.63 98.2214 251.351 99.3888 251.351 103.9C251.351 108.031 248.041 110.554 243.341 110.554C238.831 110.554 235.864 108.378 234.665 105.098L238.388 102.921C239.176 104.971 240.722 106.296 243.466 106.296C246.084 106.296 246.998 105.192 246.998 103.962C246.998 102.322 245.518 101.691 242.238 100.745C238.863 99.767 235.581 98.3453 235.581 94.1499C235.581 89.9869 239.051 87.5908 242.836 87.5906Z" fill="currentColor" />
@@ -210,7 +211,7 @@ export function NavHeader() {
                   <button
                     type="button"
                     onClick={() => navigate("/")}
-                    className="flex h-full items-center gap-[10px] bg-surface px-5 py-5 text-base font-semibold text-foreground hover:bg-surface2 whitespace-nowrap"
+                    className="flex h-full items-center gap-fluid-10 bg-surface px-5 py-5 text-base font-semibold text-foreground hover:bg-surface2 whitespace-nowrap"
                     style={{
                       fontSize: "var(--text-body-base)",
                       lineHeight: "var(--leading-body-base)",
@@ -218,7 +219,7 @@ export function NavHeader() {
                     }}
                   >
                     {t(language, "header.closeAiChat")}
-                    <div className="flex h-[30px] w-[30px] items-center justify-center">
+                    <div className="flex h-icon-30 w-icon-30 items-center justify-center">
                       <img src={closeIcon} alt="" className="h-[17px] w-[17px]" />
                     </div>
                   </button>
@@ -230,19 +231,30 @@ export function NavHeader() {
                 >
                   <Button
                     variant="dark"
-                    className="h-full rounded-none px-8 text-base font-semibold whitespace-nowrap"
+                    className="h-full rounded-none px-8 text-base font-semibold whitespace-nowrap flex items-center gap-3"
                     onClick={() => {
                       navigate("/chat")
                     }}
                   >
                     {t(language, "header.askAi")}
+                    <div
+                      className="w-icon-25 h-icon-25 bg-accentBlue"
+                      style={{
+                        maskImage: `url(${aiStarIcon})`,
+                        maskSize: "contain",
+                        maskRepeat: "no-repeat",
+                        WebkitMaskImage: `url(${aiStarIcon})`,
+                        WebkitMaskSize: "contain",
+                        WebkitMaskRepeat: "no-repeat"
+                      }}
+                    />
                   </Button>
                 </div>
                 <Divider orientation="vertical" className="bg-foreground" />
               </div>
             )}
 
-            <div className="flex items-center gap-[15px] px-[15px] py-[15px]">
+            <div className="flex items-center gap-fluid-15 px-fluid-15 py-fluid-15">
               <button
                 type="button"
                 onClick={() => {
@@ -369,7 +381,7 @@ export function NavHeader() {
                 </svg>
               </div>
 
-              <div className="flex flex-1 items-center pr-[20px]">
+              <div className="flex flex-1 items-center pr-fluid-20">
                 <input
                   type="text"
                   value={searchQuery}

@@ -18,6 +18,7 @@ export const router = createBrowserRouter([
     children: [
       { index: true, element: <HomePage /> },
       { path: "careers", element: <SearchCareersPage /> },
+      { path: "browse", element: <BrowseCareersPage /> },
       { path: "careers/:slug", element: <CareerDetailPage /> },
       { path: "compare", element: <ComparePage /> },
       { path: "quiz", element: <QuizPage /> },

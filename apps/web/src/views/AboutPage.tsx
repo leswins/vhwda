@@ -12,10 +12,10 @@ import DoctorIcon from "../assets/icons/Doctor.svg"
 function BulletGrid({ items }: { items?: string[] }) {
   if (!items?.length) return null
   return (
-    <div className="flex flex-col gap-y-[20px]">
+    <div className="flex flex-col gap-y-fluid-20">
       {items.map((item, idx) => (
         <div key={`${idx}-${item}`} className="flex items-start gap-6">
-          <div className="mt-2 h-[10px] w-[10px] shrink-0 bg-accentOrange" aria-hidden="true" />
+          <div className="mt-2 h-fluid-10 w-fluid-10 shrink-0 bg-accentOrange" aria-hidden="true" />
           <div className="text-body-lg text-foreground">{item}</div>
         </div>
       ))}
@@ -32,7 +32,7 @@ interface DataSourceProps {
 
 function DataSourceCard({ icon, title, description, color }: DataSourceProps) {
   return (
-    <div className="flex items-center gap-[50px]">
+    <div className="flex items-center gap-fluid-50">
       <div
         className="flex h-[100px] w-[100px] shrink-0 items-center justify-center"
         style={{ backgroundColor: `rgb(var(${color}))` }}
@@ -41,7 +41,7 @@ function DataSourceCard({ icon, title, description, color }: DataSourceProps) {
         <img src={icon} alt="" className="h-[50px] w-auto" />
       </div>
       <div className="h-[100px] w-[0.5px] bg-foreground shrink-0" />
-      <div className="flex flex-col gap-[15px]">
+      <div className="flex flex-col gap-fluid-15">
         <h3 className="text-h4 font-bold">{title}</h3>
         <p className="text-body-lg text-foreground">{description}</p>
       </div>
@@ -121,9 +121,9 @@ export function AboutPage() {
   ]
 
   return (
-    <div className="py-[50px]">
+    <div className="py-fluid-50">
       {/* Page Header */}
-      <div className="flex flex-col gap-[15px] pt-0 pb-[50px] px-[50px]">
+      <div className="flex flex-col gap-fluid-15 pt-0 pb-fluid-50 px-fluid-50">
         <p className="text-sub2 font-bold uppercase text-foreground">
           {t(language, "about.kicker")}
         </p>
@@ -136,12 +136,12 @@ export function AboutPage() {
       <SectionNav items={sections} offsetTopPx={0} ariaLabel={t(language, "about.sectionNavA11y")} />
 
       {/* About VHWDA Section */}
-      <section id="about-vhwda" className="border-b border-foreground pt-[65px] pb-[50px] px-[50px]">
-        <div className="flex flex-col gap-[50px]">
+      <section id="about-vhwda" className="border-b border-foreground pt-[65px] pb-fluid-50 px-fluid-50">
+        <div className="flex flex-col gap-fluid-50">
           <div className="flex-shrink-0">
             <img src={VHWDALogo} alt="VHWDA Logo" className="h-[75px] w-auto" />
           </div>
-          <div className="space-y-[50px] max-w-[1200px]">
+          <div className="space-y-fluid-50 max-w-[1200px]">
             <h2 className="text-h2 font-bold">
               {t(language, "about.aboutVhwda.heading")}
             </h2>
@@ -153,11 +153,11 @@ export function AboutPage() {
       </section>
 
       {/* Data Sources Section */}
-      <section id="data-sources" className="border-b border-foreground p-[50px]">
-        <h2 className="mb-[50px] text-h2 font-bold">
+      <section id="data-sources" className="border-b border-foreground p-fluid-50">
+        <h2 className="mb-fluid-50 text-h2 font-bold">
           {t(language, "about.sections.dataSources")}
         </h2>
-        <div className="flex flex-col gap-[50px]">
+        <div className="flex flex-col gap-fluid-50">
           {dataSources.map((source, idx) => (
             <DataSourceCard
               key={idx}
@@ -171,24 +171,24 @@ export function AboutPage() {
       </section>
 
       {/* Quiz Methodology Section */}
-      <section id="quiz-methodology" className="border-b border-foreground p-[50px]">
-        <h2 className="mb-[50px] text-h2 font-bold">
+      <section id="quiz-methodology" className="border-b border-foreground p-fluid-50">
+        <h2 className="mb-fluid-50 text-h2 font-bold">
           {t(language, "about.sections.quizMethodology")}
         </h2>
-        <div className="space-y-[50px]">
+        <div className="space-y-fluid-50">
           <p className="text-body-lg text-foreground">
             {t(language, "about.quizMethodology.intro")}
           </p>
 
-          <div className="space-y-[50px]">
-            <div className="space-y-[25px]">
+          <div className="space-y-fluid-50">
+            <div className="space-y-fluid-25">
               <h3 className="text-h4 font-bold">
                 {t(language, "about.quizMethodology.softScoring.title")}
               </h3>
               <BulletGrid items={softScoringItems} />
             </div>
 
-            <div className="space-y-[25px]">
+            <div className="space-y-fluid-25">
               <h3 className="text-h4 font-bold">
                 {t(language, "about.quizMethodology.hardFilters.title")}
               </h3>
@@ -203,31 +203,31 @@ export function AboutPage() {
       </section>
 
       {/* AI Features Disclosure Section */}
-      <section id="ai-features" className="border-b border-foreground p-[50px]">
-        <h2 className="mb-[50px] text-h2 font-bold">
+      <section id="ai-features" className="border-b border-foreground p-fluid-50">
+        <h2 className="mb-fluid-50 text-h2 font-bold">
           {t(language, "about.sections.aiFeatures")}
         </h2>
-        <div className="space-y-[50px]">
+        <div className="space-y-fluid-50">
           <p className="text-body-lg text-foreground">
             {t(language, "about.aiFeatures.intro")}
           </p>
 
-          <div className="space-y-[50px]">
-            <div className="space-y-[25px]">
+          <div className="space-y-fluid-50">
+            <div className="space-y-fluid-25">
               <h3 className="text-h4 font-bold">
                 {t(language, "about.aiFeatures.aiChat.title")}
               </h3>
               <BulletGrid items={aiChatItems} />
             </div>
 
-            <div className="space-y-[25px]">
+            <div className="space-y-fluid-25">
               <h3 className="text-h4 font-bold">
                 {t(language, "about.aiFeatures.careerVideos.title")}
               </h3>
               <BulletGrid items={careerVideosItems} />
             </div>
 
-            <div className="space-y-[25px]">
+            <div className="space-y-fluid-25">
               <h3 className="text-h4 font-bold">
                 {t(language, "about.aiFeatures.quizScoring.title")}
               </h3>
@@ -238,23 +238,23 @@ export function AboutPage() {
       </section>
 
       {/* Update Cadence & Feedback Section */}
-      <section id="update-cadence" className="p-[50px]">
-        <h2 className="mb-[50px] text-h2 font-bold">
+      <section id="update-cadence" className="p-fluid-50">
+        <h2 className="mb-fluid-50 text-h2 font-bold">
           {t(language, "about.sections.updateCadence")}
         </h2>
-        <div className="space-y-[50px]">
+        <div className="space-y-fluid-50">
           <p className="text-body-lg text-foreground">
             {t(language, "about.updateCadence.paragraph1")}
           </p>
 
-          <div className="space-y-[25px]">
+          <div className="space-y-fluid-25">
             <h3 className="text-h4 font-bold leading-h4 tracking-h4">
               {t(language, "about.updateCadence.contactHeading")}
             </h3>
             <div>
               <Button
                 variant="dark"
-                onClick={() => window.location.href = "mailto:feedback@vhwda.virginia.gov"}
+                onClick={() => window.location.href = "mailto:info@vhwda.org"}
               >
                 {t(language, "about.updateCadence.emailButton")}
               </Button>

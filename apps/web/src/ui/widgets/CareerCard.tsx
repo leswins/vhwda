@@ -40,11 +40,11 @@ export function CareerCard({ language, title, salary, to, imageUrl, videoUrl, sh
   const showCompareButton = onToggleCompare && (isInCompare || canAddToCompare)
 
   return (
-    <div className="group w-full bg-surface relative">
+    <div className="group w-full h-full bg-surface relative">
       {showCompareButton && (
         <button
           onClick={handleCompareClick}
-          className={`absolute right-0 top-0 z-10 flex h-[35px] w-[35px] items-center justify-center transition-colors ${isInCompare ? 'bg-accentOrange hover:bg-accentOrange/90' : 'bg-accentGreen hover:bg-accentGreen/90'
+          className={`absolute right-0 top-0 z-10 flex h-icon-35 w-icon-35 items-center justify-center transition-colors ${isInCompare ? 'bg-accentOrange hover:bg-accentOrange/90' : 'bg-accentGreen hover:bg-accentGreen/90'
             }`}
           aria-label={isInCompare ? `Remove ${title} from compare` : `Add ${title} to compare`}
         >
@@ -59,8 +59,8 @@ export function CareerCard({ language, title, salary, to, imageUrl, videoUrl, sh
           )}
         </button>
       )}
-      <Link to={to} className="block" onClick={onClick} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} onFocus={handleMouseEnter} onBlur={handleMouseLeave}>
-        <div className="relative h-[283px] w-full overflow-hidden bg-surface2">
+      <Link to={to} className="flex flex-col h-full" onClick={onClick} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} onFocus={handleMouseEnter} onBlur={handleMouseLeave}>
+        <div className="relative h-[283px] w-full shrink-0 overflow-hidden bg-surface2">
           {videoUrl ? (
             <video
               ref={videoRef}
@@ -72,7 +72,7 @@ export function CareerCard({ language, title, salary, to, imageUrl, videoUrl, sh
               poster={imageUrl}
             >
               <source src={videoUrl} />
-            </video>
+        </video>
           ) : imageUrl ? (
             <img alt="" src={imageUrl} className="h-full w-full object-cover" />
           ) : null}
@@ -86,14 +86,14 @@ export function CareerCard({ language, title, salary, to, imageUrl, videoUrl, sh
 
         <div className="h-[0.5px] w-full bg-foreground" />
 
-        <div className="relative overflow-hidden bg-surface1 px-5 py-5">
+        <div className="relative flex-1 overflow-hidden bg-surface1 px-5 py-5 flex items-center">
           <div className="absolute inset-0 translate-x-[-100%] bg-foreground transition-transform duration-300 ease-out group-hover:translate-x-0" />
           <div className="relative z-10 text-h4 font-bold leading-tight text-foreground transition-colors duration-300 group-hover:text-surface">{title}</div>
         </div>
 
         <div className="h-[0.5px] w-full bg-foreground" />
 
-        <div className="px-5">
+        <div className="px-5 shrink-0">
           <div className="flex items-center justify-between py-5 text-body-base font-bold text-foreground">
             <span>{t(language, "careerCard.typicalVaSalary")}</span>
             <span>{salary ?? "—"}</span>

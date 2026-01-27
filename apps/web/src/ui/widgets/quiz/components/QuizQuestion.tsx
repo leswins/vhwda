@@ -38,6 +38,9 @@ export function QuizQuestion({
         return [currentSelection]
     }
 
+    const isDealBreakerQuestion = question.section === "Deal-breakers"
+    const isSkillsAptitudes = question.section === "Skills & Aptitudes"
+
     // Render the appropriate input component based on question type
     const renderQuestionInput = () => {
         switch (question.type) {
@@ -58,6 +61,8 @@ export function QuizQuestion({
                         value={getCurrentValue() ? parseInt(getCurrentValue()!) : null}
                         onChange={onAnswer}
                         language={language}
+                        helperText={isSkillsAptitudes ? t(language, "quiz.adjustSliderShort") : undefined}
+                        hideValue={isSkillsAptitudes}
                     />
                 )
 
@@ -88,12 +93,17 @@ export function QuizQuestion({
         }
     }
 
-    const isDealBreakerQuestion = question.section === "Deal-breakers"
+    const isSelectQuestion = question.type === "multi_select" || question.type === "single_select"
 
     return (
-        <div className="flex flex-col gap-[75px] items-center w-full max-w-[600px]">
+        <div className={`flex flex-col items-center w-full max-w-[600px] ${isSelectQuestion ? "gap-fluid-50" : "gap-[75px]"}`}>
             {/* Question prompt - larger and bolder to match screenshot */}
-            <div className="flex flex-col gap-4 items-center w-full">
+            <div className="flex flex-col gap-fluid-25 items-center w-full">
+                {isSkillsAptitudes && (
+                    <p className="text-sub1 font-medium text-foreground text-center">
+                        {t(language, "quiz.skillsAptitudes.prompt")}
+                    </p>
+                )}
                 {isDealBreakerQuestion && question.type === "boolean" && (
                     <p className="text-sub1 font-medium leading-[135%] tracking-[-0.025em] text-foreground text-center">
                         {t(language, "quiz.isDealbreaker")}

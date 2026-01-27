@@ -1,7 +1,7 @@
-import React, { useState } from "react"
+import React from "react"
+import { Link } from "react-router-dom"
 import type { QuizVector, CareerForMatching } from "../../../../sanity/queries/careers"
 import { OtherMatchesList } from "./OtherMatchesList"
-import { getLocalizedString } from "../../../../sanity/queries/careers"
 import { t } from "../../../../utils/i18n"
 
 type CareerMatch = CareerForMatching & { score: number }
@@ -13,31 +13,19 @@ type OtherMatchesSectionProps = {
 }
 
 export function OtherMatchesSection({ careers, userVector, language }: OtherMatchesSectionProps) {
-  const [searchQuery, setSearchQuery] = useState("")
-  
-  const filteredCareers = searchQuery
-    ? careers.filter((career) => {
-        const title = getLocalizedString(language, career.title)?.toLowerCase() ?? ""
-        return title.includes(searchQuery.toLowerCase())
-      })
-    : careers
-
   return (
-    <div>
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
+    <div className="p-fluid-50">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-fluid-50">
         <h2 className="text-h3 font-bold text-foreground">{t(language, "quiz.results.otherMatches")}</h2>
-        <div className="w-full md:w-auto md:min-w-[300px]">
-          <input
-            type="text"
-            placeholder={t(language, "quiz.results.searchPlaceholder")}
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full px-4 py-2 border-[0.5px] border-foreground bg-surface text-foreground placeholder:text-foreground/60 focus:outline-none focus:ring-2 focus:ring-foreground"
-          />
-        </div>
+        <Link
+          to="/careers"
+          className="inline-flex items-center bg-surface2 px-6 py-3 text-body-base text-foreground transition-colors hover:bg-surface1"
+        >
+          {t(language, "quiz.results.searchPlaceholder")}
+        </Link>
       </div>
       <OtherMatchesList
-        careers={filteredCareers}
+        careers={careers}
         userVector={userVector}
         language={language}
         maxResults={20}

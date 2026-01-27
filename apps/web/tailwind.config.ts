@@ -24,12 +24,12 @@ export default {
         accentGreen: "rgb(var(--color-accent-green) / <alpha-value>)"
       },
       fontFamily: {
-        sans: ["var(--font-sans)", "system-ui", "sans-serif"]
+        sans: ["var(--font-sans)", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "Helvetica Neue", "Arial", "sans-serif"]
       },
       fontSize: {
         h1: ["var(--text-h1)", { lineHeight: "var(--leading-h1)", letterSpacing: "var(--tracking-h1)", fontWeight: "700" }],
         h2: ["var(--text-h2)", { lineHeight: "var(--leading-h2)", letterSpacing: "var(--tracking-h2)", fontWeight: "700" }],
-        h3: ["var(--text-h3)", { lineHeight: "var(--leading-h3)", letterSpacing: "var(--tracking-h3)", fontWeight: "500" }],
+        h3: ["var(--text-h3)", { lineHeight: "var(--leading-h3)", letterSpacing: "var(--tracking-h3)", fontWeight: "var(--font-weight-h3)" }],
         h4: ["var(--text-h4)", { lineHeight: "var(--leading-h4)", letterSpacing: "var(--tracking-h4)", fontWeight: "600" }],
         h5: ["var(--text-h5)", { lineHeight: "var(--leading-h5)", letterSpacing: "var(--tracking-h5)", fontWeight: "700" }],
         sub1: ["var(--text-sub1)", { lineHeight: "var(--leading-sub1)", letterSpacing: "var(--tracking-sub1)", fontWeight: "500" }],
@@ -43,6 +43,24 @@ export default {
       },
       borderWidth: {
         DEFAULT: "0.5px"
+      },
+      spacing: {
+        // Fluid spacing tokens -> CSS vars defined in src/styles/tokens.css
+        'fluid-50': 'var(--space-50)',
+        'fluid-40': 'var(--space-40)',
+        'fluid-30': 'var(--space-30)',
+        'fluid-25': 'var(--space-25)',
+        'fluid-20': 'var(--space-20)',
+        'fluid-15': 'var(--space-15)',
+        'fluid-12': 'var(--space-12)',
+        'fluid-10': 'var(--space-10)',
+        'fluid-7': 'var(--space-7)',
+        'fluid-5': 'var(--space-5)',
+        // Fluid icon sizes
+        'icon-35': 'var(--icon-35)',
+        'icon-30': 'var(--icon-30)',
+        'icon-25': 'var(--icon-25)',
+        'icon-20': 'var(--icon-20)',
       }
     }
   },

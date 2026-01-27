@@ -27,19 +27,19 @@ export function ProfessionalOrganizationCard({ language, organization }: Props) 
   const institution = organization.institution || organization.name
   const membershipLabel = organization.membershipType?.length
     ? organization.membershipType
-        .map((type) => type.trim())
-        .filter(Boolean)
-        .map((type) => type.charAt(0).toUpperCase() + type.slice(1))
-        .join(", ")
+      .map((type) => type.trim())
+      .filter(Boolean)
+      .map((type) => type.charAt(0).toUpperCase() + type.slice(1))
+      .join(", ")
     : undefined
   const careerAreasLabel = organization.careerAreas?.length
     ? organization.careerAreas.map((area) => area.title).filter(Boolean).join(", ")
     : undefined
 
   return (
-    <div className="space-y-4 border-b-[0.5px] border-foreground pb-[50px] pt-[50px] first:pt-0 last:border-0 last:pb-0">
+    <div className="space-y-[25px] border-b-[0.5px] border-foreground pb-[50px] pt-[50px] first:pt-0 last:border-0 last:pb-0">
       <div className="flex items-center justify-between gap-4">
-        <h3 className="text-lg font-semibold text-foreground">{organization.name}</h3>
+        <h3 className="text-h4 font-semibold text-foreground">{organization.name}</h3>
         {organization.link && (
           <a
             href={organization.link}
@@ -66,9 +66,9 @@ export function ProfessionalOrganizationCard({ language, organization }: Props) 
           </a>
         )}
       </div>
-      {description && <p className="text-sm text-muted">{description}</p>}
+      {description && <p className="text-body-lg text-onSurfaceSecondary">{description}</p>}
       {(membershipLabel || careerAreasLabel) && (
-        <div className="flex items-center gap-[20px] pt-[15px] text-body-sm text-muted">
+        <div className="flex items-center gap-[20px] text-body-sm text-muted">
           {membershipLabel && (
             <div className="flex items-center gap-[10px]">
               <span className="text-muted" aria-hidden="true">
