@@ -11,6 +11,8 @@ import { useLanguageStore } from "../zustand/useLanguageStore"
 import { useGlobalLoadingStore } from "../zustand/useGlobalLoadingStore"
 import { t } from "../utils/i18n"
 import { trackEvent, trackOutboundClick } from "../utils/analytics"
+import soundOnIcon from "../assets/icons/sound-on.svg"
+import soundOffIcon from "../assets/icons/sound-off.svg"
 
 /**
  * Formats a number as a USD currency string.
@@ -104,6 +106,8 @@ export function CareerDetailPage() {
   const { setLoading } = useGlobalLoadingStore()
   const [data, setData] = useState<CareerDetail | null>(null)
   const [status, setStatus] = useState<"idle" | "loading" | "ready" | "notFound" | "error">("idle")
+  const [isMuted, setIsMuted] = useState(true)
+  const videoRef = useRef<HTMLVideoElement | null>(null)
 
   // Track the last viewed career ID to avoid duplicate event tracking
   const viewKeyRef = useRef<string | null>(null)
@@ -186,11 +190,40 @@ export function CareerDetailPage() {
       {/* Hero Section: Media (Video/Image) and Title/Highlights */}
       <div className="grid gap-x-0 gap-y-0 lg:grid-cols-[1fr_1fr]">
         {/* Media Column */}
-        <div className="overflow-hidden bg-surface1 flex items-center justify-center">
+        <div className="overflow-hidden bg-surface1 flex items-center justify-center relative">
           {data?.videoUrl ? (
-            <video className="aspect-square w-full object-cover" autoPlay muted loop playsInline>
-              <source src={data.videoUrl} />
-            </video>
+            <>
+              <video
+                ref={videoRef}
+                className="aspect-square w-full object-cover"
+                autoPlay
+                muted={isMuted}
+                loop
+                playsInline
+              >
+                <source src={data.videoUrl} />
+              </video>
+              <button
+                type="button"
+                onClick={() => {
+                  setIsMuted((prev) => {
+                    const next = !prev
+                    if (videoRef.current) {
+                      videoRef.current.muted = next
+                    }
+                    return next
+                  })
+                }}
+                className={`absolute bottom-0 left-0 flex h-[50px] w-[50px] items-center justify-center border-t-[0.5px] border-r-[0.5px] border-foreground ${isMuted ? "bg-accentGreen" : "bg-accentOrange"
+                  }`}
+                aria-label={isMuted ? t(language, "career.soundOn") : t(language, "career.soundOff")}
+              >
+                <img src={isMuted ? soundOnIcon : soundOffIcon} alt="" className="h-6 w-6" />
+              </button>
+              <div className="absolute bottom-0 right-0 flex h-[50px] items-center bg-surface/15 px-[15px] backdrop-blur-[10px]">
+                <span className="text-body-sm text-surface">{t(language, "career.aiGenerated")}</span>
+              </div>
+            </>
           ) : data?.images?.[0]?.asset?.url ? (
             <img src={data.images[0].asset.url} alt="" className="aspect-square w-full object-cover" />
           ) : (
@@ -230,7 +263,7 @@ export function CareerDetailPage() {
                   </svg>
                 </div>
                 <div className="mx-5 w-[0.5px] self-stretch bg-foreground" />
-                  <div className="flex-1 px-5 flex flex-col gap-fluid-10">
+                <div className="flex-1 px-5 flex flex-col gap-fluid-10">
                   <div className="text-h5">{data?.academicRequirementsHighlight ? getLocalizedString(language, data.academicRequirementsHighlight) : "—"}</div>
                   <div className="text-body-base text-foreground/70">{t(language, "career.sections.academicRequirements")}</div>
                 </div>
@@ -252,7 +285,7 @@ export function CareerDetailPage() {
                   </svg>
                 </div>
                 <div className="mx-5 w-[0.5px] self-stretch bg-foreground" />
-                  <div className="flex-1 px-5 flex flex-col gap-fluid-10">
+                <div className="flex-1 px-5 flex flex-col gap-fluid-10">
                   <div className="text-h5">{data?.programLengthHighlight ? getLocalizedString(language, data.programLengthHighlight) : "—"}</div>
                   <div className="text-body-base text-foreground/70">{t(language, "careerHighlight.programLength")}</div>
                 </div>
@@ -274,7 +307,7 @@ export function CareerDetailPage() {
                   </svg>
                 </div>
                 <div className="mx-5 w-[0.5px] self-stretch bg-foreground" />
-                  <div className="flex-1 px-5 flex flex-col gap-fluid-10">
+                <div className="flex-1 px-5 flex flex-col gap-fluid-10">
                   <div className="text-h5">{data?.salary?.median !== undefined ? formatMoney(data.salary.median) : "—"}</div>
                   <div className="text-body-base text-foreground/70">{t(language, "careerHighlight.typicalSalary")}</div>
                 </div>
@@ -296,7 +329,7 @@ export function CareerDetailPage() {
                   </svg>
                 </div>
                 <div className="mx-5 w-[0.5px] self-stretch bg-foreground" />
-                  <div className="flex-1 px-5 flex flex-col gap-fluid-10">
+                <div className="flex-1 px-5 flex flex-col gap-fluid-10">
                   <div className="text-h5">{data?.outlook?.value !== undefined ? `${data.outlook.value}%` : "—"}</div>
                   <div className="text-body-base text-foreground/70">
                     {data?.outlook?.label || t(language, "careerHighlight.projectedGrowth")}
@@ -470,7 +503,7 @@ export function CareerDetailPage() {
                   {t(language, "career.cta.searchForCareer")}
                 </Button>
               </div>
-              <div className="flex gap-0 overflow-x-auto snap-x snap-mandatory scrollbar-hide bg-surface1">
+              <div className="flex gap-0 overflow-x-auto snap-x snap-mandatory scrollbar-hide bg-accentGreen">
                 {(data.similarCareers ?? []).map((c) => (
                   <div
                     key={c._id}
