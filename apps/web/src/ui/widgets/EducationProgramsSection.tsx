@@ -101,7 +101,7 @@ function RegionList({ groups, activeKey, onSelect }: RegionListProps) {
               <button
                 type="button"
                 onClick={() => toggleRegion(group.region)}
-                className="flex w-full items-center justify-between py-[25px] text-left text-h4 font-semibold text-foreground"
+                className="flex w-full items-center justify-between py-fluid-25 text-left text-h4 font-semibold text-foreground"
               >
                 <span>{group.region}</span>
                 <span aria-hidden="true">
@@ -125,14 +125,14 @@ function RegionList({ groups, activeKey, onSelect }: RegionListProps) {
                       <li
                         key={item._key}
                         className={cx(
-                          "border-b-[0.5px] border-foreground last:border-b-0 pl-[25px] ml-[25px]",
+                          "border-b-[0.5px] border-foreground last:border-b-0 pl-fluid-25 ml-fluid-25",
                           isLast && isLastItem && "border-b-0"
                         )}
                       >
                         <button
                           type="button"
                           className={cx(
-                            "flex w-full items-center justify-between py-[25px] text-left text-body-lg",
+                            "flex w-full items-center justify-between py-fluid-25 text-left text-body-lg",
                             isActive && "font-semibold"
                           )}
                           onClick={() => onSelect(item)}
@@ -270,9 +270,9 @@ export function EducationProgramsSection({ language, items, title }: Props) {
   if (!token) {
     return (
       <div className="grid h-[650px] max-h-[650px] overflow-hidden lg:grid-cols-[40%_60%]">
-        <div className="flex h-full min-h-0 flex-col">
-          <h2 className="p-[50px] text-h3 border-b-[0.5px] border-foreground shrink-0">{title}</h2>
-          <div className="min-h-0 flex-1 overflow-auto px-[25px] pb-[25px] pt-0 border-r-[0.5px] border-foreground">
+        <div className="flex h-full min-h-0 flex-col border-r-[0.5px] border-foreground">
+          <h2 className="p-fluid-50 text-h3 shrink-0">{title}</h2>
+          <div className="min-h-0 flex-1 overflow-auto mx-fluid-50 pb-fluid-50 pt-0 scrollbar-hide border-t-[0.5px] border-foreground">
             <RegionList
               groups={groupedRegions}
               activeKey={activeKey}
@@ -289,9 +289,9 @@ export function EducationProgramsSection({ language, items, title }: Props) {
 
   return (
     <div className="grid h-[650px] max-h-[650px] overflow-hidden lg:grid-cols-[40%_60%]">
-      <div className="flex h-full min-h-0 flex-col">
-        <h2 className="p-[50px] text-h3 border-b-[0.5px] border-foreground shrink-0">{title}</h2>
-        <div className="min-h-0 flex-1 overflow-auto px-[25px] pb-[25px] pt-0 border-r-[0.5px] border-foreground">
+      <div className="flex h-full min-h-0 flex-col border-r-[0.5px] border-foreground">
+        <h2 className="p-[50px] text-h3 shrink-0">{title}</h2>
+        <div className="min-h-0 flex-1 overflow-auto mx-[50px] pb-[50px] pt-0 scrollbar-hide border-t-[0.5px] border-foreground">
           <RegionList
             groups={groupedRegions}
             activeKey={activeKey}

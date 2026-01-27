@@ -13,6 +13,7 @@ type Props = {
 }
 
 export function OrganizationFilters({ language, filters, onFiltersChange }: Props) {
+  const [isMembershipTypeExpanded, setIsMembershipTypeExpanded] = useState(false)
   const [isGeographicFocusExpanded, setIsGeographicFocusExpanded] = useState(false)
   const [isCareerAreasExpanded, setIsCareerAreasExpanded] = useState(false)
   const [careerCategories, setCareerCategories] = useState<CareerCategory[]>([])
@@ -55,43 +56,59 @@ export function OrganizationFilters({ language, filters, onFiltersChange }: Prop
 
   return (
     <div className="flex flex-col gap-[20px]">
-      <div className="flex flex-col gap-[15px]">
-        <span className="text-h5 font-bold text-foreground">
-          {membershipTypeGroup ? t(language, membershipTypeGroup.titleKey) : "Membership Type"}
-        </span>
-        <div className="flex flex-col gap-[15px]">
-          {membershipTypeGroup?.options.map((option) => (
-            <label key={option.value} className="flex items-center gap-[15px] cursor-pointer">
-              <div className="relative h-5 w-5 shrink-0">
-                <input
-                  type="checkbox"
-                  checked={filters.selectedMembershipTypes.includes(option.value)}
-                  onChange={() => handleMembershipTypeToggle(option.value)}
-                  className="peer h-5 w-5 appearance-none border-[0.5px] border-foreground bg-surface1 checked:bg-surface1"
-                />
-                {filters.selectedMembershipTypes.includes(option.value) && (
-                  <svg
-                    className="pointer-events-none absolute inset-0 h-5 w-5 text-foreground"
-                    viewBox="0 0 20 20"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                  >
-                    <path d="M4 10L8 14L16 6" />
-                  </svg>
-                )}
-              </div>
-              <span className="text-body-base font-medium text-foreground">
-                {t(language, option.labelKey)}
-              </span>
-            </label>
-          ))}
-        </div>
+      <div className="flex flex-col gap-[20px]">
+        <button
+          onClick={() => setIsMembershipTypeExpanded(!isMembershipTypeExpanded)}
+          className="flex w-full items-center justify-between gap-[10px]"
+        >
+          <span className="text-h5 font-bold text-foreground">
+            {membershipTypeGroup ? t(language, membershipTypeGroup.titleKey) : "Membership Type"}
+          </span>
+          {isMembershipTypeExpanded ? (
+            <svg width="15" height="2" viewBox="0 0 15 2" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M0 1H7.5H15" stroke="#09090B" strokeWidth="2" />
+            </svg>
+          ) : (
+            <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M7.5 0V7.5M7.5 7.5V15M7.5 7.5H0M7.5 7.5H15" stroke="#09090B" strokeWidth="2" />
+            </svg>
+          )}
+        </button>
+        {isMembershipTypeExpanded && (
+          <div className="flex flex-col gap-[15px]">
+            {membershipTypeGroup?.options.map((option) => (
+              <label key={option.value} className="flex items-center gap-[15px] cursor-pointer">
+                <div className="relative h-5 w-5 shrink-0">
+                  <input
+                    type="checkbox"
+                    checked={filters.selectedMembershipTypes.includes(option.value)}
+                    onChange={() => handleMembershipTypeToggle(option.value)}
+                    className="peer h-5 w-5 appearance-none border-[0.5px] border-foreground bg-surface1 checked:bg-surface1"
+                  />
+                  {filters.selectedMembershipTypes.includes(option.value) && (
+                    <svg
+                      className="pointer-events-none absolute inset-0 h-5 w-5 text-foreground"
+                      viewBox="0 0 20 20"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    >
+                      <path d="M4 10L8 14L16 6" />
+                    </svg>
+                  )}
+                </div>
+                <span className="text-body-base font-medium text-foreground">
+                  {t(language, option.labelKey)}
+                </span>
+              </label>
+            ))}
+          </div>
+        )}
       </div>
 
       <div className="h-[0.5px] w-full bg-foreground shrink-0" />
 
-      <div className="flex flex-col gap-[15px]">
+      <div className="flex flex-col gap-[20px]">
         <button
           onClick={() => setIsGeographicFocusExpanded(!isGeographicFocusExpanded)}
           className="flex w-full items-center justify-between gap-[10px]"
@@ -143,7 +160,7 @@ export function OrganizationFilters({ language, filters, onFiltersChange }: Prop
 
       <div className="h-[0.5px] w-full bg-foreground shrink-0" />
 
-      <div className="flex flex-col gap-[15px]">
+      <div className="flex flex-col gap-[20px]">
         <button
           onClick={() => setIsCareerAreasExpanded(!isCareerAreasExpanded)}
           className="flex w-full items-center justify-between gap-[10px]"

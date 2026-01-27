@@ -10,24 +10,23 @@ export function Footer() {
     { key: "footer.link.home", to: "/" },
     { key: "footer.link.browseCareers", to: "/careers" },
     { key: "footer.link.findCareer", to: "/quiz" },
-    { key: "footer.link.resources", to: "/resources" },
-    { key: "footer.link.scholarship", to: "/resources" }
+    { key: "footer.link.resources", to: "/resources" }
   ]
 
-  const helpLinks: Array<{ key: TranslationKey; to?: string }> = [
+  const helpLinks: Array<{ key: TranslationKey; to?: string; href?: string }> = [
     { key: "footer.link.compareCareers", to: "/compare" },
+    { key: "footer.link.askAi", to: "/chat" },
     { key: "footer.link.about", to: "/about" },
     // TODO: add routes when pages exist
-    { key: "footer.link.glossary" },
-    { key: "footer.link.contact" }
+    { key: "footer.link.contact", href: "mailto:info@vhwda.org" }
   ]
 
   return (
-    <footer className="bg-surface text-foreground px-[50px] border-b-[0.5px] border-foreground">
+    <footer className="bg-surface text-foreground px-fluid-50 border-b-[0.5px] border-foreground">
       <div className="site-grid-container">
         <div className="grid md:grid-cols-2 border-t border-foreground">
           {/* Left column - Brand & Info */}
-          <div className="flex flex-col gap-[250px] pl-[35px] pr-[200px] py-[35px]">
+          <div className="flex flex-col gap-[250px] pl-fluid-30 pr-[200px] py-fluid-30">
             <svg width="133" height="37" viewBox="0 0 404 111" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label={t(language, "brand.name")}>
               <path d="M130.787 87.5906C134.824 87.5908 138.388 89.6401 140.281 92.794L136.529 94.9706C135.456 93.015 133.31 91.816 130.787 91.8158C126.466 91.8158 123.628 94.813 123.627 99.0708C123.627 103.298 126.465 106.296 130.787 106.296C133.31 106.296 135.488 105.098 136.529 103.174L140.281 105.351C138.42 108.504 134.856 110.554 130.787 110.554C124.1 110.554 119.304 105.506 119.304 99.0708C119.304 92.6049 124.1 87.5906 130.787 87.5906Z" fill="currentColor" />
               <path d="M242.836 87.5906C246.463 87.5906 249.238 89.4507 250.721 92.5413L247.064 94.6554C246.275 92.9836 245.075 91.8158 242.836 91.8158C241.006 91.8159 239.934 92.7633 239.934 94.025C239.934 95.3814 240.785 96.1079 244.129 97.1173C247.63 98.2214 251.351 99.3888 251.351 103.9C251.351 108.031 248.041 110.554 243.341 110.554C238.831 110.554 235.864 108.378 234.665 105.098L238.388 102.921C239.176 104.971 240.722 106.296 243.466 106.296C246.084 106.296 246.998 105.192 246.998 103.962C246.998 102.322 245.518 101.691 242.238 100.745C238.863 99.767 235.581 98.3453 235.581 94.1499C235.581 89.9869 239.051 87.5908 242.836 87.5906Z" fill="currentColor" />
@@ -57,7 +56,7 @@ export function Footer() {
               <path d="M79.4815 0.500499C79.527 0.525515 79.5672 0.560328 79.5944 0.604567C79.6217 0.648967 79.6374 0.701169 79.639 0.753236C79.6407 0.804903 79.6274 0.856129 79.6034 0.901904L62.7324 33.0233C62.707 33.0692 62.6703 33.1091 62.6254 33.1363C62.5806 33.1632 62.529 33.1767 62.4767 33.1779C62.424 33.1789 62.3712 33.1648 62.3251 33.1392C62.2792 33.1137 62.2392 33.0772 62.2121 33.0322L44.8922 1.14275C44.8684 1.09749 44.8583 1.04522 44.8595 0.994079C44.8609 0.943531 44.8755 0.894955 44.9011 0.851357C44.9272 0.807236 44.9639 0.770107 45.0082 0.744315C45.0524 0.718592 45.1027 0.703593 45.1538 0.702688L79.3328 0.461845C79.3848 0.461032 79.4359 0.475491 79.4815 0.500499Z" fill="currentColor" />
             </svg>
 
-            <div className="flex flex-col gap-[50px] text-base leading-[1.35] tracking-[-0.4px]">
+            <div className="flex flex-col gap-fluid-50 text-base leading-[1.35] tracking-[-0.4px]">
               <p>{t(language, "footer.about")}</p>
               <p>{t(language, "footer.address")}</p>
             </div>
@@ -66,33 +65,41 @@ export function Footer() {
           {/* Right column - Navigation */}
           <div className="grid grid-cols-2">
             {/* Explore */}
-            <div className="flex flex-col gap-[20px] px-[50px] py-[59px]">
+            <div className="flex flex-col gap-fluid-20 px-fluid-50 py-[59px]">
               <div className="text-base font-bold uppercase tracking-[2.4px] leading-[1.35]">{t(language, "footer.heading.explore")}</div>
-              <ul className="flex flex-col gap-[10px] text-base leading-[1.35] tracking-[-0.4px]">
+              <ul className="flex flex-col gap-fluid-10 text-base leading-[1.35] tracking-[-0.4px]">
                 {exploreLinks.map((l) => (
                   <li key={l.key as string}>
-                    {l.to ? (
-                      <Link className="hover:underline" to={l.to}>
-                        {t(language, l.key)}
-                      </Link>
-                    ) : (
-                      <span className="text-foreground/70">{t(language, l.key)}</span>
-                    )}
+                  {l.to ? (
+                    <Link className="hover:underline" to={l.to}>
+                      {t(language, l.key)}
+                    </Link>
+                  ) : l.href ? (
+                    <a className="hover:underline" href={l.href}>
+                      {t(language, l.key)}
+                    </a>
+                  ) : (
+                    <span className="text-foreground/70">{t(language, l.key)}</span>
+                  )}
                   </li>
                 ))}
               </ul>
             </div>
 
             {/* Help & Tools */}
-            <div className="flex flex-col gap-[20px] px-[50px] py-[59px]">
+            <div className="flex flex-col gap-fluid-20 px-fluid-50 py-[59px]">
               <div className="text-base font-bold uppercase tracking-[2.4px] leading-[1.35]">{t(language, "footer.heading.helpTools")}</div>
-              <ul className="flex flex-col gap-[10px] text-base leading-[1.35] tracking-[-0.4px]">
+              <ul className="flex flex-col gap-fluid-10 text-base leading-[1.35] tracking-[-0.4px]">
                 {helpLinks.map((l) => (
                   <li key={l.key as string}>
                     {l.to ? (
                       <Link className="hover:underline" to={l.to}>
                         {t(language, l.key)}
                       </Link>
+                    ) : l.href ? (
+                      <a className="hover:underline" href={l.href}>
+                        {t(language, l.key)}
+                      </a>
                     ) : (
                       <span className="text-foreground/70">{t(language, l.key)}</span>
                     )}

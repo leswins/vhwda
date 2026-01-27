@@ -49,7 +49,18 @@ export function ChatInput({ language, value, onChange, onSubmit, disabled }: Pro
         className="flex h-[30px] w-[30px] shrink-0 items-center justify-center disabled:opacity-50"
         aria-label={t(language, "chat.send")}
       >
-        <img src={messageIcon} alt="" className="h-[25px] w-[25px]" />
+        <div
+          className={`h-[30px] w-[30px] transition-colors duration-250 ease-out ${value.trim().length === 0 ? "bg-onSurfaceDisabled" : "bg-foreground"
+            }`}
+          style={{
+            maskImage: `url(${messageIcon})`,
+            maskSize: "contain",
+            maskRepeat: "no-repeat",
+            WebkitMaskImage: `url(${messageIcon})`,
+            WebkitMaskSize: "contain",
+            WebkitMaskRepeat: "no-repeat"
+          }}
+        />
       </button>
     </div>
   )

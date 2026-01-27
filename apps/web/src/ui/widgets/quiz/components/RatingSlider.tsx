@@ -7,9 +7,11 @@ type RatingSliderProps = {
     value: number | null
     onChange: (questionId: string, value: string) => void
     language: "en" | "es"
+    helperText?: string
+    hideValue?: boolean
 }
 
-export function RatingSlider({ questionId, value, onChange, language }: RatingSliderProps) {
+export function RatingSlider({ questionId, value, onChange, language, helperText, hideValue = false }: RatingSliderProps) {
     const [sliderValue, setSliderValue] = useState(value ?? 3)
     const prevQuestionIdRef = useRef<string>(questionId)
     const hasInitializedRef = useRef<boolean>(false)
@@ -50,7 +52,7 @@ export function RatingSlider({ questionId, value, onChange, language }: RatingSl
     return (
         <div className="flex flex-col gap-8 items-center w-full max-w-[530px]">
             <p className="text-body-sm text-muted text-center">
-                {t(language, "quiz.adjustSlider")}
+                {helperText ?? t(language, "quiz.adjustSlider")}
             </p>
             <Slider
                 min={1}
@@ -66,9 +68,11 @@ export function RatingSlider({ questionId, value, onChange, language }: RatingSl
                     <span className="text-h4 text-foreground">5</span>
                 }
             />
-            <div className="text-center">
-                <span className="text-h3 text-foreground">{sliderValue}</span>
-            </div>
+            {!hideValue && (
+                <div className="text-center">
+                    <span className="text-h3 text-foreground">{sliderValue}</span>
+                </div>
+            )}
         </div>
     )
 }

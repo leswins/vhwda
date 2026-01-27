@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react"
-import { Link, useParams } from "react-router-dom"
+import { Link, useParams, useNavigate } from "react-router-dom"
 import type { CareerDetail } from "../sanity/queries/careers"
 import { fetchCareerDetailBySlug, getLocalizedString, getLocalizedText } from "../sanity/queries/careers"
 import { Button } from "../ui/components/Button"
@@ -12,6 +12,9 @@ import { useGlobalLoadingStore } from "../zustand/useGlobalLoadingStore"
 import { t } from "../utils/i18n"
 import { trackEvent, trackOutboundClick } from "../utils/analytics"
 
+/**
+ * Formats a number as a USD currency string.
+ */
 function formatMoney(value?: number): string | undefined {
   if (value === undefined || value === null) return undefined
   try {
@@ -21,16 +24,24 @@ function formatMoney(value?: number): string | undefined {
   }
 }
 
+/**
+ * Extracts a representative salary string from a salary object.
+ * Prioritizes median, then range minimum, then range maximum.
+ */
 function pickTypicalSalary(salary?: { median?: number; rangeMin?: number; rangeMax?: number }): string | undefined {
   return formatMoney(salary?.median ?? salary?.rangeMin ?? salary?.rangeMax)
 }
 
+/**
+ * Renders Portable Text (from Sanity) as plain paragraphs.
+ * Supports a "small" style for secondary text.
+ */
 function PortableTextPlain({ value }: { value?: Array<Record<string, any>> }) {
   if (!value?.length) return null
 
   const blocks = value.filter((b) => b?._type === "block" && Array.isArray(b?.children))
   return (
-    <div className="space-y-[25px]">
+    <div className="space-y-fluid-25">
       {blocks.map((b) => {
         const text = (b.children ?? []).map((c: any) => c?.text ?? "").join("")
         if (!text.trim()) return null
@@ -47,13 +58,16 @@ function PortableTextPlain({ value }: { value?: Array<Record<string, any>> }) {
   )
 }
 
+/**
+ * Renders a grid of items with orange bullet points.
+ */
 function BulletGrid({ items }: { items?: string[] }) {
   if (!items?.length) return null
   return (
-    <div className="grid gap-x-[50px] gap-y-[50px] md:grid-cols-2">
+    <div className="grid gap-x-fluid-50 gap-y-fluid-50 md:grid-cols-2">
       {items.map((item, idx) => (
         <div key={`${idx}-${item}`} className="flex items-start gap-6">
-          <div className="mt-2 h-[10px] w-[10px] shrink-0 bg-accentOrange" aria-hidden="true" />
+          <div className="mt-2 h-fluid-10 w-fluid-10 shrink-0 bg-accentOrange" aria-hidden="true" />
           <div className="text-sub1 text-foreground">{item}</div>
         </div>
       ))}
@@ -61,28 +75,40 @@ function BulletGrid({ items }: { items?: string[] }) {
   )
 }
 
+/**
+ * Renders a list of items on one or more lines, separated by vertical lines.
+ */
 function InlineDividerList({ items }: { items?: string[] }) {
   if (!items?.length) return null
   return (
-    <div className="flex flex-wrap items-center gap-y-[50px]">
+    <div className="flex flex-wrap items-center gap-y-fluid-50">
       {items.map((item, idx) => (
         <React.Fragment key={`${idx}-${item}`}>
           <span className="text-sub1 text-foreground">{item}</span>
-          {idx !== items.length - 1 ? <span className="mx-[25px] h-7 w-[0.5px] bg-foreground" aria-hidden="true" /> : null}
+          {idx !== items.length - 1 ? <span className="mx-fluid-25 h-7 w-[0.5px] bg-foreground" aria-hidden="true" /> : null}
         </React.Fragment>
       ))}
     </div>
   )
 }
 
+/**
+ * The main page component for viewing the details of a single career.
+ * Fetches data based on the URL slug and renders various sections like
+ * overview, responsibilities, salary, etc.
+ */
 export function CareerDetailPage() {
   const { slug } = useParams()
+  const navigate = useNavigate()
   const { language } = useLanguageStore()
   const { setLoading } = useGlobalLoadingStore()
   const [data, setData] = useState<CareerDetail | null>(null)
   const [status, setStatus] = useState<"idle" | "loading" | "ready" | "notFound" | "error">("idle")
+
+  // Track the last viewed career ID to avoid duplicate event tracking
   const viewKeyRef = useRef<string | null>(null)
 
+  // Fetch career data when the slug or language changes
   useEffect(() => {
     if (!slug) return
     let cancelled = false
@@ -111,6 +137,7 @@ export function CareerDetailPage() {
     }
   }, [slug, setLoading])
 
+  // Define sections for the secondary navigation bar
   const sections = useMemo(
     () => [
       { id: "overview", label: t(language, "career.sections.overview") },
@@ -129,6 +156,7 @@ export function CareerDetailPage() {
   const title = data ? getLocalizedString(language, data.title) : undefined
   const summary = data ? getLocalizedText(language, data.summary) : undefined
 
+  // Track page view event once data is loaded
   useEffect(() => {
     if (status !== "ready" || !data) return
     if (viewKeyRef.current === data._id) return
@@ -143,6 +171,9 @@ export function CareerDetailPage() {
     viewKeyRef.current = data._id
   }, [data, language, slug, status, title])
 
+  /**
+   * Smoothly scrolls to a section of the page by its HTML ID.
+   */
   const scrollToSection = (id: string) => {
     const el = document.getElementById(id)
     if (el) {
@@ -151,8 +182,10 @@ export function CareerDetailPage() {
   }
 
   return (
-    <div className="space-y-10">
+    <div>
+      {/* Hero Section: Media (Video/Image) and Title/Highlights */}
       <div className="grid gap-x-0 gap-y-0 lg:grid-cols-[1fr_1fr]">
+        {/* Media Column */}
         <div className="overflow-hidden bg-surface1 flex items-center justify-center">
           {data?.videoUrl ? (
             <video className="aspect-square w-full object-cover" autoPlay muted loop playsInline>
@@ -165,12 +198,14 @@ export function CareerDetailPage() {
           )}
         </div>
 
+        {/* Info & Highlights Column */}
         <div className="flex flex-col h-full p-5 border-l border-foreground">
           <div className="flex-1">
             <h1 className="text-h2">{title ?? t(language, "career.title")}</h1>
           </div>
 
           <div className="mt-8">
+            {/* Back & Compare Links */}
             <div className="flex items-center justify-between text-body-base">
               <Link to="/careers" className="inline-flex items-center gap-2 group">
                 <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -185,7 +220,9 @@ export function CareerDetailPage() {
 
             <Divider className="mt-4 mb-5" />
 
+            {/* Career Highlights Grid (Academic, Program Length, Salary, Growth) */}
             <div className="flex flex-col">
+              {/* Academic Requirements Highlight */}
               <div className="group flex cursor-pointer items-center justify-between" onClick={() => scrollToSection("academic")}>
                 <div className="flex aspect-square h-[70px] items-center justify-center bg-accentBlue" aria-hidden="true">
                   <svg width="35" height="29" viewBox="0 0 35 29" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -193,7 +230,7 @@ export function CareerDetailPage() {
                   </svg>
                 </div>
                 <div className="mx-5 w-[0.5px] self-stretch bg-foreground" />
-                <div className="flex-1 px-5 flex flex-col gap-[10px]">
+                  <div className="flex-1 px-5 flex flex-col gap-fluid-10">
                   <div className="text-h5">{data?.academicRequirementsHighlight ? getLocalizedString(language, data.academicRequirementsHighlight) : "—"}</div>
                   <div className="text-body-base text-foreground/70">{t(language, "career.sections.academicRequirements")}</div>
                 </div>
@@ -207,6 +244,7 @@ export function CareerDetailPage() {
 
               <Divider className="my-5" />
 
+              {/* Program Length Highlight */}
               <div className="group flex cursor-pointer items-center justify-between" onClick={() => scrollToSection("education")}>
                 <div className="flex aspect-square h-[70px] items-center justify-center bg-accentYellow" aria-hidden="true">
                   <svg width="35" height="35" viewBox="0 0 35 35" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -214,7 +252,7 @@ export function CareerDetailPage() {
                   </svg>
                 </div>
                 <div className="mx-5 w-[0.5px] self-stretch bg-foreground" />
-                <div className="flex-1 px-5 flex flex-col gap-[10px]">
+                  <div className="flex-1 px-5 flex flex-col gap-fluid-10">
                   <div className="text-h5">{data?.programLengthHighlight ? getLocalizedString(language, data.programLengthHighlight) : "—"}</div>
                   <div className="text-body-base text-foreground/70">{t(language, "careerHighlight.programLength")}</div>
                 </div>
@@ -228,6 +266,7 @@ export function CareerDetailPage() {
 
               <Divider className="my-5" />
 
+              {/* Salary Highlight */}
               <div className="group flex cursor-pointer items-center justify-between" onClick={() => scrollToSection("salary")}>
                 <div className="flex aspect-square h-[70px] items-center justify-center bg-accentGreen" aria-hidden="true">
                   <svg width="35" height="24" viewBox="0 0 35 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -235,7 +274,7 @@ export function CareerDetailPage() {
                   </svg>
                 </div>
                 <div className="mx-5 w-[0.5px] self-stretch bg-foreground" />
-                <div className="flex-1 px-5 flex flex-col gap-[10px]">
+                  <div className="flex-1 px-5 flex flex-col gap-fluid-10">
                   <div className="text-h5">{data?.salary?.median !== undefined ? formatMoney(data.salary.median) : "—"}</div>
                   <div className="text-body-base text-foreground/70">{t(language, "careerHighlight.typicalSalary")}</div>
                 </div>
@@ -249,6 +288,7 @@ export function CareerDetailPage() {
 
               <Divider className="my-5" />
 
+              {/* Projected Growth Highlight */}
               <div className="group flex cursor-pointer items-center justify-between" onClick={() => scrollToSection("salary")}>
                 <div className="flex aspect-square h-[70px] items-center justify-center bg-accentPink" aria-hidden="true">
                   <svg width="35" height="21" viewBox="0 0 35 21" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -256,7 +296,7 @@ export function CareerDetailPage() {
                   </svg>
                 </div>
                 <div className="mx-5 w-[0.5px] self-stretch bg-foreground" />
-                <div className="flex-1 px-5 flex flex-col gap-[10px]">
+                  <div className="flex-1 px-5 flex flex-col gap-fluid-10">
                   <div className="text-h5">{data?.outlook?.value !== undefined ? `${data.outlook.value}%` : "—"}</div>
                   <div className="text-body-base text-foreground/70">
                     {data?.outlook?.label || t(language, "careerHighlight.projectedGrowth")}
@@ -274,42 +314,49 @@ export function CareerDetailPage() {
         </div>
       </div>
 
+      {/* Primary Tab Navigation for sections */}
       <SectionNav items={sections} offsetTopPx={0} ariaLabel={t(language, "career.sectionNavA11y")} />
 
-      {/* Don't render loading state - global loading overlay will show */}
+      {/* Loading & Error States */}
       {status === "loading" ? null : null}
-      {status === "notFound" ? <p className="p-[50px] text-muted">{t(language, "career.notFound")}</p> : null}
-      {status === "error" ? <p className="p-[50px] text-muted">{t(language, "career.error")}</p> : null}
+      {status === "notFound" ? <p className="p-fluid-50 text-muted">{t(language, "career.notFound")}</p> : null}
+      {status === "error" ? <p className="p-fluid-50 text-muted">{t(language, "career.error")}</p> : null}
 
+      {/* Main Content Sections (rendered once data is ready) */}
       {status === "ready" && data ? (
         <>
-          <section id="overview" className="border-b border-foreground p-[50px]">
+          {/* Overview Section */}
+          <section id="overview" className="border-b border-foreground p-fluid-50">
             <h2 className="sr-only">{t(language, "career.sections.overview")}</h2>
             <p className="text-balance text-h2">{summary}</p>
           </section>
 
-          <section id="responsibilities" className="border-b border-foreground p-[50px]">
-            <h2 className="mb-[50px] text-h3">{t(language, "career.sections.responsibilities")}</h2>
+          {/* Responsibilities Section */}
+          <section id="responsibilities" className="border-b border-foreground p-fluid-50">
+            <h2 className="mb-fluid-50 text-h3">{t(language, "career.sections.responsibilities")}</h2>
             <BulletGrid items={language === "es" ? data.responsibilities?.es ?? data.responsibilities?.en : data.responsibilities?.en} />
           </section>
 
-          <section id="academic" className="border-b border-foreground p-[50px]">
-            <div className="mb-[50px] flex items-center justify-between gap-4">
+          {/* Academic Requirements Section */}
+          <section id="academic" className="border-b border-foreground p-fluid-50">
+            <div className="mb-fluid-50 flex items-center justify-between gap-4">
               <h2 className="text-h3">{t(language, "career.sections.academicRequirements")}</h2>
               <Button variant="dark">{t(language, "career.cta.exploreEducationalPrograms")}</Button>
             </div>
             <PortableTextPlain value={language === "es" ? data.educationRequirements?.es ?? data.educationRequirements?.en : data.educationRequirements?.en} />
           </section>
 
-          <section id="work" className="border-b border-foreground p-[50px]">
-            <h2 className="mb-[50px] text-h3">{t(language, "career.sections.workEnvironments")}</h2>
+          {/* Work Environments Section */}
+          <section id="work" className="border-b border-foreground p-fluid-50">
+            <h2 className="mb-fluid-50 text-h3">{t(language, "career.sections.workEnvironments")}</h2>
             <InlineDividerList items={language === "es" ? data.workEnvironment?.es ?? data.workEnvironment?.en : data.workEnvironment?.en} />
           </section>
 
-          <section id="specializations" className="border-b border-foreground p-[50px]">
-            <h2 className="mb-[50px] text-h3">{t(language, "career.sections.areasOfSpecialization")}</h2>
+          {/* Specializations Section */}
+          <section id="specializations" className="border-b border-foreground p-fluid-50">
+            <h2 className="mb-fluid-50 text-h3">{t(language, "career.sections.areasOfSpecialization")}</h2>
             <InlineDividerList items={language === "es" ? data.specializations?.es ?? data.specializations?.en : data.specializations?.en} />
-            <div className="mt-[50px]">
+            <div className="mt-fluid-50">
               <PortableTextPlain
                 value={
                   language === "es" ? data.specializationsNote?.es ?? data.specializationsNote?.en : data.specializationsNote?.en
@@ -318,8 +365,9 @@ export function CareerDetailPage() {
             </div>
           </section>
 
-          <section id="salary" className="border-b border-foreground p-[50px]">
-            <h2 className="mb-[50px] text-h3">{t(language, "career.sections.salaryRange")}</h2>
+          {/* Salary Range Section */}
+          <section id="salary" className="border-b border-foreground p-fluid-50">
+            <h2 className="mb-fluid-50 text-h3">{t(language, "career.sections.salaryRange")}</h2>
             <div className="grid gap-8 md:grid-cols-3">
               <div className="space-y-3">
                 <div className="text-sub1">{t(language, "career.salary.entryLevel")}</div>
@@ -336,6 +384,7 @@ export function CareerDetailPage() {
             </div>
           </section>
 
+          {/* Educational Programs Section (includes map) */}
           <section id="education" className="border-b border-foreground">
             <EducationProgramsSection
               language={language}
@@ -344,9 +393,11 @@ export function CareerDetailPage() {
             />
           </section>
 
-          <section id="orgs" className="border-b border-foreground p-[50px]">
-            <h2 className="mb-[50px] text-h3">{t(language, "career.sections.professionalAssociations")}</h2>
-            <div className="grid md:grid-cols-[1fr_auto_1fr] gap-x-[50px] gap-y-8">
+          {/* Professional Associations Section */}
+          <section id="orgs" className="border-b border-foreground p-fluid-50">
+            <h2 className="mb-fluid-50 text-h3">{t(language, "career.sections.professionalAssociations")}</h2>
+            <div className="grid md:grid-cols-[1fr_auto_1fr] gap-x-fluid-50 gap-y-8">
+              {/* Left Column of Associations */}
               <div className="space-y-8">
                 {(data.professionalOrgs ?? []).filter((_, i) => i % 2 === 0).map((org) => (
                   <a
@@ -377,6 +428,7 @@ export function CareerDetailPage() {
                 ))}
               </div>
               <div className="hidden md:block w-[0.5px] bg-foreground" />
+              {/* Right Column of Associations */}
               <div className="space-y-8">
                 {(data.professionalOrgs ?? []).filter((_, i) => i % 2 === 1).map((org) => (
                   <a
@@ -409,22 +461,28 @@ export function CareerDetailPage() {
             </div>
           </section>
 
+          {/* Similar Careers Horizontal Scroll Section */}
           {(data.similarCareers ?? []).length > 0 ? (
-            <section id="similar" className="p-[50px] pb-0">
-              <div className="mb-[50px] flex items-center justify-between">
+            <section id="similar" className="p-0">
+              <div className="px-fluid-50 py-fluid-50 flex items-center justify-between border-b-[0.5px] border-foreground">
                 <h2 className="text-h3">{t(language, "career.sections.similarCareers")}</h2>
-                <Button variant="dark">{t(language, "career.cta.searchForCareer")}</Button>
+                <Button variant="dark" onClick={() => navigate("/careers")}>
+                  {t(language, "career.cta.searchForCareer")}
+                </Button>
               </div>
-              <div className="-mx-[50px] flex overflow-x-auto scrollbar-hide border-t border-foreground bg-surface1">
-                {(data.similarCareers ?? []).map((c, idx) => {
-                  const card = (
+              <div className="flex gap-0 overflow-x-auto snap-x snap-mandatory scrollbar-hide bg-surface1">
+                {(data.similarCareers ?? []).map((c) => (
+                  <div
+                    key={c._id}
+                    className="snap-start shrink-0 w-[30%] min-w-[30%] border-r-[0.5px] border-foreground last:border-r-0"
+                  >
                     <CareerCard
-                      key={c._id}
                       language={language}
                       title={getLocalizedString(language, c.title) ?? t(language, "common.missing")}
                       salary={pickTypicalSalary(c.salary)}
                       to={c.slug ? `/careers/${c.slug}` : "/careers"}
                       imageUrl={c.imageUrl}
+                      videoUrl={c.videoUrl}
                       showMatch={false}
                       onClick={() => {
                         trackEvent("career_click", {
@@ -436,17 +494,8 @@ export function CareerDetailPage() {
                         })
                       }}
                     />
-                  )
-
-                  return (
-                    <React.Fragment key={c._id}>
-                      {card}
-                      {idx !== (data.similarCareers?.length ?? 0) - 1 ? (
-                        <div className="shrink-0 border-l-[0.5px] border-foreground" aria-hidden="true" />
-                      ) : null}
-                    </React.Fragment>
-                  )
-                })}
+                  </div>
+                ))}
               </div>
             </section>
           ) : null}

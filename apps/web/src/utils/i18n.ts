@@ -290,10 +290,11 @@ const dict: Dictionary = {
   "footer.heading.helpTools": { en: "Help & Tools", es: "Ayuda y herramientas" },
   "footer.link.home": { en: "Home", es: "Inicio" },
   "footer.link.browseCareers": { en: "Browse careers", es: "Explorar carreras" },
-  "footer.link.findCareer": { en: "Find your career", es: "Encuentra tu carrera" },
+  "footer.link.findCareer": { en: "Career discovery quiz", es: "Cuestionario de descubrimiento de carreras" },
   "footer.link.resources": { en: "Resources", es: "Recursos" },
   "footer.link.scholarship": { en: "Scholarship", es: "Becas" },
   "footer.link.compareCareers": { en: "Compare careers", es: "Comparar carreras" },
+  "footer.link.askAi": { en: "Ask AI", es: "Preguntar a IA" },
   "footer.link.about": { en: "About", es: "Acerca de" },
   "footer.link.glossary": { en: "Glossary", es: "Glosario" },
   "footer.link.contact": { en: "Contact", es: "Contacto" },
@@ -324,8 +325,8 @@ const dict: Dictionary = {
     es: "Únete a redes que apoyan tu campo."
   },
   "planNextSteps.card.schoolsPrerequisites.title": {
-    en: "Schools & Prerequisites",
-    es: "Escuelas y Prerrequisitos"
+    en: "Schools",
+    es: "Escuelas"
   },
   "planNextSteps.card.schoolsPrerequisites.description": {
     en: "Find accredited programs in Virginia.",
@@ -390,6 +391,8 @@ const dict: Dictionary = {
   "quiz.section.careerFeatures": { en: "Career Features", es: "Características de Carrera" },
   "quiz.section.dealBreakers": { en: "Deal-breakers", es: "Factores Decisivos" },
   "quiz.adjustSlider": { en: "Adjust the slider to set your preference", es: "Ajusta el control deslizante para establecer tu preferencia" },
+  "quiz.adjustSliderShort": { en: "Adjust the slider", es: "Ajusta el control deslizante" },
+  "quiz.skillsAptitudes.prompt": { en: "Rate your proficiency in the following:", es: "Califica tu competencia en lo siguiente:" },
   "quiz.isDealbreaker": { en: "Is this a deal breaker?", es: "¿Es esto un factor decisivo?" },
   "quiz.yes": { en: "Yes", es: "Sí" },
   "quiz.no": { en: "No", es: "No" },
@@ -409,6 +412,8 @@ const dict: Dictionary = {
   "quiz.results.topMatches": { en: "Your Top Matches", es: "Tus Mejores Coincidencias" },
   "quiz.results.otherMatches": { en: "Other Strong Matches", es: "Otras Coincidencias Fuertes" },
   "quiz.results.retake": { en: "Retake Quiz", es: "Volver a Hacer el Cuestionario" },
+  "quiz.loading.title": { en: "We’re calculating your top career matches", es: "Estamos calculando tus mejores coincidencias profesionales" },
+  "quiz.loading.subtitle": { en: "Hang tight while we work our magic...", es: "Espera mientras hacemos nuestra magia..." },
   "quiz.results.searchPlaceholder": { en: "Search for a specific career", es: "Buscar una carrera específica" },
 
   // About page translations

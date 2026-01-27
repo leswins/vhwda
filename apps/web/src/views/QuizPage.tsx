@@ -26,6 +26,7 @@ export function QuizPage() {
         errorLoadingQuestions,
         matchedCareers,
         loadingResults,
+        resultsDelayReady,
         currentQuestion,
         hasNext,
         hasPrevious,
@@ -58,7 +59,7 @@ export function QuizPage() {
     }
 
     return (
-        <div className="flex flex-col min-h-[calc(100vh-123px)] bg-surface border-t border-foreground">
+        <div className="flex flex-col min-h-[calc(100vh-123px)] bg-surface">
             <div className="flex flex-1 min-h-0">
                 {currentStep === "questions" && currentQuestion ? (
                     <>
@@ -74,7 +75,7 @@ export function QuizPage() {
                         {/* Right content area */}
                         <div className="flex-1 flex flex-col overflow-hidden">
                             {/* Question area - scrollable */}
-                            <div className="flex-1 overflow-y-auto flex items-center justify-center p-12">
+                            <div className="flex-1 overflow-y-auto flex items-center justify-center px-12 pb-12 pt-[75px]">
                                 <QuizQuestion
                                     question={currentQuestion}
                                     questionNumber={currentQuestionIndex + 1}
@@ -107,9 +108,9 @@ export function QuizPage() {
                 ) : currentStep === "results" ? (
                     <>
                         {/* Don't render anything while loading results - global loading overlay will show */}
-                        {loadingResults ? null : (
+                        {loadingResults || !resultsDelayReady ? null : (
                             <div className="flex-1 overflow-y-auto">
-                                <div className="p-8">
+                                <div className="p-0">
                                     <QuizResults
                                         loading={loadingResults}
                                         matchedCareers={matchedCareers}
@@ -126,8 +127,8 @@ export function QuizPage() {
 
             {/* Complete the quiz section - only show during questions step */}
             {currentStep === "questions" && currentQuestion && (
-                <div className="relative border-t border-foreground border-dashed bg-surface1">
-                    <div className="w-full p-[50px]">
+                <div className="relative border-t-[0.5px] border-foreground bg-surface1">
+                    <div className="w-full p-fluid-50">
                         <p className="text-sub2 font-bold uppercase text-foreground mb-4">
                             {t(language, "quiz.complete.title")}
                         </p>
@@ -138,7 +139,8 @@ export function QuizPage() {
                     <img
                         src={shapeClusterImage}
                         alt=""
-                        className="hidden lg:block absolute bottom-0 right-0 w-[200px] h-auto object-contain"
+                        className="hidden lg:block absolute right-0 w-[200px] h-auto object-contain"
+                        style={{ bottom: "-0.5px" }}
                     />
                 </div>
             )}

@@ -265,7 +265,7 @@ export function EducationalInstitutionsMap({ language, institutions }: Props) {
 
   if (!sorted.length) {
     return (
-      <div className="min-h-[520px] border border-foreground bg-surface1 p-4 text-sm text-foreground/70">
+      <div className="min-h-[750px] border border-foreground bg-surface1 p-4 text-sm text-foreground/70">
         No institutions with location data found.
       </div>
     )
@@ -273,8 +273,8 @@ export function EducationalInstitutionsMap({ language, institutions }: Props) {
 
   if (!token) {
     return (
-    <div className="grid lg:grid-cols-[480px_1fr]">
-      <div className="max-h-[520px] overflow-auto px-[25px] pb-[25px] pt-0 border-r-[0.5px] border-foreground">
+      <div className="grid h-[750px] lg:grid-cols-[480px_1fr]">
+        <div className="h-full overflow-auto scrollbar-hide px-[25px] pb-[25px] pt-0 border-r-[0.5px] border-foreground">
           <RegionList
             groups={groupedRegions}
             activeId={activeId}
@@ -286,7 +286,7 @@ export function EducationalInstitutionsMap({ language, institutions }: Props) {
             }}
           />
         </div>
-      <div className="min-h-[520px] bg-surface1 p-4 text-sm text-foreground/70">
+        <div className="h-full bg-surface1 p-4 text-sm text-foreground/70">
           {t(language, "career.map.noToken")}
         </div>
       </div>
@@ -294,8 +294,8 @@ export function EducationalInstitutionsMap({ language, institutions }: Props) {
   }
 
   return (
-    <div className="grid lg:grid-cols-[480px_1fr]">
-      <div className="max-h-[520px] overflow-auto px-[25px] pb-[25px] pt-0 border-r-[0.5px] border-foreground">
+    <div className="grid h-[750px] lg:grid-cols-[480px_1fr]">
+      <div className="h-full overflow-auto scrollbar-hide px-[25px] pb-[25px] pt-0 border-r-[0.5px] border-foreground">
         <RegionList
           groups={groupedRegions}
           activeId={activeId}
@@ -308,8 +308,8 @@ export function EducationalInstitutionsMap({ language, institutions }: Props) {
         />
       </div>
 
-      <div className="min-h-[520px] bg-surface1">
-        <div ref={mapContainerRef} className="h-[520px] w-full" />
+      <div className="h-full bg-surface1">
+        <div ref={mapContainerRef} className="h-full w-full" />
       </div>
 
       <style>{`

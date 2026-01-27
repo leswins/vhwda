@@ -1,6 +1,7 @@
 import React from "react"
 import type { Question } from "../questions"
 import { t } from "../../../../utils/i18n"
+import checkmarkIcon from "../../../../assets/icons/checkmark.svg"
 
 type QuizSidebarProps = {
     questions: Question[]
@@ -55,7 +56,7 @@ export function QuizSidebar({ questions, currentQuestionIndex, selectedAnswers, 
 
     return (
         <div className="flex flex-col w-[380px] border-r border-foreground self-stretch">
-            <div className="bg-foreground text-surface p-[30px]">
+            <div className="bg-foreground text-surface p-fluid-30">
                 <h2 className="text-h5">
                     {t(language, "quiz.sidebar.title")}
                 </h2>
@@ -68,9 +69,9 @@ export function QuizSidebar({ questions, currentQuestionIndex, selectedAnswers, 
                     <div
                         key={section.id}
                         className={`
-                            flex items-center justify-between px-[30px] py-[25px] gap-[10px]
+                            flex items-center justify-between px-fluid-30 py-fluid-25 gap-fluid-10
                             border-t border-foreground
-                            ${isCurrent ? "bg-surface1" : "bg-surface"}
+                            ${isCurrent ? "bg-surface2" : "bg-surface"}
                         `}
                     >
                         <p
@@ -81,17 +82,9 @@ export function QuizSidebar({ questions, currentQuestionIndex, selectedAnswers, 
                         >
                             {t(language, section.labelKey)}
                         </p>
-                        <div className="w-[25px] h-[25px] flex items-center justify-center">
+                        <div className="w-icon-25 h-icon-25 flex items-center justify-center">
                             {isCompleted ? (
-                                <svg width="25" height="25" viewBox="0 0 25 25" fill="none" className="text-accentGreen">
-                                    <path
-                                        d="M9 12.5L11.5 15L16 10M21 12.5C21 17.4706 16.9706 21.5 12 21.5C7.02944 21.5 3 17.4706 3 12.5C3 7.52944 7.02944 3.5 12 3.5C16.9706 3.5 21 7.52944 21 12.5Z"
-                                        stroke="currentColor"
-                                        strokeWidth="2"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                    />
-                                </svg>
+                                <img src={checkmarkIcon} alt="" className="h-icon-20 w-icon-25" />
                             ) : (
                                 <svg width="25" height="25" viewBox="0 0 25 25" fill="none">
                                     <circle

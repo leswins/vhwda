@@ -245,12 +245,12 @@ export function HomePage() {
       <section className="bg-surface border-b border-foreground">
         <div className="w-full px-0 py-0">
           <div className="grid w-full lg:grid-cols-[55%_45%] lg:items-start">
-            <div className="relative flex h-full flex-col px-[50px] pt-[50px] pb-[50px]">
+            <div className="relative flex h-full flex-col px-fluid-50 pt-fluid-50 pb-fluid-50">
               <h1 className="text-h1 text-foreground">{t(language, "home.hero.title")}</h1>
-              <p className="mt-[25px] text-body-lg text-onSurfaceSecondary max-w-[620px]">
+              <p className="mt-fluid-25 text-body-lg text-onSurfaceSecondary max-w-[620px]">
                 {t(language, "home.hero.subtitle")}
               </p>
-              <div className="mt-[50px] flex flex-wrap gap-4">
+              <div className="mt-fluid-40 flex flex-wrap gap-4">
                 <Button
                   variant="ghost"
                   size="lg"
@@ -268,12 +268,12 @@ export function HomePage() {
                   {t(language, "home.hero.secondaryCTA")}
                 </Button>
               </div>
-              <div className="pointer-events-none absolute bottom-[20px] left-0 right-0 p-[10px]">
-                <PatternBar iconSize={25} />
+              <div className="pointer-events-none absolute bottom-[0px] left-0 right-0 p-fluid-10">
+                <PatternBar iconSize={15} />
               </div>
             </div>
             <div className="border-t border-foreground lg:border-t-0 lg:border-l lg:flex lg:items-start">
-              <div className="aspect-square w-full overflow-hidden bg-surface2 lg:h-[520px] lg:w-full lg:aspect-auto">
+              <div className="aspect-square w-full overflow-hidden bg-surface2 lg:h-[545px] lg:w-full lg:aspect-auto">
                 {data?.heroVideoUrl ? (
                   <video
                     className="h-full w-full object-cover"
@@ -296,7 +296,7 @@ export function HomePage() {
 
       {/* Steps Section */}
       <section className="bg-surface border-b border-foreground">
-        <div className="w-full px-[30px] pt-[30px] pb-[30px]">
+        <div className="w-full px-fluid-30 pt-fluid-30 pb-fluid-30">
           <h2 className="sr-only">{t(language, "home.steps.heading")}</h2>
           <div className="w-full h-fit">
             {steps.map((step, index) => (
@@ -305,16 +305,16 @@ export function HomePage() {
                   to={step.to}
                   className="flex w-full items-center"
                 >
-                  <div className="flex h-[125px] w-[25px] items-center justify-center py-[30px]">
+                  <div className="flex h-[125px] w-fluid-25 items-center justify-center py-fluid-30">
                     <span className="text-sub2 text-foreground">{index + 1}</span>
                   </div>
-                  <div className="flex self-stretch w-[50px] items-center justify-center z-10" aria-hidden="true">
+                  <div className="flex self-stretch w-fluid-50 items-center justify-center z-10" aria-hidden="true">
                     <div className="h-full w-[0.5px] bg-foreground" />
                   </div>
                   <div className="flex h-[130px] w-[125px] items-center justify-center" aria-hidden="true">
                     {step.icon}
                   </div>
-                  <div className="flex flex-1 flex-col gap-[10px] px-[20px] py-[20px]">
+                  <div className="flex flex-1 flex-col gap-fluid-10 px-fluid-20 py-fluid-20">
                     <span className="text-h3 text-foreground font-semibold">{step.title}</span>
                     <p className="text-body-lg text-muted font-normal">{step.description}</p>
                   </div>
@@ -326,7 +326,7 @@ export function HomePage() {
                   </div>
                 </Link>
                 {index < steps.length - 1 && (
-                  <div className="h-[0.5px] w-full bg-foreground my-[30px]" aria-hidden="true" />
+                  <div className="h-[0.5px] w-full bg-foreground my-fluid-30" aria-hidden="true" />
                 )}
               </div>
             ))}
@@ -337,22 +337,22 @@ export function HomePage() {
       {/* Catalog Highlight Section */}
       <section className="bg-surface border-b border-foreground">
         <div className="bg-foreground text-surface">
-          <div className="flex h-full w-full items-center justify-between px-[25px] py-[50px] text-xs uppercase tracking-widest">
+          <div className="flex h-full w-full items-center justify-between px-fluid-25 py-fluid-50 text-xs uppercase tracking-widest">
             <span>{t(language, "home.catalogBanner.left")}</span>
             <span>{t(language, "home.catalogBanner.right")}</span>
           </div>
         </div>
         <div className="grid h-[300px] grid-cols-1 md:grid-cols-3 border-t border-foreground">
-          <div className="flex h-full flex-col items-center justify-center border-b border-foreground bg-accentBlue px-[25px] py-[50px] text-center md:border-b-0 md:border-r">
-            <h3 className="text-h4 text-foreground">{t(language, "home.catalogHighlights.careers.title")}</h3>
+          <div className="flex h-full flex-col items-center justify-center border-b border-foreground bg-accentBlue px-fluid-25 py-fluid-50 text-center md:border-b-0 md:border-r">
+            <h3 className="text-h3 text-foreground">{t(language, "home.catalogHighlights.careers.title")}</h3>
             <p className="mt-3 text-body-base font-medium text-foreground">{t(language, "home.catalogHighlights.careers.description")}</p>
           </div>
-          <div className="flex h-full flex-col items-center justify-center border-b border-foreground bg-accentYellow px-[25px] py-[50px] text-center md:border-b-0 md:border-r">
-            <h3 className="text-h4 text-foreground">{t(language, "home.catalogHighlights.updated.title")}</h3>
+          <div className="flex h-full flex-col items-center justify-center border-b border-foreground bg-accentYellow px-fluid-25 py-fluid-50 text-center md:border-b-0 md:border-r">
+            <h3 className="text-h3 text-foreground">{t(language, "home.catalogHighlights.updated.title")}</h3>
             <p className="mt-3 text-body-base font-medium text-foreground">{t(language, "home.catalogHighlights.updated.description")}</p>
           </div>
-          <div className="flex h-full flex-col items-center justify-center bg-accentGreen px-[25px] py-[50px] text-center">
-            <h3 className="text-h4 text-foreground">{t(language, "home.catalogHighlights.local.title")}</h3>
+          <div className="flex h-full flex-col items-center justify-center bg-accentGreen px-fluid-25 py-fluid-50 text-center">
+            <h3 className="text-h3 text-foreground">{t(language, "home.catalogHighlights.local.title")}</h3>
             <p className="mt-3 text-body-base font-medium text-foreground">{t(language, "home.catalogHighlights.local.description")}</p>
           </div>
         </div>
@@ -362,7 +362,7 @@ export function HomePage() {
       <section className="w-full py-0 overflow-hidden border-b border-foreground">
         <div className="w-full px-0 border-b-[0.5px] border-foreground">
           <div className="flex w-full items-stretch justify-between gap-0">
-            <div className="flex flex-1 flex-col gap-[15px] p-[50px]">
+            <div className="flex flex-1 flex-col gap-fluid-15 p-fluid-50">
               <div className="text-sm font-bold uppercase tracking-widest text-foreground">
                 {t(language, "home.featuredCareers.kicker")}
               </div>
@@ -370,12 +370,12 @@ export function HomePage() {
                 {t(language, "home.featuredCareers.headline")}
               </h2>
             </div>
-            <div className="flex w-max flex-col items-center justify-around border-l border-foreground px-[50px] py-[25px] whitespace-nowrap">
-              <Link to="/careers" className="text-h5 text-foreground hover:no-underline px-[25px]">
+            <div className="flex w-max flex-col items-center justify-around border-l border-foreground px-fluid-50 py-fluid-25 whitespace-nowrap">
+              <Link to="/careers" className="text-h5 text-foreground hover:no-underline px-fluid-25">
                 {t(language, "home.featuredCareers.ctaExplore")}
               </Link>
               <div className="h-[0.5px] w-full bg-foreground/60" aria-hidden="true" />
-              <Link to="/quiz" className="text-h5 text-foreground hover:no-underline px-[25px]">
+              <Link to="/quiz" className="text-h5 text-foreground hover:no-underline px-fluid-25">
                 {t(language, "home.featuredCareers.ctaFind")}
               </Link>
             </div>
@@ -422,11 +422,11 @@ export function HomePage() {
 
       {/* Quiz Callout Section */}
       <section className="w-full bg-surface border-b border-foreground">
-        <div className="flex h-[100px] w-full items-center px-[25px] border-b border-foreground">
+        <div className="flex h-[100px] w-full items-center px-fluid-25 border-b border-foreground">
           <PatternBar iconSize={25} />
         </div>
         <div className="flex h-[535px] w-full items-stretch">
-          <div className="relative flex w-1/2 flex-col justify-between overflow-hidden bg-foreground p-[50px] text-surface">
+          <div className="relative flex w-1/2 flex-col justify-between overflow-hidden bg-foreground p-fluid-50 text-surface">
             <div className="absolute inset-0 z-0 pointer-events-none">
               <Lottie
                 lottieRef={lottieRef}
@@ -439,7 +439,7 @@ export function HomePage() {
                 }}
               />
             </div>
-            <div className="relative z-10 flex flex-col gap-[15px]">
+            <div className="relative z-10 flex flex-col gap-fluid-15">
               <svg width="200" height="36" viewBox="0 0 404 73" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-surface" aria-label="VHWDA">
                 <path d="M205.323 36.7937C203.489 40.1203 202.049 43.2637 201.003 46.2237C200.757 46.9153 200.442 47.5819 200.063 48.2137C198.429 50.907 197.366 52.9837 196.873 54.4437C194.903 60.3637 192.463 64.3737 189.563 71.2137C189.468 71.4442 189.306 71.6414 189.097 71.7803C188.889 71.9191 188.644 71.9934 188.393 71.9937H183.093C182.834 71.9943 182.58 71.919 182.362 71.7771C182.144 71.6352 181.971 71.4326 181.863 71.1937L151.043 2.38367C150.968 2.21504 150.936 2.03044 150.951 1.84654C150.965 1.66264 151.025 1.48525 151.126 1.33041C151.226 1.17556 151.363 1.04814 151.525 0.959665C151.687 0.871191 151.868 0.824451 152.053 0.823672H169.403C169.787 0.823202 170.164 0.932125 170.488 1.13763C170.812 1.34313 171.071 1.63665 171.233 1.98367L186.083 33.5737C186.153 33.7218 186.265 33.847 186.404 33.9345C186.543 34.0221 186.703 34.0686 186.868 34.0686C187.032 34.0686 187.193 34.0221 187.332 33.9345C187.471 33.847 187.582 33.7218 187.653 33.5737L202.983 0.763672C203.069 0.575361 203.208 0.415852 203.384 0.304154C203.559 0.192455 203.764 0.133278 203.973 0.133672H208.213C208.479 0.133656 208.739 0.209819 208.964 0.353257C209.189 0.496695 209.369 0.70148 209.483 0.943672L225.433 34.8637C225.49 34.9847 225.58 35.0872 225.692 35.1593C225.805 35.2314 225.936 35.2702 226.07 35.2713C226.203 35.2723 226.335 35.2356 226.448 35.1652C226.562 35.0949 226.654 34.9938 226.713 34.8737L243.073 1.46367C243.147 1.30514 243.265 1.17108 243.414 1.07721C243.563 0.983332 243.736 0.933541 243.913 0.933672H261.283C261.392 0.932788 261.499 0.958024 261.596 1.00732C261.693 1.05661 261.778 1.12857 261.842 1.21731C261.906 1.30605 261.949 1.40905 261.966 1.51791C261.984 1.62677 261.976 1.7384 261.943 1.84367C261.656 2.77701 261.266 3.75034 260.773 4.76367C256.533 13.4437 251.996 23.3037 247.163 34.3437C246.949 34.837 246.466 35.547 245.713 36.4737C245.495 36.7445 245.332 37.0535 245.233 37.3837C244.493 39.8303 243.303 42.6703 241.663 45.9037C240.363 48.477 239.059 51.2803 237.753 54.3137C236.726 56.727 234.056 62.377 229.743 71.2637C229.641 71.4767 229.48 71.6564 229.28 71.7821C229.08 71.9077 228.849 71.9742 228.613 71.9737H222.713C222.51 71.9733 222.312 71.9026 222.154 71.7735C221.996 71.6443 221.886 71.4644 221.843 71.2637C221.623 70.217 221.223 69.0637 220.643 67.8037C214.649 54.737 210.313 45.337 207.633 39.6037C207.079 38.4303 206.513 37.4737 205.933 36.7337C205.896 36.6859 205.848 36.6484 205.793 36.6245C205.737 36.6007 205.677 36.5914 205.616 36.5973C205.555 36.6033 205.497 36.6244 205.445 36.6587C205.394 36.693 205.352 36.7394 205.323 36.7937Z" fill="currentColor" />
                 <path d="M264.693 71.0037V2.17367C264.693 2.03115 264.724 1.89032 264.782 1.76045C264.84 1.63058 264.925 1.51461 265.031 1.42015C265.137 1.3257 265.261 1.25491 265.396 1.21242C265.53 1.16994 265.673 1.15674 265.813 1.17367C268.103 1.44367 269.813 0.253672 271.963 0.253672C272.736 0.253672 276.369 0.180339 282.863 0.0336724C294.483 -0.236328 304.133 1.04367 314.943 6.56367C321.569 9.95034 326.576 15.1003 329.963 22.0137C332.113 26.4037 332.373 28.9137 332.803 33.9237C333.483 41.7703 331.286 49.1203 326.213 55.9737C319.763 64.6737 307.513 69.5737 296.723 71.2337C286.063 72.8737 276.703 72.4037 265.513 71.8637C265.292 71.8534 265.083 71.7582 264.93 71.5981C264.778 71.4379 264.692 71.225 264.693 71.0037ZM283.303 16.1337L283.243 55.3737C283.241 55.4722 283.259 55.57 283.296 55.6615C283.332 55.753 283.387 55.8364 283.455 55.907C283.524 55.9775 283.606 56.0339 283.696 56.0728C283.787 56.1117 283.884 56.1324 283.983 56.1337L290.693 56.1437C293.616 56.1496 296.513 55.6766 299.216 54.7515C301.919 53.8265 304.376 52.4675 306.447 50.7524C308.518 49.0372 310.162 46.9994 311.285 44.7553C312.408 42.5112 312.988 40.1049 312.993 37.6737V33.9537C313.002 29.0454 310.666 24.3339 306.499 20.8553C302.332 17.3766 296.675 15.4157 290.773 15.4037L284.063 15.3937C283.964 15.3923 283.866 15.4104 283.775 15.4469C283.683 15.4834 283.6 15.5375 283.529 15.6063C283.459 15.675 283.402 15.7569 283.364 15.8474C283.325 15.9379 283.304 16.0352 283.303 16.1337Z" fill="currentColor" />
@@ -450,37 +450,39 @@ export function HomePage() {
               </svg>
               <div className="text-h2 !font-medium">{t(language, "home.quizSection.left.title")}</div>
             </div>
-            <Button
-              variant="ghost"
-              className="relative z-10 flex w-fit items-center gap-4 overflow-hidden !rounded-none px-8 py-4 !text-h4 font-bold text-foreground transition-all duration-[250ms] ease-in-out"
-              onClick={() => navigate("/quiz")}
-              onMouseEnter={() => {
-                setHasHovered(true)
-                lottieRef.current?.play()
-              }}
-            >
-              {/* Background layers */}
-              <div className={`absolute inset-0 z-0 bg-surface transition-opacity duration-300 ${hasHovered ? "opacity-100" : "opacity-0"}`} />
-              {!hasHovered && (
-                <>
-                  <div
-                    className={`absolute inset-0 z-0 ${accentClasses[(colorIndex - 1 + accentClasses.length) % accentClasses.length]}`}
-                  />
-                  <div
-                    key={colorIndex}
-                    className={`absolute inset-0 z-0 animate-wipe-right ${accentClasses[colorIndex]}`}
-                  />
-                </>
-              )}
+            <div className="inline-flex w-fit bg-surface">
+              <Button
+                variant="ghost"
+                className="relative z-10 flex w-fit items-center gap-4 overflow-hidden !rounded-none px-8 py-4 !text-h4 font-bold text-foreground transition-all duration-[250ms] ease-in-out"
+                onClick={() => navigate("/quiz")}
+                onMouseEnter={() => {
+                  setHasHovered(true)
+                  lottieRef.current?.play()
+                }}
+              >
+                {/* Background layers */}
+                <div className={`absolute inset-0 z-0 bg-surface transition-opacity duration-300 ${hasHovered ? "opacity-100" : "opacity-0"}`} />
+                {!hasHovered && (
+                  <>
+                    <div
+                      className={`absolute inset-0 z-0 ${accentClasses[(colorIndex - 1 + accentClasses.length) % accentClasses.length]}`}
+                    />
+                    <div
+                      key={colorIndex}
+                      className={`absolute inset-0 z-0 animate-wipe-right ${accentClasses[colorIndex]}`}
+                    />
+                  </>
+                )}
 
-              <span className="relative z-10">{t(language, "home.quizSection.left.cta")}</span>
-              <svg width="25" height="25" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="relative z-10 shrink-0">
-                <path d="M-4.92305e-07 11.2626L-3.81923e-07 8.73737L15.1515 8.73737L8.20707 1.79293L10 -4.37114e-07L20 10L10 20L8.20707 18.2071L15.1515 11.2626L-4.92305e-07 11.2626Z" fill="currentColor" />
-              </svg>
-            </Button>
+                <span className="relative z-10">{t(language, "home.quizSection.left.cta")}</span>
+                <svg width="25" height="25" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="relative z-10 shrink-0">
+                  <path d="M-4.92305e-07 11.2626L-3.81923e-07 8.73737L15.1515 8.73737L8.20707 1.79293L10 -4.37114e-07L20 10L10 20L8.20707 18.2071L15.1515 11.2626L-4.92305e-07 11.2626Z" fill="currentColor" />
+                </svg>
+              </Button>
+            </div>
           </div>
           <div className="flex w-1/2 flex-col justify-between border-l border-foreground bg-surface text-foreground">
-            <div className="flex flex-col gap-[15px] p-[50px]">
+            <div className="flex flex-col gap-fluid-15 p-fluid-50">
               <div className="text-sm font-bold uppercase tracking-widest text-onSurfaceSecondary">
                 {t(language, "home.quizSection.right.kicker")}
               </div>
@@ -491,13 +493,13 @@ export function HomePage() {
                 {t(language, "home.quizSection.right.description")}
               </p>
             </div>
-            <div className="flex items-center gap-3 border-t border-foreground mx-[50px] px-0 py-[25px] text-muted">
+            <div className="flex items-center gap-3 border-t border-foreground mx-fluid-50 px-0 py-fluid-25 text-muted">
               <ClockIcon />
               <span className="text-sm font-medium">{t(language, "home.quizSection.right.estimate")}</span>
             </div>
           </div>
         </div>
-        <div className="flex h-[100px] w-full items-center px-[25px] border-t border-foreground">
+        <div className="flex h-[100px] w-full items-center px-fluid-25 border-t border-foreground">
           <PatternBar iconSize={25} />
         </div>
       </section>
@@ -505,12 +507,12 @@ export function HomePage() {
       {/* Shortcuts Section */}
       <section className="bg-surface">
         <div className="grid w-full lg:grid-cols-[35%_65%]">
-          <div className="p-[50px] border-foreground lg:sticky lg:top-0 lg:h-fit">
+          <div className="p-fluid-50 border-foreground lg:sticky lg:top-0 lg:h-fit">
             <h2 className="text-h2 text-foreground">
               {t(language, "home.shortcuts.heading")}
             </h2>
           </div>
-          <div className="flex flex-col p-[25px] gap-[30px] border-l-[0.5px] border-foreground">
+          <div className="flex flex-col p-fluid-25 gap-fluid-30 border-l-[0.5px] border-foreground">
             {[
               {
                 id: "browse",
@@ -555,13 +557,13 @@ export function HomePage() {
             ].map((shortcut, index, array) => (
               <React.Fragment key={shortcut.id}>
                 <Link to={shortcut.to} className="group flex items-center h-[100px] w-full">
-                  <div className={`flex aspect-square h-full items-center justify-center mr-[25px] ${shortcut.bgColor}`}>
-                    <div className="h-[50px] w-[50px] text-foreground">
+                  <div className={`flex aspect-square h-full items-center justify-center mr-fluid-25 ${shortcut.bgColor}`}>
+                    <div className="h-fluid-50 w-fluid-50 text-foreground">
                       {shortcut.icon}
                     </div>
                   </div>
                   <div className="w-[0.5px] h-full bg-foreground" />
-                  <div className="flex flex-1 flex-col gap-[10px] px-[25px] justify-center">
+                  <div className="flex flex-1 flex-col gap-fluid-10 px-fluid-25 justify-center">
                     <h3 className="text-h4 font-bold text-foreground leading-tight">{shortcut.title}</h3>
                     <p className="text-body-base text-onSurfaceSecondary leading-snug">{shortcut.description}</p>
                   </div>

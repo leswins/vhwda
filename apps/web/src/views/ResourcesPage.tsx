@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect } from "react"
 import { useLanguageStore } from "../zustand/useLanguageStore"
 import { t } from "../utils/i18n"
 import { PlanYourNextStepsSection } from "../ui/widgets/PlanYourNextStepsSection"
@@ -34,6 +34,9 @@ const ShortcutIconEducation = () => (
 
 export function ResourcesPage() {
   const { language } = useLanguageStore()
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "smooth" })
+  }, [])
   const scrollToSection = (sectionId: string) => {
     const section = document.getElementById(sectionId)
     if (!section) return
@@ -46,9 +49,9 @@ export function ResourcesPage() {
 
   return (
     <div className="space-y-0">
-      <section className="bg-surface p-[50px] border-b-[0.5px] border-foreground">
+      <section className="bg-surface p-fluid-50 border-b-[0.5px] border-foreground">
         <div className="grid w-full lg:grid-cols-[48%_52%]">
-          <div className="flex flex-col gap-[20px]">
+          <div className="flex flex-col gap-fluid-20">
             <span className="text-sub2 font-bold uppercase tracking-[0.15em] text-onSurfaceSecondary">
               {t(language, "resources.kicker")}
             </span>
@@ -59,7 +62,7 @@ export function ResourcesPage() {
               {t(language, "planNextSteps.description")}
             </p>
           </div>
-          <div className="flex flex-col gap-[30px]">
+          <div className="flex flex-col gap-fluid-30">
             {[
               {
                 id: "scholarships",
@@ -92,13 +95,13 @@ export function ResourcesPage() {
                   onClick={() => scrollToSection(shortcut.sectionId)}
                   className="group flex h-[90px] w-full items-center text-left"
                 >
-                  <div className={`mr-[25px] flex h-[70px] w-[70px] items-center justify-center ${shortcut.bgColor}`}>
-                    <div className="flex h-[40px] w-[40px] items-center justify-center text-foreground">
+                  <div className={`mr-fluid-25 flex h-[70px] w-[70px] items-center justify-center ${shortcut.bgColor}`}>
+                    <div className="flex h-fluid-40 w-fluid-40 items-center justify-center text-foreground">
                       {shortcut.icon}
                     </div>
                   </div>
                   <div className="h-full w-[0.5px] bg-foreground" />
-                  <div className="flex flex-1 flex-col justify-center gap-[10px] px-[25px]">
+                  <div className="flex flex-1 flex-col justify-center gap-fluid-10 px-fluid-25">
                     <h3 className="text-h4 font-bold text-foreground leading-tight">{shortcut.title}</h3>
                     <p className="text-body-base text-onSurfaceSecondary leading-snug">{shortcut.description}</p>
                   </div>

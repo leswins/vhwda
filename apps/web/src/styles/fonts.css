@@ -1,0 +1,51 @@
+/**
+ * Gilroy Font Family
+ * 
+ * Using OpenType format (.otf) which has good cross-browser support.
+ * For optimal web performance, consider converting to woff2/woff formats.
+ */
+
+/* Gilroy Regular (400) */
+@font-face {
+  font-family: "Gilroy";
+  src: url("../assets/fonts/Radomir Tinkov - Gilroy-Regular.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Gilroy Medium (500) */
+@font-face {
+  font-family: "Gilroy";
+  src: url("../assets/fonts/Radomir Tinkov - Gilroy-Medium.otf") format("opentype");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Gilroy SemiBold (600) */
+@font-face {
+  font-family: "Gilroy";
+  src: url("../assets/fonts/Radomir Tinkov - Gilroy-SemiBold.otf") format("opentype");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Gilroy Bold (700) */
+@font-face {
+  font-family: "Gilroy";
+  src: url("../assets/fonts/Radomir Tinkov - Gilroy-Bold.otf") format("opentype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Gilroy ExtraBold (800) */
+@font-face {
+  font-family: "Gilroy";
+  src: url("../assets/fonts/Radomir Tinkov - Gilroy-ExtraBold.otf") format("opentype");
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}

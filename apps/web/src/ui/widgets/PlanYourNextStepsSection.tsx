@@ -20,6 +20,7 @@ type FiltersPanelProps = {
   searchQuery: string
   onSearchChange: (query: string) => void
   children?: React.ReactNode
+  showSort?: boolean
 }
 
 function FiltersPanel({
@@ -27,7 +28,8 @@ function FiltersPanel({
   searchPlaceholderKey,
   searchQuery,
   onSearchChange,
-  children
+  children,
+  showSort = true
 }: FiltersPanelProps) {
   const [isSearchActive, setIsSearchActive] = useState(false)
   const [activeTab, setActiveTab] = useState<"filter" | "sort">("filter")
@@ -35,9 +37,9 @@ function FiltersPanel({
   return (
     <div className="flex h-full flex-col border-r-[0.5px] border-foreground">
       <div className="sticky top-0 z-10 bg-surface border-b-[0.5px] border-foreground shrink-0">
-        <div className="relative flex items-center gap-[20px] p-[25px] h-[72px]">
+        <div className="relative flex items-center gap-fluid-20 p-fluid-25 h-[72px]">
           <div
-            className={`flex items-center gap-[20px] transition-opacity duration-300 ${isSearchActive ? "opacity-0 pointer-events-none" : "opacity-100"}`}
+            className={`flex items-center gap-fluid-20 transition-opacity duration-300 ${isSearchActive ? "opacity-0 pointer-events-none" : "opacity-100"}`}
           >
             <button
               onClick={() => setActiveTab("filter")}
@@ -45,13 +47,17 @@ function FiltersPanel({
             >
               {t(language, "filters.filter")}
             </button>
-            <div className="h-[20px] w-[0.5px] bg-foreground" />
-            <button
-              onClick={() => setActiveTab("sort")}
-              className={`text-body-base font-medium hover:underline hover:underline-offset-4 ${activeTab === "sort" ? "text-foreground hover:decoration-foreground" : "text-muted hover:decoration-muted"}`}
-            >
-              {t(language, "filters.sort")}
-            </button>
+            {showSort && (
+              <>
+                <div className="h-fluid-20 w-[0.5px] bg-foreground" />
+                <button
+                  onClick={() => setActiveTab("sort")}
+                  className={`text-body-base font-medium hover:underline hover:underline-offset-4 ${activeTab === "sort" ? "text-foreground hover:decoration-foreground" : "text-muted hover:decoration-muted"}`}
+                >
+                  {t(language, "filters.sort")}
+                </button>
+              </>
+            )}
           </div>
 
           <button
@@ -65,7 +71,7 @@ function FiltersPanel({
           </button>
 
           <div
-            className={`absolute inset-0 flex items-center gap-3 px-[25px] transition-opacity duration-300 ${isSearchActive ? "opacity-100" : "opacity-0 pointer-events-none"}`}
+            className={`absolute inset-0 flex items-center gap-3 px-fluid-25 transition-opacity duration-300 ${isSearchActive ? "opacity-100" : "opacity-0 pointer-events-none"}`}
           >
             <input
               type="text"
@@ -88,7 +94,7 @@ function FiltersPanel({
         </div>
       </div>
 
-      <div className="flex flex-col gap-[25px] p-[25px] overflow-y-auto flex-1 scrollbar-hide">
+      <div className="flex flex-col gap-fluid-25 p-fluid-25 overflow-y-auto flex-1 scrollbar-hide">
         {activeTab === "filter" ? children : null}
       </div>
     </div>
@@ -200,7 +206,7 @@ export function PlanYourNextStepsSection() {
               onSearchChange={handleScholarshipSearchChange}
             />
           </div>
-          <div className="h-full overflow-y-auto scrollbar-hide p-[50px]">
+          <div className="h-full overflow-y-auto scrollbar-hide p-fluid-50">
             <ScholarshipList
               language={language}
               filters={scholarshipFilters}
@@ -220,12 +226,13 @@ export function PlanYourNextStepsSection() {
           iconAlt={t(language, "planNextSteps.card.professionalOrganizations.title")}
         />
         <div className="grid grid-cols-1 lg:grid-cols-[30%_1fr] h-[800px] min-h-[calc(95vh-75px)] border-b-[0.5px] border-foreground">
-          <div className="sticky top-0 h-full">
+          <div className="sticky top-0 h-full overflow-hidden">
             <FiltersPanel
               language={language}
               searchPlaceholderKey="filters.search"
               searchQuery={organizationFilters.searchQuery}
               onSearchChange={handleOrganizationSearchChange}
+              showSort={false}
             >
               <OrganizationFiltersComponent
                 language={language}
@@ -234,7 +241,7 @@ export function PlanYourNextStepsSection() {
               />
             </FiltersPanel>
           </div>
-          <div className="h-full overflow-y-auto scrollbar-hide p-[50px]">
+          <div className="h-full overflow-y-auto scrollbar-hide p-fluid-50">
             <ProfessionalOrganizationList
               language={language}
               filters={organizationFilters}

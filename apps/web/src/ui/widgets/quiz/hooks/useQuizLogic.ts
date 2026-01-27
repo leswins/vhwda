@@ -24,6 +24,8 @@ export function useQuizLogic() {
     const [errorLoadingQuestions, setErrorLoadingQuestions] = useState<string | null>(null)
     const [matchedCareers, setMatchedCareers] = useState<Array<CareerForMatching & { score: number }>>([])
     const [loadingResults, setLoadingResults] = useState(false)
+    const [resultsDelayReady, setResultsDelayReady] = useState(true)
+    const resultsDelayTimeoutRef = useRef<number | null>(null)
     const quizStartTrackedRef = useRef(false)
     const quizResultsTrackedRef = useRef(false)
 
@@ -261,9 +263,16 @@ export function useQuizLogic() {
             answered_count: Object.keys(selectedAnswers).length,
             language
         })
-        setCurrentStep("results")
         setLoadingResults(true)
-        setLoading(true)
+        setCurrentStep("results")
+        setResultsDelayReady(false)
+        if (resultsDelayTimeoutRef.current) {
+            window.clearTimeout(resultsDelayTimeoutRef.current)
+        }
+        resultsDelayTimeoutRef.current = window.setTimeout(() => {
+            setResultsDelayReady(true)
+        }, 2000)
+        setLoading(true, { minDurationMs: 3000, variant: "quizResults" })
         
         try {
             // Fetch all careers with quiz data
@@ -330,6 +339,11 @@ export function useQuizLogic() {
         setSelectedAnswers({})
         setVisitedQuestions(new Set())
         setMatchedCareers([])
+        setResultsDelayReady(true)
+        if (resultsDelayTimeoutRef.current) {
+            window.clearTimeout(resultsDelayTimeoutRef.current)
+            resultsDelayTimeoutRef.current = null
+        }
         quizStartTrackedRef.current = false
         quizResultsTrackedRef.current = false
     }
@@ -360,6 +374,7 @@ export function useQuizLogic() {
         errorLoadingQuestions,
         matchedCareers,
         loadingResults,
+        resultsDelayReady,
         currentQuestion,
         hasNext,
         hasPrevious,
