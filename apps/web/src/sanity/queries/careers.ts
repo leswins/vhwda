@@ -60,6 +60,12 @@ export type CareerSummaryCard = {
   educationMin?: string
   outlook?: Outlook
   quizVector?: QuizVector
+  hardRequirements?: HardRequirements
+  hardFilters?: Array<{
+    hasMinimumEducation?: boolean
+    educationLevel?: string
+    type?: string
+  }>
 }
 
 export type CareerDetail = {
@@ -370,6 +376,15 @@ const CAREERS_FOR_SEARCH_QUERY = /* groq */ `
     w_env_lab,
     w_env_office,
     w_patient_facing
+  },
+  hardRequirements{
+    hasMinimumEducation,
+    educationLevel
+  },
+  hardFilters[]{
+    hasMinimumEducation,
+    educationLevel,
+    type
   }
 }
 `
