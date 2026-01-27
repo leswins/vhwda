@@ -10,7 +10,24 @@ import { Button } from "../components/Button"
 import { Divider } from "../components/Divider"
 import { trackEvent, trackOutboundClick } from "../../utils/analytics"
 import closeIcon from "../../assets/icons/close.svg"
-import aiStarIcon from "../../assets/icons/AIstar.svg"
+
+function AiStarIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      width="210"
+      height="210"
+      viewBox="0 0 210 210"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+    >
+      <path
+        d="M128.285 81.7148L200.001 110L128.285 138.284L100.001 210L71.7158 138.284L0 110L71.7158 81.7148L100.001 10L128.285 81.7148ZM192.071 17.9287L210.001 25L192.071 32.0703L185.001 50L177.93 32.0703L160.001 25L177.93 17.9287L185.001 0L192.071 17.9287Z"
+        fill="currentColor"
+      />
+    </svg>
+  )
+}
 
 function IconButton({
   label,
@@ -237,17 +254,7 @@ export function NavHeader() {
                     }}
                   >
                     {t(language, "header.askAi")}
-                    <div
-                      className="w-icon-25 h-icon-25 bg-accentBlue"
-                      style={{
-                        maskImage: `url(${aiStarIcon})`,
-                        maskSize: "contain",
-                        maskRepeat: "no-repeat",
-                        WebkitMaskImage: `url(${aiStarIcon})`,
-                        WebkitMaskSize: "contain",
-                        WebkitMaskRepeat: "no-repeat"
-                      }}
-                    />
+                    <AiStarIcon className="w-icon-25 h-icon-25 text-accentBlue" />
                   </Button>
                 </div>
                 <Divider orientation="vertical" className="bg-foreground" />

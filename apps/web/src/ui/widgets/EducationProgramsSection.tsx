@@ -245,6 +245,10 @@ export function EducationProgramsSection({ language, items, title }: Props) {
       el.setAttribute("aria-label", getItemName(item))
       el.addEventListener("click", () => {
         setActiveKey(item._key)
+        const href = getItemHref(item)
+        if (href) {
+          window.open(href, "_blank", "noopener,noreferrer")
+        }
       })
 
       const marker = new mapboxgl.Marker({ element: el, anchor: "bottom" }).setLngLat(lngLat).addTo(map)
@@ -276,7 +280,13 @@ export function EducationProgramsSection({ language, items, title }: Props) {
             <RegionList
               groups={groupedRegions}
               activeKey={activeKey}
-              onSelect={(item) => setActiveKey(item._key)}
+              onSelect={(item) => {
+                setActiveKey(item._key)
+                const href = getItemHref(item)
+                if (href) {
+                  window.open(href, "_blank", "noopener,noreferrer")
+                }
+              }}
             />
           </div>
         </div>
@@ -290,12 +300,18 @@ export function EducationProgramsSection({ language, items, title }: Props) {
   return (
     <div className="grid h-[650px] max-h-[650px] overflow-hidden lg:grid-cols-[40%_60%]">
       <div className="flex h-full min-h-0 flex-col border-r-[0.5px] border-foreground">
-        <h2 className="p-[50px] text-h3 shrink-0">{title}</h2>
-        <div className="min-h-0 flex-1 overflow-auto mx-[50px] pb-[50px] pt-0 scrollbar-hide border-t-[0.5px] border-foreground">
+        <h2 className="p-fluid-50 text-h3 shrink-0">{title}</h2>
+        <div className="min-h-0 flex-1 overflow-auto mx-fluid-50 pb-fluid-50 pt-0 scrollbar-hide border-t-[0.5px] border-foreground">
           <RegionList
             groups={groupedRegions}
             activeKey={activeKey}
-            onSelect={(item) => setActiveKey(item._key)}
+            onSelect={(item) => {
+              setActiveKey(item._key)
+              const href = getItemHref(item)
+              if (href) {
+                window.open(href, "_blank", "noopener,noreferrer")
+              }
+            }}
           />
         </div>
       </div>
