@@ -183,6 +183,7 @@ const dict: Dictionary = {
   "search.showing": { en: "Showing {count} careers", es: "Mostrando {count} carreras" },
   "search.showingPlural": { en: "Showing {count} careers", es: "Mostrando {count} carreras" },
   "search.noCareers": { en: "No careers found", es: "No se encontraron carreras" },
+  "search.showMore": { en: "Show more careers", es: "Ver más carreras" },
   "search.compareCareers": { en: "Compare careers", es: "Comparar carreras" },
   "search.compare": { en: "Compare", es: "Comparar" },
   "search.careers": { en: "Careers", es: "Carreras" },
@@ -564,5 +565,10 @@ const dict: Dictionary = {
 export type TranslationKey = keyof typeof dict
 
 export function t(language: Language, key: TranslationKey): string {
-  return dict[key][language]
+  const entry = dict[key]
+  if (!entry) {
+    // Fallback to key string if translation entry is missing
+    return key
+  }
+  return entry[language] ?? entry.en
 }
