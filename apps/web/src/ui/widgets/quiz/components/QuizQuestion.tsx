@@ -25,7 +25,6 @@ export function QuizQuestion({
 }: QuizQuestionProps) {
     const currentSelection = selectedAnswers[question.id]
     
-    // Get current value for different question types
     const getCurrentValue = (): string | null => {
         if (!currentSelection) return null
         if (Array.isArray(currentSelection)) return currentSelection[0] || null

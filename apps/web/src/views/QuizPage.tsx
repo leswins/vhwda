@@ -42,9 +42,7 @@ export function QuizPage() {
         handleStartOver,
     } = useQuizLogic()
 
-    // Show error/empty states in full width (loading is handled by global loading overlay)
     if (loadingQuestions) {
-        // Don't render anything while loading - global loading overlay will show
         return null
     }
 
