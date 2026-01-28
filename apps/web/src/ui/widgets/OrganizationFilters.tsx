@@ -55,13 +55,13 @@ export function OrganizationFilters({ language, filters, onFiltersChange }: Prop
   const geographicFocusGroup = organizationFilters.find((g) => g.id === "geographicFocus")
 
   return (
-    <div className="flex flex-col gap-[20px]">
-      <div className="flex flex-col gap-[20px]">
+    <div className="flex flex-col gap-fluid-12 pt-fluid-10 pb-fluid-8 mt-fluid-4 lg:mt-0 lg:gap-[20px]">
+      <div className="flex flex-col gap-fluid-12 lg:gap-[20px]">
         <button
           onClick={() => setIsMembershipTypeExpanded(!isMembershipTypeExpanded)}
-          className="flex w-full items-center justify-between gap-[10px]"
+          className="flex w-full items-center justify-between gap-fluid-10 py-fluid-6 lg:py-2"
         >
-          <span className="text-h5 font-bold text-foreground">
+          <span className="text-body-base lg:text-h5 font-bold text-foreground">
             {membershipTypeGroup ? t(language, membershipTypeGroup.titleKey) : "Membership Type"}
           </span>
           {isMembershipTypeExpanded ? (
@@ -75,9 +75,9 @@ export function OrganizationFilters({ language, filters, onFiltersChange }: Prop
           )}
         </button>
         {isMembershipTypeExpanded && (
-          <div className="flex flex-col gap-[15px]">
+          <div className="flex flex-col gap-fluid-8 lg:gap-[15px]">
             {membershipTypeGroup?.options.map((option) => (
-              <label key={option.value} className="flex items-center gap-[15px] cursor-pointer">
+              <label key={option.value} className="flex items-center gap-fluid-8 lg:gap-[15px] cursor-pointer">
                 <div className="relative h-5 w-5 shrink-0">
                   <input
                     type="checkbox"
@@ -97,7 +97,7 @@ export function OrganizationFilters({ language, filters, onFiltersChange }: Prop
                     </svg>
                   )}
                 </div>
-                <span className="text-body-base font-medium text-foreground">
+                <span className="text-body-xs lg:text-body-base font-medium text-foreground">
                   {t(language, option.labelKey)}
                 </span>
               </label>
@@ -106,14 +106,14 @@ export function OrganizationFilters({ language, filters, onFiltersChange }: Prop
         )}
       </div>
 
-      <div className="h-[0.5px] w-full bg-foreground shrink-0" />
+      <div className="h-[0.5px] w-full bg-foreground shrink-0 lg:block hidden" />
 
-      <div className="flex flex-col gap-[20px]">
+      <div className="flex flex-col gap-fluid-12 lg:gap-[20px]">
         <button
           onClick={() => setIsGeographicFocusExpanded(!isGeographicFocusExpanded)}
-          className="flex w-full items-center justify-between gap-[10px]"
+          className="flex w-full items-center justify-between gap-fluid-10 py-fluid-6 lg:py-2"
         >
-          <span className="text-h5 font-bold text-foreground">
+          <span className="text-body-base lg:text-h5 font-bold text-foreground">
             {geographicFocusGroup ? t(language, geographicFocusGroup.titleKey) : "Geographic Focus"}
           </span>
           {isGeographicFocusExpanded ? (
@@ -127,7 +127,7 @@ export function OrganizationFilters({ language, filters, onFiltersChange }: Prop
           )}
         </button>
         {isGeographicFocusExpanded && (
-          <div className="flex flex-col gap-[15px]">
+          <div className="flex flex-col gap-fluid-8 lg:gap-[15px]">
             {geographicFocusGroup?.options.map((option) => (
               <label key={option.value} className="flex items-center gap-[15px] cursor-pointer">
                 <div className="relative h-5 w-5 shrink-0">
@@ -149,7 +149,7 @@ export function OrganizationFilters({ language, filters, onFiltersChange }: Prop
                     </svg>
                   )}
                 </div>
-                <span className="text-body-base font-medium text-foreground">
+                <span className="text-body-xs lg:text-body-base font-medium text-foreground">
                   {t(language, option.labelKey)}
                 </span>
               </label>
@@ -158,14 +158,14 @@ export function OrganizationFilters({ language, filters, onFiltersChange }: Prop
         )}
       </div>
 
-      <div className="h-[0.5px] w-full bg-foreground shrink-0" />
+      <div className="h-[0.5px] w-full bg-foreground shrink-0 lg:block hidden" />
 
-      <div className="flex flex-col gap-[20px]">
+      <div className="flex flex-col gap-fluid-12 lg:gap-[20px]">
         <button
           onClick={() => setIsCareerAreasExpanded(!isCareerAreasExpanded)}
-          className="flex w-full items-center justify-between gap-[10px]"
+          className="flex w-full items-center justify-between gap-fluid-10 py-fluid-6 lg:py-2"
         >
-          <span className="text-h5 font-bold text-foreground">{t(language, "filters.careerArea")}</span>
+          <span className="text-body-base lg:text-h5 font-bold text-foreground">{t(language, "filters.careerArea")}</span>
           {isCareerAreasExpanded ? (
             <svg width="15" height="2" viewBox="0 0 15 2" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M0 1H7.5H15" stroke="#09090B" strokeWidth="2" />
@@ -177,9 +177,9 @@ export function OrganizationFilters({ language, filters, onFiltersChange }: Prop
           )}
         </button>
         {isCareerAreasExpanded && (
-          <div className="flex flex-col gap-[15px]">
+          <div className="flex flex-col gap-fluid-8 lg:gap-[15px]">
             {careerCategories.map((category) => (
-              <label key={category._id} className="flex items-center gap-[15px] cursor-pointer">
+              <label key={category._id} className="flex items-center gap-fluid-8 lg:gap-[15px] cursor-pointer">
                 <div className="relative h-5 w-5 shrink-0">
                   <input
                     type="checkbox"
@@ -199,7 +199,7 @@ export function OrganizationFilters({ language, filters, onFiltersChange }: Prop
                     </svg>
                   )}
                 </div>
-                <span className="text-body-base font-medium text-foreground">{category.title}</span>
+                <span className="text-body-xs lg:text-body-base font-medium text-foreground">{category.title}</span>
               </label>
             ))}
           </div>

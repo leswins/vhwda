@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react"
 import { Link } from "react-router-dom"
 import { useLanguageStore } from "../../zustand/useLanguageStore"
 import { t, type TranslationKey } from "../../utils/i18n"
@@ -21,12 +21,127 @@ export function Footer() {
     { key: "footer.link.contact", href: "mailto:info@vhwda.org" }
   ]
 
+  const [openSection, setOpenSection] = useState<"about" | "explore" | "help" | null>(null)
+
+  const toggleSection = (section: "about" | "explore" | "help") => {
+    setOpenSection(prev => (prev === section ? null : section))
+  }
+
   return (
-    <footer className="bg-surface text-foreground px-fluid-50 border-b-[0.5px] border-foreground">
-      <div className="site-grid-container">
-        <div className="grid md:grid-cols-2 border-t border-foreground">
+    <footer className="bg-surface text-foreground px-0 lg:px-fluid-50 border-b-[0.5px] border-foreground">
+      <div className="w-full lg:max-w-[1368px] lg:mx-auto lg:border-l lg:border-r lg:border-foreground">
+        {/* Mobile accordion layout */}
+        <div className="md:hidden border-t border-foreground">
+          {/* About / Brand */}
+          <div className="border-b border-foreground">
+            <button
+              type="button"
+              className="flex w-full items-center justify-between px-fluid-30 py-fluid-20 text-left"
+              onClick={() => toggleSection("about")}
+            >
+              <span className="text-base font-bold tracking-[2.4px] uppercase">
+                {t(language, "brand.name")}
+              </span>
+              <span className="text-xl">{openSection === "about" ? "−" : "+"}</span>
+            </button>
+            {openSection === "about" && (
+              <div className="px-fluid-30 pb-fluid-25 space-y-fluid-20">
+                <div className="flex flex-col gap-fluid-20 text-base leading-[1.35] tracking-[-0.4px]">
+                  <p>{t(language, "footer.about")}</p>
+                  <p>{t(language, "footer.address")}</p>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Explore (mobile) */}
+          <div className="border-b border-foreground">
+            <button
+              type="button"
+              className="flex w-full items-center justify-between px-fluid-30 py-fluid-20 text-left"
+              onClick={() => toggleSection("explore")}
+            >
+              <span className="text-base font-bold uppercase tracking-[2.4px] leading-[1.35]">
+                {t(language, "footer.heading.explore")}
+              </span>
+              <span className="text-xl">{openSection === "explore" ? "−" : "+"}</span>
+            </button>
+            {openSection === "explore" && (
+              <ul className="px-fluid-30 pb-fluid-25 flex flex-col gap-fluid-10 text-base leading-[1.35] tracking-[-0.4px]">
+                {exploreLinks.map((l) => (
+                  <li key={l.key as string}>
+                    {l.to ? (
+                      <Link className="hover:underline" to={l.to}>
+                        {t(language, l.key)}
+                      </Link>
+                    ) : l.href ? (
+                      <a className="hover:underline" href={l.href}>
+                        {t(language, l.key)}
+                      </a>
+                    ) : (
+                      <span className="text-foreground/70">{t(language, l.key)}</span>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+
+          {/* Help & Tools (mobile) */}
+          <div className="border-b border-foreground">
+            <button
+              type="button"
+              className="flex w-full items-center justify-between px-fluid-30 py-fluid-20 text-left"
+              onClick={() => toggleSection("help")}
+            >
+              <span className="text-base font-bold uppercase tracking-[2.4px] leading-[1.35]">
+                {t(language, "footer.heading.helpTools")}
+              </span>
+              <span className="text-xl">{openSection === "help" ? "−" : "+"}</span>
+            </button>
+            {openSection === "help" && (
+              <ul className="px-fluid-30 pb-fluid-25 flex flex-col gap-fluid-10 text-base leading-[1.35] tracking-[-0.4px]">
+                {helpLinks.map((l) => (
+                  <li key={l.key as string}>
+                    {l.to ? (
+                      <Link className="hover:underline" to={l.to}>
+                        {t(language, l.key)}
+                      </Link>
+                    ) : l.href ? (
+                      <a className="hover:underline" href={l.href}>
+                        {t(language, l.key)}
+                      </a>
+                    ) : (
+                      <span className="text-foreground/70">{t(language, l.key)}</span>
+                    )}
+                  </li>
+                ))}
+                <li>
+                  <button
+                    type="button"
+                    className={language === "en" ? "font-bold" : "hover:text-foreground"}
+                    onClick={() => setLanguage("en")}
+                  >
+                    {t(language, "language.english")}
+                  </button>
+                  <span className="px-1">•</span>
+                  <button
+                    type="button"
+                    className={language === "es" ? "font-bold" : "hover:text-foreground"}
+                    onClick={() => setLanguage("es")}
+                  >
+                    {t(language, "language.spanish")}
+                  </button>
+                </li>
+              </ul>
+            )}
+          </div>
+        </div>
+
+        {/* Desktop layout (unchanged visually) */}
+        <div className="hidden md:grid md:grid-cols-2 border-t border-foreground">
           {/* Left column - Brand & Info */}
-          <div className="flex flex-col gap-[250px] pl-fluid-30 pr-[200px] py-fluid-30">
+          <div className="flex flex-col gap-fluid-30 lg:gap-[250px] px-fluid-30 lg:pr-[200px] py-fluid-30">
             <svg width="133" height="37" viewBox="0 0 404 111" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label={t(language, "brand.name")}>
               <path d="M130.787 87.5906C134.824 87.5908 138.388 89.6401 140.281 92.794L136.529 94.9706C135.456 93.015 133.31 91.816 130.787 91.8158C126.466 91.8158 123.628 94.813 123.627 99.0708C123.627 103.298 126.465 106.296 130.787 106.296C133.31 106.296 135.488 105.098 136.529 103.174L140.281 105.351C138.42 108.504 134.856 110.554 130.787 110.554C124.1 110.554 119.304 105.506 119.304 99.0708C119.304 92.6049 124.1 87.5906 130.787 87.5906Z" fill="currentColor" />
               <path d="M242.836 87.5906C246.463 87.5906 249.238 89.4507 250.721 92.5413L247.064 94.6554C246.275 92.9836 245.075 91.8158 242.836 91.8158C241.006 91.8159 239.934 92.7633 239.934 94.025C239.934 95.3814 240.785 96.1079 244.129 97.1173C247.63 98.2214 251.351 99.3888 251.351 103.9C251.351 108.031 248.041 110.554 243.341 110.554C238.831 110.554 235.864 108.378 234.665 105.098L238.388 102.921C239.176 104.971 240.722 106.296 243.466 106.296C246.084 106.296 246.998 105.192 246.998 103.962C246.998 102.322 245.518 101.691 242.238 100.745C238.863 99.767 235.581 98.3453 235.581 94.1499C235.581 89.9869 239.051 87.5908 242.836 87.5906Z" fill="currentColor" />
@@ -65,7 +180,7 @@ export function Footer() {
           {/* Right column - Navigation */}
           <div className="grid grid-cols-2">
             {/* Explore */}
-            <div className="flex flex-col gap-fluid-20 px-fluid-50 py-[59px]">
+            <div className="flex flex-col gap-fluid-20 px-fluid-30 py-fluid-30 sm:px-fluid-50 sm:py-[59px] border-b sm:border-b-0 border-foreground">
               <div className="text-base font-bold uppercase tracking-[2.4px] leading-[1.35]">{t(language, "footer.heading.explore")}</div>
               <ul className="flex flex-col gap-fluid-10 text-base leading-[1.35] tracking-[-0.4px]">
                 {exploreLinks.map((l) => (
@@ -87,7 +202,7 @@ export function Footer() {
             </div>
 
             {/* Help & Tools */}
-            <div className="flex flex-col gap-fluid-20 px-fluid-50 py-[59px]">
+            <div className="flex flex-col gap-fluid-20 px-fluid-30 py-fluid-30 sm:px-fluid-50 sm:py-[59px]">
               <div className="text-base font-bold uppercase tracking-[2.4px] leading-[1.35]">{t(language, "footer.heading.helpTools")}</div>
               <ul className="flex flex-col gap-fluid-10 text-base leading-[1.35] tracking-[-0.4px]">
                 {helpLinks.map((l) => (

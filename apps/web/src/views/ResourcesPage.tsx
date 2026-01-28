@@ -1,14 +1,28 @@
-import React, { useEffect } from "react"
+import React, { useEffect, useState } from "react"
 import { useLanguageStore } from "../zustand/useLanguageStore"
 import { t } from "../utils/i18n"
-import { PlanYourNextStepsSection } from "../ui/widgets/PlanYourNextStepsSection"
+import { PlanYourNextStepsSection, type ResourceSectionId } from "../ui/widgets/PlanYourNextStepsSection"
 import { trackEvent } from "../utils/analytics"
 
 const ArrowIndicator = () => (
-  <div className="relative flex h-full aspect-square items-center justify-center overflow-hidden self-stretch" aria-hidden="true">
-    <div className="absolute inset-0 left-[-5px] translate-x-[-100%] bg-foreground transition-transform duration-300 ease-out group-hover:translate-x-0" />
-    <svg className="relative z-10 h-[28px] w-[28px] text-foreground transition-colors duration-300 group-hover:text-surface" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M-4.92305e-07 11.2626L-3.81923e-07 8.73737L15.1515 8.73737L8.20707 1.79293L10 -4.37114e-07L20 10L10 20L8.20707 18.2071L15.1515 11.2626L-4.92305e-07 11.2626Z" fill="currentColor" />
+  <div
+    className="relative flex h-full aspect-square items-center justify-center overflow-hidden self-stretch"
+    aria-hidden="true"
+  >
+    <div className="absolute inset-0 top-[-5px] -translate-y-full bg-foreground transition-transform duration-300 ease-out group-hover:translate-y-0" />
+    <svg
+      className="relative z-10 h-[22px] w-[22px] text-foreground transition-colors duration-300 group-hover:text-surface"
+      viewBox="0 0 20 20"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M4 7L10 13L16 7"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </svg>
   </div>
 )
@@ -34,39 +48,44 @@ const ShortcutIconEducation = () => (
 
 export function ResourcesPage() {
   const { language } = useLanguageStore()
+  const [openSections, setOpenSections] = useState<ResourceSectionId[]>([])
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: "smooth" })
   }, [])
-  const scrollToSection = (sectionId: string) => {
-    const section = document.getElementById(sectionId)
-    if (!section) return
-    section.scrollIntoView({ behavior: "smooth", block: "start" })
-    trackEvent("resource_section_jump", {
-      section_id: sectionId,
-      language
+  const handleToggleSection = (sectionId: ResourceSectionId) => {
+    setOpenSections((prev) => {
+      const isOpen = prev.includes(sectionId)
+      const next = isOpen ? prev.filter((id) => id !== sectionId) : [...prev, sectionId]
+
+      trackEvent("resource_section_jump", {
+        section_id: sectionId,
+        language
+      })
+
+      return next
     })
   }
 
   return (
     <div className="space-y-0">
-      <section className="bg-surface p-fluid-50 border-b-[0.5px] border-foreground">
-        <div className="grid w-full lg:grid-cols-[48%_52%]">
-          <div className="flex flex-col gap-fluid-20">
+      <section className="bg-surface px-fluid-20 py-fluid-30 lg:p-fluid-50 border-b-[0.5px] border-foreground">
+        <div className="grid w-full gap-fluid-30 lg:grid-cols-[48%_52%]">
+          <div className="flex flex-col gap-fluid-15">
             <span className="text-sub2 font-bold uppercase tracking-[0.15em] text-onSurfaceSecondary">
               {t(language, "resources.kicker")}
             </span>
             <h2 className="text-h2 text-foreground">
               {t(language, "planNextSteps.title")}
             </h2>
-            <p className="text-body-lg text-muted max-w-[520px]">
+            <p className="text-body-base lg:text-body-lg text-muted max-w-[520px]">
               {t(language, "planNextSteps.description")}
             </p>
           </div>
-          <div className="flex flex-col gap-fluid-30">
+          <div className="flex flex-col gap-fluid-20">
             {[
               {
                 id: "scholarships",
-                sectionId: "scholarships",
+                sectionId: "scholarships" as ResourceSectionId,
                 title: t(language, "planNextSteps.card.scholarships.title"),
                 description: t(language, "planNextSteps.card.scholarships.description"),
                 icon: <ShortcutIconHelp />,
@@ -74,7 +93,7 @@ export function ResourcesPage() {
               },
               {
                 id: "orgs",
-                sectionId: "organizations",
+                sectionId: "organizations" as ResourceSectionId,
                 title: t(language, "planNextSteps.card.professionalOrganizations.title"),
                 description: t(language, "planNextSteps.card.professionalOrganizations.description"),
                 icon: <ShortcutIconDoctor />,
@@ -82,42 +101,73 @@ export function ResourcesPage() {
               },
               {
                 id: "schools",
-                sectionId: "schools",
+                sectionId: "schools" as ResourceSectionId,
                 title: t(language, "planNextSteps.card.schoolsPrerequisites.title"),
                 description: t(language, "planNextSteps.card.schoolsPrerequisites.description"),
                 icon: <ShortcutIconEducation />,
                 bgColor: "bg-accentBlue"
               }
-            ].map((shortcut, index, array) => (
+            ].map((shortcut, index, array) => {
+              const isOpen = openSections.includes(shortcut.sectionId)
+              return (
               <React.Fragment key={shortcut.id}>
                 <button
                   type="button"
-                  onClick={() => scrollToSection(shortcut.sectionId)}
-                  className="group flex h-[90px] w-full items-center text-left"
+                  onClick={() => handleToggleSection(shortcut.sectionId)}
+                  className="group flex w-full items-center text-left py-fluid-15"
                 >
-                  <div className={`mr-fluid-25 flex h-[70px] w-[70px] items-center justify-center ${shortcut.bgColor}`}>
-                    <div className="flex h-fluid-40 w-fluid-40 items-center justify-center text-foreground">
+                  <div className={`mr-fluid-20 flex h-[60px] w-[60px] items-center justify-center ${shortcut.bgColor}`}>
+                    <div className="flex h-fluid-35 w-fluid-35 items-center justify-center text-foreground">
                       {shortcut.icon}
                     </div>
                   </div>
-                  <div className="h-full w-[0.5px] bg-foreground" />
-                  <div className="flex flex-1 flex-col justify-center gap-fluid-10 px-fluid-25">
-                    <h3 className="text-h4 font-bold text-foreground leading-tight">{shortcut.title}</h3>
-                    <p className="text-body-base text-onSurfaceSecondary leading-snug">{shortcut.description}</p>
+                  <div className="h-[60px] w-[0.5px] bg-foreground" />
+                  <div className="flex flex-1 flex-col justify-center gap-fluid-7 px-fluid-20">
+                    <h3 className="text-h4 lg:text-h4 font-bold text-foreground leading-tight">
+                      {shortcut.title}
+                    </h3>
+                    <p className="text-body-sm lg:text-body-base text-onSurfaceSecondary leading-snug">
+                      {shortcut.description}
+                    </p>
                   </div>
-                  <div className="flex h-full w-[100px] items-center justify-center">
-                    <ArrowIndicator />
+                  {/* Mobile: black toggle button */}
+                  <div className="flex h-[60px] w-[70px] items-center justify-center lg:hidden">
+                    <div className="flex h-full aspect-square items-center justify-center bg-foreground text-surface" aria-hidden="true">
+                      <svg
+                        className="h-[22px] w-[22px]"
+                        viewBox="0 0 20 20"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d={isOpen ? "M4 13L10 7L16 13" : "M4 7L10 13L16 7"}
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </div>
                   </div>
                 </button>
                 {index < array.length - 1 && (
-                  <div className="h-[0.5px] w-full bg-foreground" aria-hidden="true" />
+                  <div className="h-[2px] lg:h-[1px] w-full bg-foreground" aria-hidden="true" />
+                )}
+                {/* Mobile: render the active section content right below its card */}
+                {isOpen && (
+                  <div className="mt-fluid-10 lg:hidden">
+                    <PlanYourNextStepsSection activeSections={[shortcut.sectionId]} />
+                  </div>
                 )}
               </React.Fragment>
-            ))}
+            )})}
           </div>
         </div>
       </section>
-      <PlanYourNextStepsSection />
+      {/* Desktop: show all sections stacked below hero */}
+      <div className="hidden lg:block">
+        <PlanYourNextStepsSection activeSections={["scholarships", "organizations", "schools"]} />
+      </div>
     </div>
   )
 }
