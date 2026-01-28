@@ -236,15 +236,17 @@ export function NavHeader() {
                       letterSpacing: "var(--tracking-body-base)"
                     }}
                   >
-                    {language === "es" ? (
-                      <span className="leading-tight">
-                        Cerrar chat
-                        <br />
-                        de IA
-                      </span>
-                    ) : (
-                      t(language, "header.closeAiChat")
-                    )}
+                    <span className="text-body-sm lg:text-body-base leading-tight">
+                      {language === "es" ? (
+                        <>
+                          Cerrar chat
+                          <br />
+                          de IA
+                        </>
+                      ) : (
+                        t(language, "header.closeAiChat")
+                      )}
+                    </span>
                     <div className="flex h-icon-30 w-icon-30 items-center justify-center">
                       <img src={closeIcon} alt="" className="h-[17px] w-[17px]" />
                     </div>
@@ -263,15 +265,17 @@ export function NavHeader() {
                       navigate("/chat")
                     }}
                   >
-                    {language === "es" ? (
-                      <span className="leading-tight">
-                        Preguntar
-                        <br />
-                        a IA
-                      </span>
-                    ) : (
-                      t(language, "header.askAi")
-                    )}
+                    <span className="text-body-sm lg:text-body-base leading-tight">
+                      {language === "es" ? (
+                        <>
+                          Preguntar
+                          <br />
+                          a IA
+                        </>
+                      ) : (
+                        t(language, "header.askAi")
+                      )}
+                    </span>
                     <AiStarIcon className="hidden lg:block w-icon-25 h-icon-25 text-accentBlue" />
                   </Button>
                 </div>
