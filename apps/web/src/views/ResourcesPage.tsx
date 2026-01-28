@@ -130,7 +130,8 @@ export function ResourcesPage() {
                       {shortcut.description}
                     </p>
                   </div>
-                  <div className="flex h-[60px] w-[70px] lg:w-[100px] items-center justify-center">
+                  {/* Mobile: black toggle button */}
+                  <div className="flex h-[60px] w-[70px] items-center justify-center lg:hidden">
                     <div className="flex h-full aspect-square items-center justify-center bg-foreground text-surface" aria-hidden="true">
                       <svg
                         className="h-[22px] w-[22px]"
