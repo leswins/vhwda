@@ -245,16 +245,18 @@ export function HomePage() {
       <section className="bg-surface border-b border-foreground">
         <div className="w-full px-0 py-0">
           <div className="grid w-full lg:grid-cols-[55%_45%] lg:items-start">
-            <div className="relative flex h-full flex-col px-fluid-50 pt-fluid-50 pb-fluid-50">
-              <h1 className="text-h1 text-foreground">{t(language, "home.hero.title")}</h1>
-              <p className="mt-fluid-25 text-body-lg text-onSurfaceSecondary max-w-[620px]">
-                {t(language, "home.hero.subtitle")}
-              </p>
-              <div className="mt-fluid-40 flex flex-wrap gap-4">
+            <div className="relative flex h-full flex-col px-fluid-30 pt-fluid-40 pb-fluid-40 lg:px-fluid-50 lg:pt-fluid-50 lg:pb-fluid-50">
+              <div className="max-w-[640px] mx-auto lg:mx-0 text-center lg:text-left">
+                <h1 className="text-h1 text-foreground">{t(language, "home.hero.title")}</h1>
+                <p className="mt-fluid-25 text-body-lg text-onSurfaceSecondary">
+                  {t(language, "home.hero.subtitle")}
+                </p>
+              </div>
+              <div className="mt-fluid-30 lg:mt-fluid-40 flex flex-col sm:flex-row flex-wrap gap-fluid-15 sm:gap-4 max-w-[640px] mx-auto lg:mx-0">
                 <Button
                   variant="ghost"
                   size="lg"
-                  className="!rounded-none !bg-accentPink px-6 py-3 text-body-base text-foreground hover:!bg-accentPink/90"
+                  className="!rounded-none !bg-accentPink px-6 py-3 text-body-base text-foreground hover:!bg-accentPink/90 w-full sm:w-auto"
                   onClick={() => navigate("/quiz")}
                 >
                   {t(language, "home.hero.primaryCTA")}
@@ -262,7 +264,7 @@ export function HomePage() {
                 <Button
                   variant="ghost"
                   size="lg"
-                  className="!rounded-none !bg-surface2 px-6 py-3 text-body-base text-foreground hover:!bg-surface1"
+                  className="!rounded-none !bg-surface2 px-6 py-3 text-body-base text-foreground hover:!bg-surface1 w-full sm:w-auto"
                   onClick={() => navigate("/careers")}
                 >
                   {t(language, "home.hero.secondaryCTA")}
@@ -301,28 +303,45 @@ export function HomePage() {
           <div className="w-full h-fit">
             {steps.map((step, index) => (
               <div key={step.id} className="group w-full">
-                <Link
-                  to={step.to}
-                  className="flex w-full items-center"
-                >
-                  <div className="flex h-[125px] w-fluid-25 items-center justify-center py-fluid-30">
-                    <span className="text-sub2 text-foreground">{index + 1}</span>
+                <Link to={step.to} className="block w-full">
+                  {/* Mobile layout */}
+                  <div className="flex w-full items-center gap-fluid-20 py-fluid-20 lg:hidden">
+                    <div className="flex h-fluid-40 w-fluid-40 items-center justify-center">
+                      <span className="text-sub2 text-foreground">{index + 1}</span>
+                    </div>
+                    <div className="flex h-fluid-60 w-fluid-60 items-center justify-center" aria-hidden="true">
+                      {step.icon}
+                    </div>
+                    <div className="flex flex-1 flex-col gap-fluid-7">
+                      <span className="text-h4 text-foreground font-semibold">{step.title}</span>
+                      <p className="text-body-base text-muted font-normal">{step.description}</p>
+                    </div>
+                    <div className="flex h-full w-fluid-40 items-center justify-center">
+                      <ArrowIndicator />
+                    </div>
                   </div>
-                  <div className="flex self-stretch w-fluid-50 items-center justify-center z-10" aria-hidden="true">
-                    <div className="h-full w-[0.5px] bg-foreground" />
-                  </div>
-                  <div className="flex h-[130px] w-[125px] items-center justify-center" aria-hidden="true">
-                    {step.icon}
-                  </div>
-                  <div className="flex flex-1 flex-col gap-fluid-10 px-fluid-20 py-fluid-20">
-                    <span className="text-h3 text-foreground font-semibold">{step.title}</span>
-                    <p className="text-body-lg text-muted font-normal">{step.description}</p>
-                  </div>
-                  <div className="flex self-stretch w-[0.5px] items-center justify-center z-10" aria-hidden="true">
-                    <div className="h-full w-[0.5px] bg-foreground" />
-                  </div>
-                  <div className="flex w-[130px] items-center justify-center self-stretch">
-                    <ArrowIndicator />
+
+                  {/* Desktop layout (unchanged) */}
+                  <div className="hidden lg:flex w-full items-center">
+                    <div className="flex h-[125px] w-fluid-25 items-center justify-center py-fluid-30">
+                      <span className="text-sub2 text-foreground">{index + 1}</span>
+                    </div>
+                    <div className="z-10 flex w-fluid-50 items-center justify-center self-stretch" aria-hidden="true">
+                      <div className="h-full w-[0.5px] bg-foreground" />
+                    </div>
+                    <div className="flex h-[130px] w-[125px] items-center justify-center" aria-hidden="true">
+                      {step.icon}
+                    </div>
+                    <div className="flex flex-1 flex-col gap-fluid-10 px-fluid-20 py-fluid-20">
+                      <span className="text-h3 text-foreground font-semibold">{step.title}</span>
+                      <p className="text-body-lg text-muted font-normal">{step.description}</p>
+                    </div>
+                    <div className="z-10 flex w-[0.5px] items-center justify-center self-stretch" aria-hidden="true">
+                      <div className="h-full w-[0.5px] bg-foreground" />
+                    </div>
+                    <div className="flex w-[130px] items-center justify-center self-stretch">
+                      <ArrowIndicator />
+                    </div>
                   </div>
                 </Link>
                 {index < steps.length - 1 && (
@@ -342,16 +361,16 @@ export function HomePage() {
             <span>{t(language, "home.catalogBanner.right")}</span>
           </div>
         </div>
-        <div className="grid h-[300px] grid-cols-1 md:grid-cols-3 border-t border-foreground">
-          <div className="flex h-full flex-col items-center justify-center border-b border-foreground bg-accentBlue px-fluid-25 py-fluid-50 text-center md:border-b-0 md:border-r">
+        <div className="grid grid-cols-1 lg:h-[300px] lg:grid-cols-3 border-t border-foreground">
+          <div className="flex flex-col items-center justify-center border-b border-foreground bg-accentBlue px-fluid-25 py-fluid-40 text-center lg:border-b-0 lg:border-r">
             <h3 className="text-h3 text-foreground">{t(language, "home.catalogHighlights.careers.title")}</h3>
             <p className="mt-3 text-body-base font-medium text-foreground">{t(language, "home.catalogHighlights.careers.description")}</p>
           </div>
-          <div className="flex h-full flex-col items-center justify-center border-b border-foreground bg-accentYellow px-fluid-25 py-fluid-50 text-center md:border-b-0 md:border-r">
+          <div className="flex flex-col items-center justify-center border-b border-foreground bg-accentYellow px-fluid-25 py-fluid-40 text-center lg:border-b-0 lg:border-r">
             <h3 className="text-h3 text-foreground">{t(language, "home.catalogHighlights.updated.title")}</h3>
             <p className="mt-3 text-body-base font-medium text-foreground">{t(language, "home.catalogHighlights.updated.description")}</p>
           </div>
-          <div className="flex h-full flex-col items-center justify-center bg-accentGreen px-fluid-25 py-fluid-50 text-center">
+          <div className="flex flex-col items-center justify-center bg-accentGreen px-fluid-25 py-fluid-40 text-center">
             <h3 className="text-h3 text-foreground">{t(language, "home.catalogHighlights.local.title")}</h3>
             <p className="mt-3 text-body-base font-medium text-foreground">{t(language, "home.catalogHighlights.local.description")}</p>
           </div>
@@ -361,16 +380,34 @@ export function HomePage() {
       {/* Featured Careers Section */}
       <section className="w-full py-0 overflow-hidden border-b border-foreground">
         <div className="w-full px-0 border-b-[0.5px] border-foreground">
-          <div className="flex w-full items-stretch justify-between gap-0">
-            <div className="flex flex-1 flex-col gap-fluid-15 p-fluid-50">
+          <div className="flex w-full flex-col lg:flex-row items-stretch justify-between gap-0">
+            <div className="flex flex-1 flex-col gap-fluid-15 p-fluid-30 lg:p-fluid-50">
               <div className="text-sm font-bold uppercase tracking-widest text-foreground">
                 {t(language, "home.featuredCareers.kicker")}
               </div>
               <h2 className="text-h2 text-foreground">
                 {t(language, "home.featuredCareers.headline")}
               </h2>
+              {/* Mobile CTAs */}
+              <div className="mt-fluid-20 flex flex-col gap-fluid-10 lg:hidden">
+                <Link
+                  to="/careers"
+                  className="inline-flex items-center justify-between border border-foreground px-fluid-20 py-fluid-12 text-body-base font-semibold text-foreground bg-surface hover:bg-surface1"
+                >
+                  <span>{t(language, "home.featuredCareers.ctaExplore")}</span>
+                  <ArrowIndicator />
+                </Link>
+                <Link
+                  to="/quiz"
+                  className="inline-flex items-center justify-between border border-foreground px-fluid-20 py-fluid-12 text-body-base font-semibold text-foreground bg-surface2 hover:bg-surface1"
+                >
+                  <span>{t(language, "home.featuredCareers.ctaFind")}</span>
+                  <ArrowIndicator />
+                </Link>
+              </div>
             </div>
-            <div className="flex w-max flex-col items-center justify-around border-l border-foreground px-fluid-50 py-fluid-25 whitespace-nowrap">
+            {/* Desktop CTAs (unchanged) */}
+            <div className="hidden lg:flex w-max flex-col items-center justify-around border-l border-foreground px-fluid-50 py-fluid-25 whitespace-nowrap">
               <Link to="/careers" className="text-h5 text-foreground hover:no-underline px-fluid-25">
                 {t(language, "home.featuredCareers.ctaExplore")}
               </Link>
@@ -387,7 +424,7 @@ export function HomePage() {
             data.featuredCareers.map((career) => (
               <div
                 key={career._id}
-                className="snap-start shrink-0 w-[30%] min-w-[30%] border-r-[0.5px] border-foreground last:border-r-0"
+                className="snap-start shrink-0 w-[80%] min-w-[80%] lg:w-[30%] lg:min-w-[30%] border-r-[0.5px] border-foreground last:border-r-0"
               >
                 <CareerCard
                   language={language}
@@ -422,11 +459,11 @@ export function HomePage() {
 
       {/* Quiz Callout Section */}
       <section className="w-full bg-surface border-b border-foreground">
-        <div className="flex h-[100px] w-full items-center px-fluid-25 border-b border-foreground">
+        <div className="flex h-fluid-40 lg:h-[100px] w-full items-center px-fluid-25 border-b border-foreground">
           <PatternBar iconSize={25} />
         </div>
-        <div className="flex h-[535px] w-full items-stretch">
-          <div className="relative flex w-1/2 flex-col justify-between overflow-hidden bg-foreground p-fluid-50 text-surface">
+        <div className="flex flex-col lg:flex-row w-full items-stretch">
+          <div className="relative flex w-full lg:w-1/2 flex-col justify-between overflow-hidden bg-foreground p-fluid-40 lg:p-fluid-50 text-surface">
             <div className="absolute inset-0 z-0 pointer-events-none">
               <Lottie
                 lottieRef={lottieRef}
@@ -481,8 +518,8 @@ export function HomePage() {
               </Button>
             </div>
           </div>
-          <div className="flex w-1/2 flex-col justify-between border-l border-foreground bg-surface text-foreground">
-            <div className="flex flex-col gap-fluid-15 p-fluid-50">
+          <div className="flex w-full lg:w-1/2 flex-col justify-between border-t lg:border-t-0 lg:border-l border-foreground bg-surface text-foreground">
+            <div className="flex flex-col gap-fluid-15 p-fluid-40 lg:p-fluid-50">
               <div className="text-sm font-bold uppercase tracking-widest text-onSurfaceSecondary">
                 {t(language, "home.quizSection.right.kicker")}
               </div>
@@ -493,26 +530,26 @@ export function HomePage() {
                 {t(language, "home.quizSection.right.description")}
               </p>
             </div>
-            <div className="flex items-center gap-3 border-t border-foreground mx-fluid-50 px-0 py-fluid-25 text-muted">
+            <div className="flex items-center gap-3 border-t border-foreground mx-fluid-40 lg:mx-fluid-50 px-0 py-fluid-25 text-muted">
               <ClockIcon />
               <span className="text-sm font-medium">{t(language, "home.quizSection.right.estimate")}</span>
             </div>
           </div>
         </div>
-        <div className="flex h-[100px] w-full items-center px-fluid-25 border-t border-foreground">
+        <div className="flex h-fluid-40 lg:h-[100px] w-full items-center px-fluid-25 border-t border-foreground">
           <PatternBar iconSize={25} />
         </div>
       </section>
 
       {/* Shortcuts Section */}
       <section className="bg-surface">
-        <div className="grid w-full lg:grid-cols-[35%_65%]">
-          <div className="p-fluid-50 border-foreground lg:sticky lg:top-0 lg:h-fit">
+        <div className="grid w-full lg:grid-cols-[35%_65%] border-t border-foreground">
+          <div className="p-fluid-40 lg:p-fluid-50 border-b lg:border-b-0 border-foreground lg:sticky lg:top-0 lg:h-fit">
             <h2 className="text-h2 text-foreground">
               {t(language, "home.shortcuts.heading")}
             </h2>
           </div>
-          <div className="flex flex-col p-fluid-25 gap-fluid-30 border-l-[0.5px] border-foreground">
+          <div className="flex flex-col p-fluid-25 gap-fluid-30 lg:border-l-[0.5px] border-foreground">
             {[
               {
                 id: "browse",
