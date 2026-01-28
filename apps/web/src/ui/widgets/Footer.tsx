@@ -21,7 +21,7 @@ export function Footer() {
     { key: "footer.link.contact", href: "mailto:info@vhwda.org" }
   ]
 
-  const [openSection, setOpenSection] = useState<"about" | "explore" | "help" | null>("about")
+  const [openSection, setOpenSection] = useState<"about" | "explore" | "help" | null>(null)
 
   const toggleSection = (section: "about" | "explore" | "help") => {
     setOpenSection(prev => (prev === section ? null : section))

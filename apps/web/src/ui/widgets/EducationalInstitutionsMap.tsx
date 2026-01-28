@@ -265,7 +265,7 @@ export function EducationalInstitutionsMap({ language, institutions }: Props) {
 
   if (!sorted.length) {
     return (
-      <div className="min-h-[750px] border border-foreground bg-surface1 p-4 text-sm text-foreground/70">
+      <div className="min-h-[500px] lg:min-h-[750px] border border-foreground bg-surface1 p-4 text-sm text-foreground/70">
         No institutions with location data found.
       </div>
     )
@@ -273,8 +273,8 @@ export function EducationalInstitutionsMap({ language, institutions }: Props) {
 
   if (!token) {
     return (
-      <div className="grid h-[750px] lg:grid-cols-[480px_1fr]">
-        <div className="h-full overflow-auto scrollbar-hide px-[25px] pb-[25px] pt-0 border-r-[0.5px] border-foreground">
+      <div className="grid h-[500px] lg:h-[750px] lg:grid-cols-[480px_1fr]">
+        <div className="h-full overflow-auto scrollbar-hide px-fluid-20 pb-fluid-20 pt-0 lg:px-[25px] lg:pb-[25px] border-r-[0.5px] border-foreground">
           <RegionList
             groups={groupedRegions}
             activeId={activeId}
@@ -294,8 +294,8 @@ export function EducationalInstitutionsMap({ language, institutions }: Props) {
   }
 
   return (
-    <div className="grid h-[750px] lg:grid-cols-[480px_1fr]">
-      <div className="h-full overflow-auto scrollbar-hide px-[25px] pb-[25px] pt-0 border-r-[0.5px] border-foreground">
+    <div className="grid h-[500px] lg:h-[750px] lg:grid-cols-[480px_1fr]">
+      <div className="h-full overflow-auto scrollbar-hide px-fluid-20 pb-fluid-20 pt-0 lg:px-[25px] lg:pb-[25px] border-r-[0.5px] border-foreground">
         <RegionList
           groups={groupedRegions}
           activeId={activeId}

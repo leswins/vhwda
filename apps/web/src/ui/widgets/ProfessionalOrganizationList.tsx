@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useMemo } from "react"
 import type { Language } from "../../utils/i18n"
+import { t } from "../../utils/i18n"
 import { fetchProfessionalOrganizations } from "../../sanity/queries/professionalOrganizations"
 import type { ProfessionalOrganization } from "../../sanity/queries/professionalOrganizations"
 import { ProfessionalOrganizationCard } from "./ProfessionalOrganizationCard"
@@ -16,6 +17,7 @@ export function ProfessionalOrganizationList({ language, filters, onCountChange 
   const [allOrganizations, setAllOrganizations] = useState<ProfessionalOrganization[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<Error | null>(null)
+  const [visibleCount, setVisibleCount] = useState(5)
 
   const filteredOrganizations = useMemo(() => {
     return filterOrganizations(allOrganizations, filters, language)
@@ -56,18 +58,49 @@ export function ProfessionalOrganizationList({ language, filters, onCountChange 
     )
   }
 
+  const mobileVisibleOrgs = filteredOrganizations.slice(0, visibleCount)
+
   return (
     <div className="flex-1">
       {filteredOrganizations.length === 0 ? (
         <p className="text-muted">No organizations found.</p>
       ) : (
-        filteredOrganizations.map((organization) => (
-          <ProfessionalOrganizationCard
-            key={organization._id}
-            language={language}
-            organization={organization}
-          />
-        ))
+        <>
+          {/* Mobile: show in batches with "show more" */}
+          <div className="block lg:hidden">
+            {mobileVisibleOrgs.map((organization) => (
+              <ProfessionalOrganizationCard
+                key={organization._id}
+                language={language}
+                organization={organization}
+              />
+            ))}
+            {visibleCount < filteredOrganizations.length && (
+              <div className="bg-surface border-t-[0.5px] border-foreground flex justify-center py-fluid-20">
+                <button
+                  type="button"
+                  onClick={() =>
+                    setVisibleCount((count) => Math.min(count + 5, filteredOrganizations.length))
+                  }
+                  className="px-fluid-24 py-fluid-10 border-[0.5px] border-foreground bg-surface1 text-body-sm font-medium text-foreground hover:bg-surface2 transition-colors"
+                >
+                  {t(language, "search.showMore")}
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* Desktop: show full list */}
+          <div className="hidden lg:block">
+            {filteredOrganizations.map((organization) => (
+              <ProfessionalOrganizationCard
+                key={organization._id}
+                language={language}
+                organization={organization}
+              />
+            ))}
+          </div>
+        </>
       )}
     </div>
   )
