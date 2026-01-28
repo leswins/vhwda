@@ -187,6 +187,7 @@ const dict: Dictionary = {
   "search.showingPlural": { en: "Showing {count} careers", es: "Mostrando {count} carreras" },
   "search.noCareers": { en: "No careers found", es: "No se encontraron carreras" },
   "search.showMore": { en: "Show more careers", es: "Ver más carreras" },
+  "resources.showMoreOrganizations": { en: "Show more organizations", es: "Ver más organizaciones" },
   "search.compareCareers": { en: "Compare careers", es: "Comparar carreras" },
   "search.compare": { en: "Compare", es: "Comparar" },
   "search.careers": { en: "Careers", es: "Carreras" },

@@ -82,9 +82,9 @@ export function ProfessionalOrganizationList({ language, filters, onCountChange 
                   onClick={() =>
                     setVisibleCount((count) => Math.min(count + 5, filteredOrganizations.length))
                   }
-                  className="px-fluid-24 py-fluid-10 border-[0.5px] border-foreground bg-surface1 text-body-sm font-medium text-foreground hover:bg-surface2 transition-colors"
+                  className="inline-flex items-center justify-center px-fluid-24 py-fluid-10 border-[0.5px] border-foreground bg-surface text-body-sm font-semibold text-foreground tracking-[0.12em] uppercase hover:bg-surface2 transition-colors"
                 >
-                  {t(language, "search.showMore")}
+                  {t(language, "resources.showMoreOrganizations")}
                 </button>
               </div>
             )}

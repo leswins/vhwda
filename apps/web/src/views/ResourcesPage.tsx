@@ -131,10 +131,9 @@ export function ResourcesPage() {
                     </p>
                   </div>
                   <div className="flex h-[60px] w-[70px] lg:w-[100px] items-center justify-center">
-                    <div className="relative flex h-full aspect-square items-center justify-center overflow-hidden self-stretch" aria-hidden="true">
-                      <div className="absolute inset-0 top-[-5px] -translate-y-full bg-foreground transition-transform duration-300 ease-out group-hover:translate-y-0" />
+                    <div className="flex h-full aspect-square items-center justify-center bg-foreground text-surface" aria-hidden="true">
                       <svg
-                        className="relative z-10 h-[22px] w-[22px] text-foreground transition-transform duration-200 group-hover:text-surface"
+                        className="h-[22px] w-[22px]"
                         viewBox="0 0 20 20"
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"

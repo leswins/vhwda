@@ -100,7 +100,7 @@ function RegionList({ groups, activeId, onSelect }: RegionListProps) {
               <button
                 type="button"
                 onClick={() => toggleRegion(group.region)}
-                className="flex w-full items-center justify-between py-[25px] text-left text-h4 font-semibold text-foreground"
+                className="flex w-full items-center justify-between py-fluid-10 lg:py-[25px] text-left text-body-base lg:text-h4 font-semibold text-foreground"
               >
                 <span>{group.region}</span>
                 <span aria-hidden="true">
@@ -131,7 +131,7 @@ function RegionList({ groups, activeId, onSelect }: RegionListProps) {
                         <button
                           type="button"
                           className={cx(
-                            "flex w-full items-center justify-between py-[25px] text-left text-body-lg",
+                            "flex w-full items-center justify-between py-fluid-8 lg:py-[25px] text-left text-body-sm lg:text-body-lg",
                             isActive && "font-semibold"
                           )}
                           onClick={() => onSelect(institution)}
@@ -273,8 +273,8 @@ export function EducationalInstitutionsMap({ language, institutions }: Props) {
 
   if (!token) {
     return (
-      <div className="grid h-[500px] lg:h-[750px] lg:grid-cols-[480px_1fr]">
-        <div className="h-full overflow-auto scrollbar-hide px-fluid-20 pb-fluid-20 pt-0 lg:px-[25px] lg:pb-[25px] border-r-[0.5px] border-foreground">
+      <div className="flex h-[500px] flex-col lg:h-[750px] lg:grid lg:grid-cols-[480px_1fr]">
+        <div className="h-1/2 overflow-auto scrollbar-hide px-fluid-20 pb-fluid-20 pt-0 lg:h-full lg:px-[25px] lg:pb-[25px] lg:border-r-[0.5px] lg:border-foreground">
           <RegionList
             groups={groupedRegions}
             activeId={activeId}
@@ -286,7 +286,7 @@ export function EducationalInstitutionsMap({ language, institutions }: Props) {
             }}
           />
         </div>
-        <div className="h-full bg-surface1 p-4 text-sm text-foreground/70">
+        <div className="h-1/2 bg-surface1 p-4 text-sm text-foreground/70 lg:h-full">
           {t(language, "career.map.noToken")}
         </div>
       </div>
@@ -294,8 +294,8 @@ export function EducationalInstitutionsMap({ language, institutions }: Props) {
   }
 
   return (
-    <div className="grid h-[500px] lg:h-[750px] lg:grid-cols-[480px_1fr]">
-      <div className="h-full overflow-auto scrollbar-hide px-fluid-20 pb-fluid-20 pt-0 lg:px-[25px] lg:pb-[25px] border-r-[0.5px] border-foreground">
+    <div className="flex h-[500px] flex-col lg:h-[750px] lg:grid lg:grid-cols-[480px_1fr]">
+      <div className="h-1/2 overflow-auto scrollbar-hide px-fluid-20 pb-fluid-20 pt-0 lg:h-full lg:px-[25px] lg:pb-[25px] lg:border-r-[0.5px] lg:border-foreground">
         <RegionList
           groups={groupedRegions}
           activeId={activeId}
@@ -308,7 +308,7 @@ export function EducationalInstitutionsMap({ language, institutions }: Props) {
         />
       </div>
 
-      <div className="h-full bg-surface1">
+      <div className="h-1/2 bg-surface1 lg:h-full">
         <div ref={mapContainerRef} className="h-full w-full" />
       </div>
 
