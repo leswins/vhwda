@@ -275,43 +275,28 @@ export function useQuizLogic() {
         setLoading(true, { minDurationMs: 3000, variant: "quizResults" })
         
         try {
-            // Fetch all careers with quiz data
             const careers = await fetchCareersForQuiz()
-            console.log("📥 Careers fetched for matching:", careers.length, careers)
             
-            // Collect hard filters from user's answers (deduplicated)
             const userHardFilters = collectHardFiltersFromAnswers(selectedAnswers, questions)
-            console.log("🔍 User hard filters:", userHardFilters)
             
-            // Calculate matching score for each career and apply hard filters
             const careersWithScores = careers
                 .map(career => {
                     const score = calculateMatchingScore(userVector, career.quizVector)
                     return { ...career, score }
                 })
                 .filter(career => {
-                    // First filter: only include careers with positive scores
                     if (career.score <= 0) {
                         return false
                     }
                     
-                    // Second filter: exclude careers that don't meet hard filter requirements
                     const shouldExclude = shouldExcludeCareer(userHardFilters, career)
                     if (shouldExclude) {
-                        console.log(
-                            "❌ Excluding career",
-                            career._id,
-                            (language === "es" && career.title.es ? career.title.es : career.title.en) ?? "Untitled",
-                            "due to hard filter"
-                        )
                         return false
                     }
                     
                     return true
                 })
-                .sort((a, b) => b.score - a.score) // Sort by score descending
-            
-            console.log("✅ Matching careers (after filters):", careersWithScores.length, careersWithScores)
+                .sort((a, b) => b.score - a.score)
             setMatchedCareers(careersWithScores)
         } catch (error) {
             console.error("Error calculating career matches:", error)

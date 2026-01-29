@@ -213,17 +213,6 @@ export async function fetchQuizQuestions(language: "en" | "es" = "en"): Promise<
     
     const transformed = transformQuiz(quiz, language)
     
-    // Debug: Log likert/rating questions to verify transformation
-    transformed.forEach(q => {
-      if (q.type === "likert_5" || q.type === "rating_1_5") {
-        console.log(`🔍 ${q.type} question "${q.id}":`, {
-          optionCount: q.options.length,
-          optionIds: q.options.map(o => o.id),
-          optionLabels: q.options.map(o => o.label)
-        })
-      }
-    })
-    
     if (transformed.length === 0) {
       throw new Error("Quiz has no valid questions after transformation")
     }

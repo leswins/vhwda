@@ -79,12 +79,10 @@ function checkLicensureRule(
     return false
   }
 
-  // Check hardRequirements first (new format)
   if (career.hardRequirements?.requiresLicensure) {
     return true
   }
 
-  // Legacy support: check hardFilters array
   if (career.hardFilters && career.hardFilters.length > 0) {
     for (const careerFilter of career.hardFilters) {
       if (careerFilter.requiresLicensure || careerFilter.type === "licensure_required") {
@@ -93,7 +91,11 @@ function checkLicensureRule(
     }
   }
 
-  return career.licensureRequired === true
+  if (career.licensureRequired === true) {
+    return true
+  }
+
+  return false
 }
 
 function checkMinStartSalary(
@@ -113,7 +115,6 @@ function checkMinStartSalary(
     return false
   }
 
-  // Check hardRequirements first (new format)
   if (career.hardRequirements?.hasMinimumSalary) {
     const careerMinSalary = career.salary?.rangeMin
     if (careerMinSalary !== undefined && careerMinSalary < filterSalaryMin) {
@@ -121,7 +122,6 @@ function checkMinStartSalary(
     }
   }
 
-  // Legacy support: check hardFilters array
   if (career.hardFilters && career.hardFilters.length > 0) {
     for (const careerFilter of career.hardFilters) {
       if (careerFilter.hasMinimumSalary || careerFilter.type === "min_start_salary") {
@@ -134,11 +134,6 @@ function checkMinStartSalary(
         }
       }
     }
-  }
-
-  const careerMinSalary = career.salary?.rangeMin
-  if (careerMinSalary !== undefined && careerMinSalary < filterSalaryMin) {
-    return true
   }
 
   return false
@@ -166,7 +161,6 @@ function checkDealbreaker(
     return false
   }
 
-  // Check hardRequirements first (new format)
   const hardRequirements = career.hardRequirements
   if (hardRequirements) {
     if (hardRequirements.requiresLifting && dealbreakerType === "exclude_requires_lifting") {
@@ -183,7 +177,6 @@ function checkDealbreaker(
     }
   }
 
-  // Legacy support: check hardFilters array
   if (career.hardFilters && career.hardFilters.length > 0) {
     for (const careerFilter of career.hardFilters) {
       if (careerFilter.requiresLifting && dealbreakerType === "exclude_requires_lifting") {
@@ -198,7 +191,6 @@ function checkDealbreaker(
       if (careerFilter.requiresAcuteHighStress && dealbreakerType === "exclude_requires_acute_stress") {
         return true
       }
-      // Legacy support
       if (careerFilter.type === "dealbreaker_lifting" && dealbreakerType === "exclude_requires_lifting") {
         return true
       }
@@ -211,21 +203,6 @@ function checkDealbreaker(
       if (careerFilter.type === "dealbreaker_high_stress" && dealbreakerType === "exclude_requires_acute_stress") {
         return true
       }
-    }
-  }
-
-  // Legacy support: check old hardRequirements format
-  if (hardRequirements) {
-    const dealbreakerMap: Record<string, keyof typeof hardRequirements> = {
-      "exclude_requires_lifting": "requiresLifting",
-      "exclude_requires_nights_weekends": "requiresNightsWeekends",
-      "exclude_requires_blood_needles": "requiresBloodNeedles",
-      "exclude_requires_acute_stress": "requiresAcuteStress"
-    }
-
-    const careerField = dealbreakerMap[dealbreakerType]
-    if (careerField && hardRequirements[careerField] === true) {
-      return true
     }
   }
 
@@ -339,6 +316,21 @@ export function collectHardFiltersFromAnswers(
         if (extractedSalary) {
           filter.salaryMin = extractedSalary
         }
+      }
+      
+      const hasValidFilter = 
+        filter.requiresLicensure === true ||
+        filter.requiresLifting === true ||
+        filter.requiresNightsWeekends === true ||
+        filter.requiresBloodNeedles === true ||
+        filter.requiresAcuteHighStress === true ||
+        (filter.hasMinimumEducation === true && filter.educationLevel) ||
+        (filter.hasMinimumSalary === true && (filter.salaryMin || filter.type === "min_start_salary")) ||
+        (filter.region && filter.region.length > 0) ||
+        (filter.type && (filter.type === "licensure_rule" || filter.type === "dealbreaker" || filter.type === "min_start_salary" || filter.type === "education_ceiling" || filter.type === "region"))
+      
+      if (!hasValidFilter) {
+        continue
       }
       
       const filterKey = JSON.stringify({
