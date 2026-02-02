@@ -176,7 +176,7 @@ export function NavHeader() {
 
   return (
     <header className="relative z-[1000] bg-surface text-foreground px-0 lg:px-fluid-50 border-t-[0.5px] border-foreground">
-      <div className="w-full lg:site-grid-container relative flex h-[75px] items-stretch justify-between border-b">
+      <div className="site-grid-container relative flex h-[75px] items-stretch justify-between border-x-[0.5px] border-b-[0.5px] border-foreground">
         <Link to="/" className="flex items-center px-fluid-30" aria-label={t(language, "brand.name")}>
           <svg width="130" height="36" viewBox="0 0 404 111" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
             <path d="M130.787 87.5906C134.824 87.5908 138.388 89.6401 140.281 92.794L136.529 94.9706C135.456 93.015 133.31 91.816 130.787 91.8158C126.466 91.8158 123.628 94.813 123.627 99.0708C123.627 103.298 126.465 106.296 130.787 106.296C133.31 106.296 135.488 105.098 136.529 103.174L140.281 105.351C138.42 108.504 134.856 110.554 130.787 110.554C124.1 110.554 119.304 105.506 119.304 99.0708C119.304 92.6049 124.1 87.5906 130.787 87.5906Z" fill="currentColor" />
@@ -222,9 +222,8 @@ export function NavHeader() {
             {!isMenuOpen && (
               <div className="relative flex items-stretch overflow-hidden">
                 <div
-                  className={`flex items-stretch transition-all duration-250 ease-out ${
-                    isChatOpen ? "opacity-100" : "pointer-events-none absolute left-0 inset-y-0 w-max opacity-0"
-                  }`}
+                  className={`flex items-stretch transition-all duration-250 ease-out ${isChatOpen ? "opacity-100" : "pointer-events-none absolute left-0 inset-y-0 w-max opacity-0"
+                    }`}
                 >
                   <button
                     type="button"
@@ -254,9 +253,8 @@ export function NavHeader() {
                 </div>
 
                 <div
-                  className={`flex items-stretch transition-all duration-250 ease-out ${
-                    !isChatOpen ? "opacity-100" : "pointer-events-none absolute left-0 inset-y-0 w-max opacity-0"
-                  }`}
+                  className={`flex items-stretch transition-all duration-250 ease-out ${!isChatOpen ? "opacity-100" : "pointer-events-none absolute left-0 inset-y-0 w-max opacity-0"
+                    }`}
                 >
                   <Button
                     variant="dark"
@@ -283,45 +281,41 @@ export function NavHeader() {
               </div>
             )}
 
-            {!isChatOpen && (
-              <div className="flex items-center gap-fluid-10 lg:gap-fluid-15 px-fluid-10 lg:px-fluid-15 py-fluid-10 lg:py-fluid-15">
-                <button
-                  type="button"
-                  onClick={() => {
-                    trackEvent("language_change", {
-                      language: "en",
-                      previous_language: language
-                    })
-                    setLanguage("en")
-                  }}
-                  className={`flex items-center justify-center transition-all duration-250 ease-out ${
-                    language === "en"
-                      ? "text-body-base font-bold text-foreground"
-                      : "text-body-base font-medium text-foreground/60 hover:text-foreground"
+            <div className="flex items-center gap-fluid-10 lg:gap-fluid-15 px-fluid-10 lg:px-fluid-15 py-fluid-10 lg:py-fluid-15">
+              <button
+                type="button"
+                onClick={() => {
+                  trackEvent("language_change", {
+                    language: "en",
+                    previous_language: language
+                  })
+                  setLanguage("en")
+                }}
+                className={`flex items-center justify-center transition-all duration-250 ease-out ${language === "en"
+                  ? "text-body-base font-bold text-foreground"
+                  : "text-body-base font-medium text-foreground/60 hover:text-foreground"
                   }`}
-                >
-                  {t(language, "language.enShort")}
-                </button>
-                <Divider orientation="vertical" className="h-5 bg-foreground" />
-                <button
-                  type="button"
-                  onClick={() => {
-                    trackEvent("language_change", {
-                      language: "es",
-                      previous_language: language
-                    })
-                    setLanguage("es")
-                  }}
-                  className={`flex items-center justify-center transition-all duration-250 ease-out ${
-                    language === "es"
-                      ? "text-body-base font-bold text-foreground"
-                      : "text-body-base font-medium text-foreground/60 hover:text-foreground"
+              >
+                {t(language, "language.enShort")}
+              </button>
+              <Divider orientation="vertical" className="h-5 bg-foreground" />
+              <button
+                type="button"
+                onClick={() => {
+                  trackEvent("language_change", {
+                    language: "es",
+                    previous_language: language
+                  })
+                  setLanguage("es")
+                }}
+                className={`flex items-center justify-center transition-all duration-250 ease-out ${language === "es"
+                  ? "text-body-base font-bold text-foreground"
+                  : "text-body-base font-medium text-foreground/60 hover:text-foreground"
                   }`}
-                >
-                  {t(language, "language.esShort")}
-                </button>
-              </div>
-            )}
+              >
+                {t(language, "language.esShort")}
+              </button>
+            </div>
 
             <Divider orientation="vertical" className="bg-foreground" />
 
@@ -355,9 +349,8 @@ export function NavHeader() {
 
             <div className="relative flex items-stretch">
               <div
-                className={`flex items-stretch transition-all duration-250 ease-out ${
-                  isMenuOpen ? "opacity-100" : "pointer-events-none absolute right-0 inset-y-0 w-max opacity-0"
-                }`}
+                className={`flex items-stretch transition-all duration-250 ease-out ${isMenuOpen ? "opacity-100" : "pointer-events-none absolute right-0 inset-y-0 w-max opacity-0"
+                  }`}
               >
                 <div className="flex items-stretch">
                   {/* On mobile this shows only an X and closes the menu; on desktop muestra el texto */}
@@ -410,9 +403,8 @@ export function NavHeader() {
 
           {/* Search state overlay (solo desktop) */}
           <div
-            className={`absolute inset-0 hidden lg:flex items-stretch bg-surface1 transition-all duration-250 ease-out ${
-              isSearchActive ? "opacity-100" : "pointer-events-none opacity-0"
-            }`}
+            className={`absolute inset-0 hidden lg:flex items-stretch bg-surface1 transition-all duration-250 ease-out ${isSearchActive ? "opacity-100" : "pointer-events-none opacity-0"
+              }`}
           >
             <div className="relative flex flex-1 items-stretch">
               <div className="flex h-full w-[75px] items-center justify-center border-l-[0.5px] border-foreground text-foreground">
@@ -487,9 +479,8 @@ export function NavHeader() {
 
         {/* Absolute menu list - full width on mobile/desktop */}
         <div
-          className={`absolute left-0 right-0 top-full z-[1001] flex h-[75px] items-stretch border border-foreground bg-surface transition-all duration-250 ease-out ${
-            isMenuOpen ? "translate-y-0 opacity-100" : "pointer-events-none -translate-y-2 opacity-0"
-          }`}
+          className={`absolute left-0 right-0 top-full z-[1001] flex h-[75px] items-stretch border border-foreground bg-surface transition-all duration-250 ease-out ${isMenuOpen ? "translate-y-0 opacity-100" : "pointer-events-none -translate-y-2 opacity-0"
+            }`}
         >
           <div className="relative flex w-full items-stretch overflow-x-auto scrollbar-hide">
             <div className="flex items-stretch">
