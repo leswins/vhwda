@@ -479,7 +479,7 @@ export function NavHeader() {
 
         {/* Absolute menu list - full width on mobile/desktop */}
         <div
-          className={`absolute left-0 right-0 top-full z-[1001] flex h-[75px] items-stretch border border-foreground bg-surface transition-all duration-250 ease-out ${isMenuOpen ? "translate-y-0 opacity-100" : "pointer-events-none -translate-y-2 opacity-0"
+          className={`absolute left-0 right-0 top-full z-[1001] flex h-[75px] items-stretch border-x border-foreground bg-surface transition-all duration-250 ease-out ${isMenuOpen ? "translate-y-0 opacity-100" : "pointer-events-none -translate-y-2 opacity-0"
             }`}
         >
           <div className="relative flex w-full items-stretch overflow-x-auto scrollbar-hide">
@@ -491,13 +491,12 @@ export function NavHeader() {
                 { label: t(language, "header.menu.resources"), path: "/resources" },
                 { label: t(language, "header.menu.about"), path: "/about" }
               ]
-                .filter((item) => item.path !== location.pathname)
                 .map((item) => (
                   <Link
                     key={item.path}
                     to={item.path}
                     onClick={() => setIsMenuOpen(false)}
-                    className="flex items-center justify-center border-r border-foreground px-10 text-base font-bold text-foreground hover:bg-surface2 last:border-r-0 transition-colors duration-250 ease-out whitespace-nowrap"
+                    className="flex items-center justify-center border-r border-foreground px-10 text-base font-bold text-foreground hover:bg-surface2 transition-colors duration-250 ease-out whitespace-nowrap"
                   >
                     {item.label}
                   </Link>
