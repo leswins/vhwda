@@ -216,7 +216,7 @@ export function NavHeader() {
 
           {/* Default navigation controls */}
           <div
-            className={`flex items-stretch bg-surface1 transition-opacity duration-250 ease-out ${isSearchActive ? "pointer-events-none opacity-0" : "opacity-100"
+            className={`flex items-stretch bg-surface transition-opacity duration-250 ease-out ${isSearchActive ? "pointer-events-none opacity-0" : "opacity-100"
               }`}
           >
             {!isMenuOpen && (
@@ -403,7 +403,7 @@ export function NavHeader() {
 
           {/* Search state overlay (solo desktop) */}
           <div
-            className={`absolute inset-0 hidden lg:flex items-stretch bg-surface1 transition-all duration-250 ease-out ${isSearchActive ? "opacity-100" : "pointer-events-none opacity-0"
+            className={`absolute inset-0 hidden lg:flex items-stretch bg-surface transition-all duration-250 ease-out ${isSearchActive ? "opacity-100" : "pointer-events-none opacity-0"
               }`}
           >
             <div className="relative flex flex-1 items-stretch">
