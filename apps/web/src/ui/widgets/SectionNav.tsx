@@ -26,12 +26,11 @@ export function SectionNav({ items, offsetTopPx = 0, ariaLabel }: Props) {
   useEffect(() => {
     if (!ids.length) return
 
-    // Height of the sticky nav itself (py-5 = 20px * 2 + content)
-    const navHeight = 90
+    const getNavHeight = () => (window.innerWidth < 1024 ? 60 : 90)
 
     const handleScroll = () => {
       const scrollY = window.scrollY
-      const triggerPoint = scrollY + offsetTopPx + navHeight + 50
+      const triggerPoint = scrollY + offsetTopPx + getNavHeight() + 50
 
       let currentId = ids[0]
 
@@ -73,14 +72,14 @@ export function SectionNav({ items, offsetTopPx = 0, ariaLabel }: Props) {
 
   return (
     <div
-      className="sticky z-20 border-y-[0.5px] border-foreground bg-surface py-5"
+      className="sticky z-20 flex h-[60px] items-center border-y-[0.5px] border-foreground bg-surface py-[15px] lg:block lg:h-auto lg:py-5"
       style={{ top: offsetTopPx }}
       role="navigation"
       aria-label={ariaLabel}
     >
       <div 
         ref={scrollContainerRef}
-        className="mx-auto flex items-stretch max-w-[1368px] overflow-x-auto scrollbar-hide"
+        className="mx-auto flex h-full items-center max-w-[1368px] overflow-x-auto scrollbar-hide lg:h-auto lg:items-stretch"
       >
         {items.map((item, idx) => {
           const isActive = activeId === item.id
@@ -96,14 +95,14 @@ export function SectionNav({ items, offsetTopPx = 0, ariaLabel }: Props) {
                   el?.scrollIntoView({ behavior: "smooth", block: "start" })
                 }}
                 className={cx(
-                  "min-w-[220px] shrink-0 px-[30px] py-[20px] text-center text-sm",
+                  "flex h-full min-w-[220px] shrink-0 items-center justify-center px-[30px] py-0 text-center text-sm lg:py-[20px]",
                   isActive ? "font-bold text-foreground" : "font-medium text-foreground/50 hover:text-foreground"
                 )}
                 aria-current={isActive ? "page" : undefined}
               >
                 {item.label}
               </button>
-              {idx !== items.length - 1 ? <div className="w-[0.5px] shrink-0 bg-foreground" /> : null}
+              {idx !== items.length - 1 ? <div className="w-[0.5px] shrink-0 bg-foreground self-stretch" /> : null}
             </React.Fragment>
           )
         })}

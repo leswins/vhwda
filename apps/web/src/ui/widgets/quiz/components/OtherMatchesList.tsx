@@ -3,7 +3,6 @@ import { Link } from "react-router-dom"
 import type { CareerForMatching, QuizVector } from "../../../../sanity/queries/careers"
 import { calculateMatchPercentage } from "../../../../utils/vector-aux"
 import { getLocalizedString } from "../../../../sanity/queries/careers"
-import { pickTypicalSalary } from "../../../../utils/salary"
 
 type CareerMatch = CareerForMatching & { score: number }
 
@@ -55,48 +54,61 @@ export function OtherMatchesList({ careers, userVector, language, maxResults = 2
   const displayCareers = careers.slice(0, maxResults)
 
   return (
-    <div className="bg-surface border-[0.5px] border-foreground divide-y-[0.5px] divide-foreground/30">
-      {displayCareers.map((career) => {
+    <div className="grid grid-cols-1 md:grid-cols-2">
+      {displayCareers.map((career, index) => {
         const matchPercentage = Math.round(calculateMatchPercentage(userVector, career.quizVector || {}))
         const title = getLocalizedString(language, career.title) ?? ""
         const salaryRange = formatSalaryRange(career.salary)
         const education = formatEducationLevel(career.educationMin)
+        
+        const isLeftColumn = index % 2 === 0
+        const isLastItem = index === displayCareers.length - 1
+        
+        // Show divider on left column items, but not if it's the last item (hanging alone on a new row)
+        const showDivider = isLeftColumn && !isLastItem
 
         return (
-          <Link
-            key={career._id}
-            to={`/careers/${career.slug ?? ""}`}
-            className="group flex items-center py-[25px] px-fluid-30 transition-colors"
+          <div 
+            key={career._id} 
+            className={`relative border-b-[0.5px] border-foreground last:border-b-0 md:border-b-0 ${isLeftColumn ? "md:pr-[50px]" : "md:pl-[50px]"}`}
           >
-            <div className="relative flex items-center justify-center w-20 h-20 bg-accentBlue mr-[30px] flex-shrink-0 p-2 overflow-hidden">
-              <div className="absolute inset-0 translate-x-[-100%] bg-foreground transition-transform duration-300 ease-out group-hover:translate-x-0" />
-              <div className="relative text-center w-full">
-                <div className="text-sub2 font-bold leading-[135%] tracking-[0.15em] whitespace-nowrap text-foreground transition-colors duration-300 group-hover:text-surface">
-                  {matchPercentage}%
-                </div>
-                <div
-                  className="text-xs font-bold uppercase tracking-[0.1em] mt-1 whitespace-nowrap text-foreground transition-colors duration-300 group-hover:text-surface"
-                  style={{ fontSize: "0.95rem" }}
-                >
-                  MATCH
+            {showDivider && (
+              <div className="hidden md:block absolute right-0 top-1/2 -translate-y-1/2 h-20 w-[0.5px] bg-foreground" />
+            )}
+            <Link
+              to={`/careers/${career.slug ?? ""}`}
+              className="group flex items-center py-[25px] transition-colors h-full"
+            >
+              <div className="relative flex h-20 w-20 flex-shrink-0 items-center justify-center bg-accentBlue mr-[30px] p-2 overflow-hidden">
+                <div className="absolute inset-0 translate-x-[-100%] bg-foreground transition-transform duration-300 ease-out group-hover:translate-x-0" />
+                <div className="relative w-full text-center">
+                  <div className="text-sub2 font-bold leading-[135%] tracking-[0.15em] whitespace-nowrap text-foreground transition-colors duration-300 group-hover:text-surface">
+                    {matchPercentage}%
+                  </div>
+                  <div
+                    className="mt-1 text-xs font-bold uppercase tracking-[0.1em] whitespace-nowrap text-foreground transition-colors duration-300 group-hover:text-surface"
+                    style={{ fontSize: "0.95rem" }}
+                  >
+                    MATCH
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="flex-1 min-w-0">
-              <h3 className="text-h4 font-bold text-foreground mb-2 leading-[120%] tracking-[-0.03em]">
-                {title}
-              </h3>
-              <p className="text-body-lg text-muted leading-[135%] tracking-[-0.025em]">
-                {[
-                  "Hospital/Clinic", // TODO: Get from career data
-                  education && education,
-                  salaryRange && salaryRange
-                ]
-                  .filter(Boolean)
-                  .join(" • ")}
-              </p>
-            </div>
-          </Link>
+              <div className="flex-1 min-w-0">
+                <h3 className="mb-2 text-h4 font-bold leading-[120%] tracking-[-0.03em] text-foreground">
+                  {title}
+                </h3>
+                <p className="text-body-lg text-muted leading-[135%] tracking-[-0.025em]">
+                  {[
+                    "Hospital/Clinic", // TODO: Get from career data
+                    education && education,
+                    salaryRange && salaryRange,
+                  ]
+                    .filter(Boolean)
+                    .join(" • ")}
+                </p>
+              </div>
+            </Link>
+          </div>
         )
       })}
     </div>

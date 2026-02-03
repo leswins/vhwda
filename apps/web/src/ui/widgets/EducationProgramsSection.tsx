@@ -95,7 +95,7 @@ function RegionList({ groups, activeKey, onSelect }: RegionListProps) {
               key={group.region}
               className={cx(
                 "border-b-[0.5px] border-foreground",
-                isLast && !isExpanded && "border-b-0"
+                isLast && "border-b-0"
               )}
             >
               <button
@@ -273,10 +273,11 @@ export function EducationProgramsSection({ language, items, title }: Props) {
 
   if (!token) {
     return (
-      <div className="grid h-[650px] max-h-[650px] overflow-hidden lg:grid-cols-[40%_60%]">
-        <div className="flex h-full min-h-0 flex-col border-r-[0.5px] border-foreground">
-          <h2 className="p-fluid-50 text-h3 shrink-0">{title}</h2>
-          <div className="min-h-0 flex-1 overflow-auto mx-fluid-50 pb-fluid-50 pt-0 scrollbar-hide border-t-[0.5px] border-foreground">
+      <div className="flex flex-col lg:grid lg:h-[650px] lg:max-h-[650px] lg:overflow-hidden lg:grid-cols-[40%_60%]">
+        {/* Mobile: list first; Desktop: left column */}
+        <div className="order-first px-5 py-10 lg:order-none lg:flex lg:h-full lg:min-h-0 lg:flex-col lg:border-r-[0.5px] lg:border-foreground lg:p-0">
+          <h2 className="text-h3 shrink-0 mb-[30px] lg:mb-0 lg:p-fluid-50">{title}</h2>
+          <div className="lg:min-h-0 lg:flex-1 lg:overflow-auto lg:mx-fluid-50 lg:pb-fluid-50 lg:pt-0 lg:scrollbar-hide lg:border-t-[0.5px] lg:border-foreground">
             <RegionList
               groups={groupedRegions}
               activeKey={activeKey}
@@ -290,18 +291,23 @@ export function EducationProgramsSection({ language, items, title }: Props) {
             />
           </div>
         </div>
-        <div className="h-[650px] bg-surface1 p-4 text-sm text-foreground/70">
-          {t(language, "career.map.noToken")}
+
+        {/* Mobile: map second, full-bleed */}
+        <div className="order-last h-[400px] w-full bg-surface1 border-t-[0.5px] border-foreground lg:order-none lg:h-[650px] lg:border-t-0">
+          <div className="flex h-full w-full items-center justify-center p-4 text-sm text-foreground/70">
+            {t(language, "career.map.noToken")}
+          </div>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="grid h-[650px] max-h-[650px] overflow-hidden lg:grid-cols-[40%_60%]">
-      <div className="flex h-full min-h-0 flex-col border-r-[0.5px] border-foreground">
-        <h2 className="p-fluid-50 text-h3 shrink-0">{title}</h2>
-        <div className="min-h-0 flex-1 overflow-auto mx-fluid-50 pb-fluid-50 pt-0 scrollbar-hide border-t-[0.5px] border-foreground">
+    <div className="flex flex-col lg:grid lg:h-[650px] lg:max-h-[650px] lg:overflow-hidden lg:grid-cols-[40%_60%]">
+      {/* Mobile: list first; Desktop: left column */}
+      <div className="order-first px-5 py-10 lg:order-none lg:flex lg:h-full lg:min-h-0 lg:flex-col lg:border-r-[0.5px] lg:border-foreground lg:p-0">
+        <h2 className="text-h3 shrink-0 mb-[30px] lg:mb-0 lg:p-fluid-50">{title}</h2>
+        <div className="lg:min-h-0 lg:flex-1 lg:overflow-auto lg:mx-fluid-50 lg:pb-fluid-50 lg:pt-0 lg:scrollbar-hide lg:border-t-[0.5px] lg:border-foreground">
           <RegionList
             groups={groupedRegions}
             activeKey={activeKey}
@@ -316,7 +322,8 @@ export function EducationProgramsSection({ language, items, title }: Props) {
         </div>
       </div>
 
-      <div className="h-[650px] bg-surface1">
+      {/* Mobile: map second, full-bleed */}
+      <div className="order-last h-[400px] w-full bg-surface1 border-t-[0.5px] border-foreground lg:order-none lg:h-[650px] lg:border-t-0">
         <div ref={mapContainerRef} className="h-full w-full" />
       </div>
 

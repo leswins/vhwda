@@ -15,11 +15,11 @@ type OtherMatchesSectionProps = {
 export function OtherMatchesSection({ careers, userVector, language }: OtherMatchesSectionProps) {
   return (
     <div className="w-full p-fluid-50">
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-fluid-50">
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-fluid-50">
         <h2 className="text-h3 font-bold text-foreground">{t(language, "quiz.results.otherMatches")}</h2>
         <Link
           to="/careers"
-          className="inline-flex md:inline-flex items-center bg-surface2 px-6 py-3 text-body-base text-foreground transition-colors hover:bg-surface1 w-full md:w-auto justify-center md:justify-start text-center md:text-left"
+          className="hidden lg:inline-flex items-center bg-surface2 px-6 py-3 text-body-base text-foreground transition-colors hover:bg-surface1 w-auto justify-start text-left"
         >
           {t(language, "quiz.results.searchPlaceholder")}
         </Link>
@@ -30,6 +30,16 @@ export function OtherMatchesSection({ careers, userVector, language }: OtherMatc
         language={language}
         maxResults={20}
       />
+
+      {/* Mobile: place search CTA beneath list, left-aligned, content-hugging */}
+      <div className="mt-fluid-50 flex items-start justify-start lg:hidden">
+        <Link
+          to="/careers"
+          className="inline-flex w-fit items-center justify-start bg-surface2 px-6 py-3 text-body-base text-foreground transition-colors hover:bg-surface1 text-left"
+        >
+          {t(language, "quiz.results.searchPlaceholder")}
+        </Link>
+      </div>
     </div>
   )
 }

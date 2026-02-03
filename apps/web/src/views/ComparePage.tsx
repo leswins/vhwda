@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from "react"
 import { useLanguageStore } from "../zustand/useLanguageStore"
 import { useCompareStore } from "../zustand/useCompareStore"
 import { trackEvent } from "../utils/analytics"
+import { PageHead } from "../ui/PageHead"
 import { getLocalizedString } from "../sanity/queries/careers"
 import {
   ComparePageHeader,
@@ -152,6 +153,11 @@ export function ComparePage() {
 
   return (
     <div className="py-fluid-40 lg:py-[50px]">
+      <PageHead
+        title="Compare Healthcare Careers"
+        description="Compare healthcare careers side-by-side to find the best fit for you. View salary ranges, education requirements, job outlook, and responsibilities for multiple careers at once."
+        path="/compare"
+      />
       <ComparePageHeader language={language} />
 
       {!hasSelectedCareers ? (

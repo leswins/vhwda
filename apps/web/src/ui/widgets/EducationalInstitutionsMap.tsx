@@ -100,7 +100,7 @@ function RegionList({ groups, activeId, onSelect }: RegionListProps) {
               <button
                 type="button"
                 onClick={() => toggleRegion(group.region)}
-                className="flex w-full items-center justify-between py-[25px] text-left text-h4 font-semibold text-foreground"
+                className="flex w-full items-center justify-between py-[15px] lg:py-[25px] text-left text-body-base lg:text-h4 font-semibold text-foreground"
               >
                 <span>{group.region}</span>
                 <span aria-hidden="true">
@@ -131,7 +131,7 @@ function RegionList({ groups, activeId, onSelect }: RegionListProps) {
                         <button
                           type="button"
                           className={cx(
-                            "flex w-full items-center justify-between py-[25px] text-left text-body-lg",
+                            "flex w-full items-center justify-between py-[10px] lg:py-[25px] text-left text-body-sm lg:text-body-lg",
                             isActive && "font-semibold"
                           )}
                           onClick={() => onSelect(institution)}
@@ -265,7 +265,7 @@ export function EducationalInstitutionsMap({ language, institutions }: Props) {
 
   if (!sorted.length) {
     return (
-      <div className="min-h-[750px] border border-foreground bg-surface1 p-4 text-sm text-foreground/70">
+      <div className="min-h-[500px] lg:min-h-[750px] border border-foreground bg-surface1 p-4 text-sm text-foreground/70">
         No institutions with location data found.
       </div>
     )
@@ -273,8 +273,9 @@ export function EducationalInstitutionsMap({ language, institutions }: Props) {
 
   if (!token) {
     return (
-      <div className="grid h-[750px] lg:grid-cols-[480px_1fr]">
-        <div className="h-full overflow-auto scrollbar-hide px-[25px] pb-[25px] pt-0 border-r-[0.5px] border-foreground">
+      <div className="flex flex-col lg:h-[750px] lg:grid lg:grid-cols-2">
+        {/* Mobile: regions list first, hugs content */}
+        <div className="order-first px-5 pb-10 pt-0 lg:order-none lg:h-full lg:overflow-auto lg:scrollbar-hide lg:px-[25px] lg:pb-[25px] lg:pt-0 lg:border-l-[0.5px] lg:border-foreground">
           <RegionList
             groups={groupedRegions}
             activeId={activeId}
@@ -286,16 +287,21 @@ export function EducationalInstitutionsMap({ language, institutions }: Props) {
             }}
           />
         </div>
-        <div className="h-full bg-surface1 p-4 text-sm text-foreground/70">
-          {t(language, "career.map.noToken")}
+
+        {/* Mobile: map second, full-bleed, top border only */}
+        <div className="order-last h-[400px] w-full border-t-[0.5px] border-foreground bg-surface1 lg:order-none lg:h-full lg:border-t-0">
+          <div className="flex h-full w-full items-center justify-center p-4 text-sm text-foreground/70">
+            {t(language, "career.map.noToken")}
+          </div>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="grid h-[750px] lg:grid-cols-[480px_1fr]">
-      <div className="h-full overflow-auto scrollbar-hide px-[25px] pb-[25px] pt-0 border-r-[0.5px] border-foreground">
+    <div className="flex flex-col lg:h-[750px] lg:grid lg:grid-cols-2">
+      {/* Mobile: regions list first, hugs content */}
+      <div className="order-first px-5 pb-10 pt-0 lg:order-none lg:h-full lg:overflow-auto lg:scrollbar-hide lg:px-[25px] lg:pb-[25px] lg:pt-0 lg:border-l-[0.5px] lg:border-foreground">
         <RegionList
           groups={groupedRegions}
           activeId={activeId}
@@ -308,7 +314,8 @@ export function EducationalInstitutionsMap({ language, institutions }: Props) {
         />
       </div>
 
-      <div className="h-full bg-surface1">
+      {/* Mobile: map second, full-bleed, top border only */}
+      <div className="order-last h-[400px] w-full border-t-[0.5px] border-foreground bg-surface1 lg:order-none lg:h-full lg:border-t-0">
         <div ref={mapContainerRef} className="h-full w-full" />
       </div>
 

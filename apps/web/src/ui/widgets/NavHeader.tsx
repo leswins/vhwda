@@ -43,7 +43,7 @@ function IconButton({
       type="button"
       aria-label={label}
       onClick={onClick}
-      className="inline-flex w-[75px] items-center justify-center text-foreground transition-colors duration-250 ease-out hover:bg-surface2"
+      className="inline-flex w-[50px] lg:w-[75px] items-center justify-center text-foreground transition-colors duration-250 ease-out hover:bg-surface2"
     >
       {children}
     </button>
@@ -175,10 +175,14 @@ export function NavHeader() {
   }
 
   return (
-    <header className="relative z-[1000] bg-surface text-foreground px-fluid-50 border-t-[0.5px] border-foreground">
-      <div className="site-grid-container relative flex h-[75px] items-stretch justify-between border-b">
-        <Link to="/" className="flex items-center px-fluid-30" aria-label={t(language, "brand.name")}>
-          <svg width="150" height="41" viewBox="0 0 404 111" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <header className="relative z-[1000] bg-surface text-foreground px-0 lg:px-fluid-50 border-t-[0.5px] border-foreground">
+      <div className="site-grid-container relative flex h-[50px] lg:h-[75px] items-stretch justify-between border-x-0 lg:border-x-[0.5px] border-b-[0.5px] border-foreground">
+        <Link
+          to="/"
+          className={`${isSearchActive ? "hidden lg:flex" : "flex"} items-center px-fluid-30`}
+          aria-label={t(language, "brand.name")}
+        >
+          <svg className="w-[100px] h-[30px] lg:w-[130px] lg:h-[36px]" viewBox="0 0 404 111" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
             <path d="M130.787 87.5906C134.824 87.5908 138.388 89.6401 140.281 92.794L136.529 94.9706C135.456 93.015 133.31 91.816 130.787 91.8158C126.466 91.8158 123.628 94.813 123.627 99.0708C123.627 103.298 126.465 106.296 130.787 106.296C133.31 106.296 135.488 105.098 136.529 103.174L140.281 105.351C138.42 108.504 134.856 110.554 130.787 110.554C124.1 110.554 119.304 105.506 119.304 99.0708C119.304 92.6049 124.1 87.5906 130.787 87.5906Z" fill="currentColor" />
             <path d="M242.836 87.5906C246.463 87.5906 249.238 89.4507 250.721 92.5413L247.064 94.6554C246.275 92.9836 245.075 91.8158 242.836 91.8158C241.006 91.8159 239.934 92.7633 239.934 94.025C239.934 95.3814 240.785 96.1079 244.129 97.1173C247.63 98.2214 251.351 99.3888 251.351 103.9C251.351 108.031 248.041 110.554 243.341 110.554C238.831 110.554 235.864 108.378 234.665 105.098L238.388 102.921C239.176 104.971 240.722 106.296 243.466 106.296C246.084 106.296 246.998 105.192 246.998 103.962C246.998 102.322 245.518 101.691 242.238 100.745C238.863 99.767 235.581 98.3453 235.581 94.1499C235.581 89.9869 239.051 87.5908 242.836 87.5906Z" fill="currentColor" />
             <path d="M272.552 87.5906C276.589 87.5909 280.153 89.6401 282.046 92.794L278.293 94.9706C277.221 93.015 275.075 91.816 272.552 91.8158C268.23 91.8158 265.392 94.813 265.392 99.0708C265.392 103.298 268.23 106.296 272.552 106.296C275.075 106.296 277.252 105.098 278.293 103.174L282.046 105.351C280.184 108.504 276.62 110.554 272.552 110.554C265.864 110.554 261.068 105.506 261.068 99.0708C261.069 92.6049 265.865 87.5906 272.552 87.5906Z" fill="currentColor" />
@@ -216,7 +220,7 @@ export function NavHeader() {
 
           {/* Default navigation controls */}
           <div
-            className={`flex items-stretch bg-surface1 transition-opacity duration-250 ease-out ${isSearchActive ? "pointer-events-none opacity-0" : "opacity-100"
+            className={`flex items-stretch bg-surface transition-opacity duration-250 ease-out ${isSearchActive ? "pointer-events-none opacity-0" : "opacity-100"
               }`}
           >
             {!isMenuOpen && (
@@ -228,14 +232,24 @@ export function NavHeader() {
                   <button
                     type="button"
                     onClick={() => navigate("/")}
-                    className="flex h-full items-center gap-fluid-10 bg-surface px-5 py-5 text-base font-semibold text-foreground hover:bg-surface2 whitespace-nowrap"
+                    className="flex h-full items-center gap-fluid-10 bg-surface px-5 py-5 text-base font-semibold text-foreground hover:bg-surface2 whitespace-nowrap border-r border-foreground lg:border-r-0"
                     style={{
                       fontSize: "var(--text-body-base)",
                       lineHeight: "var(--leading-body-base)",
                       letterSpacing: "var(--tracking-body-base)"
                     }}
                   >
-                    {t(language, "header.closeAiChat")}
+                    <span className="text-body-sm lg:text-body-base leading-tight">
+                      {language === "es" ? (
+                        <>
+                          Cerrar chat
+                          <br />
+                          de IA
+                        </>
+                      ) : (
+                        t(language, "header.closeAiChat")
+                      )}
+                    </span>
                     <div className="flex h-icon-30 w-icon-30 items-center justify-center">
                       <img src={closeIcon} alt="" className="h-[17px] w-[17px]" />
                     </div>
@@ -248,20 +262,33 @@ export function NavHeader() {
                 >
                   <Button
                     variant="dark"
-                    className="h-full rounded-none px-8 text-base font-semibold whitespace-nowrap flex items-center gap-3"
+                    className="h-full rounded-none px-[20px] lg:px-8 text-body-base lg:text-base font-semibold whitespace-nowrap flex items-center gap-2 lg:gap-3"
                     onClick={() => {
                       navigate("/chat")
                     }}
                   >
-                    {t(language, "header.askAi")}
-                    <AiStarIcon className="w-icon-25 h-icon-25 text-accentBlue" />
+                    <span className="text-body-sm lg:text-body-base leading-tight">
+                      {language === "es" ? (
+                        <>
+                          Preguntar
+                          <br />
+                          a IA
+                        </>
+                      ) : (
+                        t(language, "header.askAi")
+                      )}
+                    </span>
+                    <AiStarIcon className="hidden lg:block w-icon-25 h-icon-25 text-accentBlue" />
                   </Button>
                 </div>
-                <Divider orientation="vertical" className="bg-foreground" />
+                <Divider orientation="vertical" className={`bg-foreground ${isChatOpen ? "hidden lg:block" : ""}`} />
               </div>
             )}
 
-            <div className="flex items-center gap-fluid-15 px-fluid-15 py-fluid-15">
+            <div
+              className={`${isChatOpen || !isMenuOpen ? "hidden lg:flex" : "flex"
+                } items-center gap-[10px] lg:gap-fluid-15 px-[15px] lg:px-fluid-15 py-[15px] lg:py-fluid-15`}
+            >
               <button
                 type="button"
                 onClick={() => {
@@ -272,8 +299,8 @@ export function NavHeader() {
                   setLanguage("en")
                 }}
                 className={`flex items-center justify-center transition-all duration-250 ease-out ${language === "en"
-                  ? "text-base font-bold text-foreground"
-                  : "text-base font-medium text-foreground/60 hover:text-foreground"
+                  ? "text-body-base font-bold text-foreground"
+                  : "text-body-base font-medium text-foreground/60 hover:text-foreground"
                   }`}
               >
                 {t(language, "language.enShort")}
@@ -289,38 +316,39 @@ export function NavHeader() {
                   setLanguage("es")
                 }}
                 className={`flex items-center justify-center transition-all duration-250 ease-out ${language === "es"
-                  ? "text-base font-bold text-foreground"
-                  : "text-base font-medium text-foreground/60 hover:text-foreground"
+                  ? "text-body-base font-bold text-foreground"
+                  : "text-body-base font-medium text-foreground/60 hover:text-foreground"
                   }`}
               >
                 {t(language, "language.esShort")}
               </button>
             </div>
 
-            <Divider orientation="vertical" className="bg-foreground" />
+            <Divider orientation="vertical" className={`bg-foreground ${isChatOpen ? "hidden lg:block" : ""}`} />
 
             {!isMenuOpen && (
               <>
-                <IconButton
-                  label={t(language, "header.searchA11y")}
-                  onClick={() => {
-                    setIsSearchActive(true)
-                    setShowDropdown(true)
-                    setIsMenuOpen(false)
-                  }}
-                >
-                  <svg
-                    width="24"
-                    height="24"
-                    viewBox="0 0 35 35"
-                    fill="currentColor"
-                    xmlns="http://www.w3.org/2000/svg"
-                    aria-hidden="true"
+                <div className={`flex ${isChatOpen ? "hidden lg:flex" : ""}`}>
+                  <IconButton
+                    label={t(language, "header.searchA11y")}
+                    onClick={() => {
+                      setIsSearchActive(true)
+                      setShowDropdown(true)
+                      setIsMenuOpen(false)
+                    }}
                   >
-                    <path d="M32.2778 35L20.0278 22.75C19.0556 23.5278 17.9375 24.1435 16.6736 24.5972C15.4097 25.0509 14.0648 25.2778 12.6389 25.2778C9.10648 25.2778 6.11722 24.0541 3.67111 21.6067C1.225 19.1593 0.00129733 16.17 1.02881e-06 12.6389C-0.00129527 9.10778 1.22241 6.11852 3.67111 3.67111C6.11982 1.2237 9.10907 0 12.6389 0C16.1687 0 19.1586 1.2237 21.6086 3.67111C24.0586 6.11852 25.2817 9.10778 25.2778 12.6389C25.2778 14.0648 25.0509 15.4097 24.5972 16.6736C24.1435 17.9375 23.5278 19.0556 22.75 20.0278L35 32.2778L32.2778 35ZM12.6389 21.3889C15.0694 21.3889 17.1357 20.5385 18.8378 18.8378C20.5398 17.137 21.3902 15.0707 21.3889 12.6389C21.3876 10.207 20.5372 8.14139 18.8378 6.44194C17.1383 4.7425 15.072 3.89148 12.6389 3.88889C10.2057 3.8863 8.14009 4.73732 6.44195 6.44194C4.7438 8.14657 3.89278 10.2122 3.88889 12.6389C3.885 15.0656 4.73602 17.1319 6.44195 18.8378C8.14787 20.5437 10.2135 21.3941 12.6389 21.3889Z" />
-                  </svg>
-                </IconButton>
-                <Divider orientation="vertical" className="bg-foreground" />
+                    <svg
+                      className="w-5 h-5 lg:w-6 lg:h-6"
+                      viewBox="0 0 35 35"
+                      fill="currentColor"
+                      xmlns="http://www.w3.org/2000/svg"
+                      aria-hidden="true"
+                    >
+                      <path d="M32.2778 35L20.0278 22.75C19.0556 23.5278 17.9375 24.1435 16.6736 24.5972C15.4097 25.0509 14.0648 25.2778 12.6389 25.2778C9.10648 25.2778 6.11722 24.0541 3.67111 21.6067C1.225 19.1593 0.00129733 16.17 1.02881e-06 12.6389C-0.00129527 9.10778 1.22241 6.11852 3.67111 3.67111C6.11982 1.2237 9.10907 0 12.6389 0C16.1687 0 19.1586 1.2237 21.6086 3.67111C24.0586 6.11852 25.2817 9.10778 25.2778 12.6389C25.2778 14.0648 25.0509 15.4097 24.5972 16.6736C24.1435 17.9375 23.5278 19.0556 22.75 20.0278L35 32.2778L32.2778 35ZM12.6389 21.3889C15.0694 21.3889 17.1357 20.5385 18.8378 18.8378C20.5398 17.137 21.3902 15.0707 21.3889 12.6389C21.3876 10.207 20.5372 8.14139 18.8378 6.44194C17.1383 4.7425 15.072 3.89148 12.6389 3.88889C10.2057 3.8863 8.14009 4.73732 6.44195 6.44194C4.7438 8.14657 3.89278 10.2122 3.88889 12.6389C3.885 15.0656 4.73602 17.1319 6.44195 18.8378C8.14787 20.5437 10.2135 21.3941 12.6389 21.3889Z" />
+                    </svg>
+                  </IconButton>
+                  <Divider orientation="vertical" className="bg-foreground" />
+                </div>
               </>
             )}
 
@@ -330,15 +358,34 @@ export function NavHeader() {
                   }`}
               >
                 <div className="flex items-stretch">
-                  <div className="flex items-center bg-foreground px-8 text-base font-semibold text-surface whitespace-nowrap">
-                    {t(language, "header.selectAPage")}
-                  </div>
+                  {/* "Select a page" text container - black background - hidden on mobile */}
                   <button
                     type="button"
                     onClick={() => setIsMenuOpen(false)}
-                    className="flex w-[75px] items-center justify-center bg-surface border-l border-foreground hover:bg-surface2 transition-colors duration-250 ease-out"
+                    className="hidden lg:flex items-center bg-foreground px-8 text-base font-semibold text-surface whitespace-nowrap"
                   >
-                    <img src={closeIcon} alt="" className="h-[17px] w-[17px]" />
+                    <span>
+                      {t(language, "header.selectAPage")}
+                    </span>
+                  </button>
+                  {/* Close button with icon */}
+                  <button
+                    type="button"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="flex w-[50px] lg:w-[75px] items-center justify-center bg-surface border-l-0 lg:border-l border-foreground hover:bg-surface2 transition-colors duration-250 ease-out"
+                  >
+                    <svg
+                      className="h-[14px] w-[14px] lg:h-[17px] lg:w-[17px] text-accentOrange"
+                      viewBox="0 0 17 17"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M0.79541 0.795532L15.7954 15.7955M0.79541 15.7955L15.7954 0.795532"
+                        stroke="currentColor"
+                        strokeWidth="2.25"
+                      />
+                    </svg>
                   </button>
                 </div>
               </div>
@@ -355,8 +402,7 @@ export function NavHeader() {
                   }}
                 >
                   <svg
-                    width="24"
-                    height="24"
+                    className="w-5 h-5 lg:w-6 lg:h-6"
                     viewBox="0 0 35 35"
                     fill="currentColor"
                     xmlns="http://www.w3.org/2000/svg"
@@ -371,14 +417,13 @@ export function NavHeader() {
 
           {/* Search state overlay */}
           <div
-            className={`absolute inset-0 flex items-stretch bg-surface1 transition-all duration-250 ease-out ${isSearchActive ? "opacity-100" : "pointer-events-none opacity-0"
+            className={`absolute inset-0 flex items-stretch bg-surface transition-all duration-250 ease-out ${isSearchActive ? "opacity-100" : "pointer-events-none opacity-0"
               }`}
           >
             <div className="relative flex flex-1 items-stretch">
-              <div className="flex h-full w-[75px] items-center justify-center border-l-[0.5px] border-foreground text-foreground">
+              <div className="flex h-full w-[50px] lg:w-[75px] items-center justify-center border-l-[0.5px] border-foreground text-foreground">
                 <svg
-                  width="24"
-                  height="24"
+                  className="w-5 h-5 lg:w-6 lg:h-6"
                   viewBox="0 0 35 35"
                   fill="currentColor"
                   xmlns="http://www.w3.org/2000/svg"
@@ -388,7 +433,7 @@ export function NavHeader() {
                 </svg>
               </div>
 
-              <div className="flex flex-1 items-center pr-fluid-20">
+              <div className="flex flex-1 items-center pr-0 lg:pr-fluid-20">
                 <input
                   type="text"
                   value={searchQuery}
@@ -405,7 +450,7 @@ export function NavHeader() {
                     }
                   }}
                   autoFocus={isSearchActive}
-                  className="w-full border-0 bg-transparent text-body-lg text-foreground placeholder:text-muted focus:outline-none focus:ring-0"
+                  className="w-full border-0 bg-transparent text-body-base lg:text-body-lg text-foreground placeholder:text-muted focus:outline-none focus:ring-0"
                 />
               </div>
 
@@ -427,45 +472,52 @@ export function NavHeader() {
               onClick={handleCloseSearch}
             >
               <svg
-                width="17"
-                height="17"
+                className="w-[14px] h-[14px] lg:w-[17px] lg:h-[17px]"
                 viewBox="0 0 17 17"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
                 aria-hidden="true"
-                className="text-[rgb(var(--color-accent-orange))]"
               >
                 <path
                   d="M0.79541 0.795532L15.7954 15.7955M0.79541 15.7955L15.7954 0.795532"
                   stroke="currentColor"
                   strokeWidth="2.25"
+                  className="text-[rgb(var(--color-accent-orange))]"
                 />
               </svg>
             </IconButton>
           </div>
         </div>
 
-        {/* Absolute menu list anchored to site-grid-container */}
+        {/* Absolute menu list - full width on mobile/desktop */}
         <div
-          className={`absolute right-0 top-full z-[1001] flex h-[75px] items-stretch border border-foreground bg-surface transition-all duration-250 ease-out ${isMenuOpen ? "translate-y-0 opacity-100" : "pointer-events-none -translate-y-2 opacity-0"
+          className={`absolute left-0 right-0 lg:right-[-0.5px] lg:left-auto top-full z-[1001] flex items-stretch border-x-0 lg:border-x-[0.5px] border-t-[0.5px] border-b-[0.5px] border-foreground bg-surface transition-all duration-250 ease-out ${isMenuOpen ? "translate-y-0 opacity-100" : "pointer-events-none -translate-y-2 opacity-0"
             }`}
         >
-          {[
-            { label: t(language, "header.menu.home"), path: "/" },
-            { label: t(language, "header.menu.quiz"), path: "/quiz" },
-            { label: t(language, "header.menu.careers"), path: "/careers" },
-            { label: t(language, "header.menu.resources"), path: "/resources" },
-            { label: t(language, "header.menu.about"), path: "/about" },
-          ].map((item) => (
-            <Link
-              key={item.path}
-              to={item.path}
-              onClick={() => setIsMenuOpen(false)}
-              className="flex items-center justify-center border-r border-foreground px-10 text-base font-bold text-foreground hover:bg-surface2 last:border-r-0 transition-colors duration-250 ease-out"
-            >
-              {item.label}
-            </Link>
-          ))}
+          <div className="relative flex items-stretch overflow-x-auto scrollbar-hide w-full py-5">
+            <div className="flex items-stretch">
+              {[
+                { label: t(language, "header.menu.home"), path: "/" },
+                { label: t(language, "header.menu.quiz"), path: "/quiz" },
+                { label: t(language, "header.menu.careers"), path: "/careers" },
+                { label: t(language, "header.menu.resources"), path: "/resources" },
+                { label: t(language, "header.menu.about"), path: "/about" }
+              ]
+                .map((item, index, array) => {
+                  const isActive = location.pathname === item.path
+                  return (
+                    <Link
+                      key={item.path}
+                      to={item.path}
+                      onClick={() => setIsMenuOpen(false)}
+                      className={`flex items-center justify-center border-r border-foreground px-10 ${isActive ? "text-h5 text-foreground" : "text-body-lg text-muted hover:text-foreground"} transition-colors duration-250 ease-out whitespace-nowrap ${index === array.length - 1 ? "border-r-0" : ""}`}
+                    >
+                      {item.label}
+                    </Link>
+                  )
+                })}
+            </div>
+          </div>
         </div>
       </div>
     </header>
