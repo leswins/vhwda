@@ -6,19 +6,15 @@ type SadFaceIconProps = {
     size?: number
 }
 
-export function SadFaceIcon({ className = "", size = 40 }: SadFaceIconProps) {
+export function SadFaceIcon({ className = "", size = 48 }: SadFaceIconProps) {
     return (
-        <img 
+        <img
             src={sadRedImage}
             alt="Dislike"
-            className={className}
-            style={{ 
-                width: '48px',
-                height: '48px',
-                objectFit: 'contain',
-                display: 'block',
-                imageRendering: 'auto'
-            }}
+            width={size}
+            height={size}
+            className={`block object-contain ${className}`}
+            style={{ imageRendering: "auto" }}
             role="img"
             aria-label="Dislike"
         />

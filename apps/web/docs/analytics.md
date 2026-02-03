@@ -10,7 +10,7 @@ All events include `language` when available.
 
 | Event | When fired | Key params |
 | --- | --- | --- |
-| `page_view` | Route changes | `page_path`, `page_location`, `page_title`, `language` |
+| `page_view` | Route changes | `page_path`, `page_location`, `page_title`, `page_group`, `language` |
 | `career_search` | Search in Browse or Global Search | `query`, `results_count`, `filters_active_count`, `source`, `language` |
 | `career_filter_apply` | Browse filters change | `filter_keys`, `filters_active_count`, `results_count`, `language` |
 | `career_sort_change` | Browse sort change | `sort_by`, `sort_direction`, `results_count`, `language` |
@@ -22,6 +22,8 @@ All events include `language` when available.
 | `compare_remove` | Remove from compare | `career_id`, `career_slug`, `career_title`, `compare_count`, `source`, `language` |
 | `compare_search` | Search within compare | `query`, `results_count`, `language` |
 | `quiz_start` | Quiz begins | `questions_count`, `language` |
+| `quiz_step_view` | Quiz question viewed | `step_index`, `question_id`, `question_type`, `total_questions`, `language` |
+| `quiz_exit` | Quiz exited before completion | `step_index`, `question_id`, `question_type`, `total_questions`, `answered_count`, `exit_reason`, `language` |
 | `quiz_complete` | Quiz submitted | `questions_count`, `answered_count`, `language` |
 | `quiz_results_view` | Quiz results shown | `matched_count`, `language` |
 | `quiz_recommendation_click` | Quiz recommendation clicked | `source`, `career_id`, `career_slug`, `career_title`, `match_percent`, `language` |
@@ -54,7 +56,10 @@ All events include `language` when available.
 1. In local/dev, set `VITE_GA_DEBUG_MODE=true` and run the app.
 2. Open GA4 → Admin → DebugView.
 3. Navigate the app and confirm events appear with correct params.
-4. Confirm `page_view` uses correct `page_path` and `page_location`.
+4. Confirm `page_view` uses correct `page_path`, `page_location`, and `page_group`.
+
+### Custom dimensions (GA4 UI)
+- `page_group` (Event parameter) → Use for page grouping like `home`, `careers`, `career_detail`, `quiz`, `resources`, `compare`, `chat`, `about`.
 
 ### Reporting guidance
 Funnels:

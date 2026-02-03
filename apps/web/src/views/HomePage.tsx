@@ -419,9 +419,9 @@ export function HomePage() {
       {/* Catalog Highlight Section */}
       <section className="bg-surface border-b border-foreground">
         <div className="bg-foreground text-surface">
-          <div className="flex h-full w-full flex-col items-center gap-[15px] p-[25px] text-xs uppercase tracking-widest lg:flex-row lg:justify-between lg:gap-0 lg:px-fluid-25 lg:py-fluid-50">
-            <span>{t(language, "home.catalogBanner.left")}</span>
-            <span>{t(language, "home.catalogBanner.right")}</span>
+          <div className="flex h-full w-full flex-col items-center gap-[15px] p-[25px] text-center text-xs uppercase tracking-widest lg:flex-row lg:justify-between lg:gap-0 lg:px-fluid-25 lg:py-fluid-50 lg:text-left">
+            <span className="lg:text-left">{t(language, "home.catalogBanner.left")}</span>
+            <span className="lg:text-right">{t(language, "home.catalogBanner.right")}</span>
           </div>
         </div>
         <div className="grid grid-cols-1 lg:h-[300px] lg:grid-cols-3 border-t border-foreground">
@@ -679,18 +679,23 @@ export function HomePage() {
               }
             ].map((shortcut, index, array) => (
               <React.Fragment key={shortcut.id}>
-                <Link to={shortcut.to} className="group flex items-center h-[75px] lg:h-[100px] w-full">
-                  <div className={`flex aspect-square h-full items-center justify-center mr-fluid-25 ${shortcut.bgColor}`}>
+                <Link
+                  to={shortcut.to}
+                  className="group flex w-full h-auto min-h-[75px] items-stretch lg:h-[100px] lg:items-center"
+                >
+                  <div
+                    className={`flex aspect-square h-[75px] shrink-0 self-center items-center justify-center mr-fluid-25 lg:h-full ${shortcut.bgColor}`}
+                  >
                     <div className="h-[25px] w-[25px] lg:h-fluid-50 lg:w-fluid-50 text-foreground">
                       {shortcut.icon}
                     </div>
                   </div>
-                  <div className="w-[0.5px] h-full bg-foreground" />
+                  <div className="w-[0.5px] self-stretch bg-foreground" />
                   <div className="flex flex-1 flex-col gap-fluid-10 px-fluid-25 justify-center">
                     <h3 className="text-h4 font-bold text-foreground leading-tight">{shortcut.title}</h3>
                     <p className="text-body-base text-onSurfaceSecondary leading-snug">{shortcut.description}</p>
                   </div>
-                  <div className="w-[100px] h-full flex items-center justify-center">
+                  <div className="w-[100px] shrink-0 flex items-center justify-center self-stretch">
                     <ArrowIndicator />
                   </div>
                 </Link>

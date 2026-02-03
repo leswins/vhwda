@@ -16,15 +16,62 @@ export function AppShell() {
   const [contentVisible, setContentVisible] = useState(true)
 
   useEffect(() => {
-    document.title = t(language, "app.title")
-  }, [language])
+    const getPageTitle = () => {
+      switch (true) {
+        case location.pathname === "/":
+          return t(language, "page.title.home")
+        case location.pathname === "/careers":
+          return t(language, "page.title.careers")
+        case location.pathname.startsWith("/careers/"):
+          return t(language, "page.title.careerDetail")
+        case location.pathname === "/compare":
+          return t(language, "page.title.compare")
+        case location.pathname === "/quiz":
+          return t(language, "page.title.quiz")
+        case location.pathname === "/resources":
+          return t(language, "page.title.resources")
+        case location.pathname === "/chat":
+          return t(language, "page.title.chat")
+        case location.pathname === "/about":
+          return t(language, "page.title.about")
+        default:
+          return t(language, "app.title")
+      }
+    }
+
+    const pageTitle = getPageTitle()
+    const appTitle = t(language, "app.title")
+    document.title = pageTitle === appTitle ? appTitle : `${pageTitle} | ${appTitle}`
+  }, [language, location.pathname])
 
   useEffect(() => {
     const path = `${location.pathname}${location.search}${location.hash}`
+    if (location.pathname.startsWith("/careers/")) return
+    const pageGroup = (() => {
+      switch (true) {
+        case location.pathname === "/":
+          return "home"
+        case location.pathname === "/careers":
+          return "careers"
+        case location.pathname === "/compare":
+          return "compare"
+        case location.pathname === "/quiz":
+          return "quiz"
+        case location.pathname === "/resources":
+          return "resources"
+        case location.pathname === "/chat":
+          return "chat"
+        case location.pathname === "/about":
+          return "about"
+        default:
+          return "other"
+      }
+    })()
     trackPageView({
       page_path: path,
       page_location: window.location.href,
       page_title: document.title,
+      page_group: pageGroup,
       language
     })
   }, [language, location.hash, location.pathname, location.search])
