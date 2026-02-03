@@ -37,14 +37,14 @@ export function CompareTableHeader({
   return (
     <div className="flex border-b border-foreground bg-surface">
       {/* Fixed left: "Career" label */}
-      <div className="sticky left-0 z-30 flex w-[140px] lg:w-[250px] shrink-0 items-center bg-surface px-fluid-20 py-fluid-15 lg:px-[50px] lg:py-[25px]">
+      <div className="sticky left-0 z-30 flex w-[125px] lg:w-[250px] shrink-0 items-center bg-surface px-fluid-20 py-fluid-15 lg:px-[50px] lg:py-[25px]">
         <span className="text-[length:var(--text-body-lg)] font-medium leading-[var(--leading-body-lg)] tracking-[var(--tracking-body-lg)]">
           {t(language, "compare.category")}
         </span>
       </div>
 
       {/* Vertical divider */}
-      <div className="sticky left-[140px] lg:left-[250px] z-30 w-[0.5px] shrink-0 bg-foreground" />
+      <div className="sticky left-[125px] lg:left-[250px] z-30 w-[0.5px] shrink-0 bg-foreground" />
 
       {/* Content: Career titles and add button */}
       <div className="flex gap-fluid-20 pl-fluid-20 pr-fluid-20 py-fluid-15 lg:gap-[50px] lg:pl-[50px] lg:pr-[50px] lg:py-[25px]">
@@ -74,9 +74,8 @@ export function CompareTableHeader({
           <>
             <div className="h-full w-[0.5px] shrink-0 bg-foreground" />
             <div
-              className={`flex shrink-0 items-center ${
-                showSearch ? 'w-[260px] lg:w-[350px]' : 'w-[220px] lg:w-[300px]'
-              }`}
+              className={`flex shrink-0 items-center ${showSearch ? 'w-[260px] lg:w-[350px]' : 'w-[220px] lg:w-[300px]'
+                }`}
               style={{ minWidth: showSearch ? "260px" : "200px" }}
             >
               {!showSearch ? (

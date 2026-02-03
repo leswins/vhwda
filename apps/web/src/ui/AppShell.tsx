@@ -69,7 +69,7 @@ export function AppShell() {
   }, [isLoading])
 
   return (
-    <div className="flex min-h-screen flex-col bg-surface text-foreground overflow-x-hidden">
+    <div className="flex min-h-screen flex-col bg-surface text-foreground overflow-x-clip">
       <a
         href="#main"
         className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:border focus:border-border focus:bg-surface focus:px-3 focus:py-2 focus:text-foreground"
@@ -77,7 +77,7 @@ export function AppShell() {
         {t(language, "a11y.skipToContent")}
       </a>
       <NavHeader />
-      <main id="main" className="flex-1 px-0 lg:px-[50px]">
+      <main id="main" className="flex-1 px-0 lg:px-fluid-50">
         <div
           className="site-grid-container min-h-full transition-opacity duration-250 ease-out"
           style={{ opacity: contentVisible ? 1 : 0 }}
@@ -86,11 +86,11 @@ export function AppShell() {
         </div>
       </main>
       <Footer />
-      
+
       {/* Global Loading Overlay */}
       <div
         className="transition-opacity duration-250 ease-out"
-        style={{ 
+        style={{
           opacity: isLoading ? 1 : 0,
           pointerEvents: isLoading ? 'auto' : 'none'
         }}

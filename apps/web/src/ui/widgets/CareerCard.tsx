@@ -16,18 +16,34 @@ type Props = {
   canAddToCompare?: boolean
   onToggleCompare?: () => void
   onClick?: () => void
+  autoplayOnMobile?: boolean
 }
 
-export function CareerCard({ language, title, salary, to, imageUrl, videoUrl, showMatch, matchLabel, isInCompare = false, canAddToCompare = false, onToggleCompare, onClick }: Props) {
+export function CareerCard({ language, title, salary, to, imageUrl, videoUrl, showMatch, matchLabel, isInCompare = false, canAddToCompare = false, onToggleCompare, onClick, autoplayOnMobile = false }: Props) {
   const videoRef = React.useRef<HTMLVideoElement | null>(null)
 
+  React.useEffect(() => {
+    const video = videoRef.current
+    if (!video) return
+
+    if (autoplayOnMobile) {
+      void video.play()
+    } else {
+      video.pause()
+    }
+  }, [autoplayOnMobile])
+
   const handleMouseEnter = () => {
+    // Only handle hover on desktop (lg breakpoint and above)
+    if (window.innerWidth < 1024) return
     const video = videoRef.current
     if (!video) return
     void video.play()
   }
 
   const handleMouseLeave = () => {
+    // Only handle hover on desktop (lg breakpoint and above)
+    if (window.innerWidth < 1024) return
     videoRef.current?.pause()
   }
 
@@ -64,7 +80,7 @@ export function CareerCard({ language, title, salary, to, imageUrl, videoUrl, sh
           {videoUrl ? (
             <video
               ref={videoRef}
-              className="h-full w-full object-cover"
+              className="absolute inset-0 h-full w-full object-cover"
               muted
               playsInline
               preload="metadata"
@@ -72,9 +88,9 @@ export function CareerCard({ language, title, salary, to, imageUrl, videoUrl, sh
               poster={imageUrl}
             >
               <source src={videoUrl} />
-        </video>
+            </video>
           ) : imageUrl ? (
-            <img alt="" src={imageUrl} className="h-full w-full object-cover" />
+            <img alt="" src={imageUrl} className="absolute inset-0 h-full w-full object-cover" />
           ) : null}
 
           {showMatch ? (
@@ -87,7 +103,7 @@ export function CareerCard({ language, title, salary, to, imageUrl, videoUrl, sh
         <div className="h-[0.5px] w-full bg-foreground" />
 
         <div className="relative flex-1 overflow-hidden bg-surface1 px-5 py-5 flex items-center">
-          <div className="absolute inset-0 translate-x-[-100%] bg-foreground transition-transform duration-300 ease-out group-hover:translate-x-0" />
+          <div className="absolute inset-0 translate-x-[-101%] bg-foreground transition-transform duration-300 ease-out group-hover:translate-x-0" />
           <div className="relative z-10 text-h4 font-bold leading-tight text-foreground transition-colors duration-300 group-hover:text-surface">{title}</div>
         </div>
 

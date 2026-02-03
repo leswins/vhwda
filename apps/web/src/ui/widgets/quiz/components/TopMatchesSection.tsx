@@ -106,6 +106,57 @@ type TopMatchesSectionProps = {
 }
 
 export function TopMatchesSection({ careers, userVector, language }: TopMatchesSectionProps) {
+  const [visibleCardId, setVisibleCardId] = useState<string | null>(null)
+  const careerCardRefs = useRef<Map<string, HTMLDivElement>>(new Map())
+
+  // Intersection Observer for mobile video autoplay (match HomePage behavior)
+  useEffect(() => {
+    const checkIsMobile = () => window.innerWidth < 1024
+
+    if (!checkIsMobile()) {
+      setVisibleCardId(null)
+      return
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const cardId = entry.target.getAttribute("data-card-id")
+          if (!cardId) return
+
+          if (entry.isIntersecting && entry.intersectionRatio >= 0.99) {
+            setVisibleCardId(cardId)
+          } else {
+            setVisibleCardId((prev) => (prev === cardId ? null : prev))
+          }
+        })
+      },
+      {
+        root: null,
+        threshold: [0.99],
+        rootMargin: "0px"
+      }
+    )
+
+    careerCardRefs.current.forEach((element) => {
+      if (element) observer.observe(element)
+    })
+
+    const handleResize = () => {
+      if (!checkIsMobile()) {
+        setVisibleCardId(null)
+        observer.disconnect()
+      }
+    }
+
+    window.addEventListener("resize", handleResize)
+
+    return () => {
+      observer.disconnect()
+      window.removeEventListener("resize", handleResize)
+    }
+  }, [careers])
+
   return (
     <div>
       <div className="flex items-center p-fluid-50">
@@ -114,16 +165,67 @@ export function TopMatchesSection({ careers, userVector, language }: TopMatchesS
           <PatternBar iconSize={32} height="2.5rem" />
         </div>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 bg-surface border-y-[0.5px] border-foreground">
+
+      {/* Mobile/Tablet (below lg): horizontal carousel, matches HomePage sizing + autoplay */}
+      <div className="flex gap-0 overflow-x-auto snap-x snap-mandatory scrollbar-hide lg:hidden bg-surface border-y-[0.5px] border-foreground">
         {careers.map((career) => {
           const matchPercentage = Math.round(calculateMatchPercentage(userVector, career.quizVector || {}))
           const title = getLocalizedString(language, career.title) ?? ""
           const salary = pickTypicalSalary(career.salary)
-          
+
           return (
             <div
               key={career._id}
-              className="bg-surface border-r-[0.5px] border-foreground [&:nth-child(3n)]:border-r-0"
+              ref={(el) => {
+                if (el) {
+                  careerCardRefs.current.set(career._id, el)
+                } else {
+                  careerCardRefs.current.delete(career._id)
+                }
+              }}
+              data-card-id={career._id}
+              className="snap-start shrink-0 w-[70%] min-w-[70%] border-r-[0.5px] border-foreground last:border-r-0"
+            >
+              <CareerCard
+                language={language}
+                title={title}
+                salary={salary}
+                to={`/careers/${career.slug ?? ""}`}
+                imageUrl={career.imageUrl}
+                videoUrl={career.videoUrl}
+                autoplayOnMobile={visibleCardId === career._id}
+                showMatch={true}
+                matchLabel={`${matchPercentage}% MATCH`}
+                onClick={() => {
+                  trackEvent("quiz_recommendation_click", {
+                    source: "quiz_top_matches",
+                    career_id: career._id,
+                    career_slug: career.slug ?? undefined,
+                    career_title: title,
+                    match_percent: matchPercentage,
+                    language
+                  })
+                }}
+              />
+            </div>
+          )
+        })}
+      </div>
+
+      {/* Desktop (lg+): keep existing grid */}
+      <div className="hidden lg:grid grid-cols-3 bg-surface border-y-[0.5px] border-foreground">
+        {careers.map((career, index) => {
+          const matchPercentage = Math.round(calculateMatchPercentage(userVector, career.quizVector || {}))
+          const title = getLocalizedString(language, career.title) ?? ""
+          const salary = pickTypicalSalary(career.salary)
+
+          return (
+            <div
+              key={career._id}
+              className={[
+                "bg-surface border-r-[0.5px] border-foreground",
+                index === careers.length - 1 ? "border-r-0" : ""
+              ].join(" ")}
             >
               <CareerCard
                 language={language}

@@ -6,7 +6,7 @@ import { t, type TranslationKey } from "../../utils/i18n"
 export function Footer() {
   const { language, setLanguage } = useLanguageStore()
 
-  const exploreLinks: Array<{ key: TranslationKey; to?: string }> = [
+  const exploreLinks: Array<{ key: TranslationKey; to?: string; href?: string }> = [
     { key: "footer.link.home", to: "/" },
     { key: "footer.link.browseCareers", to: "/careers" },
     { key: "footer.link.findCareer", to: "/quiz" },
@@ -28,7 +28,7 @@ export function Footer() {
   }
 
   return (
-    <footer className="bg-surface text-foreground px-0 lg:px-fluid-50 border-b-[0.5px] border-foreground">
+    <footer className="bg-surface text-foreground px-0 lg:px-fluid-50 border-b-0 lg:border-b-[0.5px] border-foreground">
       <div className="w-full lg:max-w-[1368px] lg:mx-auto lg:border-l lg:border-r lg:border-foreground">
         {/* Mobile accordion layout */}
         <div className="md:hidden border-t border-foreground">
@@ -48,7 +48,6 @@ export function Footer() {
               <div className="px-fluid-30 pb-fluid-25 space-y-fluid-20">
                 <div className="flex flex-col gap-fluid-20 text-base leading-[1.35] tracking-[-0.4px]">
                   <p>{t(language, "footer.about")}</p>
-                  <p>{t(language, "footer.address")}</p>
                 </div>
               </div>
             )}
@@ -173,7 +172,6 @@ export function Footer() {
 
             <div className="flex flex-col gap-fluid-50 text-base leading-[1.35] tracking-[-0.4px]">
               <p>{t(language, "footer.about")}</p>
-              <p>{t(language, "footer.address")}</p>
             </div>
           </div>
 
@@ -185,17 +183,17 @@ export function Footer() {
               <ul className="flex flex-col gap-fluid-10 text-base leading-[1.35] tracking-[-0.4px]">
                 {exploreLinks.map((l) => (
                   <li key={l.key as string}>
-                  {l.to ? (
-                    <Link className="hover:underline" to={l.to}>
-                      {t(language, l.key)}
-                    </Link>
-                  ) : l.href ? (
-                    <a className="hover:underline" href={l.href}>
-                      {t(language, l.key)}
-                    </a>
-                  ) : (
-                    <span className="text-foreground/70">{t(language, l.key)}</span>
-                  )}
+                    {l.to ? (
+                      <Link className="hover:underline" to={l.to}>
+                        {t(language, l.key)}
+                      </Link>
+                    ) : l.href ? (
+                      <a className="hover:underline" href={l.href}>
+                        {t(language, l.key)}
+                      </a>
+                    ) : (
+                      <span className="text-foreground/70">{t(language, l.key)}</span>
+                    )}
                   </li>
                 ))}
               </ul>

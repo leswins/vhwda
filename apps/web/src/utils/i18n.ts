@@ -194,6 +194,7 @@ const dict: Dictionary = {
   "search.career": { en: "Career", es: "Carrera" },
   "filters.filter": { en: "Filter", es: "Filtrar" },
   "filters.sort": { en: "Sort", es: "Ordenar" },
+  "filters.searchKeywordPlaceholder": { en: "search for a keyword", es: "buscar por palabra clave" },
   "filters.sort.requiredEducation": { en: "Required Education", es: "Educación requerida" },
   "filters.sort.salaryRange": { en: "Salary Range", es: "Rango salarial" },
   "filters.sort.jobOutlook": { en: "Job Outlook", es: "Perspectiva laboral" },

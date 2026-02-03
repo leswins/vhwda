@@ -70,7 +70,7 @@ export function OtherMatchesList({ careers, userVector, language, maxResults = 2
         return (
           <div 
             key={career._id} 
-            className={`relative ${isLeftColumn ? "md:pr-[50px]" : "md:pl-[50px]"}`}
+            className={`relative border-b-[0.5px] border-foreground last:border-b-0 md:border-b-0 ${isLeftColumn ? "md:pr-[50px]" : "md:pl-[50px]"}`}
           >
             {showDivider && (
               <div className="hidden md:block absolute right-0 top-1/2 -translate-y-1/2 h-20 w-[0.5px] bg-foreground" />

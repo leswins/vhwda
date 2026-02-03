@@ -4,6 +4,7 @@ import type { Language } from "../../../utils/i18n"
 import { getLocalizedString } from "../../../sanity/queries/careers"
 import type { CareerSummary } from "../../../services/careerContext"
 import { trackEvent } from "../../../utils/analytics"
+import arrowIcon from "../../../assets/icons/arrow.svg"
 
 type Props = {
   language: Language
@@ -48,16 +49,11 @@ export function ChatCareerCard({ language, career, isSelected = false }: Props) 
           </div>
         )}
       </div>
-      <svg 
-        width="20" 
-        height="20" 
-        viewBox="0 0 20 20" 
-        fill="none" 
-        xmlns="http://www.w3.org/2000/svg"
-        className={`shrink-0 ml-4 ${isSelected ? 'border border-dotted border-[rgb(var(--color-accent-pink))] rounded' : ''}`}
-      >
-        <path d="M7 4L13 10L7 16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-      </svg>
+      <img 
+        src={arrowIcon}
+        alt=""
+        className={`shrink-0 ml-4 h-5 w-5 ${isSelected ? 'border border-dotted border-[rgb(var(--color-accent-pink))] rounded' : ''}`}
+      />
     </div>
   )
 }

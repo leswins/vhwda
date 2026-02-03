@@ -1,15 +1,16 @@
 import React from "react"
 import { useQuizLogic } from "../ui/widgets/quiz/hooks/useQuizLogic"
 import {
-  QuizError,
-  QuizEmpty,
-  QuizQuestion,
-  QuizNavigation,
-  QuizResults,
-  MobileQuizSteps,
+    QuizError,
+    QuizEmpty,
+    QuizQuestion,
+    QuizNavigation,
+    QuizResults,
+    MobileQuizSteps,
 } from "../ui/widgets/quiz/components"
 import { QuizSidebar } from "../ui/widgets/quiz/components/QuizSidebar"
 import { VectorModal } from "../ui/widgets/quiz/components/VectorModal"
+import { PageHead } from "../ui/PageHead"
 import { useLanguageStore } from "../zustand/useLanguageStore"
 import { t } from "../utils/i18n"
 import shapeClusterImage from "../assets/icons/shape-cluster.svg"
@@ -57,6 +58,11 @@ export function QuizPage() {
 
     return (
         <div className="flex flex-col min-h-[calc(100vh-123px)] bg-surface overflow-x-hidden">
+            <PageHead
+                title="Career Quiz"
+                description="Take our interactive career quiz to discover healthcare careers that match your interests, skills, and goals. Get personalized career recommendations based on your answers."
+                path="/quiz"
+            />
             <div className="flex flex-1 min-h-0">
                 {currentStep === "questions" && currentQuestion ? (
                     <>
@@ -87,7 +93,7 @@ export function QuizPage() {
                                 />
                             </div>
 
-                            <div className="p-fluid-30 lg:p-8 flex justify-center">
+                            <div className="p-fluid-30 pb-10 lg:p-8 flex justify-center">
                                 <QuizNavigation
                                     hasPrevious={hasPrevious}
                                     hasNext={hasNext}
@@ -123,7 +129,7 @@ export function QuizPage() {
 
             {currentStep === "questions" && currentQuestion && (
                 <div className="relative border-t-[0.5px] border-foreground bg-surface1 overflow-hidden">
-                    <div className="w-full p-fluid-50 relative">
+                    <div className="w-full relative p-5 pr-40 lg:p-fluid-50">
                         <p className="text-sub2 font-bold uppercase text-foreground mb-4">
                             {t(language, "quiz.complete.title")}
                         </p>
@@ -133,7 +139,7 @@ export function QuizPage() {
                         <img
                             src={shapeClusterImage}
                             alt=""
-                            className="block lg:hidden w-[130px] h-auto object-contain absolute right-fluid-20 bottom-0"
+                            className="block lg:hidden w-[130px] h-auto object-contain absolute right-0 bottom-0"
                         />
                     </div>
                     <img

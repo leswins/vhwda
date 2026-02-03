@@ -23,7 +23,7 @@ export function ScholarshipCard({ language, scholarship }: Props) {
   const institution = scholarship.institution
 
   return (
-    <div className="space-y-fluid-8 lg:space-y-4 border-b-[0.5px] border-foreground pt-fluid-20 pb-fluid-20 lg:pt-[40px] lg:pb-[40px] first:pt-0 last:border-0 last:pb-0">
+    <div className="space-y-fluid-8 lg:space-y-4 border-b-[0.5px] border-foreground py-5 lg:py-[40px] first:pt-0 last:border-0 last:pb-0">
       <div className="flex items-start justify-between gap-fluid-10">
         <h3 className="text-body-base lg:text-lg font-semibold text-foreground leading-snug">
           {scholarship.name}
