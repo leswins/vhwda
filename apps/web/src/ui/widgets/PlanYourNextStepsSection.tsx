@@ -7,12 +7,14 @@ import { ScholarshipList } from "./ScholarshipList"
 import { ProfessionalOrganizationList } from "./ProfessionalOrganizationList"
 import { EducationalInstitutionsList } from "./EducationalInstitutionsList"
 import { SectionHeader } from "./SectionHeader"
+import { ScholarshipsUnderConstruction } from "./ScholarshipsUnderConstruction"
 import type { ScholarshipFilters } from "./filters/scholarshipFilters"
 import type { OrganizationFilters } from "./filters/organizationFilters"
 import { trackEvent } from "../../utils/analytics"
 import helpIcon from "../../assets/icons/Help.svg"
 import doctorIcon from "../../assets/icons/Doctor.svg"
 import educationIcon from "../../assets/icons/Education.svg"
+import { fetchSiteFeatureFlags } from "../../sanity/queries/siteSettings"
 
 type FiltersPanelProps = {
   language: Language
@@ -127,6 +129,7 @@ export function PlanYourNextStepsSection({ activeSections }: PlanYourNextStepsSe
   const [scholarshipCount, setScholarshipCount] = useState(0)
   const [organizationCount, setOrganizationCount] = useState(0)
   const [institutionCount, setInstitutionCount] = useState(0)
+  const [scholarshipsEnabled, setScholarshipsEnabled] = useState(false)
   const organizationFiltersRef = useRef<OrganizationFilters | null>(null)
 
   const [scholarshipFilters, setScholarshipFilters] = useState<ScholarshipFilters>({
@@ -161,6 +164,23 @@ export function PlanYourNextStepsSection({ activeSections }: PlanYourNextStepsSe
     }, 400)
     return () => window.clearTimeout(timer)
   }, [language, scholarshipCount, scholarshipFilters.searchQuery])
+
+  useEffect(() => {
+    let cancelled = false
+    async function loadFeatureFlags() {
+      try {
+        const flags = await fetchSiteFeatureFlags()
+        if (!cancelled) setScholarshipsEnabled(Boolean(flags.scholarshipsEnabled))
+      } catch {
+        // Keep disabled on failure (safe default)
+        if (!cancelled) setScholarshipsEnabled(false)
+      }
+    }
+    loadFeatureFlags()
+    return () => {
+      cancelled = true
+    }
+  }, [])
 
   useEffect(() => {
     const query = organizationFilters.searchQuery.trim()
@@ -215,34 +235,36 @@ export function PlanYourNextStepsSection({ activeSections }: PlanYourNextStepsSe
     <div className="space-y-0">
       {showScholarships && (
         <section id="scholarships" className="scroll-mt-8">
-          <div className="hidden lg:block">
-            <SectionHeader
-              language={language}
-              titleKey="planNextSteps.card.scholarships.title"
-              count={scholarshipCount}
-              iconBgColor="bg-[rgb(var(--color-accent-green))]"
-              iconSrc={helpIcon}
-              iconAlt={t(language, "planNextSteps.card.scholarships.title")}
-            />
-          </div>
-          <div className="grid grid-cols-1 lg:grid-cols-[30%_1fr] lg:h-[800px] lg:min-h-[calc(95vh-75px)] border-b border-foreground lg:border-b-[0.5px]">
-            <div className="lg:sticky lg:top-0 lg:h-full">
-              <FiltersPanel
-                language={language}
-                searchPlaceholderKey="filters.searchKeywordPlaceholder"
-                searchQuery={scholarshipFilters.searchQuery}
-                onSearchChange={handleScholarshipSearchChange}
-                showContentDivider={false}
-              />
-            </div>
-            <div className="p-5 lg:p-fluid-50 lg:h-full lg:overflow-y-auto lg:scrollbar-hide">
-              <ScholarshipList
-                language={language}
-                filters={scholarshipFilters}
-                onCountChange={setScholarshipCount}
-              />
-            </div>
-          </div>
+          {scholarshipsEnabled ? (
+            <>
+              <div className="hidden lg:block">
+                <SectionHeader
+                  language={language}
+                  titleKey="planNextSteps.card.scholarships.title"
+                  count={scholarshipCount}
+                  iconBgColor="bg-[rgb(var(--color-accent-green))]"
+                  iconSrc={helpIcon}
+                  iconAlt={t(language, "planNextSteps.card.scholarships.title")}
+                />
+              </div>
+              <div className="grid grid-cols-1 lg:grid-cols-[30%_1fr] lg:h-[800px] lg:min-h-[calc(95vh-75px)] border-b border-foreground lg:border-b-[0.5px]">
+                <div className="lg:sticky lg:top-0 lg:h-full">
+                  <FiltersPanel
+                    language={language}
+                    searchPlaceholderKey="filters.searchKeywordPlaceholder"
+                    searchQuery={scholarshipFilters.searchQuery}
+                    onSearchChange={handleScholarshipSearchChange}
+                    showContentDivider={false}
+                  />
+                </div>
+                <div className="p-5 lg:p-fluid-50 lg:h-full lg:overflow-y-auto lg:scrollbar-hide">
+                  <ScholarshipList language={language} filters={scholarshipFilters} onCountChange={setScholarshipCount} />
+                </div>
+              </div>
+            </>
+          ) : (
+            <ScholarshipsUnderConstruction language={language} />
+          )}
         </section>
       )}
 

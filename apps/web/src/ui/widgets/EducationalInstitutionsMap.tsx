@@ -275,7 +275,7 @@ export function EducationalInstitutionsMap({ language, institutions }: Props) {
     return (
       <div className="flex flex-col lg:h-[750px] lg:grid lg:grid-cols-2">
         {/* Mobile: regions list first, hugs content */}
-        <div className="order-first px-5 pb-10 pt-0 lg:order-none lg:h-full lg:overflow-auto lg:scrollbar-hide lg:px-[25px] lg:pb-[25px] lg:pt-0 lg:border-l-[0.5px] lg:border-foreground">
+        <div className="order-first px-5 pb-10 pt-0 lg:order-none lg:h-full lg:overflow-auto lg:scrollbar-hide lg:px-[25px] lg:pb-[25px] lg:pt-0 lg:border-r-[0.5px] lg:border-foreground">
           <RegionList
             groups={groupedRegions}
             activeId={activeId}
@@ -301,7 +301,7 @@ export function EducationalInstitutionsMap({ language, institutions }: Props) {
   return (
     <div className="flex flex-col lg:h-[750px] lg:grid lg:grid-cols-2">
       {/* Mobile: regions list first, hugs content */}
-      <div className="order-first px-5 pb-10 pt-0 lg:order-none lg:h-full lg:overflow-auto lg:scrollbar-hide lg:px-[25px] lg:pb-[25px] lg:pt-0 lg:border-l-[0.5px] lg:border-foreground">
+      <div className="order-first px-5 pb-10 pt-0 lg:order-none lg:h-full lg:overflow-auto lg:scrollbar-hide lg:px-[25px] lg:pb-[25px] lg:pt-0 lg:border-r-[0.5px] lg:border-foreground">
         <RegionList
           groups={groupedRegions}
           activeId={activeId}
