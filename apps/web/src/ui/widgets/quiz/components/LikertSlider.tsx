@@ -55,16 +55,19 @@ export function LikertSlider({ questionId, value, onChange, language }: LikertSl
             <p className="text-body-sm text-muted text-center">
                 {t(language, "quiz.adjustSlider")}
             </p>
-            <Slider
-                min={1}
-                max={5}
-                step={1}
-                value={sliderValue}
-                onChange={handleChange}
-                showTicks={true}
-                leftLabel={<SadFaceIcon />}
-                rightLabel={<HappyFaceIcon />}
-            />
+            <div className="-mx-5 lg:mx-0">
+                <Slider
+                    min={1}
+                    max={5}
+                    step={1}
+                    value={sliderValue}
+                    onChange={handleChange}
+                    showTicks={true}
+                    gapClassName="gap-[10px] lg:gap-6"
+                    leftLabel={<SadFaceIcon className="h-[30px] w-[30px] lg:h-[48px] lg:w-[48px]" />}
+                    rightLabel={<HappyFaceIcon className="h-[30px] w-[30px] lg:h-[48px] lg:w-[48px]" />}
+                />
+            </div>
         </div>
     )
 }

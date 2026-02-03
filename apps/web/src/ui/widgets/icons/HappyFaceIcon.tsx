@@ -6,19 +6,15 @@ type HappyFaceIconProps = {
     size?: number
 }
 
-export function HappyFaceIcon({ className = "", size = 40 }: HappyFaceIconProps) {
+export function HappyFaceIcon({ className = "", size = 48 }: HappyFaceIconProps) {
     return (
-        <img 
+        <img
             src={happyGreenImage}
             alt="Like"
-            className={className}
-            style={{ 
-                width: '48px',
-                height: '48px',
-                objectFit: 'contain',
-                display: 'block',
-                imageRendering: 'auto'
-            }}
+            width={size}
+            height={size}
+            className={`block object-contain ${className}`}
+            style={{ imageRendering: "auto" }}
             role="img"
             aria-label="Like"
         />
