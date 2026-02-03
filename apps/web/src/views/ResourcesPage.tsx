@@ -57,8 +57,29 @@ export function ResourcesPage() {
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: "smooth" })
   }, [])
+
+  const scrollToSection = (sectionId: ResourceSectionId) => {
+    // Note: On desktop we can have duplicate IDs in the DOM because the mobile
+    // accordion sections exist but are hidden via `lg:hidden`. In that case,
+    // prefer scrolling to the *visible* anchor.
+    const candidates = Array.from(document.querySelectorAll<HTMLElement>(`[id="${sectionId}"]`))
+    const visible = candidates.find((el) => el.getClientRects().length > 0)
+    const target = visible ?? candidates[0]
+    target?.scrollIntoView({ behavior: "smooth", block: "start" })
+  }
+
   const handleToggleSection = (sectionId: ResourceSectionId) => {
     setOpenSections((prev) => {
+      // Desktop: scroll to the section (all sections are rendered below).
+      if (window.matchMedia("(min-width: 1024px)").matches) {
+        scrollToSection(sectionId)
+        trackEvent("resource_section_jump", {
+          section_id: sectionId,
+          language
+        })
+        return prev
+      }
+
       // Mobile: "Schools" should always stay expanded.
       if (sectionId === "schools") {
         return prev.includes(sectionId) ? prev : [...prev, sectionId]
@@ -84,7 +105,7 @@ export function ResourcesPage() {
       />
       <section className="bg-surface pt-fluid-30 pb-0 lg:p-fluid-50">
         <div className="grid w-full gap-fluid-30 lg:grid-cols-[48fr_52fr]">
-          <div className="flex flex-col gap-fluid-15 px-fluid-20 lg:px-0 lg:sticky lg:top-[50px] lg:self-start">
+          <div className="flex flex-col gap-fluid-15 px-fluid-20 lg:px-0 lg:self-start">
             <span className="text-sub2 font-bold uppercase tracking-[0.15em] text-onSurfaceSecondary">
               {t(language, "resources.kicker")}
             </span>
@@ -95,7 +116,7 @@ export function ResourcesPage() {
               {t(language, "planNextSteps.description")}
             </p>
           </div>
-          <div className="flex flex-col gap-0 lg:gap-fluid-20">
+          <div className="flex flex-col gap-0 lg:gap-fluid-20 border-t border-foreground lg:border-0">
             {[
               {
                 id: "scholarships",

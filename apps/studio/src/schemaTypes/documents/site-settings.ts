@@ -40,7 +40,15 @@ export const siteSettings = defineType({
       name: "featureFlags",
       title: "Feature Flags",
       type: "object",
-      fields: [defineField({ name: "aiChatEnabled", title: "AI Chat Enabled", type: "boolean" })]
+      fields: [
+        defineField({ name: "aiChatEnabled", title: "AI Chat Enabled", type: "boolean" }),
+        defineField({
+          name: "scholarshipsEnabled",
+          title: "Scholarships Enabled",
+          type: "boolean",
+          description: "Controls whether the Scholarships & Financial Aid section is live on the website."
+        })
+      ]
     }),
     defineField({
       name: "seoDefaults",

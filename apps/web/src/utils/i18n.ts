@@ -394,6 +394,12 @@ const dict: Dictionary = {
   "filters.geographicFocus.international": { en: "International", es: "Internacional" },
   "filters.geographicFocus.local": { en: "Local", es: "Local" },
   "common.visitSite": { en: "Visit Site", es: "Visitar Sitio" },
+  "resources.scholarships.comingSoon": { en: "Coming Soon", es: "Próximamente" },
+  "resources.scholarships.underConstruction": { en: "Under Construction", es: "En construcción" },
+  "resources.scholarships.loading": { en: "Loading scholarships…", es: "Cargando becas…" },
+  "resources.scholarships.loadFailed": { en: "Failed to load scholarships", es: "No se pudieron cargar las becas" },
+  "resources.scholarships.loadErrorPrefix": { en: "Error loading scholarships:", es: "Error al cargar las becas:" },
+  "resources.scholarships.noneFound": { en: "No scholarships found.", es: "No se encontraron becas." },
 
   // Quiz-specific translations
   "quiz.section.interestsValues": { en: "Interests & Values", es: "Intereses y Valores" },

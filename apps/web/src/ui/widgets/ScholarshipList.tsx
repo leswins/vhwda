@@ -5,6 +5,7 @@ import type { Scholarship } from "../../sanity/queries/scholarships"
 import { ScholarshipCard } from "./ScholarshipCard"
 import { filterScholarships } from "./utils/filterScholarships"
 import type { ScholarshipFilters } from "./filters/scholarshipFilters"
+import { t } from "../../utils/i18n"
 
 type Props = {
   language: Language
@@ -32,7 +33,7 @@ export function ScholarshipList({ language, filters, onCountChange }: Props) {
         const data = await fetchScholarships()
         setAllScholarships(data)
       } catch (err) {
-        setError(err instanceof Error ? err : new Error("Failed to load scholarships"))
+        setError(err instanceof Error ? err : new Error(t(language, "resources.scholarships.loadFailed")))
       } finally {
         setLoading(false)
       }
@@ -43,7 +44,7 @@ export function ScholarshipList({ language, filters, onCountChange }: Props) {
   if (loading) {
     return (
       <div className="flex-1 space-y-4">
-        <p className="text-muted">Loading scholarships...</p>
+        <p className="text-muted">{t(language, "resources.scholarships.loading")}</p>
       </div>
     )
   }
@@ -51,7 +52,9 @@ export function ScholarshipList({ language, filters, onCountChange }: Props) {
   if (error) {
     return (
       <div className="flex-1 space-y-4">
-        <p className="text-muted">Error loading scholarships: {error.message}</p>
+        <p className="text-muted">
+          {t(language, "resources.scholarships.loadErrorPrefix")} {error.message}
+        </p>
       </div>
     )
   }
@@ -59,7 +62,7 @@ export function ScholarshipList({ language, filters, onCountChange }: Props) {
   return (
     <div className="flex-1">
       {filteredScholarships.length === 0 ? (
-        <p className="text-muted">No scholarships found.</p>
+        <p className="text-muted">{t(language, "resources.scholarships.noneFound")}</p>
       ) : (
         filteredScholarships.map((scholarship) => (
           <ScholarshipCard key={scholarship._id} language={language} scholarship={scholarship} />

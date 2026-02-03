@@ -54,7 +54,7 @@ export function ProfessionalOrganizationCard({ language, organization }: Props) 
                 language
               })
               trackOutboundClick({
-                outbound_url: organization.link,
+                outbound_url: organization.link ?? "",
                 resource_type: "professional_organization",
                 resource_id: organization._id,
                 resource_title: organization.name,
