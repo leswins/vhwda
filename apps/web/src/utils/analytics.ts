@@ -21,6 +21,8 @@ type AnalyticsEventName =
   | "compare_remove"
   | "compare_search"
   | "quiz_start"
+  | "quiz_step_view"
+  | "quiz_exit"
   | "quiz_complete"
   | "quiz_results_view"
   | "quiz_recommendation_click"
@@ -83,6 +85,7 @@ export function trackPageView(params: {
   page_path: string
   page_location?: string
   page_title?: string
+  page_group?: string
   language?: string
 }) {
   if (!IS_ENABLED) return
@@ -92,6 +95,7 @@ export function trackPageView(params: {
     page_path: params.page_path,
     page_location: params.page_location ?? window.location.href,
     page_title: params.page_title ?? document.title,
+    page_group: params.page_group,
     language: params.language,
     debug_mode: GA_DEBUG_MODE ? true : undefined
   })

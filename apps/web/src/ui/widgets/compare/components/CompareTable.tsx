@@ -38,14 +38,14 @@ export function CompareTable({ selectedCareers, language, canAddCareer = false }
           <React.Fragment key={section.key}>
             <div className="flex">
               {/* Fixed left: category label */}
-              <div className="sticky left-0 z-10 flex w-[140px] lg:w-[250px] shrink-0 items-start bg-surface px-fluid-20 py-fluid-25 lg:px-[50px] lg:py-[50px]">
-                <span className="text-[length:var(--text-h5)] font-bold leading-[var(--leading-h5)] tracking-[var(--tracking-h5)]">
+              <div className="sticky left-0 z-10 flex w-[125px] lg:w-[250px] shrink-0 items-start bg-surface px-fluid-20 py-fluid-25 lg:px-[50px] lg:py-[50px]">
+                <span className="text-[length:var(--text-body-base)] font-bold leading-[var(--leading-body-base)] tracking-[var(--tracking-body-base)] lg:text-[length:var(--text-h5)] lg:leading-[var(--leading-h5)] lg:tracking-[var(--tracking-h5)]">
                   {t(language, section.translationKey)}
                 </span>
               </div>
 
               {/* Vertical divider */}
-              <div className="sticky left-[140px] lg:left-[250px] z-10 w-[0.5px] shrink-0 bg-foreground" />
+              <div className="sticky left-[125px] lg:left-[250px] z-10 w-[0.5px] shrink-0 bg-foreground" />
 
               {/* Content area: career data */}
               <div className="flex-1">
@@ -61,10 +61,10 @@ export function CompareTable({ selectedCareers, language, canAddCareer = false }
             </div>
             {!isLast && (
               <div className="flex">
-                <div className="sticky left-0 z-10 w-[140px] lg:w-[250px] shrink-0 bg-surface px-fluid-20 lg:px-[50px]">
+                <div className="sticky left-0 z-10 w-[125px] lg:w-[250px] shrink-0 bg-surface px-fluid-20 lg:px-[50px]">
                   <div className="h-[0.5px] w-full bg-foreground" />
                 </div>
-                <div className="sticky left-[140px] lg:left-[250px] z-10 w-[0.5px] shrink-0 bg-foreground" />
+                <div className="sticky left-[125px] lg:left-[250px] z-10 w-[0.5px] shrink-0 bg-foreground" />
                 <div className="flex-1">
                   <div className="px-fluid-20 lg:px-[50px]">
                     <div className="h-[0.5px] w-full bg-foreground" />

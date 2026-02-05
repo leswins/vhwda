@@ -28,6 +28,8 @@ export function useQuizLogic() {
     const resultsDelayTimeoutRef = useRef<number | null>(null)
     const quizStartTrackedRef = useRef(false)
     const quizResultsTrackedRef = useRef(false)
+    const quizStepTrackedRef = useRef<string | null>(null)
+    const quizCompletedRef = useRef(false)
 
     // Load questions from Sanity when component mounts
     useEffect(() => {
@@ -76,6 +78,42 @@ export function useQuizLogic() {
         }
     }, [currentStep, language, questions.length])
 
+    useEffect(() => {
+        if (currentStep !== "questions") return
+        const question = questions[currentQuestionIndex]
+        if (!question) return
+
+        const stepKey = `${question.id}:${currentQuestionIndex}`
+        if (quizStepTrackedRef.current === stepKey) return
+
+        trackEvent("quiz_step_view", {
+            step_index: currentQuestionIndex + 1,
+            question_id: question.id,
+            question_type: question.type,
+            total_questions: questions.length,
+            language
+        })
+        quizStepTrackedRef.current = stepKey
+    }, [currentQuestionIndex, currentStep, language, questions])
+
+    useEffect(() => {
+        return () => {
+            if (currentStep !== "questions") return
+            if (quizCompletedRef.current) return
+            const question = questions[currentQuestionIndex]
+            if (!question) return
+
+            trackEvent("quiz_exit", {
+                step_index: currentQuestionIndex + 1,
+                question_id: question.id,
+                question_type: question.type,
+                total_questions: questions.length,
+                answered_count: Object.keys(selectedAnswers).length,
+                language
+            })
+        }
+    }, [currentQuestionIndex, currentStep, language, questions, selectedAnswers])
+
     const handleStart = () => {
         setUserVector(createEmptyVector())
         setCurrentQuestionIndex(0)
@@ -84,6 +122,8 @@ export function useQuizLogic() {
         setCurrentStep("questions")
         quizStartTrackedRef.current = false
         quizResultsTrackedRef.current = false
+        quizStepTrackedRef.current = null
+        quizCompletedRef.current = false
     }
 
     const handleAnswer = (questionId: string, optionId: string) => {
@@ -254,10 +294,25 @@ export function useQuizLogic() {
     }
 
     const handleCancel = () => {
+        if (currentStep === "questions" && !quizCompletedRef.current) {
+            const question = questions[currentQuestionIndex]
+            if (question) {
+                trackEvent("quiz_exit", {
+                    step_index: currentQuestionIndex + 1,
+                    question_id: question.id,
+                    question_type: question.type,
+                    total_questions: questions.length,
+                    answered_count: Object.keys(selectedAnswers).length,
+                    language,
+                    exit_reason: "cancel"
+                })
+            }
+        }
         setCurrentStep("intro")
     }
 
     const handleFinish = async () => {
+        quizCompletedRef.current = true
         trackEvent("quiz_complete", {
             questions_count: questions.length,
             answered_count: Object.keys(selectedAnswers).length,
@@ -331,6 +386,8 @@ export function useQuizLogic() {
         }
         quizStartTrackedRef.current = false
         quizResultsTrackedRef.current = false
+        quizStepTrackedRef.current = null
+        quizCompletedRef.current = false
     }
 
     const currentQuestion = questions[currentQuestionIndex]

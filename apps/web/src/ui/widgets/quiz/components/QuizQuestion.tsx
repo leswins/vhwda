@@ -24,7 +24,7 @@ export function QuizQuestion({
     onAnswer,
 }: QuizQuestionProps) {
     const currentSelection = selectedAnswers[question.id]
-    
+
     const getCurrentValue = (): string | null => {
         if (!currentSelection) return null
         if (Array.isArray(currentSelection)) return currentSelection[0] || null
@@ -96,7 +96,9 @@ export function QuizQuestion({
     const isSelectQuestion = question.type === "multi_select" || question.type === "single_select"
 
     return (
-        <div className={`flex flex-col items-stretch lg:items-center w-full max-w-full lg:max-w-[600px] ${isSelectQuestion ? "gap-fluid-50" : "gap-[75px]"}`}>
+        <div
+            className={`min-h-[70vh] px-5 py-10 lg:p-0 flex flex-col items-center justify-center w-full max-w-full lg:max-w-[600px] ${isSelectQuestion ? "gap-fluid-50" : "gap-[75px]"}`}
+        >
             <div className={`flex flex-col gap-fluid-25 items-center w-full ${isSliderQuestion ? "h-[132px] justify-center" : ""}`}>
                 {isSkillsAptitudes && (
                     <p className="text-sub1 font-medium text-foreground text-center">

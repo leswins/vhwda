@@ -7,12 +7,14 @@ import { ScholarshipList } from "./ScholarshipList"
 import { ProfessionalOrganizationList } from "./ProfessionalOrganizationList"
 import { EducationalInstitutionsList } from "./EducationalInstitutionsList"
 import { SectionHeader } from "./SectionHeader"
+import { ScholarshipsUnderConstruction } from "./ScholarshipsUnderConstruction"
 import type { ScholarshipFilters } from "./filters/scholarshipFilters"
 import type { OrganizationFilters } from "./filters/organizationFilters"
 import { trackEvent } from "../../utils/analytics"
 import helpIcon from "../../assets/icons/Help.svg"
 import doctorIcon from "../../assets/icons/Doctor.svg"
 import educationIcon from "../../assets/icons/Education.svg"
+import { fetchSiteFeatureFlags } from "../../sanity/queries/siteSettings"
 
 type FiltersPanelProps = {
   language: Language
@@ -35,16 +37,20 @@ function FiltersPanel({
 }: FiltersPanelProps) {
   const [isSearchActive, setIsSearchActive] = useState(false)
   const [activeTab, setActiveTab] = useState<"filter" | "sort">("filter")
+  const [showFiltersOnMobile, setShowFiltersOnMobile] = useState(false)
 
   return (
-    <div className="flex flex-col border-b-[0.5px] border-foreground lg:h-full lg:border-b-0 lg:border-r-[0.5px]">
-      <div className="sticky top-0 z-10 bg-surface lg:border-b-[0.5px] lg:border-foreground shrink-0">
-        <div className="relative flex items-center gap-fluid-10 px-fluid-20 py-fluid-2 lg:gap-fluid-20 lg:px-fluid-25 lg:py-fluid-25 lg:h-[72px]">
+    <div className="flex flex-col lg:h-full lg:border-b-0 lg:border-r-[0.5px] lg:border-foreground">
+      <div className="sticky top-0 z-10 bg-surface shrink-0">
+        <div className="relative flex items-center gap-0 p-5 border-b-[0.5px] border-foreground lg:border-y-0 lg:gap-fluid-20 lg:px-fluid-25 lg:py-fluid-25 lg:h-[72px] lg:border-b-[0.5px] lg:border-foreground">
           <div
             className={`flex items-center gap-fluid-20 transition-opacity duration-300 ${isSearchActive ? "opacity-0 pointer-events-none" : "opacity-100"}`}
           >
             <button
-              onClick={() => setActiveTab("filter")}
+              onClick={() => {
+                setActiveTab("filter")
+                setShowFiltersOnMobile(prev => activeTab === "filter" ? !prev : true)
+              }}
               className={`text-body-base lg:text-body-base font-medium hover:underline hover:underline-offset-4 ${activeTab === "filter" ? "text-foreground hover:decoration-foreground" : "text-muted hover:decoration-muted"}`}
             >
               {t(language, "filters.filter")}
@@ -53,7 +59,10 @@ function FiltersPanel({
               <>
                 <div className="h-fluid-20 w-[0.5px] bg-foreground" />
                 <button
-                  onClick={() => setActiveTab("sort")}
+                  onClick={() => {
+                    setActiveTab("sort")
+                    setShowFiltersOnMobile(prev => activeTab === "sort" ? !prev : true)
+                  }}
                   className={`text-body-base lg:text-body-base font-medium hover:underline hover:underline-offset-4 ${activeTab === "sort" ? "text-foreground hover:decoration-foreground" : "text-muted hover:decoration-muted"}`}
                 >
                   {t(language, "filters.sort")}
@@ -63,8 +72,10 @@ function FiltersPanel({
           </div>
 
           <button
-            onClick={() => setIsSearchActive(true)}
-            className={`ml-auto transition-opacity duration-300 ${isSearchActive ? "opacity-0 pointer-events-none" : "opacity-100"}`}
+            onClick={() => {
+              setIsSearchActive(true)
+            }}
+            className={`ml-auto pl-4 lg:pl-0 transition-opacity duration-300 ${isSearchActive ? "opacity-0 pointer-events-none" : "opacity-100"}`}
             aria-label={t(language, "filters.search")}
           >
             <svg className="h-5 w-5 lg:h-5 lg:w-5 text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -73,7 +84,7 @@ function FiltersPanel({
           </button>
 
           <div
-            className={`absolute inset-0 flex items-center gap-1 px-fluid-16 lg:px-fluid-25 transition-opacity duration-300 ${isSearchActive ? "opacity-100" : "opacity-0 pointer-events-none"}`}
+            className={`absolute inset-0 flex items-center gap-1 p-5 lg:p-0 lg:px-fluid-25 transition-opacity duration-300 ${isSearchActive ? "opacity-100" : "opacity-0 pointer-events-none"}`}
           >
             <input
               type="text"
@@ -98,8 +109,10 @@ function FiltersPanel({
         {showContentDivider && <div className="h-[0.5px] w-full bg-foreground mt-fluid-2 lg:mt-0 lg:hidden" />}
       </div>
 
-      <div className="flex flex-col gap-fluid-8 pt-fluid-8 pb-fluid-12 px-fluid-20 lg:gap-fluid-25 lg:p-fluid-25 overflow-y-auto flex-1 scrollbar-hide">
-        {activeTab === "filter" ? children : null}
+      <div
+        className={`flex flex-col gap-0 p-5 border-b-[0.5px] border-foreground lg:gap-fluid-25 lg:p-fluid-25 lg:border-b-0 overflow-y-auto flex-1 scrollbar-hide ${showFiltersOnMobile && !isSearchActive ? "" : "hidden lg:flex"}`}
+      >
+        {activeTab === "filter" && !isSearchActive ? children : null}
       </div>
     </div>
   )
@@ -116,8 +129,9 @@ export function PlanYourNextStepsSection({ activeSections }: PlanYourNextStepsSe
   const [scholarshipCount, setScholarshipCount] = useState(0)
   const [organizationCount, setOrganizationCount] = useState(0)
   const [institutionCount, setInstitutionCount] = useState(0)
+  const [scholarshipsEnabled, setScholarshipsEnabled] = useState(false)
   const organizationFiltersRef = useRef<OrganizationFilters | null>(null)
-  
+
   const [scholarshipFilters, setScholarshipFilters] = useState<ScholarshipFilters>({
     searchQuery: ""
   })
@@ -150,6 +164,23 @@ export function PlanYourNextStepsSection({ activeSections }: PlanYourNextStepsSe
     }, 400)
     return () => window.clearTimeout(timer)
   }, [language, scholarshipCount, scholarshipFilters.searchQuery])
+
+  useEffect(() => {
+    let cancelled = false
+    async function loadFeatureFlags() {
+      try {
+        const flags = await fetchSiteFeatureFlags()
+        if (!cancelled) setScholarshipsEnabled(Boolean(flags.scholarshipsEnabled))
+      } catch {
+        // Keep disabled on failure (safe default)
+        if (!cancelled) setScholarshipsEnabled(false)
+      }
+    }
+    loadFeatureFlags()
+    return () => {
+      cancelled = true
+    }
+  }, [])
 
   useEffect(() => {
     const query = organizationFilters.searchQuery.trim()
@@ -203,92 +234,94 @@ export function PlanYourNextStepsSection({ activeSections }: PlanYourNextStepsSe
   return (
     <div className="space-y-0">
       {showScholarships && (
-      <section id="scholarships" className="scroll-mt-8">
-        <div className="hidden lg:block">
-          <SectionHeader
-            language={language}
-            titleKey="planNextSteps.card.scholarships.title"
-            count={scholarshipCount}
-            iconBgColor="bg-[rgb(var(--color-accent-green))]"
-            iconSrc={helpIcon}
-            iconAlt={t(language, "planNextSteps.card.scholarships.title")}
-          />
-        </div>
-        <div className="grid grid-cols-1 lg:grid-cols-[30%_1fr] lg:h-[800px] lg:min-h-[calc(95vh-75px)] border-b border-foreground lg:border-b-[0.5px]">
-          <div className="lg:sticky lg:top-0 lg:h-full">
-            <FiltersPanel
-              language={language}
-              searchPlaceholderKey="filters.search"
-              searchQuery={scholarshipFilters.searchQuery}
-              onSearchChange={handleScholarshipSearchChange}
-              showContentDivider={false}
-            />
-          </div>
-          <div className="pt-fluid-10 pb-fluid-20 px-fluid-20 lg:p-fluid-50 lg:h-full lg:overflow-y-auto lg:scrollbar-hide">
-            <ScholarshipList
-              language={language}
-              filters={scholarshipFilters}
-              onCountChange={setScholarshipCount}
-            />
-          </div>
-        </div>
-      </section>
+        <section id="scholarships" className="scroll-mt-8">
+          {scholarshipsEnabled ? (
+            <>
+              <div className="hidden lg:block">
+                <SectionHeader
+                  language={language}
+                  titleKey="planNextSteps.card.scholarships.title"
+                  count={scholarshipCount}
+                  iconBgColor="bg-[rgb(var(--color-accent-green))]"
+                  iconSrc={helpIcon}
+                  iconAlt={t(language, "planNextSteps.card.scholarships.title")}
+                />
+              </div>
+              <div className="grid grid-cols-1 lg:grid-cols-[30%_1fr] lg:h-[800px] lg:min-h-[calc(95vh-75px)] border-b border-foreground lg:border-b-[0.5px]">
+                <div className="lg:sticky lg:top-0 lg:h-full">
+                  <FiltersPanel
+                    language={language}
+                    searchPlaceholderKey="filters.searchKeywordPlaceholder"
+                    searchQuery={scholarshipFilters.searchQuery}
+                    onSearchChange={handleScholarshipSearchChange}
+                    showContentDivider={false}
+                  />
+                </div>
+                <div className="p-5 lg:p-fluid-50 lg:h-full lg:overflow-y-auto lg:scrollbar-hide">
+                  <ScholarshipList language={language} filters={scholarshipFilters} onCountChange={setScholarshipCount} />
+                </div>
+              </div>
+            </>
+          ) : (
+            <ScholarshipsUnderConstruction language={language} />
+          )}
+        </section>
       )}
 
       {showOrganizations && (
-      <section id="organizations" className="scroll-mt-8">
-        <div className="hidden lg:block">
-          <SectionHeader
-            language={language}
-            titleKey="planNextSteps.card.professionalOrganizations.title"
-            count={organizationCount}
-            iconBgColor="bg-[rgb(var(--color-accent-pink))]"
-            iconSrc={doctorIcon}
-            iconAlt={t(language, "planNextSteps.card.professionalOrganizations.title")}
-          />
-        </div>
-        <div className="grid grid-cols-1 lg:grid-cols-[30%_1fr] lg:h-[800px] lg:min-h-[calc(95vh-75px)] border-b border-foreground lg:border-b-[0.5px]">
-          <div className="lg:sticky lg:top-0 lg:h-full">
-            <FiltersPanel
+        <section id="organizations" className="scroll-mt-8">
+          <div className="hidden lg:block">
+            <SectionHeader
               language={language}
-              searchPlaceholderKey="filters.search"
-              searchQuery={organizationFilters.searchQuery}
-              onSearchChange={handleOrganizationSearchChange}
-              showSort={false}
-              showContentDivider={false}
-            >
-              <OrganizationFiltersComponent
-                language={language}
-                filters={organizationFilters}
-                onFiltersChange={setOrganizationFilters}
-              />
-            </FiltersPanel>
-          </div>
-          <div className="pt-fluid-10 pb-fluid-20 px-fluid-20 lg:p-fluid-50 lg:h-full lg:overflow-y-auto lg:scrollbar-hide">
-            <ProfessionalOrganizationList
-              language={language}
-              filters={organizationFilters}
-              onCountChange={setOrganizationCount}
+              titleKey="planNextSteps.card.professionalOrganizations.title"
+              count={organizationCount}
+              iconBgColor="bg-[rgb(var(--color-accent-pink))]"
+              iconSrc={doctorIcon}
+              iconAlt={t(language, "planNextSteps.card.professionalOrganizations.title")}
             />
           </div>
-        </div>
-      </section>
+          <div className="grid grid-cols-1 lg:grid-cols-[30%_1fr] lg:h-[800px] lg:min-h-[calc(95vh-75px)] border-b border-foreground lg:border-b-[0.5px]">
+            <div className="lg:sticky lg:top-0 lg:h-full">
+              <FiltersPanel
+                language={language}
+                searchPlaceholderKey="filters.searchKeywordPlaceholder"
+                searchQuery={organizationFilters.searchQuery}
+                onSearchChange={handleOrganizationSearchChange}
+                showSort={false}
+                showContentDivider={false}
+              >
+                <OrganizationFiltersComponent
+                  language={language}
+                  filters={organizationFilters}
+                  onFiltersChange={setOrganizationFilters}
+                />
+              </FiltersPanel>
+            </div>
+            <div className="p-5 lg:p-fluid-50 lg:h-full lg:overflow-y-auto lg:scrollbar-hide">
+              <ProfessionalOrganizationList
+                language={language}
+                filters={organizationFilters}
+                onCountChange={setOrganizationCount}
+              />
+            </div>
+          </div>
+        </section>
       )}
 
       {showSchools && (
-      <section id="schools" className="scroll-mt-8">
-        <div className="hidden lg:block">
-          <SectionHeader
-            language={language}
-            titleKey="planNextSteps.card.schoolsPrerequisites.title"
-            count={institutionCount}
-            iconBgColor="bg-[rgb(var(--color-accent-blue))]"
-            iconSrc={educationIcon}
-            iconAlt={t(language, "planNextSteps.card.schoolsPrerequisites.title")}
-          />
-        </div>
-        <EducationalInstitutionsList language={language} onCountChange={setInstitutionCount} />
-      </section>
+        <section id="schools" className="scroll-mt-8">
+          <div className="hidden lg:block">
+            <SectionHeader
+              language={language}
+              titleKey="planNextSteps.card.schoolsPrerequisites.title"
+              count={institutionCount}
+              iconBgColor="bg-[rgb(var(--color-accent-blue))]"
+              iconSrc={educationIcon}
+              iconAlt={t(language, "planNextSteps.card.schoolsPrerequisites.title")}
+            />
+          </div>
+          <EducationalInstitutionsList language={language} onCountChange={setInstitutionCount} />
+        </section>
       )}
     </div>
   )

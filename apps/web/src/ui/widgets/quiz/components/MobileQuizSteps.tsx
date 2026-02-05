@@ -75,7 +75,7 @@ export function MobileQuizSteps({
 
     const element = itemRefs.current[sectionId]
     if (element) {
-      element.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" })
+      element.scrollIntoView({ behavior: "smooth", inline: "start", block: "nearest" })
     }
   }, [currentQuestionIndex, questionsBySection])
 
@@ -85,6 +85,7 @@ export function MobileQuizSteps({
         {activeSections.map(section => {
           const isCompleted = isSectionCompleted(section.id)
           const isCurrent = isCurrentSection(section.id)
+          const isLast = section.id === QUIZ_SECTIONS[QUIZ_SECTIONS.length - 1].id
 
           return (
             <div
@@ -92,15 +93,24 @@ export function MobileQuizSteps({
               ref={el => {
                 itemRefs.current[section.id] = el
               }}
-              className={`flex items-center gap-fluid-7 whitespace-nowrap snap-start flex-shrink-0 ${
+              className={[
+                "flex h-full w-[200px] shrink-0 snap-start items-center justify-between whitespace-nowrap border-r-[0.5px] border-foreground px-5",
+                isLast ? "border-r-0" : "",
                 !isCompleted && !isCurrent ? "opacity-50" : ""
-              }`}
+              ].join(" ")}
             >
-              <div className="w-icon-20 h-icon-20 flex items-center justify-center">
+              <p
+                className={`text-body-sm ${
+                  isCurrent ? "text-foreground" : "text-muted"
+                }`}
+              >
+                {t(language, section.labelKey)}
+              </p>
+              <div className="flex h-icon-20 w-icon-20 items-center justify-center">
                 {isCompleted ? (
                   <img src={checkmarkIcon} alt="" className="h-icon-20 w-icon-20" />
                 ) : (
-                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
                     <circle
                       cx="10"
                       cy="10"
@@ -113,13 +123,6 @@ export function MobileQuizSteps({
                   </svg>
                 )}
               </div>
-              <p
-                className={`text-body-sm ${
-                  isCurrent ? "text-foreground" : "text-muted"
-                }`}
-              >
-                {t(language, section.labelKey)}
-              </p>
             </div>
           )
         })}

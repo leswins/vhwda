@@ -16,15 +16,62 @@ export function AppShell() {
   const [contentVisible, setContentVisible] = useState(true)
 
   useEffect(() => {
-    document.title = t(language, "app.title")
-  }, [language])
+    const getPageTitle = () => {
+      switch (true) {
+        case location.pathname === "/":
+          return t(language, "page.title.home")
+        case location.pathname === "/careers":
+          return t(language, "page.title.careers")
+        case location.pathname.startsWith("/careers/"):
+          return t(language, "page.title.careerDetail")
+        case location.pathname === "/compare":
+          return t(language, "page.title.compare")
+        case location.pathname === "/quiz":
+          return t(language, "page.title.quiz")
+        case location.pathname === "/resources":
+          return t(language, "page.title.resources")
+        case location.pathname === "/chat":
+          return t(language, "page.title.chat")
+        case location.pathname === "/about":
+          return t(language, "page.title.about")
+        default:
+          return t(language, "app.title")
+      }
+    }
+
+    const pageTitle = getPageTitle()
+    const appTitle = t(language, "app.title")
+    document.title = pageTitle === appTitle ? appTitle : `${pageTitle} | ${appTitle}`
+  }, [language, location.pathname])
 
   useEffect(() => {
     const path = `${location.pathname}${location.search}${location.hash}`
+    if (location.pathname.startsWith("/careers/")) return
+    const pageGroup = (() => {
+      switch (true) {
+        case location.pathname === "/":
+          return "home"
+        case location.pathname === "/careers":
+          return "careers"
+        case location.pathname === "/compare":
+          return "compare"
+        case location.pathname === "/quiz":
+          return "quiz"
+        case location.pathname === "/resources":
+          return "resources"
+        case location.pathname === "/chat":
+          return "chat"
+        case location.pathname === "/about":
+          return "about"
+        default:
+          return "other"
+      }
+    })()
     trackPageView({
       page_path: path,
       page_location: window.location.href,
       page_title: document.title,
+      page_group: pageGroup,
       language
     })
   }, [language, location.hash, location.pathname, location.search])
@@ -69,7 +116,7 @@ export function AppShell() {
   }, [isLoading])
 
   return (
-    <div className="flex min-h-screen flex-col bg-surface text-foreground overflow-x-hidden">
+    <div className="flex min-h-screen flex-col bg-surface text-foreground overflow-x-clip">
       <a
         href="#main"
         className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:border focus:border-border focus:bg-surface focus:px-3 focus:py-2 focus:text-foreground"
@@ -77,7 +124,7 @@ export function AppShell() {
         {t(language, "a11y.skipToContent")}
       </a>
       <NavHeader />
-      <main id="main" className="flex-1 px-0 lg:px-[50px]">
+      <main id="main" className="flex-1 px-0 lg:px-fluid-50">
         <div
           className="site-grid-container min-h-full transition-opacity duration-250 ease-out"
           style={{ opacity: contentVisible ? 1 : 0 }}
@@ -86,11 +133,11 @@ export function AppShell() {
         </div>
       </main>
       <Footer />
-      
+
       {/* Global Loading Overlay */}
       <div
         className="transition-opacity duration-250 ease-out"
-        style={{ 
+        style={{
           opacity: isLoading ? 1 : 0,
           pointerEvents: isLoading ? 'auto' : 'none'
         }}

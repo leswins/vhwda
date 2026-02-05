@@ -10,6 +10,7 @@ export type SliderProps = {
     rightLabel?: React.ReactNode
     showTicks?: boolean
     className?: string
+    gapClassName?: string
     trackClassName?: string
     disabled?: boolean
 }
@@ -28,6 +29,7 @@ export function Slider({
     rightLabel,
     showTicks = false,
     className = "",
+    gapClassName = "gap-6",
     trackClassName = "",
     disabled = false,
 }: SliderProps) {
@@ -64,7 +66,7 @@ export function Slider({
     const tickCount = max - min + 1
 
     return (
-        <div className={`flex flex-row items-center justify-center gap-6 w-full ${className}`}>
+        <div className={`flex flex-row items-center justify-center w-full ${gapClassName} ${className}`}>
             {/* Left label */}
             {leftLabel && (
                 <div className="flex-shrink-0">

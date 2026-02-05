@@ -1,6 +1,7 @@
 import React, { useMemo } from "react"
 import { useLanguageStore } from "../zustand/useLanguageStore"
 import { t } from "../utils/i18n"
+import { PageHead } from "../ui/PageHead"
 import { SectionNav } from "../ui/widgets/SectionNav"
 import { Button } from "../ui/components/Button"
 import VHWDALogo from "../assets/icons/VHWDA Logo.svg"
@@ -32,15 +33,15 @@ interface DataSourceProps {
 
 function DataSourceCard({ icon, title, description, color }: DataSourceProps) {
   return (
-    <div className="flex items-center gap-fluid-50">
+    <div className="flex items-center gap-fluid-50 py-10 first:pt-0 last:pb-0 lg:py-0">
       <div
-        className="flex h-[100px] w-[100px] shrink-0 items-center justify-center"
+        className="flex h-[50px] w-[50px] shrink-0 items-center justify-center lg:h-[100px] lg:w-[100px]"
         style={{ backgroundColor: `rgb(var(${color}))` }}
         aria-hidden="true"
       >
-        <img src={icon} alt="" className="h-[50px] w-auto" />
+        <img src={icon} alt="" className="h-[20px] w-[20px] lg:h-[50px] lg:w-auto" />
       </div>
-      <div className="h-[100px] w-[0.5px] bg-foreground shrink-0" />
+      <div className="hidden lg:block h-[100px] w-[0.5px] bg-foreground shrink-0" />
       <div className="flex flex-col gap-fluid-15">
         <h3 className="text-h4 font-bold">{title}</h3>
         <p className="text-body-lg text-foreground">{description}</p>
@@ -122,6 +123,11 @@ export function AboutPage() {
 
   return (
     <div className="py-fluid-50">
+      <PageHead
+        title="About VHWDA & This Catalog"
+        description="Learn about the Virginia Health Workforce Development Authority and our digital health careers catalog. Discover our data sources, quiz methodology, AI features, and how we maintain accurate career information."
+        path="/about"
+      />
       {/* Page Header */}
       <div className="flex flex-col gap-fluid-15 pt-0 pb-fluid-50 px-fluid-50">
         <p className="text-sub2 font-bold uppercase text-foreground">
@@ -136,10 +142,10 @@ export function AboutPage() {
       <SectionNav items={sections} offsetTopPx={0} ariaLabel={t(language, "about.sectionNavA11y")} />
 
       {/* About VHWDA Section */}
-      <section id="about-vhwda" className="border-b border-foreground pt-[65px] pb-fluid-50 px-fluid-50">
+      <section id="about-vhwda" className="border-b border-foreground pt-[65px] px-5 pb-10 lg:px-fluid-50 lg:pb-fluid-50">
         <div className="flex flex-col gap-fluid-50">
           <div className="flex-shrink-0">
-            <img src={VHWDALogo} alt="VHWDA Logo" className="h-[75px] w-auto" />
+            <img src={VHWDALogo} alt="VHWDA Logo" className="h-[75px] w-auto max-w-[60vw]" />
           </div>
           <div className="space-y-fluid-50 max-w-[1200px]">
             <h2 className="text-h2 font-bold">
@@ -153,11 +159,11 @@ export function AboutPage() {
       </section>
 
       {/* Data Sources Section */}
-      <section id="data-sources" className="border-b border-foreground p-fluid-50">
+      <section id="data-sources" className="border-b border-foreground px-5 py-10 lg:p-fluid-50">
         <h2 className="mb-fluid-50 text-h2 font-bold">
           {t(language, "about.sections.dataSources")}
         </h2>
-        <div className="flex flex-col gap-fluid-50">
+        <div className="flex flex-col divide-y-[0.5px] divide-foreground lg:divide-y-0 lg:gap-fluid-50">
           {dataSources.map((source, idx) => (
             <DataSourceCard
               key={idx}
@@ -171,7 +177,7 @@ export function AboutPage() {
       </section>
 
       {/* Quiz Methodology Section */}
-      <section id="quiz-methodology" className="border-b border-foreground p-fluid-50">
+      <section id="quiz-methodology" className="border-b border-foreground px-5 py-10 lg:p-fluid-50">
         <h2 className="mb-fluid-50 text-h2 font-bold">
           {t(language, "about.sections.quizMethodology")}
         </h2>
@@ -203,7 +209,7 @@ export function AboutPage() {
       </section>
 
       {/* AI Features Disclosure Section */}
-      <section id="ai-features" className="border-b border-foreground p-fluid-50">
+      <section id="ai-features" className="border-b border-foreground px-5 py-10 lg:p-fluid-50">
         <h2 className="mb-fluid-50 text-h2 font-bold">
           {t(language, "about.sections.aiFeatures")}
         </h2>
@@ -238,7 +244,7 @@ export function AboutPage() {
       </section>
 
       {/* Update Cadence & Feedback Section */}
-      <section id="update-cadence" className="p-fluid-50">
+      <section id="update-cadence" className="px-5 py-10 lg:p-fluid-50">
         <h2 className="mb-fluid-50 text-h2 font-bold">
           {t(language, "about.sections.updateCadence")}
         </h2>

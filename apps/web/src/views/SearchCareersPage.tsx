@@ -9,6 +9,7 @@ import { t } from "../utils/i18n"
 import { trackEvent } from "../utils/analytics"
 import { CareerFilters } from "../ui/widgets/CareerFilters"
 import { CareerCard } from "../ui/widgets/CareerCard"
+import { PageHead } from "../ui/PageHead"
 import { getLocalizedString } from "../sanity/queries/careers"
 import type { CareerSummaryCard } from "../sanity/queries/careers"
 
@@ -203,9 +204,16 @@ export function SearchCareersPage() {
   )
 
   const filteredCareers = useMemo(() => {
-    if (!sortBy) return filteredCareersBase
+    const sortedBase = [...filteredCareersBase]
+    if (!sortBy) {
+      return sortedBase.sort((a, b) => {
+        const aTitle = getLocalizedString(language, a.title) || ""
+        const bTitle = getLocalizedString(language, b.title) || ""
+        return aTitle.localeCompare(bTitle, language === "es" ? "es" : "en", { sensitivity: "base" })
+      })
+    }
 
-    const sorted = [...filteredCareersBase].sort((a, b) => {
+    const sorted = sortedBase.sort((a, b) => {
       if (sortBy === "education") {
         const aLevel = getCareerEducationLevel(a)
         const bLevel = getCareerEducationLevel(b)
@@ -353,60 +361,42 @@ export function SearchCareersPage() {
 
   return (
     <div>
+      <PageHead
+        title="Search Healthcare Careers"
+        description="Search and filter through hundreds of healthcare careers in Virginia. Find careers by salary, education level, job outlook, work environment, and more."
+        path="/careers"
+      />
       <div className="flex flex-col gap-[15px] p-fluid-40 lg:p-[50px] border-b border-foreground">
         <p className="text-sub2 font-bold uppercase text-foreground">{t(language, "search.title")}</p>
         <h1 className="text-h3 lg:text-h2 font-bold text-foreground">{t(language, "search.subtitle")}</h1>
       </div>
 
       <div className="flex flex-col lg:flex-row">
-        <div className="w-full lg:w-[30%] shrink-0 border-b-[0.5px] lg:border-b-0 lg:border-r-[0.5px] border-foreground lg:sticky lg:top-0 lg:h-screen lg:overflow-hidden flex flex-col">
+        <div className="w-full lg:w-[30%] shrink-0 lg:sticky lg:top-0 lg:h-screen lg:overflow-hidden flex flex-col">
           <div className="bg-surface border-b-[0.5px] border-foreground shrink-0">
             <div className="relative flex items-center gap-[20px] p-[25px] h-[72px]">
               <div
                 className={`flex items-center gap-[20px] transition-opacity duration-300 ${isSearchActive ? 'opacity-0 pointer-events-none' : 'opacity-100'
                   }`}
               >
-                <button 
+                <button
                   onClick={() => handleTabClick("filter")}
-                  className={`text-body-base font-medium ${
-                    isPanelOpen && activeTab === "filter" ? 'text-foreground underline underline-offset-4' : 'text-muted'
-                  } lg:text-foreground lg:hover:underline lg:hover:underline-offset-4`}
+                  className={`text-body-base font-medium ${isPanelOpen && activeTab === "filter" ? 'text-foreground underline underline-offset-4' : 'text-muted'
+                    } lg:text-foreground lg:hover:underline lg:hover:underline-offset-4`}
                 >
                   {t(language, "filters.filter")}
                 </button>
                 <div className="h-[20px] w-[0.5px] bg-foreground" />
-                <button 
+                <button
                   onClick={() => handleTabClick("sort")}
-                  className={`text-body-base font-medium ${
-                    isPanelOpen && activeTab === "sort" ? 'text-foreground underline underline-offset-4' : 'text-muted'
-                  } lg:text-foreground lg:hover:underline lg:hover:underline-offset-4`}
+                  className={`text-body-base font-medium ${isPanelOpen && activeTab === "sort" ? 'text-foreground underline underline-offset-4' : 'text-muted'
+                    } lg:text-foreground lg:hover:underline lg:hover:underline-offset-4`}
                 >
                   {t(language, "filters.sort")}
                 </button>
               </div>
 
-              {isPanelOpen && (
-                <button
-                  type="button"
-                  onClick={() => setIsPanelOpen(false)}
-                  className="ml-auto flex h-6 w-6 items-center justify-center rounded-full border-[0.5px] border-foreground text-foreground lg:hidden"
-                  aria-label="Close filters and sort"
-                >
-                  <svg
-                    width="12"
-                    height="12"
-                    viewBox="0 0 17 17"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M0.79541 0.795532L15.7954 15.7955M0.79541 15.7955L15.7954 0.795532"
-                      stroke="currentColor"
-                      strokeWidth="1.75"
-                    />
-                  </svg>
-                </button>
-              )}
+              {/* Mobile: no close icon; tap Filter/Sort again to collapse */}
 
               <button
                 onClick={() => setIsSearchActive(true)}
@@ -454,10 +444,12 @@ export function SearchCareersPage() {
             </div>
           </div>
 
-          <div className={`gap-[25px] p-[25px] overflow-y-auto scrollbar-hide ${isPanelOpen ? "flex" : "hidden"} lg:flex lg:flex-1`}>
+          <div
+            className={`flex flex-col gap-[25px] p-[25px] overflow-y-auto scrollbar-hide border-b-[0.5px] border-foreground lg:border-b-0 ${isPanelOpen ? "" : "hidden"} lg:flex lg:flex-1`}
+          >
             {activeTab === "sort" && (
-              <div className="flex flex-col gap-[20px]">
-                <div className="flex flex-col gap-[15px]">
+              <div className="flex w-full flex-col gap-[20px]">
+                <div className="flex w-full flex-col gap-[15px]">
                   <span className="text-h5 font-bold text-foreground">{t(language, "filters.sort.requiredEducation")}</span>
                   <div className="flex flex-col gap-[15px]">
                     <label className="flex items-center gap-[15px] cursor-pointer">
@@ -523,7 +515,7 @@ export function SearchCareersPage() {
 
                 <div className="h-[0.5px] w-full bg-foreground shrink-0" />
 
-                <div className="flex flex-col gap-[15px]">
+                <div className="flex w-full flex-col gap-[15px]">
                   <span className="text-h5 font-bold text-foreground">{t(language, "filters.sort.salaryRange")}</span>
                   <div className="flex flex-col gap-[15px]">
                     <label className="flex items-center gap-[15px] cursor-pointer">
@@ -589,7 +581,7 @@ export function SearchCareersPage() {
 
                 <div className="h-[0.5px] w-full bg-foreground shrink-0" />
 
-                <div className="flex flex-col gap-[15px]">
+                <div className="flex w-full flex-col gap-[15px]">
                   <span className="text-h5 font-bold text-foreground">{t(language, "filters.sort.jobOutlook")}</span>
                   <div className="flex flex-col gap-[15px]">
                     <label className="flex items-center gap-[15px] cursor-pointer">
@@ -652,8 +644,6 @@ export function SearchCareersPage() {
                     </label>
                   </div>
                 </div>
-
-                <div className="h-[0.5px] w-full bg-foreground shrink-0" />
               </div>
             )}
             {activeTab === "filter" && (
@@ -666,7 +656,7 @@ export function SearchCareersPage() {
             )}
           </div>
         </div>
-
+        <div className="hidden lg:block w-[0.5px] bg-foreground self-stretch" />
         <div className="w-full lg:w-[70%] flex flex-col">
           <div className="sticky top-0 z-20 bg-surface/85 backdrop-blur-[10px] border-b-[0.5px] border-foreground">
             <div className="flex items-center justify-between p-[25px] h-[72px]">
@@ -692,75 +682,75 @@ export function SearchCareersPage() {
             </div>
           ) : (
             <>
-            <div className="grid grid-cols-1 lg:grid-cols-2 bg-surface">
-              {filteredCareers.slice(0, visibleCount).map(career => {
-                const title = getLocalizedString(language, career.title) || ""
-                const salary = displaySalary(career)
-                const isInCompare = careerIds.includes(career._id)
-                const canAddToCompare = !isInCompare && careerIds.length < 4
+              <div className="grid grid-cols-1 lg:grid-cols-2 bg-surface">
+                {filteredCareers.slice(0, visibleCount).map(career => {
+                  const title = getLocalizedString(language, career.title) || ""
+                  const salary = displaySalary(career)
+                  const isInCompare = careerIds.includes(career._id)
+                  const canAddToCompare = !isInCompare && careerIds.length < 4
 
-                const handleToggleCompare = () => {
-                  if (isInCompare) {
-                    removeCareer(career._id)
-                    trackEvent("compare_remove", {
-                      source: "browse",
-                      career_id: career._id,
-                      career_slug: career.slug ?? undefined,
-                      career_title: title,
-                      compare_count: Math.max(careerIds.length - 1, 0),
-                      language
-                    })
-                  } else {
-                    addCareer(career._id)
-                    trackEvent("compare_add", {
-                      source: "browse",
-                      career_id: career._id,
-                      career_slug: career.slug ?? undefined,
-                      career_title: title,
-                      compare_count: Math.min(careerIds.length + 1, 4),
-                      language
-                    })
+                  const handleToggleCompare = () => {
+                    if (isInCompare) {
+                      removeCareer(career._id)
+                      trackEvent("compare_remove", {
+                        source: "browse",
+                        career_id: career._id,
+                        career_slug: career.slug ?? undefined,
+                        career_title: title,
+                        compare_count: Math.max(careerIds.length - 1, 0),
+                        language
+                      })
+                    } else {
+                      addCareer(career._id)
+                      trackEvent("compare_add", {
+                        source: "browse",
+                        career_id: career._id,
+                        career_slug: career.slug ?? undefined,
+                        career_title: title,
+                        compare_count: Math.min(careerIds.length + 1, 4),
+                        language
+                      })
+                    }
                   }
-                }
 
-                return (
-                  <div key={career._id} className="bg-surface border-r-[0.5px] border-b-[0.5px] border-foreground last:border-b-0 lg:last:border-b-0 lg:[&:nth-last-child(2)]:border-b-0">
-                    <CareerCard
-                      language={language}
-                      title={title}
-                      salary={salary}
-                      to={`/careers/${career.slug || career._id}`}
-                      imageUrl={career.imageUrl}
-                      videoUrl={career.videoUrl}
-                      isInCompare={isInCompare}
-                      canAddToCompare={canAddToCompare}
-                      onToggleCompare={handleToggleCompare}
-                      onClick={() => {
-                        trackEvent("career_click", {
-                          source: "browse",
-                          career_id: career._id,
-                          career_slug: career.slug ?? undefined,
-                          career_title: title,
-                          results_count: filteredCareers.length,
-                          language
-                        })
-                      }}
-                    />
-                  </div>
-                )
-              })}
-            </div>
-            {visibleCount < filteredCareers.length && (
-              <div className="bg-surface border-t-[0.5px] border-foreground flex justify-center py-fluid-30">
-                <button
-                  type="button"
-                  onClick={() => setVisibleCount(count => Math.min(count + 10, filteredCareers.length))}
-                  className="px-fluid-30 py-fluid-15 border-[0.5px] border-foreground bg-surface1 text-body-base font-medium text-foreground hover:bg-surface2 transition-colors"
-                >
-                  {t(language, "search.showMore")}
-                </button>
+                  return (
+                    <div key={career._id} className="bg-surface border-b-[0.5px] border-foreground last:border-b-0 lg:last:border-b-0 lg:border-r-[0.5px] lg:[&:nth-child(2n)]:border-r-0 lg:[&:nth-last-child(2)]:border-b-0">
+                      <CareerCard
+                        language={language}
+                        title={title}
+                        salary={salary}
+                        to={`/careers/${career.slug || career._id}`}
+                        imageUrl={career.imageUrl}
+                        videoUrl={career.videoUrl}
+                        isInCompare={isInCompare}
+                        canAddToCompare={canAddToCompare}
+                        onToggleCompare={handleToggleCompare}
+                        onClick={() => {
+                          trackEvent("career_click", {
+                            source: "browse",
+                            career_id: career._id,
+                            career_slug: career.slug ?? undefined,
+                            career_title: title,
+                            results_count: filteredCareers.length,
+                            language
+                          })
+                        }}
+                      />
+                    </div>
+                  )
+                })}
               </div>
-            )}
+              {visibleCount < filteredCareers.length && (
+                <div className="bg-surface border-t-[0.5px] border-foreground flex justify-center py-fluid-30">
+                  <button
+                    type="button"
+                    onClick={() => setVisibleCount(count => Math.min(count + 10, filteredCareers.length))}
+                    className="px-fluid-30 py-fluid-15 text-body-base font-medium text-foreground transition-colors"
+                  >
+                    {t(language, "search.showMore")}
+                  </button>
+                </div>
+              )}
             </>
           )}
         </div>

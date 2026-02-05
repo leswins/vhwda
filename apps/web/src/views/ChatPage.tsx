@@ -5,6 +5,7 @@ import { useGlobalLoadingStore } from "../zustand/useGlobalLoadingStore"
 import { generateContent, type ChatMessage } from "../services/Model"
 import { getCareersContext, createChatSystemPrompt, getCareersBySlugs, fetchCareersForChat, type CareerSummary } from "../services/careerContext"
 import { parseAIResponse } from "../services/parseAIResponse"
+import { PageHead } from "../ui/PageHead"
 import { ChatEmptyState } from "../ui/widgets/chat/ChatEmptyState"
 import { QuickPrompts } from "../ui/widgets/chat/QuickPrompts"
 import { ChatMessages } from "../ui/widgets/chat/ChatMessages"
@@ -125,6 +126,11 @@ export function ChatPage() {
 
   return (
     <div className="relative flex flex-col bg-surface" style={{ height: "calc(100vh - 75px)" }}>
+      <PageHead
+        title="AI Career Chat"
+        description="Chat with our AI assistant to get personalized healthcare career guidance. Ask questions about specific careers, education requirements, salary expectations, and career paths in Virginia."
+        path="/chat"
+      />
       <div className="flex-1 overflow-y-auto">
         {showEmptyState && <ChatEmptyState language={language} />}
         

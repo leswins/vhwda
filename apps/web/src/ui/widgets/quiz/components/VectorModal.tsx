@@ -15,7 +15,7 @@ export function VectorModal({ vector, language }: VectorModalProps) {
             {/* Trigger button */}
             <button
                 onClick={() => setIsOpen(true)}
-                className="fixed bottom-4 right-4 bg-on-surface-primary text-surface-background px-4 py-2 border border-on-surface-primary hover:bg-surface-background hover:text-on-surface-primary transition-colors z-50"
+                className="hidden lg:inline-flex fixed bottom-4 right-4 bg-on-surface-primary text-surface-background px-4 py-2 border border-on-surface-primary hover:bg-surface-background hover:text-on-surface-primary transition-colors z-50"
             >
                 {t(language, "quiz.showVector")}
             </button>

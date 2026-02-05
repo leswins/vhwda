@@ -37,7 +37,7 @@ export function ProfessionalOrganizationCard({ language, organization }: Props) 
     : undefined
 
   return (
-    <div className="space-y-[25px] border-b-[0.5px] border-foreground pb-[50px] pt-[50px] first:pt-0 last:border-0 last:pb-0">
+    <div className="space-y-[25px] border-b-[0.5px] border-foreground py-5 lg:py-[50px] first:pt-0 last:border-0 last:pb-0">
       <div className="flex items-center justify-between gap-4">
         <h3 className="text-h4 font-semibold text-foreground">{organization.name}</h3>
         {organization.link && (
@@ -54,7 +54,7 @@ export function ProfessionalOrganizationCard({ language, organization }: Props) 
                 language
               })
               trackOutboundClick({
-                outbound_url: organization.link,
+                outbound_url: organization.link ?? "",
                 resource_type: "professional_organization",
                 resource_id: organization._id,
                 resource_title: organization.name,

@@ -16,18 +16,40 @@ type Props = {
   canAddToCompare?: boolean
   onToggleCompare?: () => void
   onClick?: () => void
+  autoplayOnMobile?: boolean
 }
 
-export function CareerCard({ language, title, salary, to, imageUrl, videoUrl, showMatch, matchLabel, isInCompare = false, canAddToCompare = false, onToggleCompare, onClick }: Props) {
+export function CareerCard({ language, title, salary, to, imageUrl, videoUrl, showMatch, matchLabel, isInCompare = false, canAddToCompare = false, onToggleCompare, onClick, autoplayOnMobile = false }: Props) {
   const videoRef = React.useRef<HTMLVideoElement | null>(null)
 
+  React.useEffect(() => {
+    const video = videoRef.current
+    if (!video || !videoUrl) return
+    video.load()
+  }, [videoUrl])
+
+  React.useEffect(() => {
+    const video = videoRef.current
+    if (!video) return
+
+    if (autoplayOnMobile) {
+      void video.play()
+    } else {
+      video.pause()
+    }
+  }, [autoplayOnMobile])
+
   const handleMouseEnter = () => {
+    // Only handle hover on desktop (lg breakpoint and above)
+    if (window.innerWidth < 1024) return
     const video = videoRef.current
     if (!video) return
     void video.play()
   }
 
   const handleMouseLeave = () => {
+    // Only handle hover on desktop (lg breakpoint and above)
+    if (window.innerWidth < 1024) return
     videoRef.current?.pause()
   }
 
@@ -38,6 +60,18 @@ export function CareerCard({ language, title, salary, to, imageUrl, videoUrl, sh
   }
 
   const showCompareButton = onToggleCompare && (isInCompare || canAddToCompare)
+  const handleLoadedData = () => {
+    const video = videoRef.current
+    if (!video) return
+    try {
+      if (video.currentTime === 0) {
+        video.currentTime = 0.01
+      }
+      video.pause()
+    } catch {
+      // Ignore seek errors for streaming sources
+    }
+  }
 
   return (
     <div className="group w-full h-full bg-surface relative">
@@ -59,22 +93,31 @@ export function CareerCard({ language, title, salary, to, imageUrl, videoUrl, sh
           )}
         </button>
       )}
-      <Link to={to} className="flex flex-col h-full" onClick={onClick} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} onFocus={handleMouseEnter} onBlur={handleMouseLeave}>
+      <Link
+        to={to}
+        className="flex h-full flex-col divide-y-[0.5px] divide-foreground"
+        onClick={onClick}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        onFocus={handleMouseEnter}
+        onBlur={handleMouseLeave}
+      >
         <div className="relative h-[283px] w-full shrink-0 overflow-hidden bg-surface2">
           {videoUrl ? (
             <video
               ref={videoRef}
-              className="h-full w-full object-cover"
+              className="absolute inset-0 h-full w-full object-cover"
               muted
               playsInline
-              preload="metadata"
+              preload="auto"
               loop
               poster={imageUrl}
+              onLoadedData={handleLoadedData}
             >
               <source src={videoUrl} />
-        </video>
+            </video>
           ) : imageUrl ? (
-            <img alt="" src={imageUrl} className="h-full w-full object-cover" />
+            <img alt="" src={imageUrl} className="absolute inset-0 h-full w-full object-cover" />
           ) : null}
 
           {showMatch ? (
@@ -84,22 +127,16 @@ export function CareerCard({ language, title, salary, to, imageUrl, videoUrl, sh
           ) : null}
         </div>
 
-        <div className="h-[0.5px] w-full bg-foreground" />
-
         <div className="relative flex-1 overflow-hidden bg-surface1 px-5 py-5 flex items-center">
-          <div className="absolute inset-0 translate-x-[-100%] bg-foreground transition-transform duration-300 ease-out group-hover:translate-x-0" />
+          <div className="absolute inset-0 translate-x-[-101%] bg-foreground transition-transform duration-300 ease-out group-hover:translate-x-0" />
           <div className="relative z-10 text-h4 font-bold leading-tight text-foreground transition-colors duration-300 group-hover:text-surface">{title}</div>
         </div>
 
-        <div className="h-[0.5px] w-full bg-foreground" />
-
-        <div className="px-5 shrink-0">
+        <div className="shrink-0 divide-y-[0.5px] divide-foreground px-5">
           <div className="flex items-center justify-between py-5 text-body-base font-bold text-foreground">
             <span>{t(language, "careerCard.typicalVaSalary")}</span>
             <span>{salary ?? "—"}</span>
           </div>
-
-          <div className="h-[0.5px] w-full bg-foreground" />
 
           <div className="flex items-center justify-between py-5">
             <span className="text-body-base font-medium text-foreground">{t(language, "careerCard.learnMore")}</span>
