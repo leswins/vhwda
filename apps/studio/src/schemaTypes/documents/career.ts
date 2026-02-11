@@ -52,7 +52,7 @@ export const career = defineType({
     }),
     defineField({
       name: "educationRequirements",
-      title: "Education Requirements",
+      title: "Academic Pathway",
       description: "Use Normal + Small only (no headings).",
       type: "localizedPortableTextSmall"
     }),

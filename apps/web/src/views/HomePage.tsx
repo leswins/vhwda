@@ -424,19 +424,13 @@ export function HomePage() {
             <span className="lg:text-right">{t(language, "home.catalogBanner.right")}</span>
           </div>
         </div>
-        <div className="grid grid-cols-1 lg:h-[300px] lg:grid-cols-3 border-t border-foreground">
-          <div className="flex flex-col items-center justify-center border-b border-foreground bg-accentBlue px-fluid-25 py-[50px] text-center lg:border-b-0 lg:border-r lg:py-fluid-40">
-            <h3 className="text-h3 text-foreground">{t(language, "home.catalogHighlights.careers.title")}</h3>
-            <p className="mt-3 text-body-base font-medium text-foreground">{t(language, "home.catalogHighlights.careers.description")}</p>
-          </div>
-          <div className="flex flex-col items-center justify-center border-b border-foreground bg-accentYellow px-fluid-25 py-[50px] text-center lg:border-b-0 lg:border-r lg:py-fluid-40">
-            <h3 className="text-h3 text-foreground">{t(language, "home.catalogHighlights.updated.title")}</h3>
-            <p className="mt-3 text-body-base font-medium text-foreground">{t(language, "home.catalogHighlights.updated.description")}</p>
-          </div>
-          <div className="flex flex-col items-center justify-center bg-accentGreen px-fluid-25 py-[50px] text-center lg:py-fluid-40">
-            <h3 className="text-h3 text-foreground">{t(language, "home.catalogHighlights.local.title")}</h3>
-            <p className="mt-3 text-body-base font-medium text-foreground">{t(language, "home.catalogHighlights.local.description")}</p>
-          </div>
+        <div className="flex h-[400px] lg:h-[500px] items-center justify-center border-t border-foreground px-fluid-25 lg:px-[150px]">
+          <h2 className="text-center text-h1">{t(language, "home.catalogHighlights.headline")}</h2>
+        </div>
+        <div className="grid h-[10px] grid-cols-3 border-t-[0.5px] border-foreground">
+          <div className="bg-accentBlue" />
+          <div className="bg-accentYellow" />
+          <div className="bg-accentGreen" />
         </div>
       </section>
 
