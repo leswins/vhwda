@@ -44,13 +44,13 @@ const BADGE_OPTIONS = [
 ]
 
 const INPUT_CLASS =
-  "w-full border-[0.5px] border-foreground rounded-md px-3 py-2.5 bg-surface text-foreground text-body-base placeholder:text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/20 transition-colors"
+  "w-full border-[0.5px] border-foreground rounded-none px-3 py-2.5 bg-surface text-foreground text-body-base placeholder:text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/20 transition-colors"
 
 const TEXTAREA_CLASS = `${INPUT_CLASS} min-h-[100px] resize-y`
 
 const SELECT_CLASS = `${INPUT_CLASS} appearance-none cursor-pointer`
 
-const LABEL_CLASS = "block text-body-sm font-semibold text-foreground mb-1"
+const LABEL_CLASS = "block text-body-sm font-semibold text-foreground mb-[9px]"
 
 function cx(...parts: Array<string | false | null | undefined>) {
   return parts.filter(Boolean).join(" ")
@@ -121,7 +121,7 @@ function CheckboxGroup({
             type="button"
             onClick={() => toggle(opt.value)}
             className={cx(
-              "inline-flex items-center gap-1.5 rounded-md border-[0.5px] px-3 py-1.5 text-body-sm font-medium transition-colors",
+              "inline-flex items-center gap-1.5 rounded-none border-[0.5px] px-3 py-1.5 text-body-sm font-medium transition-colors",
               "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/20",
               checked
                 ? "border-foreground bg-foreground text-surface"
@@ -271,7 +271,7 @@ export function ScholarshipSubmitPage() {
   if (submitted) {
     return (
       <>
-        <PageHead title={t(language, "page.title.scholarshipSubmit")} />
+        <PageHead title={t(language, "page.title.scholarshipSubmit")} description={t(language, "scholarshipForm.subtitle")} />
         <div className="border-b-[0.5px] border-foreground px-5 py-10 lg:p-fluid-50">
           <div className="mx-auto max-w-2xl text-center space-y-6">
             <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-accentGreen/20">
@@ -297,7 +297,7 @@ export function ScholarshipSubmitPage() {
   /* ---- Form ---- */
   return (
     <>
-      <PageHead title={t(language, "page.title.scholarshipSubmit")} />
+      <PageHead title={t(language, "page.title.scholarshipSubmit")} description={t(language, "scholarshipForm.subtitle")} />
 
       {/* Header */}
       <div className="border-b-[0.5px] border-foreground px-5 py-10 lg:p-fluid-50">
@@ -564,7 +564,7 @@ export function ScholarshipSubmitPage() {
 
           {/* Error message */}
           {submitError && (
-            <div className="rounded-md bg-accentOrange/10 border-[0.5px] border-accentOrange px-4 py-3">
+            <div className="rounded-none bg-accentOrange/10 border-[0.5px] border-accentOrange px-4 py-3">
               <p className="text-body-sm text-foreground">{t(language, "scholarshipForm.error")}</p>
             </div>
           )}
