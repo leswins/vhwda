@@ -97,7 +97,7 @@ function StatusBadge({ status, language }: { status: Submission["status"]; langu
   return (
     <span
       className={cx(
-        "inline-flex items-center rounded-md px-2 py-0.5 text-xs font-semibold",
+        "inline-flex items-center rounded-none px-2 py-0.5 text-xs font-semibold",
         status === "pending" && "bg-accentYellow/20 text-foreground",
         status === "approved" && "bg-accentGreen/20 text-foreground",
         status === "declined" && "bg-accentOrange/20 text-foreground"
@@ -200,7 +200,7 @@ function SubmissionCard({
         <button
           type="button"
           onClick={() => setExpanded(!expanded)}
-          className="shrink-0 text-body-sm font-medium text-primary underline underline-offset-2 hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/20 rounded"
+          className="shrink-0 text-body-sm font-medium text-accentBlue underline underline-offset-2 hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/20 rounded"
         >
           {expanded
             ? t(language, "scholarshipPortal.hideDetails")
@@ -211,7 +211,7 @@ function SubmissionCard({
       {/* Expanded details */}
       {expanded && (
         <div className="mt-5 space-y-5">
-          <dl className="space-y-3 rounded-md bg-surface1 p-4">
+          <dl className="space-y-3 rounded-none bg-surface1 p-4">
             <DetailRow label={t(language, "scholarshipPortal.detail.institution")} value={submission.institution} />
             <DetailRow label={t(language, "scholarshipPortal.detail.summary")} value={submission.summary} />
             <DetailRow label={t(language, "scholarshipPortal.detail.description")} value={submission.description} />
@@ -292,7 +292,7 @@ function SubmissionCard({
           {reviewMessage && (
             <div
               className={cx(
-                "rounded-md border-[0.5px] px-4 py-3 text-body-sm",
+                "rounded-none border-[0.5px] px-4 py-3 text-body-sm",
                 reviewMessage.type === "success" && "border-accentGreen bg-accentGreen/10 text-foreground",
                 reviewMessage.type === "error" && "border-accentOrange bg-accentOrange/10 text-foreground"
               )}
@@ -419,7 +419,7 @@ export function ScholarshipPortalPage() {
     return (
       <>
         <PageHead title={t(language, "page.title.scholarshipPortal")} description={t(language, "scholarshipPortal.subtitle")} />
-        <div className="px-5 py-10 lg:p-fluid-50">
+        <div className="min-h-[100vh] px-5 py-10 lg:p-fluid-50">
           <div className="mx-auto max-w-sm space-y-6">
             <div className="text-center space-y-2">
               <h1 className="text-h3 font-bold tracking-tight text-foreground">
@@ -440,7 +440,7 @@ export function ScholarshipPortalPage() {
                 }}
                 placeholder={t(language, "scholarshipPortal.login.placeholder")}
                 className={cx(
-                  "w-full border-[0.5px] border-foreground rounded-md px-3 py-2.5 bg-surface text-foreground text-body-base placeholder:text-muted",
+                  "w-full border-[0.5px] border-foreground rounded-none px-3 py-2.5 bg-surface text-foreground text-body-base placeholder:text-muted",
                   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/20",
                   loginError && "ring-2 ring-accentOrange"
                 )}
@@ -501,7 +501,7 @@ export function ScholarshipPortalPage() {
                   type="button"
                   onClick={() => setStatusFilter(filter)}
                   className={cx(
-                    "px-3 py-1.5 text-body-sm font-medium rounded-md transition-colors",
+                    "px-3 py-1.5 text-body-sm font-medium rounded-none transition-colors",
                     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/20",
                     isActive
                       ? "bg-foreground text-surface"
@@ -520,7 +520,7 @@ export function ScholarshipPortalPage() {
       </div>
 
       {/* Content */}
-      <div className="px-5 py-5 lg:px-fluid-50 lg:py-8">
+      <div className="min-h-[100vh] px-5 py-5 lg:px-fluid-50 lg:py-8">
         {loading ? (
           <p className="text-body-base text-muted py-10 text-center">
             {t(language, "scholarshipPortal.loading")}

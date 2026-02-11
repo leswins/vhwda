@@ -272,7 +272,7 @@ export function ScholarshipSubmitPage() {
     return (
       <>
         <PageHead title={t(language, "page.title.scholarshipSubmit")} description={t(language, "scholarshipForm.subtitle")} />
-        <div className="border-b-[0.5px] border-foreground px-5 py-10 lg:p-fluid-50">
+        <div className="min-h-[100vh] border-b-[0.5px] border-foreground px-5 py-10 lg:p-fluid-50">
           <div className="mx-auto max-w-2xl text-center space-y-6">
             <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-accentGreen/20">
               <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-foreground">
@@ -312,7 +312,7 @@ export function ScholarshipSubmitPage() {
       </div>
 
       {/* Form */}
-      <form onSubmit={handleSubmit} noValidate className="px-5 py-10 lg:p-fluid-50">
+      <form onSubmit={handleSubmit} noValidate className="min-h-[100vh] px-5 py-10 lg:p-fluid-50">
         <div className="mx-auto max-w-2xl space-y-10">
 
           {/* Scholarship Details Section */}
