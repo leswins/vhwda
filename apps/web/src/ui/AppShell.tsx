@@ -34,6 +34,10 @@ export function AppShell() {
           return t(language, "page.title.chat")
         case location.pathname === "/about":
           return t(language, "page.title.about")
+        case location.pathname === "/scholarship-submit":
+          return t(language, "page.title.scholarshipSubmit")
+        case location.pathname === "/scholarship-portal":
+          return t(language, "page.title.scholarshipPortal")
         default:
           return t(language, "app.title")
       }
@@ -63,6 +67,10 @@ export function AppShell() {
           return "chat"
         case location.pathname === "/about":
           return "about"
+        case location.pathname === "/scholarship-submit":
+          return "scholarship-submit"
+        case location.pathname === "/scholarship-portal":
+          return "scholarship-portal"
         default:
           return "other"
       }
