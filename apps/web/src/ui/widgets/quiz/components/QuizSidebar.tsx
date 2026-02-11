@@ -40,6 +40,11 @@ export function QuizSidebar({ questions, currentQuestionIndex, selectedAnswers, 
         return acc
     }, {} as Record<string, Array<{ question: Question; index: number }>>)
 
+    const activeSections = QUIZ_SECTIONS.filter(section => {
+        const sectionQuestions = questionsBySection[section.id] || []
+        return sectionQuestions.length > 0
+    })
+
     const isSectionCompleted = (sectionId: string) => {
         const sectionQuestions = questionsBySection[sectionId] || []
         if (sectionQuestions.length === 0) return false
@@ -61,7 +66,7 @@ export function QuizSidebar({ questions, currentQuestionIndex, selectedAnswers, 
                     {t(language, "quiz.sidebar.title")}
                 </h2>
             </div>
-            {QUIZ_SECTIONS.map((section) => {
+            {activeSections.map((section) => {
                 const isCompleted = isSectionCompleted(section.id)
                 const isCurrent = isCurrentSection(section.id)
                 

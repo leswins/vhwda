@@ -43,6 +43,11 @@ export function MobileQuizSteps({
     return acc
   }, {} as Record<string, Array<{ question: Question; index: number }>>)
 
+  const activeSections = QUIZ_SECTIONS.filter(section => {
+    const sectionQuestions = questionsBySection[section.id] || []
+    return sectionQuestions.length > 0
+  })
+
   const isSectionCompleted = (sectionId: string) => {
     const sectionQuestions = questionsBySection[sectionId] || []
     if (sectionQuestions.length === 0) return false
@@ -61,6 +66,12 @@ export function MobileQuizSteps({
     if (!currentSectionEntry) return
 
     const [sectionId] = currentSectionEntry
+    const sectionOrderIndex = activeSections.findIndex(section => section.id === sectionId)
+
+    // Avoid auto-scrolling when we're in the last two sections
+    if (sectionOrderIndex >= QUIZ_SECTIONS.length - 2) {
+      return
+    }
 
     const element = itemRefs.current[sectionId]
     if (element) {
@@ -69,9 +80,9 @@ export function MobileQuizSteps({
   }, [currentQuestionIndex, questionsBySection])
 
   return (
-    <div className="lg:hidden h-[50px] border-b-[0.5px] border-foreground bg-surface1">
-      <div className="flex h-full overflow-x-auto scrollbar-hide snap-x snap-mandatory">
-        {QUIZ_SECTIONS.map((section) => {
+    <div className="lg:hidden border-b-[0.5px] border-foreground bg-surface1">
+      <div className="px-fluid-20 py-fluid-15 flex gap-fluid-15 overflow-x-auto scrollbar-hide snap-x snap-mandatory">
+        {activeSections.map(section => {
           const isCompleted = isSectionCompleted(section.id)
           const isCurrent = isCurrentSection(section.id)
           const isLast = section.id === QUIZ_SECTIONS[QUIZ_SECTIONS.length - 1].id
