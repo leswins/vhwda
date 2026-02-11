@@ -44,38 +44,44 @@ function cx(...parts: Array<string | false | null | undefined>) {
   return parts.filter(Boolean).join(" ")
 }
 
-const STAGE_LABELS: Record<string, string> = {
-  high_school: "High School Student",
-  college: "College Student",
-  graduate: "Graduate Student",
-  working_professional: "Working Professional",
-  veteran_military: "Veteran, Military",
-  adult_returning: "Adult Returning to School"
+const STAGE_KEYS: Record<string, Parameters<typeof t>[1]> = {
+  high_school: "scholarshipForm.stage.highSchool",
+  college: "scholarshipForm.stage.college",
+  graduate: "scholarshipForm.stage.graduate",
+  working_professional: "scholarshipForm.stage.workingProfessional",
+  veteran_military: "scholarshipForm.stage.veteranMilitary",
+  adult_returning: "scholarshipForm.stage.adultReturning"
 }
 
-const FUNDING_LABELS: Record<string, string> = {
-  federal: "Federal",
-  state: "State",
-  institutional: "Institutional",
-  private: "Private",
-  foundation: "Foundation",
-  other: "Other"
+const FUNDING_KEYS: Record<string, Parameters<typeof t>[1]> = {
+  federal: "scholarshipForm.funding.federal",
+  state: "scholarshipForm.funding.state",
+  institutional: "scholarshipForm.funding.institutional",
+  private: "scholarshipForm.funding.private",
+  foundation: "scholarshipForm.funding.foundation",
+  other: "scholarshipForm.funding.other"
 }
 
-const SCOPE_LABELS: Record<string, string> = {
-  virginia_statewide: "Virginia Statewide",
-  regional: "Regional",
-  national: "National",
-  local: "Local",
-  international: "International"
+const SCOPE_KEYS: Record<string, Parameters<typeof t>[1]> = {
+  virginia_statewide: "scholarshipForm.scope.virginiaStatewide",
+  regional: "scholarshipForm.scope.regional",
+  national: "scholarshipForm.scope.national",
+  local: "scholarshipForm.scope.local",
+  international: "scholarshipForm.scope.international"
 }
 
-const BADGE_LABELS: Record<string, string> = {
-  undergraduate: "Undergraduate",
-  graduate: "Graduate",
-  undergraduate_graduate: "Undergraduate and Graduate",
-  multiple_cohorts: "Multiple cohorts available",
-  health_related: "Health-related fields"
+const BADGE_KEYS: Record<string, Parameters<typeof t>[1]> = {
+  undergraduate: "scholarshipForm.badge.undergraduate",
+  graduate: "scholarshipForm.badge.graduate",
+  undergraduate_graduate: "scholarshipForm.badge.undergraduateGraduate",
+  multiple_cohorts: "scholarshipForm.badge.multipleCohorts",
+  health_related: "scholarshipForm.badge.healthRelated"
+}
+
+/** Resolve a value through an i18n key map, falling back to the raw value. */
+function label(language: Language, keys: Record<string, Parameters<typeof t>[1]>, value: string) {
+  const key = keys[value]
+  return key ? t(language, key) : value
 }
 
 function formatDate(iso: string) {
@@ -234,23 +240,23 @@ function SubmissionCard({
               label={t(language, "scholarshipPortal.detail.currentStage")}
               value={
                 submission.current_stage?.length > 0
-                  ? submission.current_stage.map((s) => STAGE_LABELS[s] || s).join(", ")
+                  ? submission.current_stage.map((s) => label(language, STAGE_KEYS, s)).join(", ")
                   : null
               }
             />
             <DetailRow
               label={t(language, "scholarshipPortal.detail.fundingType")}
-              value={submission.funding_type ? FUNDING_LABELS[submission.funding_type] || submission.funding_type : null}
+              value={submission.funding_type ? label(language, FUNDING_KEYS, submission.funding_type) : null}
             />
             <DetailRow
               label={t(language, "scholarshipPortal.detail.locationScope")}
-              value={submission.location_scope ? SCOPE_LABELS[submission.location_scope] || submission.location_scope : null}
+              value={submission.location_scope ? label(language, SCOPE_KEYS, submission.location_scope) : null}
             />
             <DetailRow
               label={t(language, "scholarshipPortal.detail.badges")}
               value={
                 submission.badges?.length > 0
-                  ? submission.badges.map((b) => BADGE_LABELS[b] || b).join(", ")
+                  ? submission.badges.map((b) => label(language, BADGE_KEYS, b)).join(", ")
                   : null
               }
             />
@@ -371,12 +377,11 @@ export function ScholarshipPortalPage() {
     if (stored) {
       setPassword(stored)
       setAuthenticated(true)
-      fetchSubmissions(stored, statusFilter)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // Refresh when filter changes
+  // Single fetch trigger: runs on mount (after auto-login sets state),
+  // on login, and whenever the status filter changes.
   useEffect(() => {
     if (authenticated && password) {
       fetchSubmissions(password, statusFilter)
@@ -391,7 +396,8 @@ export function ScholarshipPortalPage() {
     setPassword(pw)
     sessionStorage.setItem("scholarship_portal_pw", pw)
     setAuthenticated(true)
-    fetchSubmissions(pw, statusFilter)
+    // fetchSubmissions will be triggered by the useEffect above
+    // when authenticated + password state updates propagate.
   }
 
   function handleLogout() {
@@ -412,7 +418,7 @@ export function ScholarshipPortalPage() {
   if (!authenticated) {
     return (
       <>
-        <PageHead title={t(language, "page.title.scholarshipPortal")} />
+        <PageHead title={t(language, "page.title.scholarshipPortal")} description={t(language, "scholarshipPortal.subtitle")} />
         <div className="px-5 py-10 lg:p-fluid-50">
           <div className="mx-auto max-w-sm space-y-6">
             <div className="text-center space-y-2">
@@ -458,7 +464,7 @@ export function ScholarshipPortalPage() {
   /* ---- Dashboard ---- */
   return (
     <>
-      <PageHead title={t(language, "page.title.scholarshipPortal")} />
+      <PageHead title={t(language, "page.title.scholarshipPortal")} description={t(language, "scholarshipPortal.subtitle")} />
 
       {/* Header */}
       <div className="border-b-[0.5px] border-foreground px-5 py-10 lg:p-fluid-50">

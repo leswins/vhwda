@@ -60,7 +60,10 @@ type Submission = {
   location_scope: string | null
   badges: string[]
   career_areas_text: string | null
-  [key: string]: unknown
+  status: "pending" | "approved" | "declined"
+  submitted_at: string
+  reviewed_at: string | null
+  sanity_document_id: string | null
 }
 
 async function fetchSubmission(
@@ -84,14 +87,23 @@ async function fetchSubmission(
   return rows[0] ?? null
 }
 
+/**
+ * Atomically update a submission row. Returns the updated rows (empty array
+ * if no row matched the filters, which signals a lost race).
+ *
+ * @param extraFilters  Additional PostgREST filters appended to the URL
+ *                      (e.g. `&status=eq.pending`) so the PATCH only succeeds
+ *                      when the row is still in the expected state.
+ */
 async function updateSubmission(
   supabaseUrl: string,
   supabaseKey: string,
   id: string,
-  patch: Record<string, unknown>
-): Promise<boolean> {
+  patch: Record<string, unknown>,
+  extraFilters = ""
+): Promise<Submission[]> {
   const response = await fetch(
-    `${supabaseUrl}/rest/v1/scholarship_submissions?id=eq.${id}`,
+    `${supabaseUrl}/rest/v1/scholarship_submissions?id=eq.${id}${extraFilters}`,
     {
       method: "PATCH",
       headers: {
@@ -103,7 +115,8 @@ async function updateSubmission(
       body: JSON.stringify(patch)
     }
   )
-  return response.ok
+  if (!response.ok) return []
+  return (await response.json()) as Submission[]
 }
 
 async function createSanityScholarship(
@@ -225,45 +238,61 @@ export default async function handler(request: Request) {
     return json({ error: "action must be 'approve' or 'decline'" }, 400)
   }
 
-  // Fetch the submission
-  const submission = await fetchSubmission(supabaseUrl, supabaseKey, payload.id)
-  if (!submission) {
-    return json({ error: "Submission not found" }, 404)
-  }
-
-  if (submission.status !== "pending") {
-    return json({ error: `Submission already ${submission.status}` }, 409)
-  }
-
+  // ── Decline flow ────────────────────────────────────────────────
   if (payload.action === "decline") {
-    const ok = await updateSubmission(supabaseUrl, supabaseKey, payload.id, {
-      status: "declined",
-      reviewed_at: new Date().toISOString()
-    })
-    if (!ok) {
-      return json({ error: "Failed to update submission" }, 502)
+    // Atomic: only patches if the row is still pending
+    const updated = await updateSubmission(
+      supabaseUrl,
+      supabaseKey,
+      payload.id,
+      { status: "declined", reviewed_at: new Date().toISOString() },
+      "&status=eq.pending"
+    )
+
+    if (updated.length === 0) {
+      // Either not found or already reviewed
+      const existing = await fetchSubmission(supabaseUrl, supabaseKey, payload.id)
+      if (!existing) return json({ error: "Submission not found" }, 404)
+      return json({ error: `Submission already ${existing.status}` }, 409)
     }
+
     return json({ success: true, message: "Scholarship declined" }, 200)
   }
 
-  // Approve: create in Sanity then update Supabase
+  // ── Approve flow ───────────────────────────────────────────────
+  // Step 1: Atomically claim the row by moving it to "approved".
+  //         This prevents a second concurrent request from also claiming it.
+  const claimed = await updateSubmission(
+    supabaseUrl,
+    supabaseKey,
+    payload.id,
+    { status: "approved", reviewed_at: new Date().toISOString() },
+    "&status=eq.pending"
+  )
+
+  if (claimed.length === 0) {
+    const existing = await fetchSubmission(supabaseUrl, supabaseKey, payload.id)
+    if (!existing) return json({ error: "Submission not found" }, 404)
+    return json({ error: `Submission already ${existing.status}` }, 409)
+  }
+
+  const submission = claimed[0]
+
+  // Step 2: Create the Sanity document (only one request can reach here per submission)
   const sanityResult = await createSanityScholarship(submission)
   if (!sanityResult) {
+    // Roll back: move row back to pending so it can be retried
+    await updateSubmission(supabaseUrl, supabaseKey, payload.id, {
+      status: "pending",
+      reviewed_at: null
+    })
     return json({ error: "Failed to create scholarship in Sanity" }, 502)
   }
 
-  const ok = await updateSubmission(supabaseUrl, supabaseKey, payload.id, {
-    status: "approved",
-    reviewed_at: new Date().toISOString(),
+  // Step 3: Store the Sanity document ID on the row
+  await updateSubmission(supabaseUrl, supabaseKey, payload.id, {
     sanity_document_id: sanityResult.id
   })
-
-  if (!ok) {
-    return json({
-      error: "Scholarship created in Sanity but failed to update submission status",
-      sanity_document_id: sanityResult.id
-    }, 502)
-  }
 
   return json({
     success: true,

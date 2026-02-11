@@ -19,7 +19,7 @@ export function GlobalLoading() {
 
   return (
     <div className="fixed bottom-0 left-0 right-0 top-[75px] z-[999] bg-surface px-0 lg:px-fluid-50">
-      <div className="flex h-full w-full items-center justify-center lg:site-grid-container lg:border-y-[0.5px] lg:border-x-[0.5px] lg:border-foreground">
+      <div className="flex h-full w-full items-center justify-center site-grid-container border-y-[0.5px]">
         <div className="flex flex-col items-center px-fluid-20 lg:px-0">
           <div className="w-[200px] lg:w-[282px] max-w-[90vw]">
             <Lottie
