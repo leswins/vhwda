@@ -10,6 +10,8 @@ import { QuizPage } from "./views/QuizPage"
 import { ResourcesPage } from "./views/ResourcesPage"
 import { ChatPage } from "./views/ChatPage"
 import { AboutPage } from "./views/AboutPage"
+import { ScholarshipSubmitPage } from "./views/ScholarshipSubmitPage"
+import { ScholarshipPortalPage } from "./views/ScholarshipPortalPage"
 
 export const router = createBrowserRouter([
   {
@@ -24,7 +26,9 @@ export const router = createBrowserRouter([
       { path: "quiz", element: <QuizPage /> },
       { path: "resources", element: <ResourcesPage /> },
       { path: "chat", element: <ChatPage /> },
-      { path: "about", element: <AboutPage /> }
+      { path: "about", element: <AboutPage /> },
+      { path: "scholarship-submit", element: <ScholarshipSubmitPage /> },
+      { path: "scholarship-portal", element: <ScholarshipPortalPage /> }
     ]
   }
 ])
