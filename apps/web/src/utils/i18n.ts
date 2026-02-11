@@ -79,6 +79,10 @@ const dict: Dictionary = {
     es: "Autoridad de Desarrollo de la Fuerza Laboral de Salud de Virginia"
   },
   "home.catalogBanner.right": { en: "Health Careers Catalog", es: "Catalogo de carreras de salud" },
+  "home.catalogHighlights.headline": {
+    en: "We keep 60+ health careers updated regularly for Virginians.",
+    es: "Mantenemos más de 60 carreras de salud actualizadas regularmente para los virginianos."
+  },
   "home.catalogHighlights.careers.title": { en: "+120 Health Careers", es: "+120 Carreras de salud" },
   "home.catalogHighlights.careers.description": {
     en: "Jargon-free summaries for every role.",
@@ -138,7 +142,7 @@ const dict: Dictionary = {
   "career.aiGenerated": { en: "AI generated", es: "IA generada" },
   "career.sections.overview": { en: "Overview", es: "Resumen" },
   "career.sections.responsibilities": { en: "Responsibilities", es: "Responsabilidades" },
-  "career.sections.academicRequirements": { en: "Academic Requirements", es: "Requisitos académicos" },
+  "career.sections.academicRequirements": { en: "Academic Pathway", es: "Camino académico" },
   "career.sections.workEnvironments": { en: "Work Environments", es: "Entornos de trabajo" },
   "career.sections.areasOfSpecialization": { en: "Areas of Specialization", es: "Áreas de especialización" },
   "career.sections.salaryRange": { en: "Salary Range", es: "Rango salarial" },
@@ -176,7 +180,7 @@ const dict: Dictionary = {
   "compare.sections.dayToDay": { en: "Day-to-Day", es: "Día a día" },
   "compare.sections.overview": { en: "Overview", es: "Resumen" },
   "compare.sections.salaryDetails": { en: "Salary Details", es: "Detalles salariales" },
-  "compare.sections.academicRequirements": { en: "Academic Requirements", es: "Requisitos académicos" },
+  "compare.sections.academicRequirements": { en: "Academic Pathway", es: "Camino académico" },
   "compare.sections.jobOutlook": { en: "Job Outlook", es: "Perspectiva laboral" },
   "compare.sections.responsibilities": { en: "Responsibilities", es: "Responsabilidades" },
   "compare.sections.workEnvironments": { en: "Work Environments", es: "Entornos de trabajo" },
