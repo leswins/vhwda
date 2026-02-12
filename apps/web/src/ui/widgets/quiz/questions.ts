@@ -23,6 +23,7 @@ export type QuestionOption = {
     weights: Partial<QuizVector> // Can affect multiple dimensions
     // Example: { w_patient_facing: 2, w_pediatrics: 1 }
     hardFilter?: HardFilter // Structured hard filter
+    isNotImportant?: boolean // Special flag for "Not important" option that should be treated like skip when navigating
 }
 
 export type Question = {

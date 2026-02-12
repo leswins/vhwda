@@ -9,7 +9,7 @@ import {
     MobileQuizSteps,
 } from "../ui/widgets/quiz/components"
 import { QuizSidebar } from "../ui/widgets/quiz/components/QuizSidebar"
-import { VectorModal } from "../ui/widgets/quiz/components/VectorModal"
+
 import { PageHead } from "../ui/PageHead"
 import { useLanguageStore } from "../zustand/useLanguageStore"
 import { t } from "../utils/i18n"
@@ -107,8 +107,6 @@ export function QuizPage() {
                                 />
                             </div>
                         </div>
-
-                        <VectorModal vector={userVector} language={language} />
                     </>
                 ) : currentStep === "results" ? (
                     loadingResults || !resultsDelayReady ? null : (

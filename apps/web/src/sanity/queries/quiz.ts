@@ -85,15 +85,15 @@ function transformQuiz(sanityQuiz: SanityQuiz | null, language: "en" | "es"): Qu
   return sanityQuiz.questions
     .filter(q => q && q._key)
     .map((q, index) => {
-      const prompt = (language === "es" && q.prompt?.es) 
-        ? q.prompt.es 
+      const prompt = (language === "es" && q.prompt?.es)
+        ? q.prompt.es
         : (q.prompt?.en || "")
 
       // For likert_5 and rating_1_5 questions, ensure we have options with IDs "1", "2", "3", "4", "5"
       const isLikertOrRating = q.type === "likert_5" || q.type === "rating_1_5"
-      
+
       let options: QuestionOption[]
-      
+
       if (isLikertOrRating && q.options && q.options.length >= 4) {
         // Map existing options to IDs "1", "2", "3", "4", "5" based on their order
         // Take up to 5 options (some questions might have 4 or 5)
@@ -118,21 +118,21 @@ function transformQuiz(sanityQuiz: SanityQuiz | null, language: "en" | "es"): Qu
               opt.hardFilter.type // Legacy support
             )
               ? {
-                  requiresLicensure: opt.hardFilter.requiresLicensure,
-                  requiresLifting: opt.hardFilter.requiresLifting,
-                  requiresNightsWeekends: opt.hardFilter.requiresNightsWeekends,
-                  requiresBloodNeedles: opt.hardFilter.requiresBloodNeedles,
-                  requiresAcuteHighStress: opt.hardFilter.requiresAcuteHighStress,
-                  hasMinimumEducation: opt.hardFilter.hasMinimumEducation,
-                  educationLevel: opt.hardFilter.educationLevel,
-                  hasMinimumSalary: opt.hardFilter.hasMinimumSalary,
-                  region: opt.hardFilter.region,
-                  description: opt.hardFilter.description,
-                  type: opt.hardFilter.type,
-                  excludeLicensure: opt.hardFilter.excludeLicensure,
-                  salaryMin: opt.hardFilter.salaryMin,
-                  dealbreakerType: opt.hardFilter.dealbreakerType
-                }
+                requiresLicensure: opt.hardFilter.requiresLicensure,
+                requiresLifting: opt.hardFilter.requiresLifting,
+                requiresNightsWeekends: opt.hardFilter.requiresNightsWeekends,
+                requiresBloodNeedles: opt.hardFilter.requiresBloodNeedles,
+                requiresAcuteHighStress: opt.hardFilter.requiresAcuteHighStress,
+                hasMinimumEducation: opt.hardFilter.hasMinimumEducation,
+                educationLevel: opt.hardFilter.educationLevel,
+                hasMinimumSalary: opt.hardFilter.hasMinimumSalary,
+                region: opt.hardFilter.region,
+                description: opt.hardFilter.description,
+                type: opt.hardFilter.type,
+                excludeLicensure: opt.hardFilter.excludeLicensure,
+                salaryMin: opt.hardFilter.salaryMin,
+                dealbreakerType: opt.hardFilter.dealbreakerType
+              }
               : undefined
 
             return {
@@ -163,21 +163,21 @@ function transformQuiz(sanityQuiz: SanityQuiz | null, language: "en" | "es"): Qu
               opt.hardFilter.type // Legacy support
             )
               ? {
-                  requiresLicensure: opt.hardFilter.requiresLicensure,
-                  requiresLifting: opt.hardFilter.requiresLifting,
-                  requiresNightsWeekends: opt.hardFilter.requiresNightsWeekends,
-                  requiresBloodNeedles: opt.hardFilter.requiresBloodNeedles,
-                  requiresAcuteHighStress: opt.hardFilter.requiresAcuteHighStress,
-                  hasMinimumEducation: opt.hardFilter.hasMinimumEducation,
-                  educationLevel: opt.hardFilter.educationLevel,
-                  hasMinimumSalary: opt.hardFilter.hasMinimumSalary,
-                  region: opt.hardFilter.region,
-                  description: opt.hardFilter.description,
-                  type: opt.hardFilter.type,
-                  excludeLicensure: opt.hardFilter.excludeLicensure,
-                  salaryMin: opt.hardFilter.salaryMin,
-                  dealbreakerType: opt.hardFilter.dealbreakerType
-                }
+                requiresLicensure: opt.hardFilter.requiresLicensure,
+                requiresLifting: opt.hardFilter.requiresLifting,
+                requiresNightsWeekends: opt.hardFilter.requiresNightsWeekends,
+                requiresBloodNeedles: opt.hardFilter.requiresBloodNeedles,
+                requiresAcuteHighStress: opt.hardFilter.requiresAcuteHighStress,
+                hasMinimumEducation: opt.hardFilter.hasMinimumEducation,
+                educationLevel: opt.hardFilter.educationLevel,
+                hasMinimumSalary: opt.hardFilter.hasMinimumSalary,
+                region: opt.hardFilter.region,
+                description: opt.hardFilter.description,
+                type: opt.hardFilter.type,
+                excludeLicensure: opt.hardFilter.excludeLicensure,
+                salaryMin: opt.hardFilter.salaryMin,
+                dealbreakerType: opt.hardFilter.dealbreakerType
+              }
               : undefined
 
             return {
@@ -187,6 +187,16 @@ function transformQuiz(sanityQuiz: SanityQuiz | null, language: "en" | "es"): Qu
               hardFilter
             }
           })
+        
+        // Add "Not important" option for single_select questions
+        if (q.type === "single_select") {
+          options.push({
+            id: `${q._key || `q${index + 1}`}_not_important`,
+            label: language === "es" ? "No importante" : "Not important",
+            weights: {}, // No weights - treated like skip
+            isNotImportant: true
+          })
+        }
       }
 
       return {
@@ -206,17 +216,17 @@ function transformQuiz(sanityQuiz: SanityQuiz | null, language: "en" | "es"): Qu
 export async function fetchQuizQuestions(language: "en" | "es" = "en"): Promise<Question[]> {
   try {
     const quiz = await sanityClient.fetch<SanityQuiz | null>(QUIZ_QUERY)
-    
+
     if (!quiz) {
       throw new Error("No quiz found in Sanity")
     }
-    
+
     const transformed = transformQuiz(quiz, language)
-    
+
     if (transformed.length === 0) {
       throw new Error("Quiz has no valid questions after transformation")
     }
-    
+
     return transformed
   } catch (error) {
     console.error("❌ Error in fetchQuizQuestions:", error)
