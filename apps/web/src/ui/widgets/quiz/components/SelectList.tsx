@@ -24,30 +24,30 @@ export function SelectList({
                 const isSelected = selectedValues.includes(option.id)
                 // Only disable if: multi-select AND not selected AND maxSelect is defined (not null/undefined) AND we've reached the max
                 // For single-select, never disable (except if explicitly disabled)
-                const isDisabled = isMultiSelect 
+                const isDisabled = isMultiSelect
                     ? (!isSelected && maxSelect != null && maxSelect > 0 && selectedValues.length >= maxSelect)
                     : false
 
                 const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
                     e.preventDefault()
                     e.stopPropagation()
-                    
+
                     // Early return if already disabled
                     if (isDisabled) {
                         return
                     }
-                    
+
                     // Double-check the disabled condition before allowing the click
                     // This prevents race conditions where state hasn't updated yet
                     const currentSelectedCount = selectedValues.length
-                    const wouldBeDisabled = isMultiSelect 
+                    const wouldBeDisabled = isMultiSelect
                         ? (!isSelected && maxSelect != null && maxSelect > 0 && currentSelectedCount >= maxSelect)
                         : false
-                    
+
                     if (wouldBeDisabled) {
                         return
                     }
-                    
+
                     // Only call onChange if we pass all checks
                     onChange(questionId, option.id)
                 }
@@ -64,8 +64,8 @@ export function SelectList({
                             border border-foreground
                             text-left transition-all
                             relative
-                            ${isSelected 
-                                ? "bg-foreground text-surface" 
+                            ${isSelected
+                                ? "bg-foreground text-surface"
                                 : "bg-surface text-foreground hover:bg-surface1"
                             }
                             ${isDisabled ? "opacity-40 cursor-not-allowed" : "cursor-pointer"}
@@ -78,8 +78,8 @@ export function SelectList({
                                 <div
                                     className={`
                                         w-[24px] h-[24px] border-2 flex items-center justify-center
-                                        ${isSelected 
-                                            ? "bg-surface border-surface" 
+                                        ${isSelected
+                                            ? "bg-surface border-surface"
                                             : "bg-transparent border-current"
                                         }
                                     `}
@@ -102,8 +102,8 @@ export function SelectList({
                                 <div
                                     className={`
                                         w-[24px] h-[24px] rounded-full border-2 flex items-center justify-center
-                                        ${isSelected 
-                                            ? "bg-surface border-surface" 
+                                        ${isSelected
+                                            ? "bg-surface border-surface"
                                             : "bg-transparent border-current"
                                         }
                                     `}

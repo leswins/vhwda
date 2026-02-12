@@ -30,7 +30,7 @@ export function GlobalLoading() {
             />
           </div>
           {variant === "quizResults" && (
-            <div className="mt-fluid-20 lg:mt-[25px] text-center px-fluid-20 lg:px-0">
+            <div className="mt-fluid-20 lg:mt-[50px] text-center px-fluid-20 lg:px-0">
               <h3 className="text-h3 lg:text-h3 text-foreground">{t(language, "quiz.loading.title")}</h3>
               <p className="mt-fluid-10 lg:mt-[10px] text-body-base lg:text-body-lg text-muted">{t(language, "quiz.loading.subtitle")}</p>
             </div>

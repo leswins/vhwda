@@ -26,7 +26,7 @@ export function LikertSlider({ questionId, value, onChange, language }: LikertSl
             const initialValue = value ?? 3
             setSliderValue(initialValue)
         }
-        
+
         // Register initial value only once per question
         if (!hasInitializedRef.current) {
             const initialValue = value ?? 3
@@ -51,11 +51,11 @@ export function LikertSlider({ questionId, value, onChange, language }: LikertSl
     }
 
     return (
-        <div className="flex flex-col gap-8 items-stretch lg:items-center w-full max-w-full lg:max-w-[530px]">
+        <div className="flex flex-col gap-8 items-stretch lg:items-center w-full max-w-full lg:max-w-[600px]">
             <p className="text-body-sm text-muted text-center">
                 {t(language, "quiz.adjustSlider")}
             </p>
-            <div className="-mx-5 lg:mx-0">
+            <div className="-mx-5 lg:mx-0 w-full">
                 <Slider
                     min={1}
                     max={5}
