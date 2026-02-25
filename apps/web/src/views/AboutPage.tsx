@@ -257,9 +257,16 @@ export function AboutPage() {
             <h3 className="text-h4 font-bold leading-h4 tracking-h4">
               {t(language, "about.updateCadence.contactHeading")}
             </h3>
-            <div>
+            <div className="flex gap-[15px]">
               <Button
                 variant="dark"
+                onClick={() => window.open("https://417z62.share-na2.hsforms.com/26jEsqjQ4RPaAPVmQlxDRUw", "_blank")}
+              >
+                {t(language, "about.updateCadence.feedbackButton")}
+              </Button>
+              <Button
+                variant="outline"
+                className="rounded-none border-foreground"
                 onClick={() => window.location.href = "mailto:info@vhwda.org"}
               >
                 {t(language, "about.updateCadence.emailButton")}
