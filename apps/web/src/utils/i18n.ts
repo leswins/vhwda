@@ -450,7 +450,7 @@ const dict: Dictionary = {
   "about.sections.dataSources": { en: "Data Sources", es: "Fuentes de Datos" },
   "about.sections.quizMethodology": { en: "Quiz Methodology", es: "Metodología del Cuestionario" },
   "about.sections.aiFeatures": { en: "AI Features Disclosure", es: "Divulgación de Características de IA" },
-  "about.sections.updateCadence": { en: "Update Cadence & Feedback", es: "Frecuencia de Actualización y Comentarios" },
+  "about.sections.updateCadence": { en: "Updates & Feedback", es: "Actualizaciones y Comentarios" },
 
   "about.aboutVhwda.heading": {
     en: "The Virginia Health Workforce Development Authority (VHWDA) strengthens Virginia's healthcare workforce by aligning education, training, and employment resources with industry needs.",
@@ -574,8 +574,12 @@ const dict: Dictionary = {
     es: "El contenido se actualiza periódicamente a medida que hay nueva información disponible o a medida que se actualizan los programas y los datos de la fuerza laboral. Última actualización: enero de 2026."
   },
   "about.updateCadence.contactHeading": {
-    en: "See something that needs updating or doesn't look right? Contact us.",
-    es: "¿Ves algo que deba actualizarse o que no parezca correcto? Contáctanos."
+    en: "See something that needs updating or doesn't look right?",
+    es: "¿Ves algo que deba actualizarse o que no parezca correcto?"
+  },
+  "about.updateCadence.feedbackButton": {
+    en: "Share Feedback",
+    es: "Compartir comentarios"
   },
   "about.updateCadence.emailButton": {
     en: "Send us an email",
