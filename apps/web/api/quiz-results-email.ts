@@ -66,7 +66,7 @@ function s(language: Language, key: keyof typeof STRINGS["en"]): string {
   return STRINGS[language]?.[key] ?? STRINGS["en"][key]
 }
 
-export const config = { runtime: "nodejs" }
+export const config = { runtime: "nodejs", maxDuration: 20 }
 
 const CORS_HEADERS: Record<string, string> = {
   "Access-Control-Allow-Origin": "*",
@@ -365,26 +365,53 @@ export default async function handler(request: Request) {
   }
 
   const origin = getRequestOrigin(request)
-  const resend = new Resend(resendApiKey)
-  const pdfBytes = await createQuizResultsPdf(payload.results, origin)
 
-  const { error } = await resend.emails.send({
-    from: fromAddress,
-    to: [payload.email],
-    subject: s(payload.results.language, "subject"),
-    html: createEmailHtml(payload.results, origin),
-    attachments: [
-      {
-        filename: "vhwda-quiz-results.pdf",
-        content: Buffer.from(pdfBytes),
-      },
-    ],
-  })
+  let pdfBytes: Uint8Array
+  try {
+    console.log("[quiz-results-email] generating PDF")
+    pdfBytes = await Promise.race([
+      createQuizResultsPdf(payload.results, origin),
+      new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error("PDF generation timed out")), 10_000)
+      ),
+    ])
+    console.log("[quiz-results-email] PDF generated, size:", pdfBytes.byteLength)
+  } catch (err) {
+    console.error("[quiz-results-email] PDF generation error:", err)
+    return json({ error: "Failed to generate PDF" }, 500)
+  }
 
-  if (error) {
-    console.error("Resend send error:", error)
+  let resendResult: Awaited<ReturnType<InstanceType<typeof Resend>["emails"]["send"]>>
+  try {
+    console.log("[quiz-results-email] sending email via Resend to:", payload.email)
+    const resend = new Resend(resendApiKey)
+    resendResult = await Promise.race([
+      resend.emails.send({
+        from: fromAddress,
+        to: [payload.email],
+        subject: s(payload.results.language, "subject"),
+        html: createEmailHtml(payload.results, origin),
+        attachments: [
+          {
+            filename: "vhwda-quiz-results.pdf",
+            content: Buffer.from(pdfBytes),
+          },
+        ],
+      }),
+      new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error("Resend API call timed out")), 12_000)
+      ),
+    ])
+  } catch (err) {
+    console.error("[quiz-results-email] Resend call error:", err)
     return json({ error: "Failed to send email" }, 502)
   }
 
+  if (resendResult.error) {
+    console.error("[quiz-results-email] Resend API error:", resendResult.error)
+    return json({ error: "Failed to send email" }, 502)
+  }
+
+  console.log("[quiz-results-email] email sent, id:", resendResult.data?.id)
   return json({ success: true }, 200)
 }
