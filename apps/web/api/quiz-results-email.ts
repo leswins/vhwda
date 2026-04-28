@@ -1,12 +1,70 @@
-import { PDFDocument, StandardFonts, rgb, type PDFFont, type PDFPage } from "pdf-lib"
+import { PDFDocument, StandardFonts, rgb, type PDFFont } from "pdf-lib"
 import { Resend } from "resend"
-import { t, type Language } from "../src/utils/i18n"
-import {
-  isValidEmailAddress,
-  type QuizResultsEmailCareer,
-  type QuizResultsEmailPayload,
-  type QuizResultsEmailRequest,
-} from "../src/ui/widgets/quiz/quizResultsEmail"
+
+type Language = "en" | "es"
+
+type QuizResultsEmailCareer = {
+  id: string
+  title: string
+  careerPath?: string
+  matchPercentage: number
+  typicalSalary?: string
+  salaryRange?: string
+  educationLabel?: string
+}
+
+type QuizResultsEmailPayload = {
+  language: Language
+  topMatches: QuizResultsEmailCareer[]
+  otherMatches: QuizResultsEmailCareer[]
+  generatedAt: string
+}
+
+type QuizResultsEmailRequest = {
+  email: string
+  results: QuizResultsEmailPayload
+}
+
+function isValidEmailAddress(value: string): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
+}
+
+const STRINGS = {
+  en: {
+    subject: "Your VHWDA quiz results",
+    bodyIntro: "Thanks for taking the VHWDA Career Discovery Quiz. We've attached a PDF summary of your current results.",
+    bodyAttachment: "Your top matches are also listed below for quick reference.",
+    bodyExplore: "You can continue exploring careers on the VHWDA Health Careers Catalog.",
+    topMatches: "Your Top Matches",
+    otherMatches: "Other Strong Matches",
+    pdfTitle: "Career Discovery Quiz Results",
+    pdfGenerated: "Generated",
+    pdfMatch: "Match",
+    pdfTypicalSalary: "Typical Salary",
+    pdfEducation: "Education",
+    pdfSalaryRange: "Salary Range",
+    pdfViewCareer: "Career Details",
+  },
+  es: {
+    subject: "Sus resultados del cuestionario de VHWDA",
+    bodyIntro: "Gracias por completar el Cuestionario de Descubrimiento de Carreras de VHWDA. Adjuntamos un resumen en PDF de sus resultados actuales.",
+    bodyAttachment: "Sus principales coincidencias también se muestran a continuación para una referencia rápida.",
+    bodyExplore: "Puede seguir explorando carreras en el Catálogo de Carreras de Salud de VHWDA.",
+    topMatches: "Tus Mejores Coincidencias",
+    otherMatches: "Otras Coincidencias Fuertes",
+    pdfTitle: "Resultados del Cuestionario de Descubrimiento de Carreras",
+    pdfGenerated: "Generado",
+    pdfMatch: "Coincidencia",
+    pdfTypicalSalary: "Salario Típico",
+    pdfEducation: "Educación",
+    pdfSalaryRange: "Rango Salarial",
+    pdfViewCareer: "Detalles de la Carrera",
+  },
+}
+
+function s(language: Language, key: keyof typeof STRINGS["en"]): string {
+  return STRINGS[language]?.[key] ?? STRINGS["en"][key]
+}
 
 export const config = { runtime: "nodejs" }
 
@@ -174,32 +232,32 @@ async function createQuizResultsPdf(results: QuizResultsEmailPayload, origin: st
 
   function drawCareer(career: QuizResultsEmailCareer, index: number) {
     drawWrapped(`${index + 1}. ${career.title}`, { font: boldFont, size: 16 })
-    drawWrapped(`${t(results.language, "quiz.results.email.pdf.match")}: ${career.matchPercentage}%`, { font: regularFont, size: 12, color: mutedColor, indent: 12 })
+    drawWrapped(`${s(results.language, "pdfMatch")}: ${career.matchPercentage}%`, { font: regularFont, size: 12, color: mutedColor, indent: 12 })
 
     if (career.typicalSalary) {
       drawWrapped(
-        `${t(results.language, "quiz.results.email.pdf.typicalSalary")}: ${career.typicalSalary}`,
+        `${s(results.language, "pdfTypicalSalary")}: ${career.typicalSalary}`,
         { font: regularFont, size: 12, color: mutedColor, indent: 12 }
       )
     }
 
     if (career.educationLabel) {
       drawWrapped(
-        `${t(results.language, "quiz.results.email.pdf.education")}: ${career.educationLabel}`,
+        `${s(results.language, "pdfEducation")}: ${career.educationLabel}`,
         { font: regularFont, size: 12, color: mutedColor, indent: 12 }
       )
     }
 
     if (career.salaryRange) {
       drawWrapped(
-        `${t(results.language, "quiz.results.email.pdf.salaryRange")}: ${career.salaryRange}`,
+        `${s(results.language, "pdfSalaryRange")}: ${career.salaryRange}`,
         { font: regularFont, size: 12, color: mutedColor, indent: 12 }
       )
     }
 
     const careerUrl = getCareerUrl(origin, career.careerPath)
     if (careerUrl) {
-      drawWrapped(`${t(results.language, "quiz.results.email.pdf.viewCareer")}: ${careerUrl}`, {
+      drawWrapped(`${s(results.language, "pdfViewCareer")}: ${careerUrl}`, {
         font: regularFont,
         size: 11,
         color: accentColor,
@@ -210,21 +268,21 @@ async function createQuizResultsPdf(results: QuizResultsEmailPayload, origin: st
     y -= 8
   }
 
-  drawWrapped(t(results.language, "quiz.results.email.pdf.title"), { font: boldFont, size: 22 })
-  drawWrapped(`${t(results.language, "quiz.results.email.pdf.generated")}: ${formatGeneratedAt(results.language, results.generatedAt)}`, {
+  drawWrapped(s(results.language, "pdfTitle"), { font: boldFont, size: 22 })
+  drawWrapped(`${s(results.language, "pdfGenerated")}: ${formatGeneratedAt(results.language, results.generatedAt)}`, {
     font: regularFont,
     size: 11,
     color: mutedColor,
   })
   y -= 12
 
-  drawWrapped(t(results.language, "quiz.results.topMatches"), { font: boldFont, size: 18 })
+  drawWrapped(s(results.language, "topMatches"), { font: boldFont, size: 18 })
   y -= 4
   results.topMatches.forEach((career, index) => drawCareer(career, index))
 
   if (results.otherMatches.length > 0) {
     y -= 8
-    drawWrapped(t(results.language, "quiz.results.otherMatches"), { font: boldFont, size: 18 })
+    drawWrapped(s(results.language, "otherMatches"), { font: boldFont, size: 18 })
     y -= 4
     results.otherMatches.forEach((career, index) => drawCareer(career, index))
   }
@@ -238,8 +296,8 @@ function createEmailHtml(results: QuizResultsEmailPayload, origin: string): stri
       const careerUrl = getCareerUrl(origin, career.careerPath)
       const title = escapeHtml(career.title)
       const details = [
-        `${t(results.language, "quiz.results.email.pdf.match")}: ${career.matchPercentage}%`,
-        career.typicalSalary ? `${t(results.language, "quiz.results.email.pdf.typicalSalary")}: ${career.typicalSalary}` : "",
+        `${s(results.language, "pdfMatch")}: ${career.matchPercentage}%`,
+        career.typicalSalary ? `${s(results.language, "pdfTypicalSalary")}: ${career.typicalSalary}` : "",
       ]
         .filter(Boolean)
         .join(" | ")
@@ -254,12 +312,12 @@ function createEmailHtml(results: QuizResultsEmailPayload, origin: string): stri
 
   return `
     <div style="font-family:Arial,Helvetica,sans-serif;color:#111111;line-height:1.5;">
-      <h1 style="font-size:24px;margin-bottom:16px;">${escapeHtml(t(results.language, "quiz.results.email.subject"))}</h1>
-      <p>${escapeHtml(t(results.language, "quiz.results.email.bodyIntro"))}</p>
-      <p>${escapeHtml(t(results.language, "quiz.results.email.bodyAttachment"))}</p>
-      <h2 style="font-size:18px;margin-top:24px;">${escapeHtml(t(results.language, "quiz.results.topMatches"))}</h2>
+      <h1 style="font-size:24px;margin-bottom:16px;">${escapeHtml(s(results.language, "subject"))}</h1>
+      <p>${escapeHtml(s(results.language, "bodyIntro"))}</p>
+      <p>${escapeHtml(s(results.language, "bodyAttachment"))}</p>
+      <h2 style="font-size:18px;margin-top:24px;">${escapeHtml(s(results.language, "topMatches"))}</h2>
       <ul style="padding-left:20px;">${topMatches}</ul>
-      <p>${escapeHtml(t(results.language, "quiz.results.email.bodyExplore"))}</p>
+      <p>${escapeHtml(s(results.language, "bodyExplore"))}</p>
       <p><a href="${escapeHtml(origin)}" style="color:#0f6b94;text-decoration:underline;">${escapeHtml(origin)}</a></p>
     </div>
   `
@@ -313,7 +371,7 @@ export default async function handler(request: Request) {
   const { error } = await resend.emails.send({
     from: fromAddress,
     to: [payload.email],
-    subject: t(payload.results.language, "quiz.results.email.subject"),
+    subject: s(payload.results.language, "subject"),
     html: createEmailHtml(payload.results, origin),
     attachments: [
       {
