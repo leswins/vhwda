@@ -57,7 +57,7 @@ function s(language: Language, key: keyof typeof STRINGS["en"]): string {
   return STRINGS[language]?.[key] ?? STRINGS["en"][key]
 }
 
-export const config = { runtime: "nodejs", maxDuration: 15 }
+export const config = { runtime: "edge" }
 
 const CORS_HEADERS: Record<string, string> = {
   "Access-Control-Allow-Origin": "*",
