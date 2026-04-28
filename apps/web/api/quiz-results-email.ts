@@ -1,4 +1,3 @@
-import { PDFDocument, StandardFonts, rgb, type PDFFont } from "pdf-lib"
 import { Resend } from "resend"
 
 type Language = "en" | "es"
@@ -31,34 +30,28 @@ function isValidEmailAddress(value: string): boolean {
 
 const STRINGS = {
   en: {
-    subject: "Your VHWDA quiz results",
-    bodyIntro: "Thanks for taking the VHWDA Career Discovery Quiz. We've attached a PDF summary of your current results.",
-    bodyAttachment: "Your top matches are also listed below for quick reference.",
-    bodyExplore: "You can continue exploring careers on the VHWDA Health Careers Catalog.",
+    subject: "Your VHWDA Career Quiz Results",
+    intro: "Thanks for taking the VHWDA Career Discovery Quiz. Here's a summary of your top career matches.",
+    explore: "Continue exploring careers on the VHWDA Health Careers Catalog.",
     topMatches: "Your Top Matches",
     otherMatches: "Other Strong Matches",
-    pdfTitle: "Career Discovery Quiz Results",
-    pdfGenerated: "Generated",
-    pdfMatch: "Match",
-    pdfTypicalSalary: "Typical Salary",
-    pdfEducation: "Education",
-    pdfSalaryRange: "Salary Range",
-    pdfViewCareer: "Career Details",
+    match: "Match",
+    typicalSalary: "Typical Salary",
+    education: "Education",
+    viewCareer: "View career details",
+    generated: "Generated",
   },
   es: {
-    subject: "Sus resultados del cuestionario de VHWDA",
-    bodyIntro: "Gracias por completar el Cuestionario de Descubrimiento de Carreras de VHWDA. Adjuntamos un resumen en PDF de sus resultados actuales.",
-    bodyAttachment: "Sus principales coincidencias también se muestran a continuación para una referencia rápida.",
-    bodyExplore: "Puede seguir explorando carreras en el Catálogo de Carreras de Salud de VHWDA.",
-    topMatches: "Tus Mejores Coincidencias",
+    subject: "Sus Resultados del Cuestionario de Carreras de VHWDA",
+    intro: "Gracias por completar el Cuestionario de Descubrimiento de Carreras de VHWDA. Aquí tiene un resumen de sus principales coincidencias de carrera.",
+    explore: "Continúe explorando carreras en el Catálogo de Carreras de Salud de VHWDA.",
+    topMatches: "Sus Mejores Coincidencias",
     otherMatches: "Otras Coincidencias Fuertes",
-    pdfTitle: "Resultados del Cuestionario de Descubrimiento de Carreras",
-    pdfGenerated: "Generado",
-    pdfMatch: "Coincidencia",
-    pdfTypicalSalary: "Salario Típico",
-    pdfEducation: "Educación",
-    pdfSalaryRange: "Rango Salarial",
-    pdfViewCareer: "Detalles de la Carrera",
+    match: "Coincidencia",
+    typicalSalary: "Salario Típico",
+    education: "Educación",
+    viewCareer: "Ver detalles de la carrera",
+    generated: "Generado",
   },
 }
 
@@ -66,7 +59,7 @@ function s(language: Language, key: keyof typeof STRINGS["en"]): string {
   return STRINGS[language]?.[key] ?? STRINGS["en"][key]
 }
 
-export const config = { runtime: "nodejs", maxDuration: 20 }
+export const config = { runtime: "nodejs", maxDuration: 15 }
 
 const CORS_HEADERS: Record<string, string> = {
   "Access-Control-Allow-Origin": "*",
@@ -115,20 +108,16 @@ function isResultsPayload(value: unknown): value is QuizResultsEmailPayload {
 }
 
 function getRequestOrigin(request: Request): string {
-  const url = new URL(request.url)
   const forwardedProto = request.headers.get("x-forwarded-proto")
   const forwardedHost = request.headers.get("x-forwarded-host") || request.headers.get("host")
-
   if (forwardedHost) {
-    return `${forwardedProto || url.protocol.replace(":", "")}://${forwardedHost}`
+    return `${forwardedProto ?? "https"}://${forwardedHost}`
   }
-
-  return url.origin
+  return new URL(request.url).origin
 }
 
 function getCareerUrl(origin: string, careerPath?: string): string | undefined {
   if (!careerPath) return undefined
-
   try {
     return new URL(careerPath, origin).toString()
   } catch {
@@ -145,182 +134,105 @@ function escapeHtml(value: string): string {
     .replaceAll("'", "&#39;")
 }
 
-function formatGeneratedAt(language: Language, value: string): string {
+function formatDate(language: Language, value: string): string {
   try {
     return new Intl.DateTimeFormat(language === "es" ? "es-US" : "en-US", {
       dateStyle: "medium",
-      timeStyle: "short",
     }).format(new Date(value))
   } catch {
     return value
   }
 }
 
-function wrapText(text: string, font: PDFFont, size: number, maxWidth: number): string[] {
-  const words = text.split(/\s+/).filter(Boolean)
+function careerRow(career: QuizResultsEmailCareer, language: Language, origin: string): string {
+  const careerUrl = getCareerUrl(origin, career.careerPath)
+  const title = escapeHtml(career.title)
+  const titleHtml = careerUrl
+    ? `<a href="${escapeHtml(careerUrl)}" style="color:#111111;text-decoration:none;font-weight:700;font-size:16px;">${title}</a>`
+    : `<span style="font-weight:700;font-size:16px;">${title}</span>`
 
-  if (words.length === 0) return [""]
+  const meta = [
+    career.typicalSalary ? `${escapeHtml(s(language, "typicalSalary"))}: <strong>${escapeHtml(career.typicalSalary)}</strong>` : "",
+    career.educationLabel ? `${escapeHtml(s(language, "education"))}: ${escapeHtml(career.educationLabel)}` : "",
+  ].filter(Boolean).join("&nbsp;&nbsp;·&nbsp;&nbsp;")
 
-  const lines: string[] = []
-  let currentLine = words[0]
+  const viewLink = careerUrl
+    ? `<a href="${escapeHtml(careerUrl)}" style="display:inline-block;margin-top:6px;font-size:12px;color:#0f6b94;text-decoration:underline;">${escapeHtml(s(language, "viewCareer"))} →</a>`
+    : ""
 
-  for (const word of words.slice(1)) {
-    const nextLine = `${currentLine} ${word}`
-    if (font.widthOfTextAtSize(nextLine, size) <= maxWidth) {
-      currentLine = nextLine
-    } else {
-      lines.push(currentLine)
-      currentLine = word
-    }
-  }
-
-  lines.push(currentLine)
-  return lines
-}
-
-async function createQuizResultsPdf(results: QuizResultsEmailPayload, origin: string): Promise<Uint8Array> {
-  const pdf = await PDFDocument.create()
-  const regularFont = await pdf.embedFont(StandardFonts.Helvetica)
-  const boldFont = await pdf.embedFont(StandardFonts.HelveticaBold)
-  const pageSize: [number, number] = [612, 792]
-  const margin = 50
-  const contentWidth = pageSize[0] - margin * 2
-  const lineGap = 6
-  const bodyColor = rgb(0.1, 0.1, 0.1)
-  const mutedColor = rgb(0.33, 0.33, 0.33)
-  const accentColor = rgb(0.09, 0.54, 0.76)
-
-  let page = pdf.addPage(pageSize)
-  let y = page.getHeight() - margin
-
-  function addPage() {
-    page = pdf.addPage(pageSize)
-    y = page.getHeight() - margin
-  }
-
-  function ensureSpace(lines = 1, fontSize = 12) {
-    const neededHeight = lines * (fontSize + lineGap)
-    if (y - neededHeight < margin) {
-      addPage()
-    }
-  }
-
-  function drawWrapped(
-    text: string,
-    options: {
-      font: PDFFont
-      size: number
-      color?: ReturnType<typeof rgb>
-      indent?: number
-    }
-  ) {
-    const { font, size, color = bodyColor, indent = 0 } = options
-    const lines = wrapText(text, font, size, contentWidth - indent)
-
-    for (const line of lines) {
-      ensureSpace(1, size)
-      page.drawText(line, {
-        x: margin + indent,
-        y,
-        size,
-        font,
-        color,
-      })
-      y -= size + lineGap
-    }
-  }
-
-  function drawCareer(career: QuizResultsEmailCareer, index: number) {
-    drawWrapped(`${index + 1}. ${career.title}`, { font: boldFont, size: 16 })
-    drawWrapped(`${s(results.language, "pdfMatch")}: ${career.matchPercentage}%`, { font: regularFont, size: 12, color: mutedColor, indent: 12 })
-
-    if (career.typicalSalary) {
-      drawWrapped(
-        `${s(results.language, "pdfTypicalSalary")}: ${career.typicalSalary}`,
-        { font: regularFont, size: 12, color: mutedColor, indent: 12 }
-      )
-    }
-
-    if (career.educationLabel) {
-      drawWrapped(
-        `${s(results.language, "pdfEducation")}: ${career.educationLabel}`,
-        { font: regularFont, size: 12, color: mutedColor, indent: 12 }
-      )
-    }
-
-    if (career.salaryRange) {
-      drawWrapped(
-        `${s(results.language, "pdfSalaryRange")}: ${career.salaryRange}`,
-        { font: regularFont, size: 12, color: mutedColor, indent: 12 }
-      )
-    }
-
-    const careerUrl = getCareerUrl(origin, career.careerPath)
-    if (careerUrl) {
-      drawWrapped(`${s(results.language, "pdfViewCareer")}: ${careerUrl}`, {
-        font: regularFont,
-        size: 11,
-        color: accentColor,
-        indent: 12,
-      })
-    }
-
-    y -= 8
-  }
-
-  drawWrapped(s(results.language, "pdfTitle"), { font: boldFont, size: 22 })
-  drawWrapped(`${s(results.language, "pdfGenerated")}: ${formatGeneratedAt(results.language, results.generatedAt)}`, {
-    font: regularFont,
-    size: 11,
-    color: mutedColor,
-  })
-  y -= 12
-
-  drawWrapped(s(results.language, "topMatches"), { font: boldFont, size: 18 })
-  y -= 4
-  results.topMatches.forEach((career, index) => drawCareer(career, index))
-
-  if (results.otherMatches.length > 0) {
-    y -= 8
-    drawWrapped(s(results.language, "otherMatches"), { font: boldFont, size: 18 })
-    y -= 4
-    results.otherMatches.forEach((career, index) => drawCareer(career, index))
-  }
-
-  return pdf.save()
+  return `
+    <tr>
+      <td style="padding:16px 0;border-bottom:1px solid #e5e5e5;">
+        <table width="100%" cellpadding="0" cellspacing="0" border="0">
+          <tr>
+            <td style="width:56px;vertical-align:top;padding-right:16px;">
+              <div style="width:56px;height:56px;background:#1a9ab9;display:flex;align-items:center;justify-content:center;text-align:center;">
+                <span style="color:#ffffff;font-size:13px;font-weight:700;line-height:1;">${career.matchPercentage}%<br/><span style="font-size:10px;letter-spacing:0.05em;">MATCH</span></span>
+              </div>
+            </td>
+            <td style="vertical-align:top;">
+              ${titleHtml}
+              ${meta ? `<div style="margin-top:4px;font-size:13px;color:#555555;">${meta}</div>` : ""}
+              ${viewLink}
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>`
 }
 
 function createEmailHtml(results: QuizResultsEmailPayload, origin: string): string {
-  const topMatches = results.topMatches
-    .map((career) => {
-      const careerUrl = getCareerUrl(origin, career.careerPath)
-      const title = escapeHtml(career.title)
-      const details = [
-        `${s(results.language, "pdfMatch")}: ${career.matchPercentage}%`,
-        career.typicalSalary ? `${s(results.language, "pdfTypicalSalary")}: ${career.typicalSalary}` : "",
-      ]
-        .filter(Boolean)
-        .join(" | ")
+  const lang = results.language
+  const topRows = results.topMatches.map((c) => careerRow(c, lang, origin)).join("")
+  const otherRows = results.otherMatches.map((c) => careerRow(c, lang, origin)).join("")
 
-      if (careerUrl) {
-        return `<li style="margin-bottom:12px;"><a href="${escapeHtml(careerUrl)}" style="color:#0f6b94;text-decoration:underline;">${title}</a><br /><span style="color:#555555;">${escapeHtml(details)}</span></li>`
-      }
+  const otherSection = results.otherMatches.length > 0 ? `
+    <tr><td style="padding-top:32px;padding-bottom:8px;">
+      <h2 style="margin:0;font-size:18px;font-weight:700;color:#111111;">${escapeHtml(s(lang, "otherMatches"))}</h2>
+    </td></tr>
+    ${otherRows}
+  ` : ""
 
-      return `<li style="margin-bottom:12px;"><strong>${title}</strong><br /><span style="color:#555555;">${escapeHtml(details)}</span></li>`
-    })
-    .join("")
+  return `<!DOCTYPE html>
+<html lang="${escapeHtml(lang)}">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#f5f5f5;font-family:Arial,Helvetica,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#f5f5f5;padding:32px 16px;">
+    <tr><td align="center">
+      <table width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%;background:#ffffff;">
 
-  return `
-    <div style="font-family:Arial,Helvetica,sans-serif;color:#111111;line-height:1.5;">
-      <h1 style="font-size:24px;margin-bottom:16px;">${escapeHtml(s(results.language, "subject"))}</h1>
-      <p>${escapeHtml(s(results.language, "bodyIntro"))}</p>
-      <p>${escapeHtml(s(results.language, "bodyAttachment"))}</p>
-      <h2 style="font-size:18px;margin-top:24px;">${escapeHtml(s(results.language, "topMatches"))}</h2>
-      <ul style="padding-left:20px;">${topMatches}</ul>
-      <p>${escapeHtml(s(results.language, "bodyExplore"))}</p>
-      <p><a href="${escapeHtml(origin)}" style="color:#0f6b94;text-decoration:underline;">${escapeHtml(origin)}</a></p>
-    </div>
-  `
+        <!-- Header -->
+        <tr><td style="background:#111111;padding:24px 32px;">
+          <p style="margin:0;font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#aaaaaa;">VHWDA Health Careers Catalog</p>
+          <h1 style="margin:8px 0 0;font-size:22px;font-weight:700;color:#ffffff;">${escapeHtml(s(lang, "subject"))}</h1>
+          <p style="margin:6px 0 0;font-size:12px;color:#aaaaaa;">${escapeHtml(s(lang, "generated"))}: ${escapeHtml(formatDate(lang, results.generatedAt))}</p>
+        </td></tr>
+
+        <!-- Body -->
+        <tr><td style="padding:32px;">
+          <p style="margin:0 0 24px;font-size:15px;color:#444444;line-height:1.6;">${escapeHtml(s(lang, "intro"))}</p>
+
+          <h2 style="margin:0 0 8px;font-size:18px;font-weight:700;color:#111111;">${escapeHtml(s(lang, "topMatches"))}</h2>
+          <table width="100%" cellpadding="0" cellspacing="0" border="0">
+            ${topRows}
+          </table>
+
+          ${otherSection}
+
+          <p style="margin:32px 0 0;font-size:13px;color:#777777;">${escapeHtml(s(lang, "explore"))}</p>
+          <p style="margin:8px 0 0;"><a href="${escapeHtml(origin)}" style="color:#0f6b94;font-size:13px;">${escapeHtml(origin)}</a></p>
+        </td></tr>
+
+        <!-- Footer -->
+        <tr><td style="background:#f0f0f0;padding:16px 32px;border-top:1px solid #e5e5e5;">
+          <p style="margin:0;font-size:11px;color:#999999;">Virginia Health Workforce Development Authority · 7818 E. Parham Road, Richmond, VA 23294</p>
+        </td></tr>
+
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`
 }
 
 export default async function handler(request: Request) {
@@ -336,22 +248,17 @@ export default async function handler(request: Request) {
   const fromAddress = process.env.QUIZ_RESULTS_EMAIL_FROM
 
   if (!resendApiKey || !fromAddress) {
+    console.error("[quiz-results-email] missing env vars")
     return json({ error: "Server configuration error" }, 500)
   }
 
   let payload: QuizResultsEmailRequest
-
   try {
     const body = (await request.json()) as unknown
-
     if (!isRecord(body) || typeof body.email !== "string" || !isResultsPayload(body.results)) {
       return json({ error: "Validation failed" }, 400)
     }
-
-    payload = {
-      email: body.email.trim(),
-      results: body.results,
-    }
+    payload = { email: body.email.trim(), results: body.results }
   } catch {
     return json({ error: "Invalid JSON body" }, 400)
   }
@@ -366,52 +273,25 @@ export default async function handler(request: Request) {
 
   const origin = getRequestOrigin(request)
 
-  let pdfBytes: Uint8Array
   try {
-    console.log("[quiz-results-email] generating PDF")
-    pdfBytes = await Promise.race([
-      createQuizResultsPdf(payload.results, origin),
-      new Promise<never>((_, reject) =>
-        setTimeout(() => reject(new Error("PDF generation timed out")), 10_000)
-      ),
-    ])
-    console.log("[quiz-results-email] PDF generated, size:", pdfBytes.byteLength)
-  } catch (err) {
-    console.error("[quiz-results-email] PDF generation error:", err)
-    return json({ error: "Failed to generate PDF" }, 500)
-  }
-
-  let resendResult: Awaited<ReturnType<InstanceType<typeof Resend>["emails"]["send"]>>
-  try {
-    console.log("[quiz-results-email] sending email via Resend to:", payload.email)
+    console.log("[quiz-results-email] sending to:", payload.email)
     const resend = new Resend(resendApiKey)
-    resendResult = await Promise.race([
-      resend.emails.send({
-        from: fromAddress,
-        to: [payload.email],
-        subject: s(payload.results.language, "subject"),
-        html: createEmailHtml(payload.results, origin),
-        attachments: [
-          {
-            filename: "vhwda-quiz-results.pdf",
-            content: Buffer.from(pdfBytes),
-          },
-        ],
-      }),
-      new Promise<never>((_, reject) =>
-        setTimeout(() => reject(new Error("Resend API call timed out")), 12_000)
-      ),
-    ])
+    const { data, error } = await resend.emails.send({
+      from: fromAddress,
+      to: [payload.email],
+      subject: s(payload.results.language, "subject"),
+      html: createEmailHtml(payload.results, origin),
+    })
+
+    if (error) {
+      console.error("[quiz-results-email] Resend error:", JSON.stringify(error))
+      return json({ error: "Failed to send email" }, 502)
+    }
+
+    console.log("[quiz-results-email] sent, id:", data?.id)
+    return json({ success: true }, 200)
   } catch (err) {
-    console.error("[quiz-results-email] Resend call error:", err)
+    console.error("[quiz-results-email] unexpected error:", err)
     return json({ error: "Failed to send email" }, 502)
   }
-
-  if (resendResult.error) {
-    console.error("[quiz-results-email] Resend API error:", resendResult.error)
-    return json({ error: "Failed to send email" }, 502)
-  }
-
-  console.log("[quiz-results-email] email sent, id:", resendResult.data?.id)
-  return json({ success: true }, 200)
 }
