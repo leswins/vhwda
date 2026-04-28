@@ -300,6 +300,20 @@ export const career = defineType({
       of: [defineArrayMember({ type: "image", options: { hotspot: true } })]
     }),
     defineField({ name: "videoUrl", title: "Video URL", type: "url" }),
+    defineField({
+      name: "videoClosedCaptions",
+      title: "Video Closed Captions",
+      description: "Add one caption chunk per line. These rotate in the caption banner on the career video.",
+      type: "localizedBulletList"
+    }),
+    defineField({
+      name: "videoCaptionCycleSeconds",
+      title: "Video Caption Cycle Seconds",
+      description: "How long each caption chunk stays visible before cycling to the next one.",
+      type: "number",
+      initialValue: () => 4,
+      validation: (r) => r.min(1).max(30)
+    }),
 
     defineField({ name: "lastReviewedAt", title: "Last Reviewed", type: "datetime" }),
     defineField({ name: "lastUpdatedAt", title: "Last Updated", type: "datetime" })

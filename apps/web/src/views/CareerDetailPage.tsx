@@ -108,6 +108,8 @@ export function CareerDetailPage() {
   const [data, setData] = useState<CareerDetail | null>(null)
   const [status, setStatus] = useState<"idle" | "loading" | "ready" | "notFound" | "error">("idle")
   const [isMuted, setIsMuted] = useState(true)
+  const [isCaptionsOn, setIsCaptionsOn] = useState(false)
+  const [currentCaptionIndex, setCurrentCaptionIndex] = useState(0)
   const videoRef = useRef<HTMLVideoElement | null>(null)
   const [visibleSimilarCareerId, setVisibleSimilarCareerId] = useState<string | null>(null)
   const similarCareerCardRefs = useRef<Map<string, HTMLDivElement>>(new Map())
@@ -118,6 +120,8 @@ export function CareerDetailPage() {
   // Reset muted state when navigating to a new career
   useEffect(() => {
     setIsMuted(true)
+    setIsCaptionsOn(false)
+    setCurrentCaptionIndex(0)
   }, [slug])
 
   // Fetch career data when the slug or language changes
@@ -151,6 +155,14 @@ export function CareerDetailPage() {
 
   const title = data ? getLocalizedString(language, data.title) : undefined
   const summary = data ? getLocalizedText(language, data.summary) : undefined
+  const captionChunks = useMemo(() => {
+    const values =
+      language === "es" ? data?.videoClosedCaptions?.es ?? data?.videoClosedCaptions?.en : data?.videoClosedCaptions?.en
+
+    return (values ?? []).map((value) => value.trim()).filter(Boolean)
+  }, [data?.videoClosedCaptions, language])
+  const captionCycleMs = Math.max(1, data?.videoCaptionCycleSeconds ?? 4) * 1000
+  const activeCaption = captionChunks[currentCaptionIndex] ?? captionChunks[0]
 
   const hasPortableTextContent = (value?: Array<Record<string, any>>) => {
     if (!value?.length) return false
@@ -183,6 +195,28 @@ export function CareerDetailPage() {
   const hasEducationPrograms = Boolean((data?.educationInstitutions ?? []).length)
   const hasProfessionalAssociations = Boolean((data?.professionalOrgs ?? []).length)
   const hasSimilarCareers = Boolean((data?.similarCareers ?? []).length)
+  const hasVideoCaptions = captionChunks.length > 0
+
+  useEffect(() => {
+    setCurrentCaptionIndex(0)
+  }, [language, data?._id])
+
+  useEffect(() => {
+    if (!hasVideoCaptions && isCaptionsOn) {
+      setIsCaptionsOn(false)
+      setCurrentCaptionIndex(0)
+    }
+  }, [hasVideoCaptions, isCaptionsOn])
+
+  useEffect(() => {
+    if (!isCaptionsOn || captionChunks.length <= 1) return
+
+    const intervalId = window.setInterval(() => {
+      setCurrentCaptionIndex((prev) => (prev + 1) % captionChunks.length)
+    }, captionCycleMs)
+
+    return () => window.clearInterval(intervalId)
+  }, [captionChunks.length, captionCycleMs, isCaptionsOn])
 
   // Define sections for the secondary navigation bar (hide empty sections)
   const sections = useMemo(
@@ -309,25 +343,58 @@ export function CareerDetailPage() {
               >
                 <source src={data.videoUrl} />
               </video>
-              <button
-                type="button"
-                onClick={() => {
-                  setIsMuted((prev) => {
-                    const next = !prev
-                    if (videoRef.current) {
-                      videoRef.current.muted = next
-                    }
-                    return next
-                  })
-                }}
-                className={`absolute bottom-0 left-0 flex h-[50px] w-[50px] items-center justify-center border-t-[0.5px] border-r-[0.5px] border-foreground ${isMuted ? "bg-accentGreen" : "bg-accentOrange"
-                  }`}
-                aria-label={isMuted ? t(language, "career.soundOn") : t(language, "career.soundOff")}
-              >
-                <img src={isMuted ? soundOnIcon : soundOffIcon} alt="" className="h-6 w-6" />
-              </button>
-              <div className="absolute bottom-0 right-0 flex h-[50px] items-center bg-surface/15 px-[15px] backdrop-blur-[10px]">
-                <span className="text-body-sm text-surface">{t(language, "career.aiGenerated")}</span>
+              <div className="absolute bottom-0 left-0 right-0 flex items-end pointer-events-none">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsMuted((prev) => {
+                      const next = !prev
+                      if (videoRef.current) {
+                        videoRef.current.muted = next
+                      }
+                      return next
+                    })
+                  }}
+                  className={`pointer-events-auto flex h-[50px] w-[50px] items-center justify-center border-t-[0.5px] border-r-[0.5px] border-foreground ${isMuted ? "bg-accentGreen" : "bg-accentOrange"
+                    }`}
+                  aria-label={isMuted ? t(language, "career.soundOn") : t(language, "career.soundOff")}
+                >
+                  <img src={isMuted ? soundOnIcon : soundOffIcon} alt="" className="h-6 w-6" />
+                </button>
+                {hasVideoCaptions ? (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsCaptionsOn((prev) => {
+                        const next = !prev
+                        if (next) {
+                          setCurrentCaptionIndex(0)
+                          if (videoRef.current) {
+                            videoRef.current.currentTime = 0
+                            void videoRef.current.play().catch(() => {})
+                          }
+                        }
+                        return next
+                      })
+                    }}
+                    className={`pointer-events-auto flex h-[50px] w-[50px] items-center justify-center border-t-[0.5px] border-r-[0.5px] border-foreground text-body-sm font-medium ${isCaptionsOn ? "bg-foreground text-surface" : "bg-surface text-foreground"
+                      }`}
+                    aria-label={isCaptionsOn ? t(language, "career.captionsOff") : t(language, "career.captionsOn")}
+                    aria-pressed={isCaptionsOn}
+                  >
+                    <span aria-hidden="true">CC</span>
+                  </button>
+                ) : null}
+                {isCaptionsOn && activeCaption ? (
+                  <div className="flex h-[50px] min-w-0 flex-1 items-center bg-foreground px-[15px]">
+                    <span className="truncate text-body-sm text-surface">{activeCaption}</span>
+                  </div>
+                ) : (
+                  <div className="flex-1" />
+                )}
+                <div className="flex h-[50px] items-center bg-surface/15 px-[15px] backdrop-blur-[10px]">
+                  <span className="text-body-sm text-surface">{t(language, "career.aiGenerated")}</span>
+                </div>
               </div>
             </>
           ) : data?.images?.[0]?.asset?.url ? (
