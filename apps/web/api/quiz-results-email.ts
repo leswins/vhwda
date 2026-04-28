@@ -1,5 +1,3 @@
-import { Resend } from "resend"
-
 type Language = "en" | "es"
 
 type QuizResultsEmailCareer = {
@@ -275,23 +273,42 @@ export default async function handler(request: Request) {
 
   try {
     console.log("[quiz-results-email] sending to:", payload.email)
-    const resend = new Resend(resendApiKey)
-    const { data, error } = await resend.emails.send({
-      from: fromAddress,
-      to: [payload.email],
-      subject: s(payload.results.language, "subject"),
-      html: createEmailHtml(payload.results, origin),
-    })
 
-    if (error) {
-      console.error("[quiz-results-email] Resend error:", JSON.stringify(error))
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), 10_000)
+
+    let resendResponse: Response
+    try {
+      resendResponse = await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        signal: controller.signal,
+        headers: {
+          "Authorization": `Bearer ${resendApiKey}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          from: fromAddress,
+          to: [payload.email],
+          subject: s(payload.results.language, "subject"),
+          html: createEmailHtml(payload.results, origin),
+        }),
+      })
+    } finally {
+      clearTimeout(timeoutId)
+    }
+
+    const responseBody = await resendResponse.json() as Record<string, unknown>
+
+    if (!resendResponse.ok) {
+      console.error("[quiz-results-email] Resend API error:", resendResponse.status, JSON.stringify(responseBody))
       return json({ error: "Failed to send email" }, 502)
     }
 
-    console.log("[quiz-results-email] sent, id:", data?.id)
+    console.log("[quiz-results-email] sent, id:", responseBody.id)
     return json({ success: true }, 200)
   } catch (err) {
-    console.error("[quiz-results-email] unexpected error:", err)
+    const message = err instanceof Error ? err.message : String(err)
+    console.error("[quiz-results-email] unexpected error:", message)
     return json({ error: "Failed to send email" }, 502)
   }
 }
