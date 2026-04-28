@@ -139,6 +139,8 @@ const dict: Dictionary = {
   "career.compare": { en: "Compare with other careers", es: "Comparar con otras carreras" },
   "career.soundOn": { en: "Sound on", es: "Sonido activado" },
   "career.soundOff": { en: "Sound off", es: "Sonido desactivado" },
+  "career.captionsOn": { en: "Show closed captions", es: "Mostrar subtítulos" },
+  "career.captionsOff": { en: "Hide closed captions", es: "Ocultar subtítulos" },
   "career.aiGenerated": { en: "AI generated", es: "IA generada" },
   "career.sections.overview": { en: "Overview", es: "Resumen" },
   "career.sections.responsibilities": { en: "Responsibilities", es: "Responsabilidades" },
@@ -436,6 +438,60 @@ const dict: Dictionary = {
   "quiz.calculatingSubtitle": { en: "Hang tight while we work our magic...", es: "Espera mientras trabajamos nuestra magia..." },
   "quiz.results.topMatches": { en: "Your Top Matches", es: "Tus Mejores Coincidencias" },
   "quiz.results.otherMatches": { en: "Other Strong Matches", es: "Otras Coincidencias Fuertes" },
+  "quiz.results.email.trigger": { en: "Email Quiz Results", es: "Enviar Resultados por Correo" },
+  "quiz.results.email.kicker": { en: "Quiz Results", es: "Resultados del Cuestionario" },
+  "quiz.results.email.title": { en: "Email your quiz results", es: "Envíe los resultados de su cuestionario por correo" },
+  "quiz.results.email.description": {
+    en: "Enter the email address where you'd like us to send a PDF of your quiz results.",
+    es: "Ingrese la dirección de correo electrónico a la que desea que enviemos un PDF de los resultados de su cuestionario."
+  },
+  "quiz.results.email.fieldLabel": { en: "Email address", es: "Correo electrónico" },
+  "quiz.results.email.placeholder": { en: "email@example.com", es: "correo@ejemplo.com" },
+  "quiz.results.email.helper": {
+    en: "We'll send a PDF summary of your current top career matches.",
+    es: "Enviaremos un resumen en PDF de sus coincidencias profesionales actuales."
+  },
+  "quiz.results.email.submit": { en: "Send Results", es: "Enviar Resultados" },
+  "quiz.results.email.sending": { en: "Sending...", es: "Enviando..." },
+  "quiz.results.email.cancel": { en: "Cancel", es: "Cancelar" },
+  "quiz.results.email.close": { en: "Close", es: "Cerrar" },
+  "quiz.results.email.subject": { en: "Your VHWDA quiz results", es: "Sus resultados del cuestionario de VHWDA" },
+  "quiz.results.email.bodyIntro": {
+    en: "Thanks for taking the VHWDA Career Discovery Quiz. We've attached a PDF summary of your current results.",
+    es: "Gracias por completar el Cuestionario de Descubrimiento de Carreras de VHWDA. Adjuntamos un resumen en PDF de sus resultados actuales."
+  },
+  "quiz.results.email.bodyAttachment": {
+    en: "Your top matches are also listed below for quick reference.",
+    es: "Sus principales coincidencias tambien se muestran a continuacion para una referencia rapida."
+  },
+  "quiz.results.email.bodyExplore": {
+    en: "You can continue exploring careers on the VHWDA Health Careers Catalog.",
+    es: "Puede seguir explorando carreras en el Catalogo de Carreras de Salud de VHWDA."
+  },
+  "quiz.results.email.success.title": { en: "Results sent", es: "Resultados enviados" },
+  "quiz.results.email.success.description": {
+    en: "Your quiz results are on the way. Check your inbox for an email with the PDF attachment.",
+    es: "Los resultados de su cuestionario ya van en camino. Revise su bandeja de entrada para ver el correo con el PDF adjunto."
+  },
+  "quiz.results.email.pdf.title": { en: "Career Discovery Quiz Results", es: "Resultados del Cuestionario de Descubrimiento de Carreras" },
+  "quiz.results.email.pdf.generated": { en: "Generated", es: "Generado" },
+  "quiz.results.email.pdf.match": { en: "Match", es: "Coincidencia" },
+  "quiz.results.email.pdf.typicalSalary": { en: "Typical Salary", es: "Salario Tipico" },
+  "quiz.results.email.pdf.education": { en: "Education", es: "Educacion" },
+  "quiz.results.email.pdf.salaryRange": { en: "Salary Range", es: "Rango Salarial" },
+  "quiz.results.email.pdf.viewCareer": { en: "Career Details", es: "Detalles de la Carrera" },
+  "quiz.results.email.validation.required": {
+    en: "Please enter an email address.",
+    es: "Por favor ingrese una dirección de correo electrónico."
+  },
+  "quiz.results.email.validation.invalid": {
+    en: "Please enter a valid email address.",
+    es: "Por favor ingrese una dirección de correo electrónico válida."
+  },
+  "quiz.results.email.error": {
+    en: "We couldn't send your results right now. Please try again.",
+    es: "No pudimos enviar sus resultados en este momento. Por favor inténtelo de nuevo."
+  },
   "quiz.results.retake": { en: "Retake Quiz", es: "Volver a Hacer el Cuestionario" },
   "quiz.loading.title": { en: "We’re calculating your top career matches", es: "Estamos calculando tus mejores coincidencias profesionales" },
   "quiz.loading.subtitle": { en: "Hang tight while we work our magic...", es: "Espera mientras hacemos nuestra magia..." },

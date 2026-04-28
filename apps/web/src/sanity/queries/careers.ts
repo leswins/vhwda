@@ -75,6 +75,8 @@ export type CareerDetail = {
   summary?: LocalizedText
   images?: Array<{ asset?: { _id: string; url: string } }>
   videoUrl?: string
+  videoClosedCaptions?: LocalizedBulletList
+  videoCaptionCycleSeconds?: number
 
   responsibilities?: LocalizedBulletList
   workEnvironment?: LocalizedBulletList
@@ -104,6 +106,8 @@ export const CAREER_DETAIL_QUERY = /* groq */ `
   summary,
   images[]{asset->{_id, url}},
   videoUrl,
+  videoClosedCaptions,
+  videoCaptionCycleSeconds,
 
   responsibilities,
   workEnvironment,
