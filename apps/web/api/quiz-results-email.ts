@@ -38,6 +38,9 @@ const STRINGS = {
     education: "Education",
     viewCareer: "View career details",
     generated: "Generated",
+    goToSite: "Go to site",
+    retakeQuiz: "Take the quiz again",
+    orgName: "Virginia Health Workforce Development Authority",
   },
   es: {
     subject: "Sus Resultados del Cuestionario de Carreras de VHWDA",
@@ -50,6 +53,9 @@ const STRINGS = {
     education: "Educación",
     viewCareer: "Ver detalles de la carrera",
     generated: "Generado",
+    goToSite: "Ir al sitio",
+    retakeQuiz: "Volver a hacer el cuestionario",
+    orgName: "Virginia Health Workforce Development Authority",
   },
 }
 
@@ -142,35 +148,35 @@ function formatDate(language: Language, value: string): string {
   }
 }
 
-function careerRow(career: QuizResultsEmailCareer, language: Language, origin: string): string {
+const FONT = "Arial,Helvetica,sans-serif"
+
+function careerRow(
+  career: QuizResultsEmailCareer,
+  language: Language,
+  origin: string,
+  badgeColor: string,
+): string {
   const careerUrl = getCareerUrl(origin, career.careerPath)
   const title = escapeHtml(career.title)
-  const titleHtml = careerUrl
-    ? `<a href="${escapeHtml(careerUrl)}" style="color:#111111;text-decoration:none;font-weight:700;font-size:16px;">${title}</a>`
-    : `<span style="font-weight:700;font-size:16px;">${title}</span>`
-
-  const meta = [
-    career.typicalSalary ? `${escapeHtml(s(language, "typicalSalary"))}: <strong>${escapeHtml(career.typicalSalary)}</strong>` : "",
-    career.educationLabel ? `${escapeHtml(s(language, "education"))}: ${escapeHtml(career.educationLabel)}` : "",
-  ].filter(Boolean).join("&nbsp;&nbsp;·&nbsp;&nbsp;")
+  const salary = career.typicalSalary ?? career.salaryRange
 
   const viewLink = careerUrl
-    ? `<a href="${escapeHtml(careerUrl)}" style="display:inline-block;margin-top:6px;font-size:12px;color:#0f6b94;text-decoration:underline;">${escapeHtml(s(language, "viewCareer"))} →</a>`
+    ? `<a href="${escapeHtml(careerUrl)}" style="font-family:${FONT};font-size:16px;color:#14c6ed;text-decoration:underline;line-height:1.35;">${escapeHtml(s(language, "viewCareer"))} &#8594;</a>`
     : ""
 
   return `
     <tr>
-      <td style="padding:16px 0;border-bottom:1px solid #e5e5e5;">
-        <table width="100%" cellpadding="0" cellspacing="0" border="0">
+      <td style="padding-bottom:30px;">
+        <table cellpadding="0" cellspacing="0" border="0">
           <tr>
-            <td style="width:56px;vertical-align:top;padding-right:16px;">
-              <div style="width:56px;height:56px;background:#1a9ab9;display:flex;align-items:center;justify-content:center;text-align:center;">
-                <span style="color:#ffffff;font-size:13px;font-weight:700;line-height:1;">${career.matchPercentage}%<br/><span style="font-size:10px;letter-spacing:0.05em;">MATCH</span></span>
+            <td width="100" height="100" style="width:100px;height:100px;min-width:100px;background-color:${badgeColor};text-align:center;vertical-align:middle;">
+              <div style="font-family:${FONT};font-size:15px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#09090b;line-height:1.35;text-align:center;">
+                ${career.matchPercentage}%<br>Match
               </div>
             </td>
-            <td style="vertical-align:top;">
-              ${titleHtml}
-              ${meta ? `<div style="margin-top:4px;font-size:13px;color:#555555;">${meta}</div>` : ""}
+            <td style="padding-left:30px;vertical-align:middle;">
+              <div style="font-family:${FONT};font-size:22px;font-weight:700;color:#09090b;line-height:1.2;margin-bottom:10px;">${title}</div>
+              ${salary ? `<div style="font-family:${FONT};font-size:16px;color:#71717a;line-height:1.35;margin-bottom:10px;">${escapeHtml(s(language, "typicalSalary"))}: ${escapeHtml(salary)}</div>` : ""}
               ${viewLink}
             </td>
           </tr>
@@ -179,52 +185,109 @@ function careerRow(career: QuizResultsEmailCareer, language: Language, origin: s
     </tr>`
 }
 
+function divider(): string {
+  return `
+    <tr>
+      <td style="padding:20px 0 50px;">
+        <table width="100%" cellpadding="0" cellspacing="0" border="0">
+          <tr><td style="height:1px;background-color:#e4e4e7;font-size:0;line-height:0;">&nbsp;</td></tr>
+        </table>
+      </td>
+    </tr>`
+}
+
 function createEmailHtml(results: QuizResultsEmailPayload, origin: string): string {
   const lang = results.language
-  const topRows = results.topMatches.map((c) => careerRow(c, lang, origin)).join("")
-  const otherRows = results.otherMatches.map((c) => careerRow(c, lang, origin)).join("")
+  const topRows = results.topMatches.map((c) => careerRow(c, lang, origin, "#71e861")).join("")
+  const otherRows = results.otherMatches.map((c) => careerRow(c, lang, origin, "#14c6ed")).join("")
 
   const otherSection = results.otherMatches.length > 0 ? `
-    <tr><td style="padding-top:32px;padding-bottom:8px;">
-      <h2 style="margin:0;font-size:18px;font-weight:700;color:#111111;">${escapeHtml(s(lang, "otherMatches"))}</h2>
-    </td></tr>
+    ${divider()}
+    <tr>
+      <td style="padding-bottom:30px;">
+        <div style="font-family:${FONT};font-size:28px;font-weight:700;color:#09090b;line-height:1.2;">${escapeHtml(s(lang, "otherMatches"))}</div>
+      </td>
+    </tr>
     ${otherRows}
   ` : ""
 
+  const quizUrl = `${origin}/quiz`
+
   return `<!DOCTYPE html>
 <html lang="${escapeHtml(lang)}">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
-<body style="margin:0;padding:0;background:#f5f5f5;font-family:Arial,Helvetica,sans-serif;">
-  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#f5f5f5;padding:32px 16px;">
-    <tr><td align="center">
-      <table width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%;background:#ffffff;">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+</head>
+<body style="margin:0;padding:0;background-color:#f5f5f5;">
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f5f5f5;">
+    <tr><td align="center" style="padding:40px 16px;">
+      <table width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%;background-color:#ffffff;">
 
         <!-- Header -->
-        <tr><td style="background:#111111;padding:24px 32px;">
-          <p style="margin:0;font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#aaaaaa;">VHWDA Health Careers Catalog</p>
-          <h1 style="margin:8px 0 0;font-size:22px;font-weight:700;color:#ffffff;">${escapeHtml(s(lang, "subject"))}</h1>
-          <p style="margin:6px 0 0;font-size:12px;color:#aaaaaa;">${escapeHtml(s(lang, "generated"))}: ${escapeHtml(formatDate(lang, results.generatedAt))}</p>
-        </td></tr>
+        <tr>
+          <td style="background-color:#09090b;padding:30px;">
+            <img src="${origin}/VHWDA%20HCC%20Logo.png" alt="VHWDA Health Careers Catalog" width="196" height="54" style="display:block;width:196px;height:54px;margin-bottom:20px;border:0;">
+            <div style="font-family:${FONT};font-size:28px;font-weight:700;color:#ffffff;line-height:1.2;margin-bottom:10px;">${escapeHtml(s(lang, "subject"))}</div>
+            <div style="font-family:${FONT};font-size:18px;color:#a1a1aa;line-height:1.35;">${escapeHtml(s(lang, "generated"))}: ${escapeHtml(formatDate(lang, results.generatedAt))}</div>
+          </td>
+        </tr>
 
         <!-- Body -->
-        <tr><td style="padding:32px;">
-          <p style="margin:0 0 24px;font-size:15px;color:#444444;line-height:1.6;">${escapeHtml(s(lang, "intro"))}</p>
+        <tr>
+          <td style="padding:50px 30px;">
+            <table width="100%" cellpadding="0" cellspacing="0" border="0">
 
-          <h2 style="margin:0 0 8px;font-size:18px;font-weight:700;color:#111111;">${escapeHtml(s(lang, "topMatches"))}</h2>
-          <table width="100%" cellpadding="0" cellspacing="0" border="0">
-            ${topRows}
-          </table>
+              <!-- Intro -->
+              <tr>
+                <td style="padding-bottom:50px;">
+                  <div style="font-family:${FONT};font-size:20px;color:#27272a;line-height:1.35;">${escapeHtml(s(lang, "intro"))}</div>
+                </td>
+              </tr>
 
-          ${otherSection}
+              <!-- Top Matches heading -->
+              <tr>
+                <td style="padding-bottom:30px;">
+                  <div style="font-family:${FONT};font-size:28px;font-weight:700;color:#09090b;line-height:1.2;">${escapeHtml(s(lang, "topMatches"))}</div>
+                </td>
+              </tr>
 
-          <p style="margin:32px 0 0;font-size:13px;color:#777777;">${escapeHtml(s(lang, "explore"))}</p>
-          <p style="margin:8px 0 0;"><a href="${escapeHtml(origin)}" style="color:#0f6b94;font-size:13px;">${escapeHtml(origin)}</a></p>
-        </td></tr>
+              <!-- Top match rows -->
+              ${topRows}
+
+              <!-- Other matches + divider -->
+              ${otherSection}
+
+              <!-- Divider before CTA -->
+              ${divider()}
+
+              <!-- CTA section -->
+              <tr>
+                <td style="padding-bottom:30px;">
+                  <div style="font-family:${FONT};font-size:20px;color:#27272a;line-height:1.35;margin-bottom:20px;">${escapeHtml(s(lang, "explore"))}</div>
+                  <table cellpadding="0" cellspacing="0" border="0">
+                    <tr>
+                      <td style="padding-right:20px;">
+                        <a href="${escapeHtml(origin)}" style="display:inline-block;background-color:#09090b;color:#ffffff;font-family:${FONT};font-size:16px;font-weight:600;text-decoration:none;padding:10px 15px;line-height:1.35;">${escapeHtml(s(lang, "goToSite"))}</a>
+                      </td>
+                      <td>
+                        <a href="${escapeHtml(quizUrl)}" style="display:inline-block;background-color:#f4f4f5;color:#09090b;font-family:${FONT};font-size:16px;font-weight:600;text-decoration:none;padding:10px 15px;line-height:1.35;">${escapeHtml(s(lang, "retakeQuiz"))}</a>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+
+            </table>
+          </td>
+        </tr>
 
         <!-- Footer -->
-        <tr><td style="background:#f0f0f0;padding:16px 32px;border-top:1px solid #e5e5e5;">
-          <p style="margin:0;font-size:11px;color:#999999;">Virginia Health Workforce Development Authority · 7818 E. Parham Road, Richmond, VA 23294</p>
-        </td></tr>
+        <tr>
+          <td style="background-color:#09090b;padding:30px;">
+            <img src="${origin}/VHWDA%20HCC%20Logo.png" alt="VHWDA Health Careers Catalog" width="196" height="54" style="display:block;width:196px;height:54px;border:0;">
+          </td>
+        </tr>
 
       </table>
     </td></tr>
