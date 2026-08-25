@@ -22,6 +22,7 @@
     "tokens:pull": "node scripts/pull-figma-tokens.mjs",
     "migrate:oews-salaries": "tsx scripts/migrate-oews-salaries.ts",
     "migrate:career-projections": "tsx scripts/migrate-career-projections.ts",
+    "migrate:program-urls": "pnpm --filter studio migrate:program-urls",
     "ci": "pnpm lint && pnpm typecheck && pnpm build"
   },
   "dependencies": {
