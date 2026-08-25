@@ -53,8 +53,15 @@ export const career = defineType({
     defineField({
       name: "educationRequirements",
       title: "Academic Pathway",
-      description: "Use Normal + Small only (no headings).",
+      description: "Use Normal + Small only (no headings). Keep this text as the source/fallback while a visual pathway is drafted.",
       type: "localizedPortableTextSmall"
+    }),
+    defineField({
+      name: "academicPathway",
+      title: "Visual Academic Pathway",
+      description:
+        "Structured steps rendered as a diagram on the Career Detail page. Copy from the Academic Pathway text above — do not invent missing degrees or credentials. Only Verified pathways replace the text on the website.",
+      type: "academicPathway"
     }),
     defineField({ name: "prerequisites", title: "Prerequisites", type: "localizedPortableText" }),
     defineField({
@@ -237,7 +244,8 @@ export const career = defineType({
     defineField({
       name: "educationInstitutions",
       title: "Educational Institutions",
-      description: "Add institutions related to this career. One item per institution/program link.",
+      description:
+        "Add institutions related to this career. One item per institution. Set Program URL to the school’s page for this career’s program (not the school homepage).",
       type: "array",
       of: [
         defineArrayMember({
@@ -256,6 +264,8 @@ export const career = defineType({
               name: "programUrl",
               title: "Program URL",
               type: "url",
+              description:
+                "Deep link to this career’s program at this school. If empty, the site falls back to the institution website.",
               validation: (r) => r.uri({ scheme: ["http", "https"] })
             }),
             defineField({
@@ -266,9 +276,14 @@ export const career = defineType({
             })
           ],
           preview: {
-            select: { title: "label" },
-            prepare: ({ title }) => ({
-              title: title || "Institution"
+            select: {
+              label: "label",
+              institutionName: "institution.name",
+              programUrl: "programUrl"
+            },
+            prepare: ({ label, institutionName, programUrl }) => ({
+              title: label || institutionName || "Institution",
+              subtitle: programUrl ? "Program URL set" : "Using institution website (no program URL)"
             })
           }
         })

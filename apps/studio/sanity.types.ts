@@ -13,21 +13,54 @@
  */
 
 // Source: schema.json
+export type PathwayChoice = {
+  _type: "pathwayChoice";
+  label: LocalizedString;
+  options?: Array<{
+    _key: string;
+  } & PathwayStep>;
+};
+
+export type PathwayStep = {
+  _type: "pathwayStep";
+  title: LocalizedString;
+  description?: LocalizedString;
+  kind: "priorEducation" | "certificate" | "associate" | "bachelor" | "master" | "doctoral" | "clinical" | "exam" | "credential" | "licensure" | "apprenticeship" | "other";
+  requirement: "required" | "optional" | "recommended";
+  organization?: string;
+};
+
+export type CareerHardFilter = {
+  _type: "careerHardFilter";
+  requiresLicensure?: boolean;
+  requiresLifting?: boolean;
+  requiresNightsWeekends?: boolean;
+  requiresBloodNeedles?: boolean;
+  requiresAcuteHighStress?: boolean;
+  hasMinimumEducation?: boolean;
+  educationLevel?: "FF" | "CSC" | "CERT" | "AAS" | "BACH" | "GRAD";
+  hasMinimumSalary?: boolean;
+  region?: string;
+  note?: string;
+};
+
 export type Quiz = {
   _id: string;
   _type: "quiz";
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
+  title: LocalizedString;
   questions?: Array<{
     order?: number;
+    title?: LocalizedString;
     section?: "Interests & Values" | "Skills & Aptitudes" | "Work Environment" | "Schedule & Lifestyle" | "Education Path" | "Salary & Outlook" | "Location & Access" | "Career Features" | "Deal-breakers";
-    prompt?: LocalizedString;
+    prompt: LocalizedString;
     type?: "likert_5" | "rating_1_5" | "multi_select" | "single_select" | "boolean" | "region_select";
     maxSelect?: number;
     isDealbreaker?: boolean;
     options?: Array<{
-      label?: LocalizedString;
+      label: LocalizedString;
       weights?: {
         w_patient_facing?: number;
         w_tech_equipment?: number;
@@ -57,12 +90,25 @@ export type Quiz = {
         w_outlook_importance?: number;
         w_short_path?: number;
       };
-      hardFilterField?: "education_ceiling" | "licensure_rule" | "dealbreaker" | "min_start_salary" | "region";
-      hardFilterValue?: string;
+      hardFilter?: HardFilter;
       _key: string;
     }>;
     _key: string;
   }>;
+};
+
+export type HardFilter = {
+  _type: "hardFilter";
+  requiresLicensure?: boolean;
+  requiresLifting?: boolean;
+  requiresNightsWeekends?: boolean;
+  requiresBloodNeedles?: boolean;
+  requiresAcuteHighStress?: boolean;
+  hasMinimumEducation?: boolean;
+  educationLevel?: "FF" | "CSC" | "CERT" | "AAS" | "BACH" | "GRAD";
+  hasMinimumSalary?: boolean;
+  region?: string;
+  description?: string;
 };
 
 export type ProfessionalOrganization = {
@@ -71,9 +117,19 @@ export type ProfessionalOrganization = {
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
-  name?: string;
+  name: string;
+  institution?: string;
   link?: string;
   description?: LocalizedText;
+  membershipType?: Array<"student" | "professional" | "employer">;
+  geographicFocus?: "virginia_statewide" | "regional" | "national" | "international" | "local";
+  careerAreas?: Array<{
+    _ref: string;
+    _type: "reference";
+    _weak?: boolean;
+    _key: string;
+    [internalGroqTypeReferenceTo]?: "careerCategory";
+  }>;
 };
 
 export type Resource = {
@@ -82,10 +138,10 @@ export type Resource = {
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
-  category?: string;
-  title?: LocalizedString;
+  category: string;
+  title: LocalizedString;
   summary?: LocalizedString;
-  link?: string;
+  link: string;
   region?: string;
 };
 
@@ -95,12 +151,25 @@ export type Scholarship = {
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
-  name?: string;
+  name: string;
   summary?: LocalizedString;
+  description?: LocalizedText;
+  institution?: string;
   eligibility?: LocalizedPortableText;
   region?: string;
   deadline?: string;
-  link?: string;
+  link: string;
+  currentStage?: Array<"high_school" | "college" | "graduate" | "working_professional" | "veteran_military" | "adult_returning">;
+  fundingType?: "federal" | "state" | "institutional" | "private" | "foundation" | "other";
+  locationScope?: "virginia_statewide" | "regional" | "national" | "local" | "international";
+  careerAreas?: Array<{
+    _ref: string;
+    _type: "reference";
+    _weak?: boolean;
+    _key: string;
+    [internalGroqTypeReferenceTo]?: "careerCategory";
+  }>;
+  badges?: Array<"undergraduate" | "graduate" | "undergraduate_graduate" | "multiple_cohorts" | "health_related">;
 };
 
 export type Program = {
@@ -109,7 +178,7 @@ export type Program = {
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
-  name?: string;
+  name: string;
   region?: string;
   credentialType?: string;
   duration?: Duration;
@@ -140,7 +209,7 @@ export type CareerCategory = {
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
-  title?: string;
+  title: string;
   description?: LocalizedText;
 };
 
@@ -150,7 +219,7 @@ export type Career = {
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
-  title?: LocalizedString;
+  title: LocalizedString;
   slug?: Slug;
   summary?: LocalizedText;
   responsibilities?: LocalizedBulletList;
@@ -158,14 +227,13 @@ export type Career = {
   specializations?: LocalizedBulletList;
   specializationsNote?: LocalizedPortableTextSmall;
   educationRequirements?: LocalizedPortableTextSmall;
+  academicPathway?: AcademicPathway;
   prerequisites?: LocalizedPortableText;
   licensureAndCerts?: LocalizedBulletList;
   academicRequirementsHighlight?: LocalizedString;
   programLengthHighlight?: LocalizedString;
   salary?: Salary;
   outlook?: Outlook;
-  educationMin?: "FF" | "CSC" | "CERT" | "AAS" | "BACH" | "GRAD";
-  licensureRequired?: boolean;
   quizVector?: {
     w_patient_facing?: number;
     w_tech_equipment?: number;
@@ -201,6 +269,10 @@ export type Career = {
     requiresNightsWeekends?: boolean;
     requiresBloodNeedles?: boolean;
     requiresAcuteStress?: boolean;
+    hasMinimumEducation?: boolean;
+    educationLevel?: "FF" | "CSC" | "CERT" | "AAS" | "BACH" | "GRAD";
+    hasMinimumSalary?: boolean;
+    region?: string;
   };
   categories?: Array<{
     _ref: string;
@@ -224,7 +296,7 @@ export type Career = {
     [internalGroqTypeReferenceTo]?: "program";
   }>;
   educationInstitutions?: Array<{
-    institution?: {
+    institution: {
       _ref: string;
       _type: "reference";
       _weak?: boolean;
@@ -270,6 +342,8 @@ export type Career = {
     _key: string;
   }>;
   videoUrl?: string;
+  videoClosedCaptions?: LocalizedBulletList;
+  videoCaptionCycleSeconds?: number;
   lastReviewedAt?: string;
   lastUpdatedAt?: string;
 };
@@ -280,12 +354,12 @@ export type EducationalInstitution = {
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
-  name?: string;
+  name: string;
   slug?: Slug;
-  location?: Geopoint;
+  location: Geopoint;
   address?: string;
   website?: string;
-  region?: string;
+  region?: "Northern VA" | "Blue Ridge" | "Rappahannock" | "Central" | "Southside" | "Eastern VA" | "South Central" | "Southwest";
 };
 
 export type Outlook = {
@@ -309,7 +383,7 @@ export type Salary = {
 
 export type LocalizedPortableText = {
   _type: "localizedPortableText";
-  en?: Array<{
+  en: Array<{
     children?: Array<{
       marks?: Array<string>;
       text?: string;
@@ -347,9 +421,21 @@ export type LocalizedPortableText = {
   }>;
 };
 
+export type AcademicPathway = {
+  _type: "academicPathway";
+  status: "draft" | "inReview" | "verified";
+  verifiedAt?: string;
+  editorNotes?: string;
+  items?: Array<{
+    _key: string;
+  } & PathwayStep | {
+    _key: string;
+  } & PathwayChoice>;
+};
+
 export type LocalizedPortableTextSmall = {
   _type: "localizedPortableTextSmall";
-  en?: Array<{
+  en: Array<{
     children?: Array<{
       marks?: Array<string>;
       text?: string;
@@ -389,8 +475,24 @@ export type LocalizedPortableTextSmall = {
 
 export type LocalizedBulletList = {
   _type: "localizedBulletList";
-  en?: Array<string>;
+  en: Array<string>;
   es?: Array<string>;
+};
+
+export type HomePage = {
+  _id: string;
+  _type: "homePage";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  heroVideoUrl?: string;
+  featuredCareers?: Array<{
+    _ref: string;
+    _type: "reference";
+    _weak?: boolean;
+    _key: string;
+    [internalGroqTypeReferenceTo]?: "career";
+  }>;
 };
 
 export type SiteSettings = {
@@ -400,18 +502,19 @@ export type SiteSettings = {
   _updatedAt: string;
   _rev: string;
   navLinks?: Array<{
-    label?: LocalizedString;
-    href?: string;
+    label: LocalizedString;
+    href: string;
     _key: string;
   }>;
   footerLinks?: Array<{
-    label?: LocalizedString;
-    href?: string;
+    label: LocalizedString;
+    href: string;
     _key: string;
   }>;
   announcements?: LocalizedText;
   featureFlags?: {
     aiChatEnabled?: boolean;
+    scholarshipsEnabled?: boolean;
   };
   seoDefaults?: {
     title?: LocalizedString;
@@ -421,13 +524,13 @@ export type SiteSettings = {
 
 export type LocalizedText = {
   _type: "localizedText";
-  en?: string;
+  en: string;
   es?: string;
 };
 
 export type LocalizedString = {
   _type: "localizedString";
-  en?: string;
+  en: string;
   es?: string;
 };
 
@@ -538,7 +641,7 @@ export type Geopoint = {
 
 export type Slug = {
   _type: "slug";
-  current?: string;
+  current: string;
   source?: string;
 };
 
@@ -549,5 +652,5 @@ export type SanityAssetSourceData = {
   url?: string;
 };
 
-export type AllSanitySchemaTypes = Quiz | ProfessionalOrganization | Resource | Scholarship | Program | MoneyRange | Duration | CareerCategory | Career | EducationalInstitution | Outlook | Salary | LocalizedPortableText | LocalizedPortableTextSmall | LocalizedBulletList | SiteSettings | LocalizedText | LocalizedString | SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityImageHotspot | SanityImageCrop | SanityFileAsset | SanityImageAsset | SanityImageMetadata | Geopoint | Slug | SanityAssetSourceData;
+export type AllSanitySchemaTypes = PathwayChoice | PathwayStep | CareerHardFilter | Quiz | HardFilter | ProfessionalOrganization | Resource | Scholarship | Program | MoneyRange | Duration | CareerCategory | Career | EducationalInstitution | Outlook | Salary | LocalizedPortableText | AcademicPathway | LocalizedPortableTextSmall | LocalizedBulletList | HomePage | SiteSettings | LocalizedText | LocalizedString | SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityImageHotspot | SanityImageCrop | SanityFileAsset | SanityImageAsset | SanityImageMetadata | Geopoint | Slug | SanityAssetSourceData;
 export declare const internalGroqTypeReferenceTo: unique symbol;

@@ -1,5 +1,280 @@
 [
   {
+    "name": "pathwayChoice",
+    "type": "type",
+    "value": {
+      "type": "object",
+      "attributes": {
+        "_type": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string",
+            "value": "pathwayChoice"
+          }
+        },
+        "label": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "inline",
+            "name": "localizedString"
+          },
+          "optional": false
+        },
+        "options": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "array",
+            "of": {
+              "type": "object",
+              "attributes": {
+                "_key": {
+                  "type": "objectAttribute",
+                  "value": {
+                    "type": "string"
+                  }
+                }
+              },
+              "rest": {
+                "type": "inline",
+                "name": "pathwayStep"
+              }
+            }
+          },
+          "optional": true
+        }
+      }
+    }
+  },
+  {
+    "name": "pathwayStep",
+    "type": "type",
+    "value": {
+      "type": "object",
+      "attributes": {
+        "_type": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string",
+            "value": "pathwayStep"
+          }
+        },
+        "title": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "inline",
+            "name": "localizedString"
+          },
+          "optional": false
+        },
+        "description": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "inline",
+            "name": "localizedString"
+          },
+          "optional": true
+        },
+        "kind": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "union",
+            "of": [
+              {
+                "type": "string",
+                "value": "priorEducation"
+              },
+              {
+                "type": "string",
+                "value": "certificate"
+              },
+              {
+                "type": "string",
+                "value": "associate"
+              },
+              {
+                "type": "string",
+                "value": "bachelor"
+              },
+              {
+                "type": "string",
+                "value": "master"
+              },
+              {
+                "type": "string",
+                "value": "doctoral"
+              },
+              {
+                "type": "string",
+                "value": "clinical"
+              },
+              {
+                "type": "string",
+                "value": "exam"
+              },
+              {
+                "type": "string",
+                "value": "credential"
+              },
+              {
+                "type": "string",
+                "value": "licensure"
+              },
+              {
+                "type": "string",
+                "value": "apprenticeship"
+              },
+              {
+                "type": "string",
+                "value": "other"
+              }
+            ]
+          },
+          "optional": false
+        },
+        "requirement": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "union",
+            "of": [
+              {
+                "type": "string",
+                "value": "required"
+              },
+              {
+                "type": "string",
+                "value": "optional"
+              },
+              {
+                "type": "string",
+                "value": "recommended"
+              }
+            ]
+          },
+          "optional": false
+        },
+        "organization": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          },
+          "optional": true
+        }
+      }
+    }
+  },
+  {
+    "name": "careerHardFilter",
+    "type": "type",
+    "value": {
+      "type": "object",
+      "attributes": {
+        "_type": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string",
+            "value": "careerHardFilter"
+          }
+        },
+        "requiresLicensure": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "boolean"
+          },
+          "optional": true
+        },
+        "requiresLifting": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "boolean"
+          },
+          "optional": true
+        },
+        "requiresNightsWeekends": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "boolean"
+          },
+          "optional": true
+        },
+        "requiresBloodNeedles": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "boolean"
+          },
+          "optional": true
+        },
+        "requiresAcuteHighStress": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "boolean"
+          },
+          "optional": true
+        },
+        "hasMinimumEducation": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "boolean"
+          },
+          "optional": true
+        },
+        "educationLevel": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "union",
+            "of": [
+              {
+                "type": "string",
+                "value": "FF"
+              },
+              {
+                "type": "string",
+                "value": "CSC"
+              },
+              {
+                "type": "string",
+                "value": "CERT"
+              },
+              {
+                "type": "string",
+                "value": "AAS"
+              },
+              {
+                "type": "string",
+                "value": "BACH"
+              },
+              {
+                "type": "string",
+                "value": "GRAD"
+              }
+            ]
+          },
+          "optional": true
+        },
+        "hasMinimumSalary": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "boolean"
+          },
+          "optional": true
+        },
+        "region": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          },
+          "optional": true
+        },
+        "note": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          },
+          "optional": true
+        }
+      }
+    }
+  },
+  {
     "name": "quiz",
     "type": "document",
     "attributes": {
@@ -34,6 +309,14 @@
           "type": "string"
         }
       },
+      "title": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "localizedString"
+        },
+        "optional": false
+      },
       "questions": {
         "type": "objectAttribute",
         "value": {
@@ -45,6 +328,14 @@
                 "type": "objectAttribute",
                 "value": {
                   "type": "number"
+                },
+                "optional": true
+              },
+              "title": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "inline",
+                  "name": "localizedString"
                 },
                 "optional": true
               },
@@ -99,7 +390,7 @@
                   "type": "inline",
                   "name": "localizedString"
                 },
-                "optional": true
+                "optional": false
               },
               "type": {
                 "type": "objectAttribute",
@@ -161,7 +452,7 @@
                           "type": "inline",
                           "name": "localizedString"
                         },
-                        "optional": true
+                        "optional": false
                       },
                       "weights": {
                         "type": "objectAttribute",
@@ -361,39 +652,11 @@
                         },
                         "optional": true
                       },
-                      "hardFilterField": {
+                      "hardFilter": {
                         "type": "objectAttribute",
                         "value": {
-                          "type": "union",
-                          "of": [
-                            {
-                              "type": "string",
-                              "value": "education_ceiling"
-                            },
-                            {
-                              "type": "string",
-                              "value": "licensure_rule"
-                            },
-                            {
-                              "type": "string",
-                              "value": "dealbreaker"
-                            },
-                            {
-                              "type": "string",
-                              "value": "min_start_salary"
-                            },
-                            {
-                              "type": "string",
-                              "value": "region"
-                            }
-                          ]
-                        },
-                        "optional": true
-                      },
-                      "hardFilterValue": {
-                        "type": "objectAttribute",
-                        "value": {
-                          "type": "string"
+                          "type": "inline",
+                          "name": "hardFilter"
                         },
                         "optional": true
                       }
@@ -428,6 +691,118 @@
           }
         },
         "optional": true
+      }
+    }
+  },
+  {
+    "name": "hardFilter",
+    "type": "type",
+    "value": {
+      "type": "object",
+      "attributes": {
+        "_type": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string",
+            "value": "hardFilter"
+          }
+        },
+        "requiresLicensure": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "boolean"
+          },
+          "optional": true
+        },
+        "requiresLifting": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "boolean"
+          },
+          "optional": true
+        },
+        "requiresNightsWeekends": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "boolean"
+          },
+          "optional": true
+        },
+        "requiresBloodNeedles": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "boolean"
+          },
+          "optional": true
+        },
+        "requiresAcuteHighStress": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "boolean"
+          },
+          "optional": true
+        },
+        "hasMinimumEducation": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "boolean"
+          },
+          "optional": true
+        },
+        "educationLevel": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "union",
+            "of": [
+              {
+                "type": "string",
+                "value": "FF"
+              },
+              {
+                "type": "string",
+                "value": "CSC"
+              },
+              {
+                "type": "string",
+                "value": "CERT"
+              },
+              {
+                "type": "string",
+                "value": "AAS"
+              },
+              {
+                "type": "string",
+                "value": "BACH"
+              },
+              {
+                "type": "string",
+                "value": "GRAD"
+              }
+            ]
+          },
+          "optional": true
+        },
+        "hasMinimumSalary": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "boolean"
+          },
+          "optional": true
+        },
+        "region": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          },
+          "optional": true
+        },
+        "description": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          },
+          "optional": true
+        }
       }
     }
   },
@@ -471,6 +846,13 @@
         "value": {
           "type": "string"
         },
+        "optional": false
+      },
+      "institution": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
         "optional": true
       },
       "link": {
@@ -485,6 +867,103 @@
         "value": {
           "type": "inline",
           "name": "localizedText"
+        },
+        "optional": true
+      },
+      "membershipType": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "array",
+          "of": {
+            "type": "union",
+            "of": [
+              {
+                "type": "string",
+                "value": "student"
+              },
+              {
+                "type": "string",
+                "value": "professional"
+              },
+              {
+                "type": "string",
+                "value": "employer"
+              }
+            ]
+          }
+        },
+        "optional": true
+      },
+      "geographicFocus": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "union",
+          "of": [
+            {
+              "type": "string",
+              "value": "virginia_statewide"
+            },
+            {
+              "type": "string",
+              "value": "regional"
+            },
+            {
+              "type": "string",
+              "value": "national"
+            },
+            {
+              "type": "string",
+              "value": "international"
+            },
+            {
+              "type": "string",
+              "value": "local"
+            }
+          ]
+        },
+        "optional": true
+      },
+      "careerAreas": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "array",
+          "of": {
+            "type": "object",
+            "attributes": {
+              "_ref": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "string"
+                }
+              },
+              "_type": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "string",
+                  "value": "reference"
+                }
+              },
+              "_weak": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "boolean"
+                },
+                "optional": true
+              }
+            },
+            "dereferencesTo": "careerCategory",
+            "rest": {
+              "type": "object",
+              "attributes": {
+                "_key": {
+                  "type": "objectAttribute",
+                  "value": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
         },
         "optional": true
       }
@@ -530,7 +1009,7 @@
         "value": {
           "type": "string"
         },
-        "optional": true
+        "optional": false
       },
       "title": {
         "type": "objectAttribute",
@@ -538,7 +1017,7 @@
           "type": "inline",
           "name": "localizedString"
         },
-        "optional": true
+        "optional": false
       },
       "summary": {
         "type": "objectAttribute",
@@ -553,7 +1032,7 @@
         "value": {
           "type": "string"
         },
-        "optional": true
+        "optional": false
       },
       "region": {
         "type": "objectAttribute",
@@ -604,13 +1083,28 @@
         "value": {
           "type": "string"
         },
-        "optional": true
+        "optional": false
       },
       "summary": {
         "type": "objectAttribute",
         "value": {
           "type": "inline",
           "name": "localizedString"
+        },
+        "optional": true
+      },
+      "description": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "localizedText"
+        },
+        "optional": true
+      },
+      "institution": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
         },
         "optional": true
       },
@@ -640,6 +1134,180 @@
         "type": "objectAttribute",
         "value": {
           "type": "string"
+        },
+        "optional": false
+      },
+      "currentStage": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "array",
+          "of": {
+            "type": "union",
+            "of": [
+              {
+                "type": "string",
+                "value": "high_school"
+              },
+              {
+                "type": "string",
+                "value": "college"
+              },
+              {
+                "type": "string",
+                "value": "graduate"
+              },
+              {
+                "type": "string",
+                "value": "working_professional"
+              },
+              {
+                "type": "string",
+                "value": "veteran_military"
+              },
+              {
+                "type": "string",
+                "value": "adult_returning"
+              }
+            ]
+          }
+        },
+        "optional": true
+      },
+      "fundingType": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "union",
+          "of": [
+            {
+              "type": "string",
+              "value": "federal"
+            },
+            {
+              "type": "string",
+              "value": "state"
+            },
+            {
+              "type": "string",
+              "value": "institutional"
+            },
+            {
+              "type": "string",
+              "value": "private"
+            },
+            {
+              "type": "string",
+              "value": "foundation"
+            },
+            {
+              "type": "string",
+              "value": "other"
+            }
+          ]
+        },
+        "optional": true
+      },
+      "locationScope": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "union",
+          "of": [
+            {
+              "type": "string",
+              "value": "virginia_statewide"
+            },
+            {
+              "type": "string",
+              "value": "regional"
+            },
+            {
+              "type": "string",
+              "value": "national"
+            },
+            {
+              "type": "string",
+              "value": "local"
+            },
+            {
+              "type": "string",
+              "value": "international"
+            }
+          ]
+        },
+        "optional": true
+      },
+      "careerAreas": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "array",
+          "of": {
+            "type": "object",
+            "attributes": {
+              "_ref": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "string"
+                }
+              },
+              "_type": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "string",
+                  "value": "reference"
+                }
+              },
+              "_weak": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "boolean"
+                },
+                "optional": true
+              }
+            },
+            "dereferencesTo": "careerCategory",
+            "rest": {
+              "type": "object",
+              "attributes": {
+                "_key": {
+                  "type": "objectAttribute",
+                  "value": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "optional": true
+      },
+      "badges": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "array",
+          "of": {
+            "type": "union",
+            "of": [
+              {
+                "type": "string",
+                "value": "undergraduate"
+              },
+              {
+                "type": "string",
+                "value": "graduate"
+              },
+              {
+                "type": "string",
+                "value": "undergraduate_graduate"
+              },
+              {
+                "type": "string",
+                "value": "multiple_cohorts"
+              },
+              {
+                "type": "string",
+                "value": "health_related"
+              }
+            ]
+          }
         },
         "optional": true
       }
@@ -685,7 +1353,7 @@
         "value": {
           "type": "string"
         },
-        "optional": true
+        "optional": false
       },
       "region": {
         "type": "objectAttribute",
@@ -882,7 +1550,7 @@
         "value": {
           "type": "string"
         },
-        "optional": true
+        "optional": false
       },
       "description": {
         "type": "objectAttribute",
@@ -935,7 +1603,7 @@
           "type": "inline",
           "name": "localizedString"
         },
-        "optional": true
+        "optional": false
       },
       "slug": {
         "type": "objectAttribute",
@@ -993,6 +1661,14 @@
         },
         "optional": true
       },
+      "academicPathway": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "academicPathway"
+        },
+        "optional": true
+      },
       "prerequisites": {
         "type": "objectAttribute",
         "value": {
@@ -1038,46 +1714,6 @@
         "value": {
           "type": "inline",
           "name": "outlook"
-        },
-        "optional": true
-      },
-      "educationMin": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "union",
-          "of": [
-            {
-              "type": "string",
-              "value": "FF"
-            },
-            {
-              "type": "string",
-              "value": "CSC"
-            },
-            {
-              "type": "string",
-              "value": "CERT"
-            },
-            {
-              "type": "string",
-              "value": "AAS"
-            },
-            {
-              "type": "string",
-              "value": "BACH"
-            },
-            {
-              "type": "string",
-              "value": "GRAD"
-            }
-          ]
-        },
-        "optional": true
-      },
-      "licensureRequired": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "boolean"
         },
         "optional": true
       },
@@ -1318,6 +1954,60 @@
                 "type": "boolean"
               },
               "optional": true
+            },
+            "hasMinimumEducation": {
+              "type": "objectAttribute",
+              "value": {
+                "type": "boolean"
+              },
+              "optional": true
+            },
+            "educationLevel": {
+              "type": "objectAttribute",
+              "value": {
+                "type": "union",
+                "of": [
+                  {
+                    "type": "string",
+                    "value": "FF"
+                  },
+                  {
+                    "type": "string",
+                    "value": "CSC"
+                  },
+                  {
+                    "type": "string",
+                    "value": "CERT"
+                  },
+                  {
+                    "type": "string",
+                    "value": "AAS"
+                  },
+                  {
+                    "type": "string",
+                    "value": "BACH"
+                  },
+                  {
+                    "type": "string",
+                    "value": "GRAD"
+                  }
+                ]
+              },
+              "optional": true
+            },
+            "hasMinimumSalary": {
+              "type": "objectAttribute",
+              "value": {
+                "type": "boolean"
+              },
+              "optional": true
+            },
+            "region": {
+              "type": "objectAttribute",
+              "value": {
+                "type": "string"
+              },
+              "optional": true
             }
           }
         },
@@ -1490,7 +2180,7 @@
                   },
                   "dereferencesTo": "educationalInstitution"
                 },
-                "optional": true
+                "optional": false
               },
               "programUrl": {
                 "type": "objectAttribute",
@@ -1751,6 +2441,21 @@
         },
         "optional": true
       },
+      "videoClosedCaptions": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "localizedBulletList"
+        },
+        "optional": true
+      },
+      "videoCaptionCycleSeconds": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "number"
+        },
+        "optional": true
+      },
       "lastReviewedAt": {
         "type": "objectAttribute",
         "value": {
@@ -1807,7 +2512,7 @@
         "value": {
           "type": "string"
         },
-        "optional": true
+        "optional": false
       },
       "slug": {
         "type": "objectAttribute",
@@ -1823,7 +2528,7 @@
           "type": "inline",
           "name": "geopoint"
         },
-        "optional": true
+        "optional": false
       },
       "address": {
         "type": "objectAttribute",
@@ -1842,7 +2547,41 @@
       "region": {
         "type": "objectAttribute",
         "value": {
-          "type": "string"
+          "type": "union",
+          "of": [
+            {
+              "type": "string",
+              "value": "Northern VA"
+            },
+            {
+              "type": "string",
+              "value": "Blue Ridge"
+            },
+            {
+              "type": "string",
+              "value": "Rappahannock"
+            },
+            {
+              "type": "string",
+              "value": "Central"
+            },
+            {
+              "type": "string",
+              "value": "Southside"
+            },
+            {
+              "type": "string",
+              "value": "Eastern VA"
+            },
+            {
+              "type": "string",
+              "value": "South Central"
+            },
+            {
+              "type": "string",
+              "value": "Southwest"
+            }
+          ]
         },
         "optional": true
       }
@@ -2129,7 +2868,7 @@
               }
             }
           },
-          "optional": true
+          "optional": false
         },
         "es": {
           "type": "objectAttribute",
@@ -2294,6 +3033,99 @@
     }
   },
   {
+    "name": "academicPathway",
+    "type": "type",
+    "value": {
+      "type": "object",
+      "attributes": {
+        "_type": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string",
+            "value": "academicPathway"
+          }
+        },
+        "status": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "union",
+            "of": [
+              {
+                "type": "string",
+                "value": "draft"
+              },
+              {
+                "type": "string",
+                "value": "inReview"
+              },
+              {
+                "type": "string",
+                "value": "verified"
+              }
+            ]
+          },
+          "optional": false
+        },
+        "verifiedAt": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          },
+          "optional": true
+        },
+        "editorNotes": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          },
+          "optional": true
+        },
+        "items": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "array",
+            "of": {
+              "type": "union",
+              "of": [
+                {
+                  "type": "object",
+                  "attributes": {
+                    "_key": {
+                      "type": "objectAttribute",
+                      "value": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "rest": {
+                    "type": "inline",
+                    "name": "pathwayStep"
+                  }
+                },
+                {
+                  "type": "object",
+                  "attributes": {
+                    "_key": {
+                      "type": "objectAttribute",
+                      "value": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "rest": {
+                    "type": "inline",
+                    "name": "pathwayChoice"
+                  }
+                }
+              ]
+            }
+          },
+          "optional": true
+        }
+      }
+    }
+  },
+  {
     "name": "localizedPortableTextSmall",
     "type": "type",
     "value": {
@@ -2450,7 +3282,7 @@
               }
             }
           },
-          "optional": true
+          "optional": false
         },
         "es": {
           "type": "objectAttribute",
@@ -2622,7 +3454,7 @@
               "type": "string"
             }
           },
-          "optional": true
+          "optional": false
         },
         "es": {
           "type": "objectAttribute",
@@ -2634,6 +3466,94 @@
           },
           "optional": true
         }
+      }
+    }
+  },
+  {
+    "name": "homePage",
+    "type": "document",
+    "attributes": {
+      "_id": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        }
+      },
+      "_type": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string",
+          "value": "homePage"
+        }
+      },
+      "_createdAt": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        }
+      },
+      "_updatedAt": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        }
+      },
+      "_rev": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        }
+      },
+      "heroVideoUrl": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
+      "featuredCareers": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "array",
+          "of": {
+            "type": "object",
+            "attributes": {
+              "_ref": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "string"
+                }
+              },
+              "_type": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "string",
+                  "value": "reference"
+                }
+              },
+              "_weak": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "boolean"
+                },
+                "optional": true
+              }
+            },
+            "dereferencesTo": "career",
+            "rest": {
+              "type": "object",
+              "attributes": {
+                "_key": {
+                  "type": "objectAttribute",
+                  "value": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "optional": true
       }
     }
   },
@@ -2685,14 +3605,14 @@
                   "type": "inline",
                   "name": "localizedString"
                 },
-                "optional": true
+                "optional": false
               },
               "href": {
                 "type": "objectAttribute",
                 "value": {
                   "type": "string"
                 },
-                "optional": true
+                "optional": false
               }
             },
             "rest": {
@@ -2723,14 +3643,14 @@
                   "type": "inline",
                   "name": "localizedString"
                 },
-                "optional": true
+                "optional": false
               },
               "href": {
                 "type": "objectAttribute",
                 "value": {
                   "type": "string"
                 },
-                "optional": true
+                "optional": false
               }
             },
             "rest": {
@@ -2762,6 +3682,13 @@
           "type": "object",
           "attributes": {
             "aiChatEnabled": {
+              "type": "objectAttribute",
+              "value": {
+                "type": "boolean"
+              },
+              "optional": true
+            },
+            "scholarshipsEnabled": {
               "type": "objectAttribute",
               "value": {
                 "type": "boolean"
@@ -2817,7 +3744,7 @@
           "value": {
             "type": "string"
           },
-          "optional": true
+          "optional": false
         },
         "es": {
           "type": "objectAttribute",
@@ -2847,7 +3774,7 @@
           "value": {
             "type": "string"
           },
-          "optional": true
+          "optional": false
         },
         "es": {
           "type": "objectAttribute",
@@ -3503,7 +4430,7 @@
           "value": {
             "type": "string"
           },
-          "optional": true
+          "optional": false
         },
         "source": {
           "type": "objectAttribute",

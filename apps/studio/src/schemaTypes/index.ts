@@ -20,6 +20,9 @@ import { salary } from "./objects/salary"
 import { outlook } from "./objects/outlook"
 import { hardFilter } from "./objects/hardFilter"
 import { careerHardFilter } from "./objects/careerHardFilter"
+import { pathwayStep } from "./objects/pathwayStep"
+import { pathwayChoice } from "./objects/pathwayChoice"
+import { academicPathway } from "./objects/academicPathway"
 
 export const schemaTypes = [
   // documents
@@ -45,7 +48,10 @@ export const schemaTypes = [
   salary,
   outlook,
   hardFilter,
-  careerHardFilter
+  careerHardFilter,
+  pathwayStep,
+  pathwayChoice,
+  academicPathway
 ]
 
 
