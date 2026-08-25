@@ -111,8 +111,12 @@ Some values shown in the top highlight widgets are authored as plain text on the
 ### Educational programs / institutions
 Career pages show an “Educational Programs” section with a map and list.
 
-- Institutions live in the **`educationalInstitution`** collection and include `location` (geopoint).
-- Each Career can associate a list of institution items via `career.educationInstitutions[]`, where each item links to an `educationalInstitution` reference and optional `programUrl` (deep link) and optional display `label`.
+- Institutions live in the **`educationalInstitution`** collection and include `location` (geopoint) plus a general `website` (school homepage).
+- Each Career associates schools via `career.educationInstitutions[]`. Each item has:
+  - `institution` — reference to an `educationalInstitution`
+  - `programUrl` — **career-specific** deep link to that school’s program for this career (preferred when the user clicks a school on the career page)
+  - `label` — optional display name override
+- **Editorial workflow:** On a Career document, open each Educational Institutions row and set **Program URL** to the school’s page for *this* career’s program. Leave blank only when no specific program page exists; the site then falls back to the institution `website`. Do not put career-program URLs on the Educational Institution document — that field is the general homepage shared across all careers.
 
 ## Localization (EN/ES)
 The app is bilingual (EN/ES). Studio fields use **localized objects**:

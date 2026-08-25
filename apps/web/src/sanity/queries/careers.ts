@@ -25,6 +25,56 @@ export type Outlook = {
   year?: number
 }
 
+export type PathwayKind =
+  | "priorEducation"
+  | "certificate"
+  | "associate"
+  | "bachelor"
+  | "master"
+  | "doctoral"
+  | "clinical"
+  | "exam"
+  | "credential"
+  | "licensure"
+  | "apprenticeship"
+  | "other"
+
+export type PathwayRequirement = "required" | "optional" | "recommended"
+export type PathwayStatus = "draft" | "inReview" | "verified"
+
+export type PathwayStep = {
+  _key?: string
+  _type?: "pathwayStep"
+  title?: LocalizedString
+  description?: LocalizedString
+  kind?: PathwayKind
+  requirement?: PathwayRequirement
+  organization?: string
+}
+
+export type PathwayChoice = {
+  _key?: string
+  _type?: "pathwayChoice"
+  label?: LocalizedString
+  options?: PathwayStep[]
+}
+
+export type AcademicPathwayItem = PathwayStep | PathwayChoice
+
+export type AcademicPathway = {
+  status?: PathwayStatus
+  verifiedAt?: string
+  items?: AcademicPathwayItem[]
+}
+
+export function isPathwayChoice(item: AcademicPathwayItem): item is PathwayChoice {
+  return item._type === "pathwayChoice"
+}
+
+export function hasVerifiedAcademicPathway(pathway?: AcademicPathway | null): boolean {
+  return pathway?.status === "verified" && Array.isArray(pathway.items) && pathway.items.length > 0
+}
+
 export type EducationalInstitution = {
   _id: string
   name: string
@@ -84,6 +134,7 @@ export type CareerDetail = {
   specializationsNote?: LocalizedPortableText
 
   educationRequirements?: LocalizedPortableText
+  academicPathway?: AcademicPathway
   academicRequirementsHighlight?: LocalizedString
   programLengthHighlight?: LocalizedString
 
@@ -115,6 +166,29 @@ export const CAREER_DETAIL_QUERY = /* groq */ `
   specializationsNote,
 
   educationRequirements,
+  academicPathway{
+    status,
+    verifiedAt,
+    items[]{
+      _key,
+      _type,
+      title,
+      description,
+      kind,
+      requirement,
+      organization,
+      label,
+      options[]{
+        _key,
+        _type,
+        title,
+        description,
+        kind,
+        requirement,
+        organization
+      }
+    }
+  },
   academicRequirementsHighlight,
   programLengthHighlight,
 
