@@ -162,3 +162,35 @@ To apply all updates:
 pnpm --filter studio migrate:ahec-regions -- --map "path/to/ahec-map.jpg" --report ahec-region-report.json
 ```
 
+---
+
+## Program URL population (career × institution)
+
+Reads `data-migration/program-specific-websites.csv` (Ideal Layout export) and sets
+`career.educationInstitutions[].programUrl` for matching Career + Institution rows.
+
+Only cells that contain a valid `http(s)` URL are applied. Notes like “No Program”
+are skipped. Extracts the first URL when a cell mixes prose and a link.
+
+### Prerequisites
+
+```bash
+export SANITY_API_TOKEN='your-editor-token'
+```
+
+### Dry run
+
+```bash
+pnpm migrate:program-urls -- --dry-run
+```
+
+Writes `apps/studio/program-url-migration-report.json` with planned updates / unmatched rows.
+
+### Apply + publish
+
+```bash
+pnpm migrate:program-urls -- --publish
+```
+
+Without `--publish`, patches are saved as drafts for review in Studio.
+
