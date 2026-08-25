@@ -9,6 +9,33 @@ import {
 } from "../../../sanity/queries/careers"
 import type { PathwayRow, PathwayTone, ResolvedStep } from "./types"
 
+function isOptionalRequirement(requirement: PathwayRequirement): boolean {
+  return requirement === "optional" || requirement === "recommended"
+}
+
+function rowHasOptionalStep(row: PathwayRow): boolean {
+  if (row.type === "step") return isOptionalRequirement(row.step.requirement)
+  return row.options.some((option) => isOptionalRequirement(option.requirement))
+}
+
+function applyNeutralTonesWhenAllRequired(rows: PathwayRow[]): void {
+  const hasOptionalSteps = rows.some(rowHasOptionalStep)
+  if (hasOptionalSteps) return
+
+  for (const row of rows) {
+    if (row.type === "step" && row.step.tone === "required") {
+      row.step.tone = "neutral"
+    }
+  }
+}
+
+export function getPathwayLayoutMeta(rows: PathwayRow[]) {
+  const hasChoice = rows.some((row) => row.type === "choice")
+  const hasOptionalSteps = rows.some(rowHasOptionalStep)
+  const showLegend = hasOptionalSteps || hasChoice
+  return { hasChoice, hasOptionalSteps, showLegend }
+}
+
 function resolveStep(
   step: PathwayStep,
   language: Language,
@@ -23,7 +50,7 @@ function resolveStep(
   const tone: PathwayTone =
     defaultTone === "choice"
       ? "choice"
-      : requirement === "optional" || requirement === "recommended"
+      : isOptionalRequirement(requirement)
         ? "optional"
         : "required"
 
@@ -69,7 +96,7 @@ export function toPathwayLayout(items: AcademicPathwayItem[] | undefined, langua
           type: "step",
           step: {
             ...only,
-            tone: only.requirement === "optional" || only.requirement === "recommended" ? "optional" : "required"
+            tone: isOptionalRequirement(only.requirement) ? "optional" : "required"
           }
         })
       }
@@ -80,16 +107,7 @@ export function toPathwayLayout(items: AcademicPathwayItem[] | undefined, langua
     if (step) rows.push({ type: "step", step })
   })
 
-  if (!rows.length) return rows
-
-  const first = rows[0]
-  const last = rows[rows.length - 1]
-  if (first.type === "step" && first.step.requirement === "required") {
-    first.step.tone = "startEnd"
-  }
-  if (last.type === "step" && last.step.requirement === "required") {
-    last.step.tone = "startEnd"
-  }
+  applyNeutralTonesWhenAllRequired(rows)
 
   return rows
 }

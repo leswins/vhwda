@@ -2,7 +2,7 @@ import React from "react"
 import type { PathwayTone, ResolvedStep } from "./types"
 
 const TONE_CLASS: Record<PathwayTone, string> = {
-  startEnd: "border-solid border-foreground bg-surface",
+  neutral: "border-solid border-foreground bg-surface",
   required: "border-solid border-foreground bg-accentBlue/25",
   optional: "border-dashed border-foreground/70 bg-surface2",
   choice: "border-solid border-foreground bg-accentGreen/25"

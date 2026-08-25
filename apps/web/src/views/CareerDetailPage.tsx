@@ -81,17 +81,23 @@ function BulletGrid({ items }: { items?: string[] }) {
 
 /**
  * Renders a list of items on one or more lines, separated by vertical lines.
+ * Trailing dividers stay attached to each item so a wrapped line never starts with "|".
  */
 function InlineDividerList({ items }: { items?: string[] }) {
   if (!items?.length) return null
   return (
     <div className="flex flex-wrap items-center gap-y-fluid-50">
-      {items.map((item, idx) => (
-        <React.Fragment key={`${idx}-${item}`}>
-          <span className="text-sub1 text-foreground">{item}</span>
-          {idx !== items.length - 1 ? <span className="mx-fluid-25 h-7 w-[0.5px] bg-foreground" aria-hidden="true" /> : null}
-        </React.Fragment>
-      ))}
+      {items.map((item, idx) => {
+        const isLast = idx === items.length - 1
+        return (
+          <span key={`${idx}-${item}`} className="inline-flex items-center">
+            <span className="text-sub1 text-foreground">{item}</span>
+            {!isLast ? (
+              <span className="mx-fluid-25 inline-block h-7 w-[0.5px] shrink-0 bg-foreground" aria-hidden="true" />
+            ) : null}
+          </span>
+        )
+      })}
     </div>
   )
 }
@@ -555,102 +561,63 @@ export function CareerDetailPage() {
             </section>
           ) : null}
 
-          {/* Academic Pathway + Work Environments + Specializations */}
-          <div
-            className={
-              hasAcademicRequirements && (hasWorkEnvironments || hasSpecializations)
-                ? "contents lg:grid lg:grid-cols-2 lg:border-b lg:border-foreground"
-                : "contents"
-            }
-          >
-            {hasAcademicRequirements ? (
-              <section
-                id="academic"
-                className="flex flex-col border-b border-foreground px-5 py-10 lg:border-b-0 lg:p-fluid-50"
-              >
-                <div className="lg:sticky lg:top-[90px] lg:z-10 lg:max-h-[calc(100vh-90px)] lg:overflow-y-auto lg:bg-surface lg:pb-fluid-20">
-                  <h2 className="mb-fluid-50 text-h3">{t(language, "career.sections.academicRequirements")}</h2>
-                  <div className="flex-1">
-                    {hasVerifiedPathway && data.academicPathway ? (
-                      <AcademicPathway pathway={data.academicPathway} language={language} />
-                    ) : (
-                      <PortableTextPlain
-                        value={
-                          language === "es"
-                            ? data.educationRequirements?.es ?? data.educationRequirements?.en
-                            : data.educationRequirements?.en
-                        }
-                      />
-                    )}
-                  </div>
-                  <div className="mt-fluid-50">
-                    <Button variant="dark" onClick={() => scrollToSection("education")}>
-                      {t(language, "career.cta.exploreEducationalPrograms")}
-                    </Button>
-                  </div>
-                </div>
-              </section>
-            ) : null}
-
-            {hasWorkEnvironments || hasSpecializations ? (
-              <div
-                className={
-                  hasAcademicRequirements
-                    ? "contents lg:flex lg:flex-col lg:border-l lg:border-foreground"
-                    : "contents"
-                }
-              >
-                {hasWorkEnvironments ? (
-                  <section
-                    id="work"
-                    className={`border-b border-foreground px-5 py-10 lg:p-fluid-50 ${
-                      hasAcademicRequirements ? "lg:border-b-0" : ""
-                    } ${hasAcademicRequirements && hasSpecializations ? "lg:flex-1" : ""}`}
-                  >
-                    <h2 className="mb-fluid-50 text-h3">{t(language, "career.sections.workEnvironments")}</h2>
-                    <InlineDividerList
-                      items={
-                        language === "es" ? data.workEnvironment?.es ?? data.workEnvironment?.en : data.workEnvironment?.en
-                      }
-                    />
-                  </section>
-                ) : null}
-
-                {hasSpecializations ? (
-                  <section
-                    id="specializations"
-                    className={`border-b border-foreground px-5 py-10 lg:p-fluid-50 ${
-                      hasAcademicRequirements ? "lg:border-b-0" : ""
-                    } ${
-                      hasAcademicRequirements && hasWorkEnvironments
-                        ? "lg:flex-1 lg:border-t lg:border-foreground"
-                        : ""
-                    }`}
-                  >
-                    <h2 className="mb-fluid-50 text-h3">{t(language, "career.sections.areasOfSpecialization")}</h2>
-                    {hasSpecializationsList ? (
-                      <InlineDividerList
-                        items={
-                          language === "es" ? data.specializations?.es ?? data.specializations?.en : data.specializations?.en
-                        }
-                      />
-                    ) : null}
-                    {hasSpecializationsNote ? (
-                      <div className={hasSpecializationsList ? "mt-fluid-50" : ""}>
-                        <PortableTextPlain
-                          value={
-                            language === "es"
-                              ? data.specializationsNote?.es ?? data.specializationsNote?.en
-                              : data.specializationsNote?.en
-                          }
-                        />
-                      </div>
-                    ) : null}
-                  </section>
-                ) : null}
+          {/* Academic Pathway → Work Environments → Areas of Specialization (stacked) */}
+          {hasAcademicRequirements ? (
+            <section id="academic" className="border-b border-foreground px-5 py-10 lg:p-fluid-50">
+              <div className="mb-fluid-50 flex flex-col gap-fluid-30 sm:flex-row sm:items-start sm:justify-between sm:gap-fluid-50">
+                <h2 className="text-h3">{t(language, "career.sections.academicRequirements")}</h2>
+                <Button variant="dark" className="shrink-0 self-start" onClick={() => scrollToSection("education")}>
+                  {t(language, "career.cta.exploreEducationalPrograms")}
+                </Button>
               </div>
-            ) : null}
-          </div>
+              {hasVerifiedPathway && data.academicPathway ? (
+                <AcademicPathway pathway={data.academicPathway} language={language} />
+              ) : (
+                <PortableTextPlain
+                  value={
+                    language === "es"
+                      ? data.educationRequirements?.es ?? data.educationRequirements?.en
+                      : data.educationRequirements?.en
+                  }
+                />
+              )}
+            </section>
+          ) : null}
+
+          {hasWorkEnvironments ? (
+            <section id="work" className="border-b border-foreground px-5 py-10 lg:p-fluid-50">
+              <h2 className="mb-fluid-50 text-h3">{t(language, "career.sections.workEnvironments")}</h2>
+              <InlineDividerList
+                items={
+                  language === "es" ? data.workEnvironment?.es ?? data.workEnvironment?.en : data.workEnvironment?.en
+                }
+              />
+            </section>
+          ) : null}
+
+          {hasSpecializations ? (
+            <section id="specializations" className="border-b border-foreground px-5 py-10 lg:p-fluid-50">
+              <h2 className="mb-fluid-50 text-h3">{t(language, "career.sections.areasOfSpecialization")}</h2>
+              {hasSpecializationsList ? (
+                <InlineDividerList
+                  items={
+                    language === "es" ? data.specializations?.es ?? data.specializations?.en : data.specializations?.en
+                  }
+                />
+              ) : null}
+              {hasSpecializationsNote ? (
+                <div className={hasSpecializationsList ? "mt-fluid-50" : ""}>
+                  <PortableTextPlain
+                    value={
+                      language === "es"
+                        ? data.specializationsNote?.es ?? data.specializationsNote?.en
+                        : data.specializationsNote?.en
+                    }
+                  />
+                </div>
+              ) : null}
+            </section>
+          ) : null}
 
           {/* Salary Range Section */}
           {hasSalaryRange ? (
