@@ -11,6 +11,11 @@
  *   pnpm --filter studio migrate:program-urls
  *   pnpm --filter studio migrate:program-urls -- --csv path/to.csv --publish
  *
+ * Default writes drafts only. --publish patches published documents so URLs
+ * are live, and syncs the same programUrl values onto any existing drafts so
+ * a later Studio publish cannot wipe them. Existing drafts are not published
+ * wholesale (they may contain unrelated unpublished edits).
+ *
  * Requires SANITY_API_TOKEN with Editor (or higher) permissions.
  */
 import "dotenv/config"
@@ -31,7 +36,9 @@ type EducationInstitutionItem = {
 type SanityCareer = {
   _id: string
   title: string
+  hasDraft?: boolean
   educationInstitutions?: EducationInstitutionItem[]
+  draftEducationInstitutions?: Array<{ _key: string; programUrl?: string }>
 }
 
 type CsvRow = {
@@ -50,6 +57,8 @@ type PlannedUpdate = {
   oldUrl?: string
   newUrl: string
   matchHow: string
+  patchPublished: boolean
+  patchDraft: boolean
 }
 
 const SANITY_PROJECT_ID = "j0yc55ca"
@@ -205,6 +214,23 @@ function findInstitutionItem(
   return null
 }
 
+function draftUrlFor(career: SanityCareer, itemKey: string): string | undefined {
+  return career.draftEducationInstitutions?.find((item) => item._key === itemKey)?.programUrl
+}
+
+async function ensureDraft(
+  client: ReturnType<typeof createClient>,
+  publishedId: string
+): Promise<void> {
+  const published = await client.getDocument(publishedId)
+  if (!published) {
+    throw new Error(`Published document not found: ${publishedId}`)
+  }
+  const { _rev, ...rest } = published
+  void _rev
+  await client.createIfNotExists({ ...rest, _id: `drafts.${publishedId}` })
+}
+
 async function main() {
   if (!dryRun && !process.env.SANITY_API_TOKEN) {
     console.error("❌ SANITY_API_TOKEN is required (Editor or higher)")
@@ -231,18 +257,23 @@ async function main() {
     relax_column_count: true
   }) as CsvRow[]
 
-  const careers = (await client.fetch(`*[_type == "career"]{
+  const careers = (await client.fetch(`*[_type == "career" && !(_id in path("drafts.**"))]{
     _id,
     "title": coalesce(title.en, title),
+    "hasDraft": defined(*[_id == "drafts." + ^._id][0]._id),
     educationInstitutions[]{
       _key,
       programUrl,
       "institutionId": institution->_id,
       "institutionName": institution->name
+    },
+    "draftEducationInstitutions": *[_id == "drafts." + ^._id][0].educationInstitutions[]{
+      _key,
+      programUrl
     }
   } | order(title)`)) as SanityCareer[]
 
-  console.log(`Loaded ${rows.length} CSV rows, ${careers.length} Sanity careers`)
+  console.log(`Loaded ${rows.length} CSV rows, ${careers.length} published Sanity careers`)
 
   const planned: PlannedUpdate[] = []
   const skipped: Array<Record<string, string>> = []
@@ -293,7 +324,14 @@ async function main() {
     }
 
     const oldUrl = itemHit.item.programUrl
-    if (oldUrl === programUrl) {
+    const publishedId = careerHit.career._id.replace(/^drafts\./, "")
+    const draftUrl = draftUrlFor(careerHit.career, itemHit.item._key)
+    const patchPublished = shouldPublish && oldUrl !== programUrl
+    const patchDraft = shouldPublish
+      ? Boolean(careerHit.career.hasDraft) && draftUrl !== programUrl
+      : !careerHit.career.hasDraft || draftUrl !== programUrl
+
+    if (!patchPublished && !patchDraft) {
       skipped.push({
         reason: "already_set",
         career: careerHit.career.title,
@@ -304,14 +342,16 @@ async function main() {
     }
 
     planned.push({
-      careerId: careerHit.career._id,
+      careerId: publishedId,
       careerTitle: careerHit.career.title,
       itemKey: itemHit.item._key,
       institutionName: itemHit.item.institutionName ?? institution,
       csvInstitution: institution,
       oldUrl,
       newUrl: programUrl,
-      matchHow: `${careerHit.how}+${itemHit.how}`
+      matchHow: `${careerHit.how}+${itemHit.how}`,
+      patchPublished,
+      patchDraft
     })
   }
 
@@ -323,10 +363,15 @@ async function main() {
     byCareer.set(update.careerId, list)
   }
 
+  const publishedUpdates = planned.filter((p) => p.patchPublished)
+  const draftUpdates = planned.filter((p) => p.patchDraft)
+
   console.log("\n—— Summary ——")
   console.log(`Would update:     ${planned.length}`)
-  console.log(`  overwrite:      ${planned.filter((p) => p.oldUrl).length}`)
-  console.log(`  new:            ${planned.filter((p) => !p.oldUrl).length}`)
+  console.log(`  published:      ${publishedUpdates.length}`)
+  console.log(`  drafts:         ${draftUpdates.length}`)
+  console.log(`  overwrite:      ${publishedUpdates.filter((p) => p.oldUrl).length}`)
+  console.log(`  new:            ${publishedUpdates.filter((p) => !p.oldUrl).length}`)
   console.log(`Careers touched:  ${byCareer.size}`)
   console.log(`Skipped:          ${skipped.length}`)
   console.log(`Unmatched:        ${unmatched.length}`)
@@ -345,7 +390,9 @@ async function main() {
     counts: {
       csvRows: rows.length,
       planned: planned.length,
-      overwrite: planned.filter((p) => p.oldUrl).length,
+      published: publishedUpdates.length,
+      drafts: draftUpdates.length,
+      overwrite: publishedUpdates.filter((p) => p.oldUrl).length,
       skipped: skipped.length,
       unmatched: unmatched.length,
       careers: byCareer.size
@@ -364,41 +411,51 @@ async function main() {
 
   let patched = 0
   let failed = 0
-  const publishedIds: string[] = []
+  let draftsSynced = 0
 
   for (const [careerId, updates] of byCareer) {
-    const setOps: Record<string, string> = {}
-    for (const u of updates) {
-      setOps[`educationInstitutions[_key=="${u.itemKey}"].programUrl`] = u.newUrl
+    const publishedId = careerId.replace(/^drafts\./, "")
+    const draftId = `drafts.${publishedId}`
+    const title = updates[0]?.careerTitle ?? publishedId
+    const publishedOps: Record<string, string> = {}
+    const draftOps: Record<string, string> = {}
+
+    for (const update of updates) {
+      const path = `educationInstitutions[_key=="${update.itemKey}"].programUrl`
+      if (update.patchPublished) publishedOps[path] = update.newUrl
+      if (update.patchDraft) draftOps[path] = update.newUrl
     }
 
     try {
-      await client.patch(careerId).set(setOps).commit({ autoGenerateArrayKeys: false })
+      if (shouldPublish && Object.keys(publishedOps).length) {
+        await client.patch(publishedId).set(publishedOps).commit({ autoGenerateArrayKeys: false })
+      }
+
+      if (Object.keys(draftOps).length) {
+        if (!shouldPublish) {
+          await ensureDraft(client, publishedId)
+        }
+        await client.patch(draftId).set(draftOps).commit({ autoGenerateArrayKeys: false })
+        draftsSynced += 1
+      }
+
       patched += 1
-      publishedIds.push(careerId)
-      console.log(`✓ Patched ${updates[0]?.careerTitle} (${updates.length} URL(s))`)
+      const pubCount = Object.keys(publishedOps).length
+      const draftCount = Object.keys(draftOps).length
+      console.log(
+        `✓ ${title} (published ${pubCount} URL(s), draft ${draftCount} URL(s))`
+      )
     } catch (err) {
       failed += 1
-      console.error(`✗ Failed ${updates[0]?.careerTitle} (${careerId}):`, err)
+      console.error(`✗ Failed ${title} (${publishedId}):`, err)
     }
   }
 
-  if (shouldPublish && publishedIds.length) {
-    console.log(`\nPublishing ${publishedIds.length} careers...`)
-    for (const id of publishedIds) {
-      const publishedId = id.replace(/^drafts\./, "")
-      try {
-        await client.mutate([{ publish: { id: publishedId } } as { publish: { id: string } }])
-        console.log(`  published ${publishedId}`)
-      } catch (err) {
-        console.error(`  publish failed ${publishedId}:`, err)
-      }
-    }
-  } else if (!shouldPublish) {
-    console.log("\nPatches saved as drafts. Re-run with --publish to publish, or publish in Studio.")
+  if (!shouldPublish) {
+    console.log("\nPatches saved as drafts. Re-run with --publish to write live published documents.")
   }
 
-  console.log(`\nDone. Careers patched: ${patched}, failed: ${failed}`)
+  console.log(`\nDone. Careers patched: ${patched}, drafts synced: ${draftsSynced}, failed: ${failed}`)
 }
 
 main().catch((err) => {
