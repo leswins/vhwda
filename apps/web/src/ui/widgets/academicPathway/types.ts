@@ -1,6 +1,6 @@
 import type { PathwayKind, PathwayRequirement } from "../../../sanity/queries/careers"
 
-export type PathwayTone = "startEnd" | "required" | "optional" | "choice"
+export type PathwayTone = "neutral" | "required" | "optional" | "choice"
 
 export type ResolvedStep = {
   key: string

@@ -1,8 +1,8 @@
-import React, { useLayoutEffect, useRef, useState } from "react"
+import React, { useCallback, useEffect, useRef, useState } from "react"
 import type { Language } from "../../../utils/i18n"
 import { t } from "../../../utils/i18n"
 import type { AcademicPathway as AcademicPathwayData } from "../../../sanity/queries/careers"
-import { toPathwayLayout } from "./toPathwayLayout"
+import { getPathwayLayoutMeta, toPathwayLayout } from "./toPathwayLayout"
 import { PathwayNode } from "./PathwayNode"
 import { PathwayChoiceGroup } from "./PathwayChoiceGroup"
 import { VerticalConnector } from "./PathwayConnectors"
@@ -18,25 +18,30 @@ type AcademicPathwayProps = {
 
 export function AcademicPathway({ pathway, language }: AcademicPathwayProps) {
   const rows = toPathwayLayout(pathway.items, language)
+  const { hasChoice, hasOptionalSteps, showLegend } = getPathwayLayoutMeta(rows)
   const [zoom, setZoom] = useState(1)
-  const diagramRef = useRef<HTMLDivElement>(null)
-  const [diagramHeight, setDiagramHeight] = useState<number>()
+  const viewportRef = useRef<HTMLDivElement>(null)
+  const isPanningRef = useRef(false)
+  const panOriginRef = useRef({ x: 0, y: 0, scrollLeft: 0 })
+  const [isPanning, setIsPanning] = useState(false)
 
-  useLayoutEffect(() => {
-    const element = diagramRef.current
-    if (!element) return
+  const endPan = useCallback(() => {
+    isPanningRef.current = false
+    setIsPanning(false)
+  }, [])
 
-    const updateHeight = () => setDiagramHeight(element.offsetHeight)
-    updateHeight()
-
-    const observer = new ResizeObserver(updateHeight)
-    observer.observe(element)
-    return () => observer.disconnect()
-  }, [rows.length])
+  useEffect(() => {
+    const onPointerUp = () => endPan()
+    window.addEventListener("pointerup", onPointerUp)
+    window.addEventListener("pointercancel", onPointerUp)
+    return () => {
+      window.removeEventListener("pointerup", onPointerUp)
+      window.removeEventListener("pointercancel", onPointerUp)
+    }
+  }, [endPan])
 
   if (!rows.length) return null
 
-  const hasChoice = rows.some((row) => row.type === "choice")
   const canZoomOut = zoom > MIN_ZOOM + 0.001
   const canZoomIn = zoom < MAX_ZOOM - 0.001
 
@@ -45,6 +50,29 @@ export function AcademicPathway({ pathway, language }: AcademicPathwayProps) {
       const next = Math.round((current + delta) * 10) / 10
       return Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, next))
     })
+  }
+
+  const onPointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (event.button !== 0) return
+    const viewport = viewportRef.current
+    if (!viewport) return
+    // Horizontal pan only — height always hugs content so there is nothing to scroll vertically.
+    if (viewport.scrollWidth <= viewport.clientWidth + 1) return
+    isPanningRef.current = true
+    setIsPanning(true)
+    panOriginRef.current = {
+      x: event.clientX,
+      y: event.clientY,
+      scrollLeft: viewport.scrollLeft
+    }
+  }
+
+  const onPointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (!isPanningRef.current) return
+    const viewport = viewportRef.current
+    if (!viewport) return
+    const { x, scrollLeft } = panOriginRef.current
+    viewport.scrollLeft = scrollLeft - (event.clientX - x)
   }
 
   return (
@@ -70,12 +98,18 @@ export function AcademicPathway({ pathway, language }: AcademicPathwayProps) {
         </button>
       </div>
 
-      <div className="overflow-x-auto" style={{ height: diagramHeight ? diagramHeight * zoom : undefined }}>
-        <div
-          ref={diagramRef}
-          className="origin-top"
-          style={{ transform: `scale(${zoom})` }}
-        >
+      {/*
+        CSS zoom affects layout size (unlike transform), so height hugs the full diagram
+        with no vertical clipping/scroll. Horizontal overflow can still be panned when zoomed in.
+      */}
+      <div
+        ref={viewportRef}
+        className={`overflow-x-auto overflow-y-hidden ${isPanning ? "cursor-grabbing select-none" : "cursor-grab"}`}
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerLeave={endPan}
+      >
+        <div className="mx-auto w-max max-w-none" style={{ zoom }}>
           <ol className="m-0 flex list-none flex-col items-center p-0" role="list">
             {rows.map((row, index) => {
               const previous = index > 0 ? rows[index - 1] : undefined
@@ -103,26 +137,32 @@ export function AcademicPathway({ pathway, language }: AcademicPathwayProps) {
         </div>
       </div>
 
-      <ul
-        className="mt-fluid-40 flex list-none flex-wrap items-center justify-center gap-x-fluid-30 gap-y-fluid-10 p-0"
-        role="list"
-        aria-label={t(language, "career.pathway.legendA11y")}
-      >
-        <LegendItem
-          swatchClassName="border-solid border-foreground bg-accentBlue/25"
-          label={t(language, "career.pathway.legendRequired")}
-        />
-        {hasChoice ? (
-          <LegendItem
-            swatchClassName="border-solid border-foreground bg-accentGreen/25"
-            label={t(language, "career.pathway.legendChooseOne")}
-          />
-        ) : null}
-        <LegendItem
-          swatchClassName="border-dashed border-foreground/70 bg-surface2"
-          label={t(language, "career.pathway.legendOptional")}
-        />
-      </ul>
+      {showLegend ? (
+        <ul
+          className="mt-fluid-40 flex list-none flex-wrap items-center justify-center gap-x-fluid-30 gap-y-fluid-10 p-0"
+          role="list"
+          aria-label={t(language, "career.pathway.legendA11y")}
+        >
+          {hasOptionalSteps ? (
+            <>
+              <LegendItem
+                swatchClassName="border-solid border-foreground bg-accentBlue/25"
+                label={t(language, "career.pathway.legendRequired")}
+              />
+              <LegendItem
+                swatchClassName="border-dashed border-foreground/70 bg-surface2"
+                label={t(language, "career.pathway.legendOptional")}
+              />
+            </>
+          ) : null}
+          {hasChoice ? (
+            <LegendItem
+              swatchClassName="border-solid border-foreground bg-accentGreen/25"
+              label={t(language, "career.pathway.legendChooseOne")}
+            />
+          ) : null}
+        </ul>
+      ) : null}
     </div>
   )
 }
