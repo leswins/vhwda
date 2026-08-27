@@ -41,11 +41,13 @@ export function HubResourceList({ language, resourceType, searchQuery, onCountCh
     async function load() {
       try {
         setLoading(true)
+        setError(null)
         const data = await fetchHubResources(resourceType.slug)
         if (!cancelled) setAllResources(data)
-      } catch (err) {
+      } catch {
         if (!cancelled) {
-          setError(err instanceof Error ? err : new Error(t(language, "resources.generic.loadFailed")))
+          setAllResources([])
+          setError(new Error(t(language, "resources.generic.loadFailed")))
         }
       } finally {
         if (!cancelled) setLoading(false)
@@ -62,11 +64,7 @@ export function HubResourceList({ language, resourceType, searchQuery, onCountCh
   }
 
   if (error) {
-    return (
-      <p className="text-muted">
-        {t(language, "resources.generic.loadErrorPrefix")} {error.message}
-      </p>
-    )
+    return <p className="text-muted">{t(language, "resources.generic.loadFailed")}</p>
   }
 
   if (filtered.length === 0) {
