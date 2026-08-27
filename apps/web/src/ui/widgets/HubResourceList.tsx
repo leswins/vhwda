@@ -17,7 +17,6 @@ type Props = {
 export function HubResourceList({ language, resourceType, searchQuery, onCountChange }: Props) {
   const [allResources, setAllResources] = useState<HubResource[]>([])
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<Error | null>(null)
 
   const filtered = useMemo(() => {
     const query = searchQuery.trim().toLowerCase()
@@ -41,14 +40,10 @@ export function HubResourceList({ language, resourceType, searchQuery, onCountCh
     async function load() {
       try {
         setLoading(true)
-        setError(null)
         const data = await fetchHubResources(resourceType.slug)
         if (!cancelled) setAllResources(data)
       } catch {
-        if (!cancelled) {
-          setAllResources([])
-          setError(new Error(t(language, "resources.generic.loadFailed")))
-        }
+        if (!cancelled) setAllResources([])
       } finally {
         if (!cancelled) setLoading(false)
       }
@@ -57,14 +52,10 @@ export function HubResourceList({ language, resourceType, searchQuery, onCountCh
     return () => {
       cancelled = true
     }
-  }, [language, resourceType.slug])
+  }, [resourceType.slug])
 
   if (loading) {
     return <p className="text-muted">{t(language, "resources.generic.loading")}</p>
-  }
-
-  if (error) {
-    return <p className="text-muted">{t(language, "resources.generic.loadFailed")}</p>
   }
 
   if (filtered.length === 0) {
