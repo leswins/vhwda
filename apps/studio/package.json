@@ -16,6 +16,7 @@
     "migrate:career-quiz-vectors": "tsx scripts/import-career-quiz-vectors.ts",
     "migrate:ahec-regions": "tsx scripts/assign-ahec-regions.ts",
     "migrate:program-urls": "tsx scripts/populate-program-urls.ts",
+    "seed:resource-types": "tsx scripts/seed-resource-types.ts",
     "translate:spanish": "tsx scripts/translate-to-spanish.ts"
   },
   "dependencies": {

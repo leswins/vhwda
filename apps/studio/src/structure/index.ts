@@ -7,6 +7,7 @@ const CUSTOM_NAV_TYPES = [
   "educationalInstitution",
   "program",
   "scholarship",
+  "resourceType",
   "resource",
   "professionalOrganization",
   "quiz",
@@ -48,8 +49,13 @@ export const structure: StructureResolver = (S) =>
         .child(S.documentTypeList("scholarship").title("Scholarships")),
 
       S.listItem()
-        .title("Resources")
-        .child(S.documentTypeList("resource").title("Resources")),
+        .title("Resource Types")
+        .icon(TagIcon)
+        .child(S.documentTypeList("resourceType").title("Resource Types")),
+
+      S.listItem()
+        .title("Hub Resources")
+        .child(S.documentTypeList("resource").title("Hub Resources")),
 
       S.listItem()
         .title("Professional Organizations")

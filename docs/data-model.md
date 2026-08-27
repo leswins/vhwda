@@ -89,15 +89,39 @@ This document defines the **initial content contract** based on `prd.md` §8.2. 
 - `deadline`: date (optional)
 - `link`: URL (required)
 
-### `resource`
-**Purpose**: generalized resource entries for the hub.
+### `resourceType`
+**Purpose**: CMS-managed taxonomy that drives hub sections, the submission form, and the teacher library. Adding a document here creates a new section without a code change.
 
-- `category`: string (required; aligned to PRD resource categories)
+- `title`: localized string (required)
+- `slug`: string (required, lowercase hyphenated)
+- `description`: localized string (optional)
+- `accent`: `green` | `pink` | `blue` | `yellow` | `orange`
+- `icon`: `help` | `doctor` | `education` | `briefcase` | `grant` | `document`
+- `iconImage`: image (optional custom icon)
+- `sortOrder`: number
+- `audience`: `publicHub` | `teacherPortal` | `both`
+- `sourceKind`: `generic` | `scholarship` | `professionalOrganization` | `educationalInstitution`
+- `showInSubmissionForm`: boolean
+- `allowFileAttachment`: boolean
+- `enabled`: boolean
+
+### `resource`
+**Purpose**: generalized hub / teacher-library entries for any `resourceType` with `sourceKind: generic`.
+
+- `resourceType`: reference to `resourceType` (required)
 - `title`: localized string (required)
 - `summary`: localized string (optional)
-- `link`: URL (required)
+- `description`: localized text (optional)
+- `institution`: string (optional)
+- `eligibility`: localized text (optional)
 - `region`: string (optional)
-- `tags`: array (optional)
+- `deadline`: date (optional)
+- `link`: URL (optional)
+- `file`: file (optional; teacher downloads)
+- `fileUrl`: URL (optional alternative to an uploaded file)
+- `fileLabel`: string (optional)
+- `tags`: array of strings (optional)
+- `published`: boolean (default true)
 
 ### `professionalOrganization`
 **Purpose**: organization/network listing.

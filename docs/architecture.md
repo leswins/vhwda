@@ -33,7 +33,10 @@ Initial route map (aligned to PRD IA):
 - `/careers/:slug` Career Detail
 - `/compare` Compare Careers
 - `/quiz` Quiz flow
-- `/resources` Resources hub
+- `/resources` Resources hub (sections driven by Sanity `resourceType`)
+- `/teachers` Gated educator library
+- `/resource-submit` External resource submission form
+- `/resource-portal` Internal review + download analytics
 
 ## Localization
 - UI strings are translated through i18n utilities.

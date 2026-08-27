@@ -12,6 +12,10 @@ import { ChatPage } from "./views/ChatPage"
 import { AboutPage } from "./views/AboutPage"
 import { ScholarshipSubmitPage } from "./views/ScholarshipSubmitPage"
 import { ScholarshipPortalPage } from "./views/ScholarshipPortalPage"
+import { ResourceSubmitPage } from "./views/ResourceSubmitPage"
+import { ResourcePortalPage } from "./views/ResourcePortalPage"
+import { TeacherPortalPage } from "./views/TeacherPortalPage"
+import { TeacherAuthCallbackPage } from "./views/TeacherAuthCallbackPage"
 
 export const router = createBrowserRouter([
   {
@@ -25,8 +29,12 @@ export const router = createBrowserRouter([
       { path: "compare", element: <ComparePage /> },
       { path: "quiz", element: <QuizPage /> },
       { path: "resources", element: <ResourcesPage /> },
+      { path: "teachers", element: <TeacherPortalPage /> },
+      { path: "teachers/auth/callback", element: <TeacherAuthCallbackPage /> },
       { path: "chat", element: <ChatPage /> },
       { path: "about", element: <AboutPage /> },
+      { path: "resource-submit", element: <ResourceSubmitPage /> },
+      { path: "resource-portal", element: <ResourcePortalPage /> },
       { path: "scholarship-submit", element: <ScholarshipSubmitPage /> },
       { path: "scholarship-portal", element: <ScholarshipPortalPage /> }
     ]

@@ -30,7 +30,10 @@ All events include `language` when available.
 | `resource_section_jump` | Jump to Resources section | `section_id`, `resource_type`, `language` |
 | `resource_search` | Search in resources | `resource_type`, `query`, `results_count`, `language` |
 | `resource_filter_apply` | Resource filters change | `resource_type`, `filter_keys`, `results_count`, `language` |
-| `resource_click` | Resource item clicked | `resource_type`, `resource_id`, `resource_title`, `language` |
+| `teacher_sign_in` | Teacher signs in | `method`, `language` |
+| `teacher_sign_up` | Teacher creates an account | `method`, `language` |
+| `teacher_onboarding_complete` | Teacher finishes school profile | `school_name`, `language` |
+| `teacher_download` | Teacher downloads a classroom file | `resource_id`, `resource_title`, `language` |
 | `outbound_click` | External link click | `outbound_url`, `outbound_domain`, `resource_type`, `resource_id`, `resource_title`, `career_id`, `career_slug`, `career_title`, `language` |
 | `ai_chat_open` | AI Chat view loaded | `language` |
 | `ai_chat_message_sent` | User sends message | `message_length`, `language` |

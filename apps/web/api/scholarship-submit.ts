@@ -1,6 +1,12 @@
 export const config = { runtime: "edge" }
 
+import { corsHeaders, jsonResponse } from "../server/cms"
+import { insertResourceSubmission } from "../server/submissions"
+
 type SubmissionPayload = {
+  resource_type_slug?: string
+  resource_type_id?: string
+  destination?: "public_hub" | "teacher_portal"
   name?: string
   summary?: string
   description?: string
@@ -9,6 +15,7 @@ type SubmissionPayload = {
   region?: string
   deadline?: string
   link?: string
+  file_url?: string
   current_stage?: string[]
   funding_type?: string
   location_scope?: string
@@ -20,68 +27,61 @@ type SubmissionPayload = {
   notes?: string
 }
 
-const CORS_HEADERS: Record<string, string> = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type"
-}
-
-function json(body: unknown, status: number) {
-  return new Response(JSON.stringify(body), {
-    status,
-    headers: { "Content-Type": "application/json", ...CORS_HEADERS }
-  })
-}
+const CORS = corsHeaders("POST, OPTIONS")
 
 export default async function handler(request: Request) {
   if (request.method === "OPTIONS") {
-    return new Response(null, { status: 204, headers: CORS_HEADERS })
+    return new Response(null, { status: 204, headers: CORS })
   }
 
   if (request.method !== "POST") {
-    return json({ error: "Method not allowed" }, 405)
-  }
-
-  const supabaseUrl = process.env.SUPABASE_URL
-  const supabaseKey = process.env.SUPABASE_SERVICE_KEY
-
-  if (!supabaseUrl || !supabaseKey) {
-    return json({ error: "Server configuration error" }, 500)
+    return jsonResponse({ error: "Method not allowed" }, 405, CORS)
   }
 
   let payload: SubmissionPayload
   try {
     payload = (await request.json()) as SubmissionPayload
   } catch {
-    return json({ error: "Invalid JSON body" }, 400)
+    return jsonResponse({ error: "Invalid JSON body" }, 400, CORS)
   }
 
-  // Validate required fields
+  const destination = payload.destination === "teacher_portal" ? "teacher_portal" : "public_hub"
   const errors: string[] = []
   if (!payload.name?.trim()) errors.push("name is required")
-  if (!payload.link?.trim()) errors.push("link is required")
   if (!payload.submitter_name?.trim()) errors.push("submitter_name is required")
   if (!payload.submitter_email?.trim()) errors.push("submitter_email is required")
-
-  // Basic email format check
   if (payload.submitter_email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(payload.submitter_email)) {
     errors.push("submitter_email is not a valid email")
   }
 
-  // Basic URL format check
-  if (payload.link) {
+  const link = payload.link?.trim() || ""
+  const fileUrl = payload.file_url?.trim() || ""
+  if (!link && !(destination === "teacher_portal" && fileUrl)) {
+    errors.push("link is required")
+  }
+  if (link) {
     try {
-      new URL(payload.link)
+      new URL(link)
     } catch {
       errors.push("link must be a valid URL")
     }
   }
-
-  if (errors.length > 0) {
-    return json({ error: "Validation failed", details: errors }, 400)
+  if (fileUrl) {
+    try {
+      new URL(fileUrl)
+    } catch {
+      errors.push("file_url must be a valid URL")
+    }
   }
 
-  const row = {
+  if (errors.length > 0) {
+    return jsonResponse({ error: "Validation failed", details: errors }, 400, CORS)
+  }
+
+  const result = await insertResourceSubmission({
+    resource_type_slug: payload.resource_type_slug?.trim() || "scholarships",
+    resource_type_id: payload.resource_type_id?.trim() || null,
+    destination,
     name: payload.name!.trim(),
     summary: payload.summary?.trim() || null,
     description: payload.description?.trim() || null,
@@ -89,7 +89,8 @@ export default async function handler(request: Request) {
     eligibility: payload.eligibility?.trim() || null,
     region: payload.region?.trim() || null,
     deadline: payload.deadline || null,
-    link: payload.link!.trim(),
+    link: link || null,
+    file_url: fileUrl || null,
     current_stage: payload.current_stage ?? [],
     funding_type: payload.funding_type || null,
     location_scope: payload.location_scope || null,
@@ -98,26 +99,13 @@ export default async function handler(request: Request) {
     submitter_name: payload.submitter_name!.trim(),
     submitter_email: payload.submitter_email!.trim(),
     submitter_organization: payload.submitter_organization?.trim() || null,
-    notes: payload.notes?.trim() || null,
-    status: "pending"
-  }
-
-  const response = await fetch(`${supabaseUrl}/rest/v1/scholarship_submissions`, {
-    method: "POST",
-    headers: {
-      apikey: supabaseKey,
-      Authorization: `Bearer ${supabaseKey}`,
-      "Content-Type": "application/json",
-      Prefer: "return=representation"
-    },
-    body: JSON.stringify(row)
+    notes: payload.notes?.trim() || null
   })
 
-  if (!response.ok) {
-    const text = await response.text()
-    console.error("Supabase insert error:", text)
-    return json({ error: "Failed to save submission" }, 502)
+  if (!result.ok) {
+    console.error("Supabase insert error:", result.error)
+    return jsonResponse({ error: "Failed to save submission" }, 502, CORS)
   }
 
-  return json({ success: true, message: "Scholarship submitted successfully" }, 201)
+  return jsonResponse({ success: true, message: "Resource submitted successfully" }, 201, CORS)
 }

@@ -35,9 +35,13 @@ export function AppShell() {
         case location.pathname === "/about":
           return t(language, "page.title.about")
         case location.pathname === "/scholarship-submit":
-          return t(language, "page.title.scholarshipSubmit")
+        case location.pathname === "/resource-submit":
+          return t(language, "page.title.resourceSubmit")
         case location.pathname === "/scholarship-portal":
-          return t(language, "page.title.scholarshipPortal")
+        case location.pathname === "/resource-portal":
+          return t(language, "page.title.resourcePortal")
+        case location.pathname.startsWith("/teachers"):
+          return t(language, "page.title.teachers")
         default:
           return t(language, "app.title")
       }
@@ -68,9 +72,13 @@ export function AppShell() {
         case location.pathname === "/about":
           return "about"
         case location.pathname === "/scholarship-submit":
-          return "scholarship-submit"
+        case location.pathname === "/resource-submit":
+          return "resource-submit"
         case location.pathname === "/scholarship-portal":
-          return "scholarship-portal"
+        case location.pathname === "/resource-portal":
+          return "resource-portal"
+        case location.pathname.startsWith("/teachers"):
+          return "teachers"
         default:
           return "other"
       }
