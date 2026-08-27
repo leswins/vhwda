@@ -136,6 +136,10 @@ export function TeacherPortalPage() {
       setFormError(t(language, "teacherPortal.validation.passwordMatch"))
       return
     }
+    if (mode === "signup" && password.length < 6) {
+      setFormError(t(language, "teacherPortal.validation.passwordLength"))
+      return
+    }
     if (mode === "signin") {
       const ok = await signIn(email.trim(), password)
       if (ok) trackEvent("teacher_sign_in", { method: "password", language })
@@ -200,13 +204,25 @@ export function TeacherPortalPage() {
     }
   }
 
-  const authError =
-    formError ||
-    (error === "not_configured"
-      ? t(language, "teacherPortal.notConfigured")
+  const authError = formError
+    ? formError
+    : error === "not_configured"
+      ? null
       : error === "profile_save_failed"
         ? t(language, "teacherPortal.profile.error")
-        : error)
+        : error === "invalid_credentials"
+          ? t(language, "teacherPortal.error.invalidCredentials")
+          : error === "email_not_confirmed"
+            ? t(language, "teacherPortal.error.emailNotConfirmed")
+            : error === "already_registered"
+              ? t(language, "teacherPortal.error.alreadyRegistered")
+              : error === "weak_password"
+                ? t(language, "teacherPortal.error.weakPassword")
+                : error === "signup_disabled"
+                  ? t(language, "teacherPortal.error.signupDisabled")
+                  : error === "auth_failed"
+                    ? t(language, "teacherPortal.error.authFailed")
+                    : error
 
   return (
     <>
@@ -226,13 +242,14 @@ export function TeacherPortalPage() {
         <div className="mx-auto max-w-2xl">
           {!initialized ? (
             <p className="text-muted">{t(language, "teacherPortal.loading")}</p>
-          ) : !configured ? (
-            <div className="space-y-4 border-[0.5px] border-foreground p-6">
-              <h2 className="text-h4 font-bold text-foreground">{t(language, "teacherPortal.notConfigured.title")}</h2>
-              <p className="text-body-base text-muted">{t(language, "teacherPortal.notConfigured")}</p>
-            </div>
           ) : !user ? (
             <div className="space-y-6">
+              {!configured ? (
+                <div className="space-y-2 border-[0.5px] border-foreground p-4">
+                  <h2 className="text-h4 font-bold text-foreground">{t(language, "teacherPortal.notConfigured.title")}</h2>
+                  <p className="text-body-base text-muted">{t(language, "teacherPortal.notConfigured")}</p>
+                </div>
+              ) : null}
               <div className="flex gap-2">
                 <button
                   type="button"
@@ -276,6 +293,7 @@ export function TeacherPortalPage() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     className={FORM_INPUT_CLASS}
+                    disabled={!configured || loading}
                   />
                 </div>
                 <div>
@@ -287,6 +305,7 @@ export function TeacherPortalPage() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     className={FORM_INPUT_CLASS}
+                    disabled={!configured || loading}
                   />
                 </div>
                 {mode === "signup" ? (
@@ -299,6 +318,7 @@ export function TeacherPortalPage() {
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       className={FORM_INPUT_CLASS}
+                      disabled={!configured || loading}
                     />
                   </div>
                 ) : null}
@@ -306,7 +326,7 @@ export function TeacherPortalPage() {
                 {needsConfirmation ? (
                   <p className="text-body-sm text-foreground">{t(language, "teacherPortal.checkEmail")}</p>
                 ) : null}
-                <Button type="submit" variant="dark" size="lg" disabled={loading} className="w-full !rounded-none">
+                <Button type="submit" variant="dark" size="lg" disabled={!configured || loading} className="w-full !rounded-none">
                   {loading
                     ? t(language, "teacherPortal.submitting")
                     : mode === "signin"
@@ -321,7 +341,7 @@ export function TeacherPortalPage() {
                 <div className="h-[0.5px] flex-1 bg-foreground" />
               </div>
 
-              <Button type="button" variant="outline" size="lg" disabled={loading} onClick={handleGoogle} className="w-full !rounded-none">
+              <Button type="button" variant="outline" size="lg" disabled={!configured || loading} onClick={handleGoogle} className="w-full !rounded-none">
                 <GoogleMark />
                 {t(language, "teacherPortal.continueGoogle")}
               </Button>

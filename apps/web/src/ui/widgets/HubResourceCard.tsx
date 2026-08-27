@@ -61,7 +61,7 @@ export function HubResourceCard({ language, resource, accent = "green", typeSlug
           {resource.tags.map((tag) => (
             <span
               key={tag}
-              className="inline-flex items-center gap-1 rounded-md bg-surface2 px-2 py-1 text-xs text-foreground"
+              className="inline-flex items-center gap-1 rounded-none bg-surface2 px-2 py-1 text-xs text-foreground"
             >
               {tag}
             </span>

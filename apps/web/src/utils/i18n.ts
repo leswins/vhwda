@@ -852,6 +852,10 @@ const dict: Dictionary = {
   "resourceForm.success.another": { en: "Submit another resource", es: "Enviar otro recurso" },
   "resourceForm.validation.nameRequired": { en: "Name is required", es: "El nombre es obligatorio" },
   "resourceForm.validation.typeRequired": { en: "Choose a resource type", es: "Elige un tipo de recurso" },
+  "resourceForm.error": {
+    en: "Something went wrong. Please try again in a moment.",
+    es: "Algo salió mal. Inténtalo de nuevo en un momento."
+  },
 
   "resourcePortal.title": { en: "Resource review portal", es: "Portal de revisión de recursos" },
   "resourcePortal.subtitle": {
@@ -867,7 +871,19 @@ const dict: Dictionary = {
   "resourcePortal.tab.downloads": { en: "Teacher downloads", es: "Descargas de docentes" },
   "resourcePortal.filter.allTypes": { en: "All types", es: "Todos los tipos" },
   "resourcePortal.detail.type": { en: "Resource type", es: "Tipo de recurso" },
+  "resourcePortal.confirmApprove": {
+    en: "Approve this resource? It will be added to Sanity and can appear on the public hub or teacher library.",
+    es: "¿Aprobar este recurso? Se agregará a Sanity y podrá aparecer en el centro público o en la biblioteca para docentes."
+  },
+  "resourcePortal.confirmDecline": { en: "Are you sure you want to decline this resource?", es: "¿Está seguro de que desea rechazar este recurso?" },
+  "resourcePortal.approveSuccess": { en: "Resource approved and added to Sanity.", es: "Recurso aprobado y agregado a Sanity." },
+  "resourcePortal.declineSuccess": { en: "Resource declined.", es: "Recurso rechazado." },
+  "resourcePortal.reviewError": { en: "Failed to process review. Please try again.", es: "Error al procesar la revisión. Inténtelo de nuevo." },
   "resourcePortal.downloads.empty": { en: "No teacher downloads recorded yet.", es: "Aún no hay descargas de docentes registradas." },
+  "resourcePortal.downloads.notConfigured": {
+    en: "Download analytics are not available yet. Apply the teacher portal database migration to start recording downloads.",
+    es: "Las analíticas de descargas aún no están disponibles. Aplica la migración de la base de datos del portal para docentes para empezar a registrar descargas."
+  },
   "resourcePortal.downloads.when": { en: "Date", es: "Fecha" },
   "resourcePortal.downloads.teacher": { en: "Teacher", es: "Docente" },
   "resourcePortal.downloads.school": { en: "School", es: "Escuela" },
@@ -910,7 +926,14 @@ const dict: Dictionary = {
   "teacherPortal.role.other": { en: "Other", es: "Otro" },
   "teacherPortal.validation.credentials": { en: "Email and password are required", es: "El correo y la contraseña son obligatorios" },
   "teacherPortal.validation.passwordMatch": { en: "Passwords do not match", es: "Las contraseñas no coinciden" },
+  "teacherPortal.validation.passwordLength": { en: "Password must be at least 6 characters", es: "La contraseña debe tener al menos 6 caracteres" },
   "teacherPortal.validation.profile": { en: "Name, school, and purpose are required", es: "El nombre, la escuela y el propósito son obligatorios" },
+  "teacherPortal.error.invalidCredentials": { en: "Email or password is incorrect.", es: "El correo o la contraseña son incorrectos." },
+  "teacherPortal.error.emailNotConfirmed": { en: "Confirm your email, then sign in again.", es: "Confirma tu correo y vuelve a iniciar sesión." },
+  "teacherPortal.error.alreadyRegistered": { en: "An account with this email already exists. Sign in instead.", es: "Ya existe una cuenta con este correo. Inicia sesión." },
+  "teacherPortal.error.weakPassword": { en: "Choose a stronger password (at least 6 characters).", es: "Elige una contraseña más segura (al menos 6 caracteres)." },
+  "teacherPortal.error.signupDisabled": { en: "Account creation is not enabled yet. Please try again later.", es: "La creación de cuentas aún no está habilitada. Inténtalo más tarde." },
+  "teacherPortal.error.authFailed": { en: "Could not sign in. Please try again.", es: "No se pudo iniciar sesión. Inténtalo de nuevo." },
   "teacherPortal.onboarding.title": { en: "Tell us about your school", es: "Cuéntanos sobre tu escuela" },
   "teacherPortal.onboarding.subtitle": {
     en: "This helps VHWDA understand who is using classroom materials and which schools they reach.",

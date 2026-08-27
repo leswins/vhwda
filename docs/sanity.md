@@ -55,7 +55,7 @@ Configure a Sanity webhook (Sanity Manage -> API -> Webhooks):
 
 External stakeholders submit resources via `/resource-submit` (legacy `/scholarship-submit` still works). The internal team reviews submissions at `/resource-portal` (legacy `/scholarship-portal`). Approved items are created in Sanity automatically.
 
-Resource types are managed in Sanity (`resourceType` documents). Adding a type in Studio creates a new hub section and a new option on the submission form without a frontend code change.
+Resource types are managed in Sanity (`resourceType` documents). Adding a type in Studio creates a new hub section and a new option on the submission form without a frontend code change. Public hub listings for generic types query Sanity by `resourceType.slug`, so new types work even before the frontend is redeployed.
 
 ### How it works
 1. **Form** (`/resource-submit`) — public, no links from the main site. Share the URL directly. Submitters pick a type (scholarship, internship, grant, organization, classroom material, or any type added in Sanity).

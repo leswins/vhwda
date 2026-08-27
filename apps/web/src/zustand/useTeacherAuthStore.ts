@@ -40,6 +40,16 @@ async function loadProfile(accessToken: string): Promise<TeacherProfile | null> 
   return payload.profile ?? null
 }
 
+function mapAuthError(message: string) {
+  const value = message.toLowerCase()
+  if (value.includes("invalid login") || value.includes("invalid credentials")) return "invalid_credentials"
+  if (value.includes("email not confirmed")) return "email_not_confirmed"
+  if (value.includes("already registered") || value.includes("already been registered")) return "already_registered"
+  if (value.includes("password") && (value.includes("6") || value.includes("least"))) return "weak_password"
+  if (value.includes("signups not allowed") || value.includes("signup is disabled")) return "signup_disabled"
+  return "auth_failed"
+}
+
 export const useTeacherAuthStore = create<State>((set, get) => ({
   initialized: false,
   configured: false,
@@ -95,7 +105,7 @@ export const useTeacherAuthStore = create<State>((set, get) => ({
     }
     const { error } = await client.auth.signInWithPassword({ email, password })
     if (error) {
-      set({ loading: false, error: error.message })
+      set({ loading: false, error: mapAuthError(error.message) })
       return false
     }
     const { data } = await client.auth.getSession()
@@ -124,7 +134,7 @@ export const useTeacherAuthStore = create<State>((set, get) => ({
       }
     })
     if (error) {
-      set({ loading: false, error: error.message })
+      set({ loading: false, error: mapAuthError(error.message) })
       return { ok: false }
     }
     const needsConfirmation = Boolean(data.user) && !data.session
@@ -156,7 +166,7 @@ export const useTeacherAuthStore = create<State>((set, get) => ({
       }
     })
     if (error) {
-      set({ loading: false, error: error.message })
+      set({ loading: false, error: mapAuthError(error.message) })
       return false
     }
     return true

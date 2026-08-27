@@ -10,6 +10,7 @@ import {
   getResourceTypeLabel,
   type ResourceType
 } from "../sanity/queries/resourceTypes"
+import { canChooseResourceDestination, destinationForAudience } from "../lib/resourceDestination"
 
 const STAGE_OPTIONS = [
   { value: "high_school", key: "scholarshipForm.stage.highSchool" as const },
@@ -145,8 +146,15 @@ export function ResourceSubmitPage() {
       const formTypes = all.filter((type) => type.showInSubmissionForm !== false)
       setTypes(formTypes)
       setForm((prev) => {
-        if (formTypes.some((type) => type.slug === prev.resource_type_slug)) return prev
-        return { ...prev, resource_type_slug: formTypes[0]?.slug ?? "scholarships" }
+        const slug = formTypes.some((type) => type.slug === prev.resource_type_slug)
+          ? prev.resource_type_slug
+          : (formTypes[0]?.slug ?? "scholarships")
+        const nextType = formTypes.find((type) => type.slug === slug)
+        return {
+          ...prev,
+          resource_type_slug: slug,
+          destination: destinationForAudience(nextType?.audience, prev.destination)
+        }
       })
     })
     return () => {
@@ -160,7 +168,7 @@ export function ResourceSubmitPage() {
   )
 
   const showScholarshipFields = selectedType?.sourceKind === "scholarship"
-  const canChooseDestination = selectedType?.audience === "both" || selectedType?.allowFileAttachment
+  const canChooseDestination = canChooseResourceDestination(selectedType?.audience)
   const showFileField =
     form.destination === "teacher_portal" || Boolean(selectedType?.allowFileAttachment)
 
@@ -177,14 +185,18 @@ export function ResourceSubmitPage() {
 
   function handleTypeChange(slug: string) {
     const nextType = types.find((type) => type.slug === slug)
-    const nextDestination =
-      nextType?.audience === "teacherPortal"
-        ? "teacher_portal"
-        : nextType?.audience === "publicHub"
-          ? "public_hub"
-          : form.destination
-    updateField("resource_type_slug", slug)
-    setForm((prev) => ({ ...prev, resource_type_slug: slug, destination: nextDestination }))
+    setForm((prev) => ({
+      ...prev,
+      resource_type_slug: slug,
+      destination: destinationForAudience(nextType?.audience, prev.destination)
+    }))
+    if (errors.resource_type_slug) {
+      setErrors((prev) => {
+        const next = { ...prev }
+        delete next.resource_type_slug
+        return next
+      })
+    }
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -219,9 +231,11 @@ export function ResourceSubmitPage() {
   }
 
   function handleReset() {
+    const firstType = types[0]
     setForm({
       ...INITIAL_FORM,
-      resource_type_slug: types[0]?.slug ?? "scholarships"
+      resource_type_slug: firstType?.slug ?? "scholarships",
+      destination: destinationForAudience(firstType?.audience, "public_hub")
     })
     setErrors({})
     setSubmitted(false)
@@ -558,7 +572,7 @@ export function ResourceSubmitPage() {
 
           {submitError && (
             <div className="rounded-none bg-accentOrange/10 border-[0.5px] border-accentOrange px-4 py-3">
-              <p className="text-body-sm text-foreground">{t(language, "scholarshipForm.error")}</p>
+              <p className="text-body-sm text-foreground">{t(language, "resourceForm.error")}</p>
             </div>
           )}
 

@@ -41,7 +41,7 @@ export function HubResourceList({ language, resourceType, searchQuery, onCountCh
     async function load() {
       try {
         setLoading(true)
-        const data = await fetchHubResources(resourceType._id)
+        const data = await fetchHubResources(resourceType.slug)
         if (!cancelled) setAllResources(data)
       } catch (err) {
         if (!cancelled) {
@@ -55,7 +55,7 @@ export function HubResourceList({ language, resourceType, searchQuery, onCountCh
     return () => {
       cancelled = true
     }
-  }, [language, resourceType._id])
+  }, [language, resourceType.slug])
 
   if (loading) {
     return <p className="text-muted">{t(language, "resources.generic.loading")}</p>

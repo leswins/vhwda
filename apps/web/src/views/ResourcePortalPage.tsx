@@ -5,6 +5,7 @@ import type { Language } from "../utils/i18n"
 import { PageHead } from "../ui/PageHead"
 import { Button } from "../ui/components/Button"
 import { cx } from "../ui/forms/fields"
+import { fetchResourceTypes, getResourceTypeLabel } from "../sanity/queries/resourceTypes"
 
 type Submission = {
   id: string
@@ -125,11 +126,13 @@ function SubmissionCard({
   submission,
   language,
   password,
+  typeLabel,
   onReviewComplete
 }: {
   submission: Submission
   language: Language
   password: string
+  typeLabel?: string
   onReviewComplete: () => void
 }) {
   const [expanded, setExpanded] = useState(false)
@@ -138,7 +141,7 @@ function SubmissionCard({
 
   async function handleReview(action: "approve" | "decline") {
     const confirmKey =
-      action === "approve" ? "scholarshipPortal.confirmApprove" : "scholarshipPortal.confirmDecline"
+      action === "approve" ? "resourcePortal.confirmApprove" : "resourcePortal.confirmDecline"
     if (!window.confirm(t(language, confirmKey))) return
 
     setReviewing(true)
@@ -160,11 +163,11 @@ function SubmissionCard({
       }
 
       const successKey =
-        action === "approve" ? "scholarshipPortal.approveSuccess" : "scholarshipPortal.declineSuccess"
+        action === "approve" ? "resourcePortal.approveSuccess" : "resourcePortal.declineSuccess"
       setReviewMessage({ type: "success", text: t(language, successKey) })
       setTimeout(onReviewComplete, 1000)
     } catch {
-      setReviewMessage({ type: "error", text: t(language, "scholarshipPortal.reviewError") })
+      setReviewMessage({ type: "error", text: t(language, "resourcePortal.reviewError") })
     } finally {
       setReviewing(false)
     }
@@ -179,7 +182,7 @@ function SubmissionCard({
             <StatusBadge status={submission.status} language={language} />
             {submission.resource_type_slug ? (
               <span className="inline-flex items-center rounded-none bg-surface2 px-2 py-0.5 text-xs font-semibold uppercase tracking-[0.08em] text-foreground">
-                {submission.resource_type_slug}
+                {typeLabel || submission.resource_type_slug}
               </span>
             ) : null}
           </div>
@@ -203,7 +206,7 @@ function SubmissionCard({
       {expanded && (
         <div className="mt-5 space-y-5">
           <dl className="space-y-3 rounded-none bg-surface1 p-4">
-            <DetailRow label={t(language, "resourcePortal.detail.type")} value={submission.resource_type_slug} />
+            <DetailRow label={t(language, "resourcePortal.detail.type")} value={typeLabel || submission.resource_type_slug} />
             <DetailRow
               label={t(language, "resourceForm.field.destination")}
               value={
@@ -301,7 +304,7 @@ function SubmissionCard({
                 size="sm"
                 disabled={reviewing}
                 onClick={() => handleReview("approve")}
-                className="!rounded-none !bg-[rgb(var(--color-accent-green))] !text-foreground hover:!opacity-90"
+                className="!rounded-none !bg-accentGreen !text-foreground hover:!opacity-90"
               >
                 {t(language, "scholarshipPortal.approve")}
               </Button>
@@ -324,10 +327,14 @@ export function ResourcePortalPage() {
   const [passwordInput, setPasswordInput] = useState("")
   const [submissions, setSubmissions] = useState<Submission[]>([])
   const [downloads, setDownloads] = useState<DownloadRow[]>([])
+  const [downloadsConfigured, setDownloadsConfigured] = useState(true)
   const [loading, setLoading] = useState(false)
+  const [loginSubmitting, setLoginSubmitting] = useState(false)
   const [loadError, setLoadError] = useState(false)
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all")
   const [tab, setTab] = useState<PortalTab>("submissions")
+  const [typeLabels, setTypeLabels] = useState<Record<string, string>>({})
+  const [typeFilter, setTypeFilter] = useState("all")
 
   const fetchSubmissions = useCallback(async (pw: string, filter?: StatusFilter) => {
     setLoading(true)
@@ -357,9 +364,13 @@ export function ResourcePortalPage() {
     const response = await fetch("/api/teacher-downloads", {
       headers: { "x-portal-password": pw }
     })
-    if (!response.ok) return
-    const data = (await response.json()) as { downloads?: DownloadRow[] }
+    if (!response.ok) {
+      setDownloadsConfigured(false)
+      return
+    }
+    const data = (await response.json()) as { downloads?: DownloadRow[]; configured?: boolean }
     setDownloads(data.downloads ?? [])
+    setDownloadsConfigured(data.configured !== false)
   }, [])
 
   useEffect(() => {
@@ -371,20 +382,53 @@ export function ResourcePortalPage() {
   }, [])
 
   useEffect(() => {
+    let cancelled = false
+    fetchResourceTypes().then((types) => {
+      if (cancelled) return
+      const next: Record<string, string> = {}
+      for (const type of types) {
+        next[type.slug] = getResourceTypeLabel(language, type)
+      }
+      setTypeLabels(next)
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [language])
+
+  useEffect(() => {
     if (authenticated && password) {
       fetchSubmissions(password, statusFilter)
       fetchDownloads(password)
     }
   }, [statusFilter, authenticated, password, fetchSubmissions, fetchDownloads])
 
-  function handleLogin(e: React.FormEvent) {
+  async function handleLogin(e: React.FormEvent) {
     e.preventDefault()
     setLoginError(false)
     const pw = passwordInput.trim()
     if (!pw) return
-    setPassword(pw)
-    sessionStorage.setItem("scholarship_portal_pw", pw)
-    setAuthenticated(true)
+    setLoginSubmitting(true)
+    try {
+      const response = await fetch("/api/scholarship-submissions", {
+        headers: { "x-portal-password": pw }
+      })
+      if (response.status === 401) {
+        setLoginError(true)
+        return
+      }
+      if (!response.ok) throw new Error("Failed to fetch")
+      const data = (await response.json()) as Submission[]
+      setSubmissions(data)
+      setPassword(pw)
+      sessionStorage.setItem("scholarship_portal_pw", pw)
+      setAuthenticated(true)
+      void fetchDownloads(pw)
+    } catch {
+      setLoginError(true)
+    } finally {
+      setLoginSubmitting(false)
+    }
   }
 
   function handleLogout() {
@@ -401,7 +445,6 @@ export function ResourcePortalPage() {
     return slugs.sort()
   }, [submissions])
 
-  const [typeFilter, setTypeFilter] = useState("all")
   const visibleSubmissions = submissions.filter((row) =>
     typeFilter === "all" ? true : (row.resource_type_slug || "scholarships") === typeFilter
   )
@@ -439,8 +482,8 @@ export function ResourcePortalPage() {
                 autoFocus
               />
               {loginError && <p className="text-body-sm text-accentOrange">{t(language, "scholarshipPortal.login.error")}</p>}
-              <Button type="submit" variant="dark" size="lg" className="w-full !rounded-none">
-                {t(language, "scholarshipPortal.login.submit")}
+              <Button type="submit" variant="dark" size="lg" disabled={loginSubmitting} className="w-full !rounded-none">
+                {loginSubmitting ? t(language, "scholarshipPortal.loading") : t(language, "scholarshipPortal.login.submit")}
               </Button>
             </form>
           </div>
@@ -516,7 +559,7 @@ export function ResourcePortalPage() {
                     <option value="all">{t(language, "resourcePortal.filter.allTypes")}</option>
                     {typeOptions.map((slug) => (
                       <option key={slug} value={slug}>
-                        {slug}
+                        {typeLabels[slug] || slug}
                       </option>
                     ))}
                   </select>
@@ -541,6 +584,7 @@ export function ResourcePortalPage() {
                     submission={submission}
                     language={language}
                     password={password}
+                    typeLabel={typeLabels[submission.resource_type_slug || "scholarships"]}
                     onReviewComplete={() => fetchSubmissions(password, statusFilter)}
                   />
                 ))}
@@ -550,7 +594,9 @@ export function ResourcePortalPage() {
         </>
       ) : (
         <div className="min-h-[100vh] px-5 py-5 lg:px-fluid-50 lg:py-8">
-          {downloads.length === 0 ? (
+          {!downloadsConfigured ? (
+            <p className="text-body-base text-muted py-10 text-center">{t(language, "resourcePortal.downloads.notConfigured")}</p>
+          ) : downloads.length === 0 ? (
             <p className="text-body-base text-muted py-10 text-center">{t(language, "resourcePortal.downloads.empty")}</p>
           ) : (
             <div className="overflow-x-auto">

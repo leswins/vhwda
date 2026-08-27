@@ -1,7 +1,35 @@
 export const config = { runtime: "edge" }
 
-import { corsHeaders, jsonResponse } from "../server/cms"
+import { corsHeaders, jsonResponse, sanityQuery } from "../server/cms"
 import { insertResourceSubmission } from "../server/submissions"
+
+type ResourceDestination = "public_hub" | "teacher_portal"
+
+function destinationForAudience(
+  audience: string | undefined,
+  requested: ResourceDestination
+): ResourceDestination {
+  if (audience === "teacherPortal") return "teacher_portal"
+  if (audience === "publicHub") return "public_hub"
+  return requested
+}
+
+const FALLBACK_AUDIENCE: Record<string, string> = {
+  scholarships: "publicHub",
+  organizations: "publicHub",
+  schools: "publicHub",
+  internships: "publicHub",
+  grants: "publicHub",
+  "teacher-materials": "teacherPortal"
+}
+
+async function resolveDestination(slug: string, requested: ResourceDestination): Promise<ResourceDestination> {
+  const fromCms = await sanityQuery<{ audience?: string }>(
+    `*[_type == "resourceType" && slug == $slug][0]{ audience }`,
+    { slug }
+  )
+  return destinationForAudience(fromCms?.audience || FALLBACK_AUDIENCE[slug], requested)
+}
 
 type SubmissionPayload = {
   resource_type_slug?: string
@@ -45,7 +73,11 @@ export default async function handler(request: Request) {
     return jsonResponse({ error: "Invalid JSON body" }, 400, CORS)
   }
 
-  const destination = payload.destination === "teacher_portal" ? "teacher_portal" : "public_hub"
+  const slug = payload.resource_type_slug?.trim() || "scholarships"
+  const destination = await resolveDestination(
+    slug,
+    payload.destination === "teacher_portal" ? "teacher_portal" : "public_hub"
+  )
   const errors: string[] = []
   if (!payload.name?.trim()) errors.push("name is required")
   if (!payload.submitter_name?.trim()) errors.push("submitter_name is required")
@@ -79,7 +111,7 @@ export default async function handler(request: Request) {
   }
 
   const result = await insertResourceSubmission({
-    resource_type_slug: payload.resource_type_slug?.trim() || "scholarships",
+    resource_type_slug: slug,
     resource_type_id: payload.resource_type_id?.trim() || null,
     destination,
     name: payload.name!.trim(),

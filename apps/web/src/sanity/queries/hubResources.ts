@@ -22,7 +22,7 @@ export type HubResource = {
 }
 
 export const HUB_RESOURCES_QUERY = /* groq */ `
-*[_type == "resource" && published != false && resourceType._ref == $typeId] | order(title.en asc) {
+*[_type == "resource" && published != false && resourceType->slug == $slug] | order(title.en asc) {
   _id,
   title,
   summary,
@@ -86,9 +86,9 @@ export const TEACHER_RESOURCE_FILE_QUERY = /* groq */ `
 }
 `
 
-export async function fetchHubResources(typeId: string): Promise<HubResource[]> {
-  if (!typeId || typeId.startsWith("fallback.")) return []
-  return await sanityClient.fetch<HubResource[]>(HUB_RESOURCES_QUERY, { typeId })
+export async function fetchHubResources(slug: string): Promise<HubResource[]> {
+  if (!slug) return []
+  return await sanityClient.fetch<HubResource[]>(HUB_RESOURCES_QUERY, { slug })
 }
 
 export async function fetchTeacherResources(): Promise<HubResource[]> {

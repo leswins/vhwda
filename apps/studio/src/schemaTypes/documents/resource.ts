@@ -14,7 +14,8 @@ export const resource = defineType({
       title: "Resource type",
       type: "reference",
       to: [{ type: "resourceType" }],
-      description: "Required for new hub and teacher-library entries. Legacy documents can be assigned a type later."
+      description: "Required. This is what places the item in a hub or teacher-library section.",
+      validation: (r) => r.required()
     }),
     defineField({
       name: "title",

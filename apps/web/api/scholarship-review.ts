@@ -30,6 +30,28 @@ type SanityResourceType = {
   audience?: string
 }
 
+function splitList(value?: string | null) {
+  if (!value) return []
+  return value
+    .split(/[,;\n]/)
+    .map((item) => item.trim())
+    .filter(Boolean)
+}
+
+async function resolveCareerAreaRefs(careerAreasText?: string | null) {
+  const names = splitList(careerAreasText)
+  if (names.length === 0) return []
+  const matches = await sanityQuery<Array<{ _id: string }>>(
+    `*[_type == "careerCategory" && title in $names]{ _id }`,
+    { names }
+  )
+  return (matches ?? []).map((row) => ({
+    _type: "reference",
+    _ref: row._id,
+    _key: crypto.randomUUID().slice(0, 12)
+  }))
+}
+
 async function resolveResourceType(submission: ResourceSubmission): Promise<SanityResourceType | null> {
   if (submission.resource_type_id && !submission.resource_type_id.startsWith("fallback.")) {
     const byId = await sanityQuery<SanityResourceType>(
@@ -70,6 +92,8 @@ async function createSanityDocument(submission: ResourceSubmission) {
     if (submission.funding_type) doc.fundingType = submission.funding_type
     if (submission.location_scope) doc.locationScope = submission.location_scope
     if (submission.badges?.length) doc.badges = submission.badges
+    const careerAreas = await resolveCareerAreaRefs(submission.career_areas_text)
+    if (careerAreas.length) doc.careerAreas = careerAreas
 
     const result = await sanityMutate([{ create: doc }])
     return result.ok ? { id: docId } : null
@@ -85,6 +109,8 @@ async function createSanityDocument(submission: ResourceSubmission) {
     if (submission.institution) doc.institution = submission.institution
     if (submission.description) doc.description = localizedText(submission.description)
     if (submission.location_scope) doc.geographicFocus = submission.location_scope
+    const careerAreas = await resolveCareerAreaRefs(submission.career_areas_text)
+    if (careerAreas.length) doc.careerAreas = careerAreas
 
     const result = await sanityMutate([{ create: doc }])
     return result.ok ? { id: docId } : null
@@ -107,7 +133,11 @@ async function createSanityDocument(submission: ResourceSubmission) {
   if (submission.deadline) doc.deadline = submission.deadline
   if (submission.link) doc.link = submission.link
   if (submission.file_url) doc.fileUrl = submission.file_url
-  if (submission.badges?.length) doc.tags = submission.badges
+  const tags = [
+    ...(submission.badges ?? []),
+    ...splitList(submission.career_areas_text)
+  ].filter((value, index, all) => all.indexOf(value) === index)
+  if (tags.length) doc.tags = tags
 
   const result = await sanityMutate([{ create: doc }])
   return result.ok ? { id: docId } : null

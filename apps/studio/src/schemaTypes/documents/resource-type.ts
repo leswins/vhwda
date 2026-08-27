@@ -28,6 +28,18 @@ export const resourceType = defineType({
             invert: false
           })
           .error("Use lowercase letters, numbers, and hyphens only")
+          .custom(async (slug, context) => {
+            if (!slug || typeof slug !== "string") return true
+            const getClient = context.getClient
+            if (!getClient) return true
+            const client = getClient({ apiVersion: "2025-11-01" })
+            const id = (context.document?._id || "").replace(/^drafts\./, "")
+            const existing = await client.fetch<string | null>(
+              `*[_type == "resourceType" && slug == $slug && !(_id in [$id, $draftId])][0]._id`,
+              { slug, id, draftId: `drafts.${id}` }
+            )
+            return existing ? "This slug is already used by another resource type" : true
+          })
     }),
     defineField({
       name: "description",
