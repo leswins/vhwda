@@ -10,6 +10,7 @@ This repo is a monorepo containing:
 1. Editors manage content in Sanity Studio.
 2. Web app queries content from the Sanity Content Lake (public dataset).
 3. Web UI renders localized fields (EN/ES) with defined fallback behavior.
+4. Ask AI (`/chat`) calls `/api/chat`. Gemini runs only on the server with `GEMINI_API_KEY` (not a `VITE_` key).
 
 ```mermaid
 flowchart TD

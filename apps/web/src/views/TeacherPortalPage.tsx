@@ -18,6 +18,7 @@ import { getLocalizedString, getLocalizedText } from "../sanity/queries/careers"
 import { ResourceTypeIcon } from "../ui/widgets/ResourceTypeIcon"
 import { accentBg } from "../lib/resourceTypePresentation"
 import { trackEvent } from "../utils/analytics"
+import { DEMO_TEACHER_RESOURCES, isDemoResourcesEnabled } from "../data/demoResources"
 
 function GoogleMark() {
   return (
@@ -75,6 +76,8 @@ export function TeacherPortalPage() {
   const [libraryLoading, setLibraryLoading] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
   const [downloadError, setDownloadError] = useState<string | null>(null)
+  const [demoLibrary, setDemoLibrary] = useState(false)
+  const showDemoEntry = isDemoResourcesEnabled()
 
   useEffect(() => {
     void initialize()
@@ -92,17 +95,25 @@ export function TeacherPortalPage() {
   }, [profile])
 
   const onboarded = Boolean(profile?.onboarding_completed_at)
+  const showLibrary = demoLibrary || Boolean(user && onboarded)
 
   useEffect(() => {
-    if (!onboarded) return
+    if (!showLibrary) return
     let cancelled = false
     async function load() {
       setLibraryLoading(true)
       try {
-        const [nextResources, nextTypes] = await Promise.all([fetchTeacherResources(), fetchResourceTypes()])
+        const [nextRaw, nextTypes] = await Promise.all([fetchTeacherResources(), fetchResourceTypes()])
         if (cancelled) return
+        const nextResources =
+          nextRaw.length > 0 ? nextRaw : isDemoResourcesEnabled() ? DEMO_TEACHER_RESOURCES : []
         setResources(nextResources)
         setTypes(nextTypes.filter(isTeacherPortalType))
+      } catch {
+        if (cancelled) return
+        if (isDemoResourcesEnabled()) {
+          setResources(DEMO_TEACHER_RESOURCES)
+        }
       } finally {
         if (!cancelled) setLibraryLoading(false)
       }
@@ -111,7 +122,7 @@ export function TeacherPortalPage() {
     return () => {
       cancelled = true
     }
-  }, [onboarded])
+  }, [showLibrary])
 
   const filteredResources = useMemo(() => {
     const query = searchQuery.trim().toLowerCase()
@@ -178,9 +189,19 @@ export function TeacherPortalPage() {
   }
 
   async function handleDownload(resource: HubResource) {
-    if (!session) return
     setDownloadError(null)
     const title = getLocalizedString(language, resource.title) ?? resource._id
+    const demoUrl = resource.fileUrl || resource.link
+    if (demoLibrary || resource._id.startsWith("demo.")) {
+      if (!demoUrl) {
+        setDownloadError(t(language, "teacherPortal.download.error"))
+        return
+      }
+      trackEvent("teacher_download", { resource_id: resource._id, resource_title: title, language, demo: true })
+      window.open(demoUrl, "_blank", "noopener,noreferrer")
+      return
+    }
+    if (!session) return
     try {
       const response = await fetch("/api/teacher-download", {
         method: "POST",
@@ -242,7 +263,7 @@ export function TeacherPortalPage() {
         <div className="mx-auto max-w-2xl">
           {!initialized ? (
             <p className="text-muted">{t(language, "teacherPortal.loading")}</p>
-          ) : !user ? (
+          ) : !user && !demoLibrary ? (
             <div className="space-y-6">
               {!configured ? (
                 <div className="space-y-2 border-[0.5px] border-foreground p-4">
@@ -345,8 +366,13 @@ export function TeacherPortalPage() {
                 <GoogleMark />
                 {t(language, "teacherPortal.continueGoogle")}
               </Button>
+              {showDemoEntry ? (
+                <Button type="button" variant="outline" size="lg" onClick={() => setDemoLibrary(true)} className="w-full !rounded-none">
+                  {t(language, "teacherPortal.demo.preview")}
+                </Button>
+              ) : null}
             </div>
-          ) : !onboarded ? (
+          ) : user && !onboarded && !demoLibrary ? (
             <form onSubmit={handleProfile} className="space-y-6">
               <div>
                 <h2 className="text-h4 font-bold text-foreground">{t(language, "teacherPortal.onboarding.title")}</h2>
@@ -394,16 +420,29 @@ export function TeacherPortalPage() {
             </form>
           ) : (
             <div className="space-y-8">
+              {demoLibrary ? (
+                <div className="border-[0.5px] border-foreground p-4">
+                  <p className="text-body-sm text-muted">{t(language, "teacherPortal.demo.banner")}</p>
+                </div>
+              ) : null}
               <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                 <div>
                   <h2 className="text-h4 font-bold text-foreground">{t(language, "teacherPortal.library.title")}</h2>
                   <p className="mt-2 text-body-base text-muted">
-                    {t(language, "teacherPortal.library.greeting").replace("{name}", profile?.full_name || user.email || "")}
+                    {demoLibrary
+                      ? t(language, "teacherPortal.demo.greeting")
+                      : t(language, "teacherPortal.library.greeting").replace("{name}", profile?.full_name || user?.email || "")}
                   </p>
                 </div>
-                <Button type="button" variant="outline" size="sm" onClick={() => void signOut()} className="!rounded-none">
-                  {t(language, "teacherPortal.signOut")}
-                </Button>
+                {demoLibrary && !user ? (
+                  <Button type="button" variant="outline" size="sm" onClick={() => setDemoLibrary(false)} className="!rounded-none">
+                    {t(language, "teacherPortal.demo.exit")}
+                  </Button>
+                ) : (
+                  <Button type="button" variant="outline" size="sm" onClick={() => void signOut()} className="!rounded-none">
+                    {t(language, "teacherPortal.signOut")}
+                  </Button>
+                )}
               </div>
 
               {types.length > 0 ? (

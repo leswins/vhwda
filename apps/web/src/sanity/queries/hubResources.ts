@@ -14,6 +14,7 @@ export type HubResource = {
   tags?: string[]
   hasFile?: boolean
   fileLabel?: string
+  fileUrl?: string
   resourceType?: {
     _id: string
     slug?: string

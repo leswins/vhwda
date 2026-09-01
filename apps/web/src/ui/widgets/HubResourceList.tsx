@@ -6,6 +6,7 @@ import type { HubResource } from "../../sanity/queries/hubResources"
 import type { ResourceType } from "../../sanity/queries/resourceTypes"
 import { getLocalizedString, getLocalizedText } from "../../sanity/queries/careers"
 import { HubResourceCard } from "./HubResourceCard"
+import { getDemoHubResources, isDemoResourcesEnabled } from "../../data/demoResources"
 
 type Props = {
   language: Language
@@ -41,9 +42,11 @@ export function HubResourceList({ language, resourceType, searchQuery, onCountCh
       try {
         setLoading(true)
         const data = await fetchHubResources(resourceType.slug)
-        if (!cancelled) setAllResources(data)
+        const next =
+          data.length > 0 ? data : isDemoResourcesEnabled() ? getDemoHubResources(resourceType.slug) : []
+        if (!cancelled) setAllResources(next)
       } catch {
-        if (!cancelled) setAllResources([])
+        if (!cancelled) setAllResources(isDemoResourcesEnabled() ? getDemoHubResources(resourceType.slug) : [])
       } finally {
         if (!cancelled) setLoading(false)
       }

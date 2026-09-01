@@ -19,6 +19,7 @@ Monorepo for the VHWDA Health Careers Catalog web app and Sanity Studio.
    - `apps/web/.env` with `VITE_SANITY_PROJECT_ID=j0yc55ca` and `VITE_SANITY_DATASET=production`
    - For quiz result emails, also configure `RESEND_API_KEY` and `QUIZ_RESULTS_EMAIL_FROM` in the web app deployment environment
    - For resource submissions and the educator portal, see `docs/sanity.md` (Supabase + portal password + optional `SUPABASE_ANON_KEY`)
+   - For Ask AI, set **server-only** `GEMINI_API_KEY` (never `VITE_GEMINI_API_KEY` — Vite public keys are shipped to the browser)
 3. Run dev:
    - `pnpm dev`
 

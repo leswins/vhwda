@@ -953,7 +953,14 @@ const dict: Dictionary = {
   "teacherPortal.download": { en: "Download", es: "Descargar" },
   "teacherPortal.download.error": { en: "Download failed. Please try again.", es: "La descarga falló. Inténtalo de nuevo." },
   "teacherPortal.callback.working": { en: "Finishing sign-in…", es: "Completando el inicio de sesión…" },
-  "teacherPortal.callback.error": { en: "Could not complete sign-in. Return to the educator portal and try again.", es: "No se pudo completar el inicio de sesión. Vuelve al portal para educadores e inténtalo de nuevo." }
+  "teacherPortal.callback.error": { en: "Could not complete sign-in. Return to the educator portal and try again.", es: "No se pudo completar el inicio de sesión. Vuelve al portal para educadores e inténtalo de nuevo." },
+  "teacherPortal.demo.banner": {
+    en: "Demo library — sample classroom files for this walkthrough. Live teacher sign-in will replace this after Supabase Auth is fully enabled.",
+    es: "Biblioteca de demostración: archivos de aula de muestra para este recorrido. El inicio de sesión real de docentes lo reemplazará cuando Auth de Supabase esté habilitado."
+  },
+  "teacherPortal.demo.preview": { en: "Preview sample library", es: "Ver biblioteca de muestra" },
+  "teacherPortal.demo.exit": { en: "Exit demo library", es: "Salir de la biblioteca de demostración" },
+  "teacherPortal.demo.greeting": { en: "Signed in as Demo Teacher", es: "Sesión de demostración: Docente de muestra" }
 }
 
 export type TranslationKey = keyof typeof dict
