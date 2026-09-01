@@ -15,6 +15,11 @@
 1. Pull updated variables from Figma via the documented MCP workflow.
 2. Update `apps/web/src/styles/tokens.css` and verify key screens visually.
 
+## Ask AI (Gemini)
+- Browser code must never read `VITE_GEMINI_API_KEY` or any other Gemini secret.
+- Set `GEMINI_API_KEY` on Vercel (Production + Preview). After a deploy that includes `/api/chat`, delete `VITE_GEMINI_API_KEY` so it cannot leak into a client bundle again.
+- Local Ask AI requires `vercel dev` from `apps/web` (Vite alone does not serve `/api/*`).
+
 ## Deploy checklist (suggested)
 - `pnpm lint`
 - `pnpm typecheck`
