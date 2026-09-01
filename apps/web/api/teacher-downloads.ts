@@ -1,7 +1,6 @@
 export const config = { runtime: "edge" }
 
-import { authorizePortal, corsHeaders, jsonResponse } from "../server/cms"
-import { listResourceSubmissions } from "../server/submissions"
+import { authorizePortal, corsHeaders, jsonResponse, supabaseRest } from "../server/cms"
 
 const CORS = corsHeaders("GET, OPTIONS", "x-portal-password")
 
@@ -19,7 +18,15 @@ export default async function handler(request: Request) {
   }
 
   const url = new URL(request.url)
-  const statusFilter = url.searchParams.get("status") ?? undefined
-  const data = await listResourceSubmissions(statusFilter)
-  return jsonResponse(data, 200, CORS)
+  const limit = Math.min(Number(url.searchParams.get("limit") || "200"), 500)
+
+  const result = await supabaseRest<unknown[]>(
+    `teacher_downloads?order=downloaded_at.desc&limit=${limit}`
+  )
+
+  if (!result.ok) {
+    return jsonResponse({ downloads: [], configured: false }, 200, CORS)
+  }
+
+  return jsonResponse({ downloads: result.data ?? [], configured: true }, 200, CORS)
 }

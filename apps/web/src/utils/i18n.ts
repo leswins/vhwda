@@ -804,7 +804,167 @@ const dict: Dictionary = {
   "scholarshipPortal.detail.sanityId": { en: "Sanity Document ID", es: "ID de Documento Sanity" },
   "scholarshipPortal.logout": { en: "Logout", es: "Cerrar sesión" },
   "scholarshipPortal.count": { en: "{count} submissions", es: "{count} envíos" },
-  "scholarshipPortal.countSingular": { en: "1 submission", es: "1 envío" }
+  "scholarshipPortal.countSingular": { en: "1 submission", es: "1 envío" },
+
+  "resources.metaDescription": {
+    en: "Access scholarships, internships, grants, professional organizations, and training programs to support your healthcare career journey in Virginia.",
+    es: "Accede a becas, pasantías, subvenciones, organizaciones profesionales y programas de formación para apoyar tu carrera de salud en Virginia."
+  },
+  "resources.teacherCta": { en: "Educator resource library", es: "Biblioteca para educadores" },
+  "resources.countFound": { en: "{count} Found", es: "{count} encontrados" },
+  "resources.generic.loading": { en: "Loading resources…", es: "Cargando recursos…" },
+  "resources.generic.loadFailed": { en: "Failed to load resources", es: "No se pudieron cargar los recursos" },
+  "resources.generic.loadErrorPrefix": { en: "Error loading resources:", es: "Error al cargar los recursos:" },
+  "resources.generic.noneFound": { en: "No resources found.", es: "No se encontraron recursos." },
+  "resources.generic.demoNotice": {
+    en: "Sample listings for this demonstration. They are not published in the CMS and can be turned off with ?demo=0 or Site Settings → Demo sample resources.",
+    es: "Listados de muestra para esta demostración. No están publicados en el CMS y se pueden desactivar con ?demo=0 o en Configuración del sitio → Recursos de muestra."
+  },
+
+  "page.title.resourceSubmit": { en: "Submit a Resource", es: "Enviar un recurso" },
+  "page.title.resourcePortal": { en: "Resource Review Portal", es: "Portal de revisión de recursos" },
+  "page.title.teachers": { en: "Educator Resources", es: "Recursos para educadores" },
+  "header.menu.teachers": { en: "For Educators", es: "Para educadores" },
+  "footer.link.teachers": { en: "Educator resources", es: "Recursos para educadores" },
+
+  "resourceForm.title": { en: "Submit a Resource", es: "Enviar un recurso" },
+  "resourceForm.subtitle": {
+    en: "Share a scholarship, internship, grant, organization, or classroom resource for VHWDA to review.",
+    es: "Comparte una beca, pasantía, subvención, organización o recurso para el aula para que VHWDA lo revise."
+  },
+  "resourceForm.section.type": { en: "Resource type", es: "Tipo de recurso" },
+  "resourceForm.section.details": { en: "Resource details", es: "Detalles del recurso" },
+  "resourceForm.field.type": { en: "Type", es: "Tipo" },
+  "resourceForm.field.name": { en: "Name", es: "Nombre" },
+  "resourceForm.field.name.placeholder": { en: "e.g. Summer Health Internship", es: "ej. Pasantía de salud de verano" },
+  "resourceForm.field.destination": { en: "Where should this appear?", es: "¿Dónde debe aparecer?" },
+  "resourceForm.destination.publicHub": { en: "Public Resources Hub", es: "Centro público de recursos" },
+  "resourceForm.destination.teacherPortal": { en: "Teacher resource library", es: "Biblioteca para docentes" },
+  "resourceForm.field.fileUrl": { en: "File URL", es: "URL del archivo" },
+  "resourceForm.field.fileUrl.placeholder": { en: "https://example.com/lesson-plan.pdf", es: "https://ejemplo.com/plan-de-leccion.pdf" },
+  "resourceForm.field.fileUrl.help": {
+    en: "Optional. Use a shareable file link if this belongs in the teacher library. The team can also upload files in Sanity after review.",
+    es: "Opcional. Usa un enlace compartible si pertenece a la biblioteca para docentes. El equipo también puede subir archivos en Sanity después de la revisión."
+  },
+  "resourceForm.submit": { en: "Submit resource", es: "Enviar recurso" },
+  "resourceForm.submitting": { en: "Submitting…", es: "Enviando…" },
+  "resourceForm.success.title": { en: "Resource submitted", es: "Recurso enviado" },
+  "resourceForm.success.message": {
+    en: "Thank you. The VHWDA team will review this submission and publish it if it is a fit.",
+    es: "Gracias. El equipo de VHWDA revisará este envío y lo publicará si es adecuado."
+  },
+  "resourceForm.success.another": { en: "Submit another resource", es: "Enviar otro recurso" },
+  "resourceForm.validation.nameRequired": { en: "Name is required", es: "El nombre es obligatorio" },
+  "resourceForm.validation.typeRequired": { en: "Choose a resource type", es: "Elige un tipo de recurso" },
+  "resourceForm.error": {
+    en: "Something went wrong. Please try again in a moment.",
+    es: "Algo salió mal. Inténtalo de nuevo en un momento."
+  },
+
+  "resourcePortal.title": { en: "Resource review portal", es: "Portal de revisión de recursos" },
+  "resourcePortal.subtitle": {
+    en: "Review submitted resources and see which classroom materials teachers are downloading.",
+    es: "Revisa los recursos enviados y consulta qué materiales del aula están descargando los docentes."
+  },
+  "resourcePortal.login.title": { en: "Resource portal", es: "Portal de recursos" },
+  "resourcePortal.login.description": {
+    en: "Enter the review password to approve submissions and view download activity.",
+    es: "Ingresa la contraseña de revisión para aprobar envíos y ver la actividad de descargas."
+  },
+  "resourcePortal.tab.submissions": { en: "Submissions", es: "Envíos" },
+  "resourcePortal.tab.downloads": { en: "Teacher downloads", es: "Descargas de docentes" },
+  "resourcePortal.filter.allTypes": { en: "All types", es: "Todos los tipos" },
+  "resourcePortal.detail.type": { en: "Resource type", es: "Tipo de recurso" },
+  "resourcePortal.confirmApprove": {
+    en: "Approve this resource? It will be added to Sanity and can appear on the public hub or teacher library.",
+    es: "¿Aprobar este recurso? Se agregará a Sanity y podrá aparecer en el centro público o en la biblioteca para docentes."
+  },
+  "resourcePortal.confirmDecline": { en: "Are you sure you want to decline this resource?", es: "¿Está seguro de que desea rechazar este recurso?" },
+  "resourcePortal.approveSuccess": { en: "Resource approved and added to Sanity.", es: "Recurso aprobado y agregado a Sanity." },
+  "resourcePortal.declineSuccess": { en: "Resource declined.", es: "Recurso rechazado." },
+  "resourcePortal.reviewError": { en: "Failed to process review. Please try again.", es: "Error al procesar la revisión. Inténtelo de nuevo." },
+  "resourcePortal.downloads.empty": { en: "No teacher downloads recorded yet.", es: "Aún no hay descargas de docentes registradas." },
+  "resourcePortal.downloads.notConfigured": {
+    en: "Download analytics are not available yet. Apply the teacher portal database migration to start recording downloads.",
+    es: "Las analíticas de descargas aún no están disponibles. Aplica la migración de la base de datos del portal para docentes para empezar a registrar descargas."
+  },
+  "resourcePortal.downloads.when": { en: "Date", es: "Fecha" },
+  "resourcePortal.downloads.teacher": { en: "Teacher", es: "Docente" },
+  "resourcePortal.downloads.school": { en: "School", es: "Escuela" },
+  "resourcePortal.downloads.resource": { en: "Resource", es: "Recurso" },
+
+  "teacherPortal.kicker": { en: "For educators", es: "Para educadores" },
+  "teacherPortal.title": { en: "Educator resource library", es: "Biblioteca de recursos para educadores" },
+  "teacherPortal.subtitle": {
+    en: "Sign in to download classroom materials that introduce health careers to students across Virginia.",
+    es: "Inicia sesión para descargar materiales de aula que presentan las carreras de salud a estudiantes de Virginia."
+  },
+  "teacherPortal.loading": { en: "Loading educator portal…", es: "Cargando el portal para educadores…" },
+  "teacherPortal.notConfigured.title": { en: "Portal setup in progress", es: "Configuración del portal en curso" },
+  "teacherPortal.notConfigured": {
+    en: "The educator portal needs Supabase authentication keys (URL and anon key) on the server before teachers can sign in with email and password.",
+    es: "El portal para educadores necesita las claves de autenticación de Supabase (URL y clave anónima) en el servidor antes de que los docentes puedan iniciar sesión con correo y contraseña."
+  },
+  "teacherPortal.signIn": { en: "Sign in", es: "Iniciar sesión" },
+  "teacherPortal.createAccount": { en: "Create account", es: "Crear cuenta" },
+  "teacherPortal.signOut": { en: "Sign out", es: "Cerrar sesión" },
+  "teacherPortal.submitting": { en: "Please wait…", es: "Espera un momento…" },
+  "teacherPortal.or": { en: "or", es: "o" },
+  "teacherPortal.continueGoogle": { en: "Continue with Google", es: "Continuar con Google" },
+  "teacherPortal.checkEmail": {
+    en: "Check your email to confirm your account, then return here to sign in.",
+    es: "Revisa tu correo para confirmar la cuenta y vuelve aquí para iniciar sesión."
+  },
+  "teacherPortal.field.email": { en: "Email", es: "Correo electrónico" },
+  "teacherPortal.field.password": { en: "Password", es: "Contraseña" },
+  "teacherPortal.field.confirmPassword": { en: "Confirm password", es: "Confirmar contraseña" },
+  "teacherPortal.field.fullName": { en: "Full name", es: "Nombre completo" },
+  "teacherPortal.field.school": { en: "School", es: "Escuela" },
+  "teacherPortal.field.district": { en: "School division / district", es: "División escolar / distrito" },
+  "teacherPortal.field.role": { en: "Role", es: "Rol" },
+  "teacherPortal.field.grades": { en: "Grade levels", es: "Grados" },
+  "teacherPortal.field.purpose": { en: "Why do you need these materials?", es: "¿Por qué necesitas estos materiales?" },
+  "teacherPortal.role.teacher": { en: "Teacher", es: "Docente" },
+  "teacherPortal.role.counselor": { en: "Counselor", es: "Consejero" },
+  "teacherPortal.role.administrator": { en: "Administrator", es: "Administrador" },
+  "teacherPortal.role.other": { en: "Other", es: "Otro" },
+  "teacherPortal.validation.credentials": { en: "Email and password are required", es: "El correo y la contraseña son obligatorios" },
+  "teacherPortal.validation.passwordMatch": { en: "Passwords do not match", es: "Las contraseñas no coinciden" },
+  "teacherPortal.validation.passwordLength": { en: "Password must be at least 6 characters", es: "La contraseña debe tener al menos 6 caracteres" },
+  "teacherPortal.validation.profile": { en: "Name, school, and purpose are required", es: "El nombre, la escuela y el propósito son obligatorios" },
+  "teacherPortal.error.invalidCredentials": { en: "Email or password is incorrect.", es: "El correo o la contraseña son incorrectos." },
+  "teacherPortal.error.emailNotConfirmed": { en: "Confirm your email, then sign in again.", es: "Confirma tu correo y vuelve a iniciar sesión." },
+  "teacherPortal.error.alreadyRegistered": { en: "An account with this email already exists. Sign in instead.", es: "Ya existe una cuenta con este correo. Inicia sesión." },
+  "teacherPortal.error.weakPassword": { en: "Choose a stronger password (at least 6 characters).", es: "Elige una contraseña más segura (al menos 6 caracteres)." },
+  "teacherPortal.error.signupDisabled": { en: "Account creation is not enabled yet. Please try again later.", es: "La creación de cuentas aún no está habilitada. Inténtalo más tarde." },
+  "teacherPortal.error.authFailed": { en: "Could not sign in. Please try again.", es: "No se pudo iniciar sesión. Inténtalo de nuevo." },
+  "teacherPortal.onboarding.title": { en: "Tell us about your school", es: "Cuéntanos sobre tu escuela" },
+  "teacherPortal.onboarding.subtitle": {
+    en: "This helps VHWDA understand who is using classroom materials and which schools they reach.",
+    es: "Esto ayuda a VHWDA a entender quién usa los materiales de aula y a qué escuelas llegan."
+  },
+  "teacherPortal.onboarding.submit": { en: "Continue to library", es: "Continuar a la biblioteca" },
+  "teacherPortal.profile.error": { en: "Could not save your profile. Please try again.", es: "No se pudo guardar tu perfil. Inténtalo de nuevo." },
+  "teacherPortal.library.title": { en: "Classroom materials", es: "Materiales para el aula" },
+  "teacherPortal.library.greeting": { en: "Signed in as {name}", es: "Sesión iniciada como {name}" },
+  "teacherPortal.library.search": { en: "Search materials", es: "Buscar materiales" },
+  "teacherPortal.library.loading": { en: "Loading materials…", es: "Cargando materiales…" },
+  "teacherPortal.library.empty": {
+    en: "No classroom materials are published yet. Check back soon, or ask the VHWDA team to add files in Sanity.",
+    es: "Aún no hay materiales de aula publicados. Vuelve pronto o pide al equipo de VHWDA que agregue archivos en Sanity."
+  },
+  "teacherPortal.library.publicHubPrompt": { en: "Looking for scholarships and programs?", es: "¿Buscas becas y programas?" },
+  "teacherPortal.download": { en: "Download", es: "Descargar" },
+  "teacherPortal.download.error": { en: "Download failed. Please try again.", es: "La descarga falló. Inténtalo de nuevo." },
+  "teacherPortal.callback.working": { en: "Finishing sign-in…", es: "Completando el inicio de sesión…" },
+  "teacherPortal.callback.error": { en: "Could not complete sign-in. Return to the educator portal and try again.", es: "No se pudo completar el inicio de sesión. Vuelve al portal para educadores e inténtalo de nuevo." },
+  "teacherPortal.demo.banner": {
+    en: "Sample classroom files for this demonstration. They are not stored in Sanity. Turn them off with ?demo=0 or Site Settings → Demo sample resources.",
+    es: "Archivos de aula de muestra para esta demostración. No están en Sanity. Desactívalos con ?demo=0 o en Configuración del sitio → Recursos de muestra."
+  },
+  "teacherPortal.demo.preview": { en: "Preview sample library", es: "Ver biblioteca de muestra" },
+  "teacherPortal.demo.exit": { en: "Exit demo library", es: "Salir de la biblioteca de demostración" },
+  "teacherPortal.demo.greeting": { en: "Signed in as Demo Teacher", es: "Sesión de demostración: Docente de muestra" }
 }
 
 export type TranslationKey = keyof typeof dict

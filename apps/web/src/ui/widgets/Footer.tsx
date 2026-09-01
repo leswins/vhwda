@@ -10,7 +10,8 @@ export function Footer() {
     { key: "footer.link.home", to: "/" },
     { key: "footer.link.browseCareers", to: "/careers" },
     { key: "footer.link.findCareer", to: "/quiz" },
-    { key: "footer.link.resources", to: "/resources" }
+    { key: "footer.link.resources", to: "/resources" },
+    { key: "footer.link.teachers", to: "/teachers" }
   ]
 
   const helpLinks: Array<{ key: TranslationKey; to?: string; href?: string }> = [

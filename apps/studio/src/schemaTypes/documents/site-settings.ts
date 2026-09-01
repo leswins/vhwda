@@ -47,6 +47,13 @@ export const siteSettings = defineType({
           title: "Scholarships Enabled",
           type: "boolean",
           description: "Controls whether the Scholarships & Financial Aid section is live on the website."
+        }),
+        defineField({
+          name: "demoResourcesEnabled",
+          title: "Demo sample resources",
+          type: "boolean",
+          description:
+            "When on, the live site fills empty internships, grants, and teacher-library sections with sample listings. Turn off after the client demo. Does not publish documents to the CMS. A URL of ?demo=1 or ?demo=0 overrides this for the current browser tab."
         })
       ]
     }),

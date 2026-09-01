@@ -4,6 +4,7 @@ import { educationalInstitution } from "./documents/educational-institution"
 import { program } from "./documents/program"
 import { scholarship } from "./documents/scholarship"
 import { resource } from "./documents/resource"
+import { resourceType } from "./documents/resource-type"
 import { professionalOrganization } from "./documents/professional-organization"
 import { quiz } from "./documents/quiz"
 import { siteSettings } from "./documents/site-settings"
@@ -33,6 +34,7 @@ export const schemaTypes = [
   educationalInstitution,
   program,
   scholarship,
+  resourceType,
   resource,
   professionalOrganization,
   quiz,

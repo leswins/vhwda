@@ -1,302 +1,226 @@
 export const config = { runtime: "edge" }
 
+import {
+  authorizePortal,
+  corsHeaders,
+  jsonResponse,
+  localizedString,
+  localizedText,
+  sanityMutate,
+  sanityQuery,
+  toPortableText
+} from "../server/cms"
+import {
+  fetchResourceSubmission,
+  patchResourceSubmission,
+  type ResourceSubmission
+} from "../server/submissions"
+
 type ReviewPayload = {
   id?: string
   action?: "approve" | "decline"
 }
 
-const CORS_HEADERS: Record<string, string> = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type, x-portal-password"
+const CORS = corsHeaders("POST, OPTIONS", "x-portal-password")
+
+type SanityResourceType = {
+  _id: string
+  slug?: string
+  sourceKind?: string
+  audience?: string
 }
 
-function json(body: unknown, status: number) {
-  return new Response(JSON.stringify(body), {
-    status,
-    headers: { "Content-Type": "application/json", ...CORS_HEADERS }
-  })
+function splitList(value?: string | null) {
+  if (!value) return []
+  return value
+    .split(/[,;\n]/)
+    .map((item) => item.trim())
+    .filter(Boolean)
 }
 
-function authorize(request: Request): boolean {
-  const password = request.headers.get("x-portal-password")
-  const expected = process.env.SCHOLARSHIP_PORTAL_PASSWORD
-  if (!expected) return false
-  return password === expected
-}
-
-/** Convert plain text into a minimal portable-text array (single block). */
-function toPortableText(text: string) {
-  return [
-    {
-      _type: "block",
-      _key: crypto.randomUUID().slice(0, 8),
-      style: "normal",
-      markDefs: [],
-      children: [
-        {
-          _type: "span",
-          _key: crypto.randomUUID().slice(0, 8),
-          text,
-          marks: []
-        }
-      ]
-    }
-  ]
-}
-
-type Submission = {
-  id: string
-  name: string
-  summary: string | null
-  description: string | null
-  institution: string | null
-  eligibility: string | null
-  region: string | null
-  deadline: string | null
-  link: string
-  current_stage: string[]
-  funding_type: string | null
-  location_scope: string | null
-  badges: string[]
-  career_areas_text: string | null
-  status: "pending" | "approved" | "declined"
-  submitted_at: string
-  reviewed_at: string | null
-  sanity_document_id: string | null
-}
-
-async function fetchSubmission(
-  supabaseUrl: string,
-  supabaseKey: string,
-  id: string
-): Promise<Submission | null> {
-  const response = await fetch(
-    `${supabaseUrl}/rest/v1/scholarship_submissions?id=eq.${id}&limit=1`,
-    {
-      headers: {
-        apikey: supabaseKey,
-        Authorization: `Bearer ${supabaseKey}`,
-        "Content-Type": "application/json",
-        Accept: "application/json"
-      }
-    }
+async function resolveCareerAreaRefs(careerAreasText?: string | null) {
+  const names = splitList(careerAreasText)
+  if (names.length === 0) return []
+  const matches = await sanityQuery<Array<{ _id: string }>>(
+    `*[_type == "careerCategory" && title in $names]{ _id }`,
+    { names }
   )
-  if (!response.ok) return null
-  const rows = (await response.json()) as Submission[]
-  return rows[0] ?? null
+  return (matches ?? []).map((row) => ({
+    _type: "reference",
+    _ref: row._id,
+    _key: crypto.randomUUID().slice(0, 12)
+  }))
 }
 
-/**
- * Atomically update a submission row. Returns the updated rows (empty array
- * if no row matched the filters, which signals a lost race).
- *
- * @param extraFilters  Additional PostgREST filters appended to the URL
- *                      (e.g. `&status=eq.pending`) so the PATCH only succeeds
- *                      when the row is still in the expected state.
- */
-async function updateSubmission(
-  supabaseUrl: string,
-  supabaseKey: string,
-  id: string,
-  patch: Record<string, unknown>,
-  extraFilters = ""
-): Promise<Submission[]> {
-  const response = await fetch(
-    `${supabaseUrl}/rest/v1/scholarship_submissions?id=eq.${id}${extraFilters}`,
-    {
-      method: "PATCH",
-      headers: {
-        apikey: supabaseKey,
-        Authorization: `Bearer ${supabaseKey}`,
-        "Content-Type": "application/json",
-        Prefer: "return=representation"
-      },
-      body: JSON.stringify(patch)
-    }
+async function resolveResourceType(submission: ResourceSubmission): Promise<SanityResourceType | null> {
+  if (submission.resource_type_id && !submission.resource_type_id.startsWith("fallback.")) {
+    const byId = await sanityQuery<SanityResourceType>(
+      `*[_type == "resourceType" && _id == $id][0]{ _id, slug, sourceKind, audience }`,
+      { id: submission.resource_type_id }
+    )
+    if (byId?._id) return byId
+  }
+
+  const slug = submission.resource_type_slug || "scholarships"
+  return await sanityQuery<SanityResourceType>(
+    `*[_type == "resourceType" && slug == $slug][0]{ _id, slug, sourceKind, audience }`,
+    { slug }
   )
-  if (!response.ok) return []
-  return (await response.json()) as Submission[]
 }
 
-async function createSanityScholarship(
-  submission: Submission
-): Promise<{ id: string } | null> {
-  const sanityToken = process.env.SANITY_API_TOKEN
-  const projectId = process.env.SANITY_PROJECT_ID || "j0yc55ca"
-  const dataset = process.env.SANITY_DATASET || "production"
-
-  if (!sanityToken) return null
-
+async function createSanityDocument(submission: ResourceSubmission) {
+  const resourceType = await resolveResourceType(submission)
+  const sourceKind = resourceType?.sourceKind || (submission.resource_type_slug === "organizations" ? "professionalOrganization" : "scholarship")
   const docId = crypto.randomUUID()
+
+  if (sourceKind === "scholarship" && submission.destination !== "teacher_portal") {
+    const doc: Record<string, unknown> = {
+      _id: docId,
+      _type: "scholarship",
+      name: submission.name,
+      link: submission.link || "https://vahealthcareers.org/resources"
+    }
+    if (submission.summary) doc.summary = localizedString(submission.summary)
+    if (submission.description) doc.description = localizedText(submission.description)
+    if (submission.institution) doc.institution = submission.institution
+    if (submission.eligibility) {
+      doc.eligibility = { _type: "localizedPortableText", en: toPortableText(submission.eligibility) }
+    }
+    if (submission.region) doc.region = submission.region
+    if (submission.deadline) doc.deadline = submission.deadline
+    if (submission.current_stage?.length) doc.currentStage = submission.current_stage
+    if (submission.funding_type) doc.fundingType = submission.funding_type
+    if (submission.location_scope) doc.locationScope = submission.location_scope
+    if (submission.badges?.length) doc.badges = submission.badges
+    const careerAreas = await resolveCareerAreaRefs(submission.career_areas_text)
+    if (careerAreas.length) doc.careerAreas = careerAreas
+
+    const result = await sanityMutate([{ create: doc }])
+    return result.ok ? { id: docId } : null
+  }
+
+  if (sourceKind === "professionalOrganization" && submission.destination !== "teacher_portal") {
+    const doc: Record<string, unknown> = {
+      _id: docId,
+      _type: "professionalOrganization",
+      name: submission.name
+    }
+    if (submission.link) doc.link = submission.link
+    if (submission.institution) doc.institution = submission.institution
+    if (submission.description) doc.description = localizedText(submission.description)
+    if (submission.location_scope) doc.geographicFocus = submission.location_scope
+    const careerAreas = await resolveCareerAreaRefs(submission.career_areas_text)
+    if (careerAreas.length) doc.careerAreas = careerAreas
+
+    const result = await sanityMutate([{ create: doc }])
+    return result.ok ? { id: docId } : null
+  }
 
   const doc: Record<string, unknown> = {
     _id: docId,
-    _type: "scholarship",
-    name: submission.name,
-    link: submission.link
+    _type: "resource",
+    title: localizedString(submission.name),
+    published: true
   }
-
-  if (submission.summary) {
-    doc.summary = { _type: "localizedString", en: submission.summary }
+  if (resourceType?._id) {
+    doc.resourceType = { _type: "reference", _ref: resourceType._id }
   }
+  if (submission.summary) doc.summary = localizedString(submission.summary)
+  if (submission.description) doc.description = localizedText(submission.description)
+  if (submission.institution) doc.institution = submission.institution
+  if (submission.eligibility) doc.eligibility = localizedText(submission.eligibility)
+  if (submission.region) doc.region = submission.region
+  if (submission.deadline) doc.deadline = submission.deadline
+  if (submission.link) doc.link = submission.link
+  if (submission.file_url) doc.fileUrl = submission.file_url
+  const tags = [
+    ...(submission.badges ?? []),
+    ...splitList(submission.career_areas_text)
+  ].filter((value, index, all) => all.indexOf(value) === index)
+  if (tags.length) doc.tags = tags
 
-  if (submission.description) {
-    doc.description = { _type: "localizedText", en: submission.description }
-  }
-
-  if (submission.institution) {
-    doc.institution = submission.institution
-  }
-
-  if (submission.eligibility) {
-    doc.eligibility = {
-      _type: "localizedPortableText",
-      en: toPortableText(submission.eligibility)
-    }
-  }
-
-  if (submission.region) {
-    doc.region = submission.region
-  }
-
-  if (submission.deadline) {
-    doc.deadline = submission.deadline
-  }
-
-  if (submission.current_stage && submission.current_stage.length > 0) {
-    doc.currentStage = submission.current_stage
-  }
-
-  if (submission.funding_type) {
-    doc.fundingType = submission.funding_type
-  }
-
-  if (submission.location_scope) {
-    doc.locationScope = submission.location_scope
-  }
-
-  if (submission.badges && submission.badges.length > 0) {
-    doc.badges = submission.badges
-  }
-
-  const mutations = [{ create: doc }]
-
-  const response = await fetch(
-    `https://${projectId}.api.sanity.io/v2025-11-01/data/mutate/${dataset}`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${sanityToken}`
-      },
-      body: JSON.stringify({ mutations })
-    }
-  )
-
-  if (!response.ok) {
-    const text = await response.text()
-    console.error("Sanity create error:", text)
-    return null
-  }
-
-  return { id: docId }
+  const result = await sanityMutate([{ create: doc }])
+  return result.ok ? { id: docId } : null
 }
 
 export default async function handler(request: Request) {
   if (request.method === "OPTIONS") {
-    return new Response(null, { status: 204, headers: CORS_HEADERS })
+    return new Response(null, { status: 204, headers: CORS })
   }
 
   if (request.method !== "POST") {
-    return json({ error: "Method not allowed" }, 405)
+    return jsonResponse({ error: "Method not allowed" }, 405, CORS)
   }
 
-  if (!authorize(request)) {
-    return json({ error: "Unauthorized" }, 401)
-  }
-
-  const supabaseUrl = process.env.SUPABASE_URL
-  const supabaseKey = process.env.SUPABASE_SERVICE_KEY
-
-  if (!supabaseUrl || !supabaseKey) {
-    return json({ error: "Server configuration error" }, 500)
+  if (!authorizePortal(request)) {
+    return jsonResponse({ error: "Unauthorized" }, 401, CORS)
   }
 
   let payload: ReviewPayload
   try {
     payload = (await request.json()) as ReviewPayload
   } catch {
-    return json({ error: "Invalid JSON body" }, 400)
+    return jsonResponse({ error: "Invalid JSON body" }, 400, CORS)
   }
 
   if (!payload.id) {
-    return json({ error: "id is required" }, 400)
+    return jsonResponse({ error: "id is required" }, 400, CORS)
   }
 
   if (!payload.action || !["approve", "decline"].includes(payload.action)) {
-    return json({ error: "action must be 'approve' or 'decline'" }, 400)
+    return jsonResponse({ error: "action must be 'approve' or 'decline'" }, 400, CORS)
   }
 
-  // ── Decline flow ────────────────────────────────────────────────
+  const existing = await fetchResourceSubmission(payload.id)
+  if (!existing) {
+    return jsonResponse({ error: "Submission not found" }, 404, CORS)
+  }
+
   if (payload.action === "decline") {
-    // Atomic: only patches if the row is still pending
-    const updated = await updateSubmission(
-      supabaseUrl,
-      supabaseKey,
+    const updated = await patchResourceSubmission(
+      existing.table,
       payload.id,
       { status: "declined", reviewed_at: new Date().toISOString() },
       "&status=eq.pending"
     )
-
     if (updated.length === 0) {
-      // Either not found or already reviewed
-      const existing = await fetchSubmission(supabaseUrl, supabaseKey, payload.id)
-      if (!existing) return json({ error: "Submission not found" }, 404)
-      return json({ error: `Submission already ${existing.status}` }, 409)
+      return jsonResponse({ error: `Submission already ${existing.row.status}` }, 409, CORS)
     }
-
-    return json({ success: true, message: "Scholarship declined" }, 200)
+    return jsonResponse({ success: true, message: "Submission declined" }, 200, CORS)
   }
 
-  // ── Approve flow ───────────────────────────────────────────────
-  // Step 1: Atomically claim the row by moving it to "approved".
-  //         This prevents a second concurrent request from also claiming it.
-  const claimed = await updateSubmission(
-    supabaseUrl,
-    supabaseKey,
+  const claimed = await patchResourceSubmission(
+    existing.table,
     payload.id,
     { status: "approved", reviewed_at: new Date().toISOString() },
     "&status=eq.pending"
   )
 
   if (claimed.length === 0) {
-    const existing = await fetchSubmission(supabaseUrl, supabaseKey, payload.id)
-    if (!existing) return json({ error: "Submission not found" }, 404)
-    return json({ error: `Submission already ${existing.status}` }, 409)
+    return jsonResponse({ error: `Submission already ${existing.row.status}` }, 409, CORS)
   }
 
   const submission = claimed[0]
-
-  // Step 2: Create the Sanity document (only one request can reach here per submission)
-  const sanityResult = await createSanityScholarship(submission)
+  const sanityResult = await createSanityDocument(submission)
   if (!sanityResult) {
-    // Roll back: move row back to pending so it can be retried
-    await updateSubmission(supabaseUrl, supabaseKey, payload.id, {
+    await patchResourceSubmission(existing.table, payload.id, {
       status: "pending",
       reviewed_at: null
     })
-    return json({ error: "Failed to create scholarship in Sanity" }, 502)
+    return jsonResponse({ error: "Failed to create document in Sanity" }, 502, CORS)
   }
 
-  // Step 3: Store the Sanity document ID on the row
-  await updateSubmission(supabaseUrl, supabaseKey, payload.id, {
+  await patchResourceSubmission(existing.table, payload.id, {
     sanity_document_id: sanityResult.id
   })
 
-  return json({
-    success: true,
-    message: "Scholarship approved and added to Sanity",
-    sanity_document_id: sanityResult.id
-  }, 200)
+  return jsonResponse(
+    {
+      success: true,
+      message: "Submission approved and added to Sanity",
+      sanity_document_id: sanityResult.id
+    },
+    200,
+    CORS
+  )
 }

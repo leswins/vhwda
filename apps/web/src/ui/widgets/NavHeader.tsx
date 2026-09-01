@@ -501,6 +501,7 @@ export function NavHeader() {
                 { label: t(language, "header.menu.quiz"), path: "/quiz" },
                 { label: t(language, "header.menu.careers"), path: "/careers" },
                 { label: t(language, "header.menu.resources"), path: "/resources" },
+                { label: t(language, "header.menu.teachers"), path: "/teachers" },
                 { label: t(language, "header.menu.about"), path: "/about" }
               ]
                 .map((item, index, array) => {
