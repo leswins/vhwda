@@ -14,13 +14,15 @@ export default async function handler(request: Request) {
   }
 
   const { supabaseUrl, anonKey } = getSupabaseConfig()
+  const googleAuthEnabled = process.env.TEACHER_GOOGLE_AUTH === "true"
   if (!supabaseUrl || !anonKey) {
-    return jsonResponse({ configured: false }, 200, CORS)
+    return jsonResponse({ configured: false, googleAuthEnabled }, 200, CORS)
   }
 
   return jsonResponse(
     {
       configured: true,
+      googleAuthEnabled,
       supabaseUrl,
       anonKey
     },

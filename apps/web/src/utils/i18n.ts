@@ -816,6 +816,10 @@ const dict: Dictionary = {
   "resources.generic.loadFailed": { en: "Failed to load resources", es: "No se pudieron cargar los recursos" },
   "resources.generic.loadErrorPrefix": { en: "Error loading resources:", es: "Error al cargar los recursos:" },
   "resources.generic.noneFound": { en: "No resources found.", es: "No se encontraron recursos." },
+  "resources.generic.demoNotice": {
+    en: "Sample listings for this demonstration. They are not published in the CMS and can be turned off with ?demo=0 or Site Settings → Demo sample resources.",
+    es: "Listados de muestra para esta demostración. No están publicados en el CMS y se pueden desactivar con ?demo=0 o en Configuración del sitio → Recursos de muestra."
+  },
 
   "page.title.resourceSubmit": { en: "Submit a Resource", es: "Enviar un recurso" },
   "page.title.resourcePortal": { en: "Resource Review Portal", es: "Portal de revisión de recursos" },
@@ -898,8 +902,8 @@ const dict: Dictionary = {
   "teacherPortal.loading": { en: "Loading educator portal…", es: "Cargando el portal para educadores…" },
   "teacherPortal.notConfigured.title": { en: "Portal setup in progress", es: "Configuración del portal en curso" },
   "teacherPortal.notConfigured": {
-    en: "The educator portal needs Supabase authentication keys (URL and anon key) before teachers can sign in. Email/password and Google sign-in will work once those are configured.",
-    es: "El portal para educadores necesita las claves de autenticación de Supabase (URL y clave anónima) antes de que los docentes puedan iniciar sesión. El correo/contraseña y Google funcionarán una vez configurados."
+    en: "The educator portal needs Supabase authentication keys (URL and anon key) on the server before teachers can sign in with email and password.",
+    es: "El portal para educadores necesita las claves de autenticación de Supabase (URL y clave anónima) en el servidor antes de que los docentes puedan iniciar sesión con correo y contraseña."
   },
   "teacherPortal.signIn": { en: "Sign in", es: "Iniciar sesión" },
   "teacherPortal.createAccount": { en: "Create account", es: "Crear cuenta" },
@@ -955,8 +959,8 @@ const dict: Dictionary = {
   "teacherPortal.callback.working": { en: "Finishing sign-in…", es: "Completando el inicio de sesión…" },
   "teacherPortal.callback.error": { en: "Could not complete sign-in. Return to the educator portal and try again.", es: "No se pudo completar el inicio de sesión. Vuelve al portal para educadores e inténtalo de nuevo." },
   "teacherPortal.demo.banner": {
-    en: "Demo library — sample classroom files for this walkthrough. Live teacher sign-in will replace this after Supabase Auth is fully enabled.",
-    es: "Biblioteca de demostración: archivos de aula de muestra para este recorrido. El inicio de sesión real de docentes lo reemplazará cuando Auth de Supabase esté habilitado."
+    en: "Sample classroom files for this demonstration. They are not stored in Sanity. Turn them off with ?demo=0 or Site Settings → Demo sample resources.",
+    es: "Archivos de aula de muestra para esta demostración. No están en Sanity. Desactívalos con ?demo=0 o en Configuración del sitio → Recursos de muestra."
   },
   "teacherPortal.demo.preview": { en: "Preview sample library", es: "Ver biblioteca de muestra" },
   "teacherPortal.demo.exit": { en: "Exit demo library", es: "Salir de la biblioteca de demostración" },

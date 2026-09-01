@@ -75,7 +75,7 @@ Resource types are managed in Sanity (`resourceType` documents). Adding a type i
 - **Supabase**: `resource_submissions`, `teacher_profiles`, and `teacher_downloads` (see `supabase/migrations/20260827_resource_hub_teacher_portal.sql`)
 
 ### Educator portal
-Teachers sign in at `/teachers` with email/password or Google (Supabase Auth). After a short school/purpose form, they can download classroom resources stored as Sanity `resource` documents whose `resourceType.audience` is `teacherPortal` or `both`.
+Teachers sign in at `/teachers` with email/password (Supabase Auth). Google is optional and hidden until `TEACHER_GOOGLE_AUTH=true`. After a short school/purpose form, they can download classroom resources stored as Sanity `resource` documents whose `resourceType.audience` is `teacherPortal` or `both`. When demo samples are on and the CMS library is empty, sample files appear instead.
 
 ### Environment variables
 Set these in Vercel Project Settings → Environment Variables:
@@ -90,7 +90,16 @@ Set these in Vercel Project Settings → Environment Variables:
 
 `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` also work if you prefer Vite-prefixed public values.
 
-For local development, add these to `.env.local` at the repo root and run `vercel dev` from `apps/web`.
+Optional:
+
+| Variable | Description |
+|---|---|
+| `TEACHER_GOOGLE_AUTH` | Set to `true` only after Google OAuth is configured. Until then the Google button is hidden. |
+| `GEMINI_API_KEY` | Server-only Ask AI key. Omit until Google Cloud is restored. |
+
+**Demo sample resources:** do not set `VITE_DEMO_RESOURCES` in Vercel. Toggle samples at runtime with `?demo=1` / `?demo=0` or Sanity Site Settings → Feature Flags → Demo sample resources. See `docs/runbook.md`.
+
+For local development, add these to `.env.local` at the repo root and run `vercel dev` from `apps/web`. Email/password against production Supabase also works on the deployed site once the keys above are set.
 
 ### Seed resource types
 After deploying the Studio schema (`pnpm sanity:deploy`), seed the starting taxonomy:

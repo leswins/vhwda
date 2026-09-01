@@ -1,7 +1,41 @@
 import type { HubResource } from "../sanity/queries/hubResources"
 
-export function isDemoResourcesEnabled() {
+export const DEMO_QUERY_PARAM = "demo"
+export const DEMO_SESSION_KEY = "vhwda.demoResources"
+
+/** Build-time fallback only. Prefer the Sanity flag or `?demo=1` on the live site. */
+export function isBuildTimeDemoResourcesEnabled() {
   return import.meta.env.DEV || import.meta.env.VITE_DEMO_RESOURCES === "true"
+}
+
+export function readDemoUrlOverride(): boolean | null {
+  if (typeof window === "undefined") return null
+  const params = new URLSearchParams(window.location.search)
+  const value = params.get(DEMO_QUERY_PARAM)?.toLowerCase()
+  if (value === "1" || value === "true" || value === "on") {
+    sessionStorage.setItem(DEMO_SESSION_KEY, "1")
+    return true
+  }
+  if (value === "0" || value === "false" || value === "off") {
+    sessionStorage.setItem(DEMO_SESSION_KEY, "0")
+    return false
+  }
+  const stored = sessionStorage.getItem(DEMO_SESSION_KEY)
+  if (stored === "1") return true
+  if (stored === "0") return false
+  return null
+}
+
+export function resolveDemoResourcesEnabled(sanityFlag?: boolean) {
+  const override = readDemoUrlOverride()
+  if (override !== null) return override
+  if (sanityFlag) return true
+  return isBuildTimeDemoResourcesEnabled()
+}
+
+/** @deprecated Use useDemoResourcesEnabled for live-site toggles. */
+export function isDemoResourcesEnabled() {
+  return resolveDemoResourcesEnabled(false)
 }
 
 function text(en: string, es: string) {

@@ -17,6 +17,7 @@ export type TeacherProfile = {
 type State = {
   initialized: boolean
   configured: boolean
+  googleAuthEnabled: boolean
   loading: boolean
   user: User | null
   session: Session | null
@@ -53,6 +54,7 @@ function mapAuthError(message: string) {
 export const useTeacherAuthStore = create<State>((set, get) => ({
   initialized: false,
   configured: false,
+  googleAuthEnabled: false,
   loading: false,
   user: null,
   session: null,
@@ -64,14 +66,15 @@ export const useTeacherAuthStore = create<State>((set, get) => ({
   initialize: async () => {
     if (get().initialized) return
     const config = await getTeacherAuthConfig()
+    const googleAuthEnabled = Boolean(config.googleAuthEnabled)
     if (!config.configured) {
-      set({ initialized: true, configured: false })
+      set({ initialized: true, configured: false, googleAuthEnabled })
       return
     }
 
     const client = await getTeacherClient()
     if (!client) {
-      set({ initialized: true, configured: false })
+      set({ initialized: true, configured: false, googleAuthEnabled })
       return
     }
 
@@ -81,6 +84,7 @@ export const useTeacherAuthStore = create<State>((set, get) => ({
     set({
       initialized: true,
       configured: true,
+      googleAuthEnabled,
       user: session?.user ?? null,
       session,
       profile

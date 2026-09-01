@@ -2,6 +2,7 @@ import { createClient, type Session, type SupabaseClient, type User } from "@sup
 
 export type TeacherAuthConfig = {
   configured: boolean
+  googleAuthEnabled?: boolean
   supabaseUrl?: string
   anonKey?: string
 }

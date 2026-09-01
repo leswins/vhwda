@@ -18,7 +18,8 @@ import { getLocalizedString, getLocalizedText } from "../sanity/queries/careers"
 import { ResourceTypeIcon } from "../ui/widgets/ResourceTypeIcon"
 import { accentBg } from "../lib/resourceTypePresentation"
 import { trackEvent } from "../utils/analytics"
-import { DEMO_TEACHER_RESOURCES, isDemoResourcesEnabled } from "../data/demoResources"
+import { DEMO_TEACHER_RESOURCES } from "../data/demoResources"
+import { useDemoResourcesEnabled } from "../hooks/useDemoResourcesEnabled"
 
 function GoogleMark() {
   return (
@@ -43,6 +44,7 @@ export function TeacherPortalPage() {
   const {
     initialized,
     configured,
+    googleAuthEnabled,
     loading,
     user,
     session,
@@ -77,7 +79,8 @@ export function TeacherPortalPage() {
   const [searchQuery, setSearchQuery] = useState("")
   const [downloadError, setDownloadError] = useState<string | null>(null)
   const [demoLibrary, setDemoLibrary] = useState(false)
-  const showDemoEntry = isDemoResourcesEnabled()
+  const demoEnabled = useDemoResourcesEnabled()
+  const showDemoEntry = Boolean(demoEnabled)
 
   useEffect(() => {
     void initialize()
@@ -98,7 +101,7 @@ export function TeacherPortalPage() {
   const showLibrary = demoLibrary || Boolean(user && onboarded)
 
   useEffect(() => {
-    if (!showLibrary) return
+    if (!showLibrary || demoEnabled === null) return
     let cancelled = false
     async function load() {
       setLibraryLoading(true)
@@ -106,12 +109,12 @@ export function TeacherPortalPage() {
         const [nextRaw, nextTypes] = await Promise.all([fetchTeacherResources(), fetchResourceTypes()])
         if (cancelled) return
         const nextResources =
-          nextRaw.length > 0 ? nextRaw : isDemoResourcesEnabled() ? DEMO_TEACHER_RESOURCES : []
+          nextRaw.length > 0 ? nextRaw : demoEnabled ? DEMO_TEACHER_RESOURCES : []
         setResources(nextResources)
         setTypes(nextTypes.filter(isTeacherPortalType))
       } catch {
         if (cancelled) return
-        if (isDemoResourcesEnabled()) {
+        if (demoEnabled) {
           setResources(DEMO_TEACHER_RESOURCES)
         }
       } finally {
@@ -122,7 +125,7 @@ export function TeacherPortalPage() {
     return () => {
       cancelled = true
     }
-  }, [showLibrary])
+  }, [showLibrary, demoEnabled])
 
   const filteredResources = useMemo(() => {
     const query = searchQuery.trim().toLowerCase()
@@ -356,16 +359,20 @@ export function TeacherPortalPage() {
                 </Button>
               </form>
 
-              <div className="flex items-center gap-3 text-body-sm text-muted">
-                <div className="h-[0.5px] flex-1 bg-foreground" />
-                {t(language, "teacherPortal.or")}
-                <div className="h-[0.5px] flex-1 bg-foreground" />
-              </div>
+              {googleAuthEnabled ? (
+                <>
+                  <div className="flex items-center gap-3 text-body-sm text-muted">
+                    <div className="h-[0.5px] flex-1 bg-foreground" />
+                    {t(language, "teacherPortal.or")}
+                    <div className="h-[0.5px] flex-1 bg-foreground" />
+                  </div>
 
-              <Button type="button" variant="outline" size="lg" disabled={!configured || loading} onClick={handleGoogle} className="w-full !rounded-none">
-                <GoogleMark />
-                {t(language, "teacherPortal.continueGoogle")}
-              </Button>
+                  <Button type="button" variant="outline" size="lg" disabled={!configured || loading} onClick={handleGoogle} className="w-full !rounded-none">
+                    <GoogleMark />
+                    {t(language, "teacherPortal.continueGoogle")}
+                  </Button>
+                </>
+              ) : null}
               {showDemoEntry ? (
                 <Button type="button" variant="outline" size="lg" onClick={() => setDemoLibrary(true)} className="w-full !rounded-none">
                   {t(language, "teacherPortal.demo.preview")}

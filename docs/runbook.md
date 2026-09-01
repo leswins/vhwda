@@ -20,18 +20,40 @@
 - Set `GEMINI_API_KEY` on Vercel (Production + Preview). After a deploy that includes `/api/chat`, delete `VITE_GEMINI_API_KEY` so it cannot leak into a client bundle again.
 - Local Ask AI requires `vercel dev` from `apps/web` (Vite alone does not serve `/api/*`).
 
-## Local client demo (Resources Hub + educator portal)
-The hub/teacher work lives on the `cursor/resources-hub-teacher-portal-4e7e` branch until that PR is merged. For a local walkthrough:
+## Live client demo (Resources Hub + educator portal)
 
-```bash
-git checkout cursor/resources-hub-teacher-portal-4e7e
-pnpm install
-pnpm --filter web dev
-```
+Do **not** use `VITE_DEMO_RESOURCES` on Vercel to turn samples on and off during a meeting. That variable is baked into the Vite client bundle at **build time**. Changing it in Vercel requires a **redeploy**, so it cannot be toggled on the live site mid-demo.
 
-In Vite dev (`import.meta.env.DEV`), internships, grants, and the teacher library show **sample** listings if Sanity has none. On `/teachers`, use **Preview sample library**. These samples are not published to production unless you set `VITE_DEMO_RESOURCES=true` on a build.
+### Toggle sample listings on the live site (no redeploy)
 
-Submit/review (`/resource-submit`, `/resource-portal`) still need `vercel dev` plus Supabase. Scholarships stay behind the Sanity feature flag.
+After this branch is deployed and the Studio schema is published:
+
+1. **Presenter URL (fastest):** open `https://vahealthcareers.org/resources?demo=1`. That sticks for the current browser tab (`?demo=0` turns it off). Internships, grants, and the teacher library fill with samples only when Sanity has no real documents for that type.
+2. **Everyone on the live site:** Sanity → Site Settings → Feature Flags → **Demo sample resources**. Publish, then refresh the website.
+
+Leave `VITE_DEMO_RESOURCES` unset in Vercel. Local `pnpm --filter web dev` still shows samples by default.
+
+### Go-live checklist (Google + Ask AI can wait)
+
+1. Merge and deploy the Resources Hub branch to production.
+2. `pnpm sanity:deploy` then `pnpm --filter studio run seed:resource-types`.
+3. Confirm the Supabase SQL migration is applied (already done if `teacher_profiles` exists).
+4. Vercel **Production** env (no Vite prefix required for APIs):
+   - `SUPABASE_URL`
+   - `SUPABASE_ANON_KEY`
+   - `SUPABASE_SERVICE_KEY`
+   - `SANITY_API_TOKEN`
+   - `SCHOLARSHIP_PORTAL_PASSWORD`
+   - Do **not** set `TEACHER_GOOGLE_AUTH` until Google OAuth is ready (hides the Google button).
+   - Do **not** set `GEMINI_API_KEY` until Ask AI should work.
+5. Supabase Auth:
+   - Authentication → Providers → **Email** enabled.
+   - For a live demo, turn **Confirm email** off so a new account can sign in immediately (turn it back on after the meeting if you want confirmation).
+   - URL configuration: Site URL `https://vahealthcareers.org`
+   - Redirect URLs include `https://vahealthcareers.org/teachers/auth/callback`
+6. Redeploy once after adding the Supabase keys so `/api/teacher-config` returns `configured: true`.
+
+Email/password, submit form, review portal, and hub samples then work on production. Google and Ask AI stay off until those keys exist.
 
 ## Deploy checklist (suggested)
 - `pnpm lint`

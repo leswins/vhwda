@@ -6,7 +6,8 @@ import type { HubResource } from "../../sanity/queries/hubResources"
 import type { ResourceType } from "../../sanity/queries/resourceTypes"
 import { getLocalizedString, getLocalizedText } from "../../sanity/queries/careers"
 import { HubResourceCard } from "./HubResourceCard"
-import { getDemoHubResources, isDemoResourcesEnabled } from "../../data/demoResources"
+import { getDemoHubResources } from "../../data/demoResources"
+import { useDemoResourcesEnabled } from "../../hooks/useDemoResourcesEnabled"
 
 type Props = {
   language: Language
@@ -18,6 +19,8 @@ type Props = {
 export function HubResourceList({ language, resourceType, searchQuery, onCountChange }: Props) {
   const [allResources, setAllResources] = useState<HubResource[]>([])
   const [loading, setLoading] = useState(true)
+  const [usingDemo, setUsingDemo] = useState(false)
+  const demoEnabled = useDemoResourcesEnabled()
 
   const filtered = useMemo(() => {
     const query = searchQuery.trim().toLowerCase()
@@ -37,16 +40,24 @@ export function HubResourceList({ language, resourceType, searchQuery, onCountCh
   }, [filtered.length, onCountChange])
 
   useEffect(() => {
+    if (demoEnabled === null) return
     let cancelled = false
     async function load() {
       try {
         setLoading(true)
         const data = await fetchHubResources(resourceType.slug)
-        const next =
-          data.length > 0 ? data : isDemoResourcesEnabled() ? getDemoHubResources(resourceType.slug) : []
-        if (!cancelled) setAllResources(next)
+        const samples = demoEnabled ? getDemoHubResources(resourceType.slug) : []
+        const next = data.length > 0 ? data : samples
+        if (!cancelled) {
+          setAllResources(next)
+          setUsingDemo(data.length === 0 && samples.length > 0)
+        }
       } catch {
-        if (!cancelled) setAllResources(isDemoResourcesEnabled() ? getDemoHubResources(resourceType.slug) : [])
+        const samples = demoEnabled ? getDemoHubResources(resourceType.slug) : []
+        if (!cancelled) {
+          setAllResources(samples)
+          setUsingDemo(samples.length > 0)
+        }
       } finally {
         if (!cancelled) setLoading(false)
       }
@@ -55,9 +66,9 @@ export function HubResourceList({ language, resourceType, searchQuery, onCountCh
     return () => {
       cancelled = true
     }
-  }, [resourceType.slug])
+  }, [resourceType.slug, demoEnabled])
 
-  if (loading) {
+  if (loading || demoEnabled === null) {
     return <p className="text-muted">{t(language, "resources.generic.loading")}</p>
   }
 
@@ -67,6 +78,9 @@ export function HubResourceList({ language, resourceType, searchQuery, onCountCh
 
   return (
     <div className="flex-1">
+      {usingDemo ? (
+        <p className="mb-4 text-body-sm text-muted">{t(language, "resources.generic.demoNotice")}</p>
+      ) : null}
       {filtered.map((resource) => (
         <HubResourceCard
           key={resource._id}
