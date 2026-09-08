@@ -112,7 +112,7 @@ const SEED: SeedType[] = [
     enabled: true
   },
   {
-    _id: "resourceType.internships",
+    _id: "resourceTypeInternships",
     slug: "internships",
     title: {
       _type: "localizedString",
@@ -134,7 +134,7 @@ const SEED: SeedType[] = [
     enabled: true
   },
   {
-    _id: "resourceType.grants",
+    _id: "resourceTypeGrants",
     slug: "grants",
     title: {
       _type: "localizedString",
@@ -156,7 +156,7 @@ const SEED: SeedType[] = [
     enabled: true
   },
   {
-    _id: "resourceType.teacher-materials",
+    _id: "resourceTypeEducational",
     slug: "teacher-materials",
     title: {
       _type: "localizedString",

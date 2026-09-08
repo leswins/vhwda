@@ -109,7 +109,7 @@ pnpm --filter studio run seed:resource-types
 pnpm --filter studio run seed:hub-resources
 ```
 
-Studio lists internships, grants, and educational resources as their own folders. Sample documents use IDs starting with `resource.sample.` and can be deleted after a demo.
+Studio lists internships, grants, and educational resources as their own folders. Sample documents use IDs such as `sampleInternshipVdhSummer` (no dots — Sanity hides dotted IDs from the public API). Delete those documents after a demo.
 
 Editors can then add internships, grants, or any new type in **Resource Types** without a code change.
 

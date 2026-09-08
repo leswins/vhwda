@@ -1,4 +1,11 @@
 export const RESOURCE_TYPE_IDS = {
+  internships: "resourceTypeInternships",
+  grants: "resourceTypeGrants",
+  educational: "resourceTypeEducational"
+} as const
+
+/** Older dotted IDs are private on the public API. Delete after the public IDs exist. */
+export const LEGACY_RESOURCE_TYPE_IDS = {
   internships: "resourceType.internships",
   grants: "resourceType.grants",
   educational: "resourceType.teacher-materials"

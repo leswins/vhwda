@@ -187,7 +187,10 @@ export async function fetchResourceTypes(): Promise<ResourceType[]> {
       RESOURCE_TYPES_QUERY
     )
     const types = (rows ?? []).map(normalizeType).filter((row): row is ResourceType => Boolean(row))
-    return types.length > 0 ? types : FALLBACK_RESOURCE_TYPES
+    const bySlug = new Map<string, ResourceType>()
+    for (const type of FALLBACK_RESOURCE_TYPES) bySlug.set(type.slug, type)
+    for (const type of types) bySlug.set(type.slug, type)
+    return [...bySlug.values()].sort((a, b) => (a.sortOrder ?? 100) - (b.sortOrder ?? 100))
   } catch {
     return FALLBACK_RESOURCE_TYPES
   }

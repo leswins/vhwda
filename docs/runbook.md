@@ -33,7 +33,7 @@ After this branch is deployed and the Studio schema is published:
 
 Leave `VITE_DEMO_RESOURCES` unset in Vercel. Local `pnpm --filter web dev` still shows samples by default.
 
-Sample internships, grants, and educational resources now live in Sanity (`resource.sample.*`). After `pnpm sanity:deploy` (from an account that can deploy Studio) and `pnpm --filter studio run seed:hub-resources`, the live hub can filter those documents without the hardcoded demo fallback. Delete the `resource.sample.*` documents when you no longer need them.
+Sample internships, grants, and educational resources now live in Sanity. After `pnpm sanity:deploy` (from an account that can deploy Studio) and `pnpm --filter studio run seed:hub-resources`, the live hub can filter those documents without the hardcoded demo fallback. Delete the `sampleInternship*`, `sampleGrant*`, and `sampleEducation*` documents when you no longer need them.
 
 ### Go-live checklist (Google + Ask AI can wait)
 

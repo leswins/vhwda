@@ -1,13 +1,13 @@
 /**
  * Sample internships, grants, and educational resources for filter testing.
  * Stable IDs so the script is safe to re-run. Delete documents whose _id
- * starts with `resource.sample.` after the demo.
+ * IDs cannot contain a `.` — Sanity treats dotted IDs as private.
  *
  *   pnpm --filter studio run seed:hub-resources
  */
 import { createClient } from "@sanity/client"
 import { config as loadEnv } from "dotenv"
-import { RESOURCE_TYPE_IDS } from "../src/schemaTypes/documents/resourceTypeIds"
+import { LEGACY_RESOURCE_TYPE_IDS, RESOURCE_TYPE_IDS } from "../src/schemaTypes/documents/resourceTypeIds"
 
 loadEnv({ path: "../../.env.local" })
 loadEnv({ path: "../../.env" })
@@ -49,6 +49,29 @@ function pickCategories(categories: Array<{ _id: string; title: string }>, ...ne
 }
 
 async function main() {
+  const staleIds = [
+    ...Object.values(LEGACY_RESOURCE_TYPE_IDS),
+    "resource.sample.internship.vdh-summer",
+    "resource.sample.internship.ahec-shadow",
+    "resource.sample.internship.hospital-volunteer",
+    "resource.sample.internship.uva-research",
+    "resource.sample.internship.vcu-nursing",
+    "resource.sample.internship.remote-health-comms",
+    "resource.sample.grant.g3",
+    "resource.sample.grant.workforce-credential",
+    "resource.sample.grant.employer-tuition",
+    "resource.sample.grant.rural-workforce",
+    "resource.sample.grant.adult-career-switch",
+    "resource.sample.education.talking-safety",
+    "resource.sample.education.bls-healthcare",
+    "resource.sample.education.vdh-school-health",
+    "resource.sample.education.pathway-planner",
+    "resource.sample.education.clinical-skills-slides"
+  ]
+  const cleanup = client.transaction()
+  for (const id of staleIds) cleanup.delete(id)
+  await cleanup.commit({ visibility: "async" }).catch(() => undefined)
+
   const categories = await client.fetch<Array<{ _id: string; title: string }>>(
     `*[_type == "careerCategory"]{_id, title}`
   )
@@ -60,7 +83,7 @@ async function main() {
 
   const documents = [
     {
-      _id: "resource.sample.internship.vdh-summer",
+      _id: "sampleInternshipVdhSummer",
       resourceType: RESOURCE_TYPE_IDS.internships,
       title: loc("VDH Summer Public Health Internship", "Pasantía de verano en salud pública de VDH"),
       summary: loc(
@@ -83,7 +106,7 @@ async function main() {
       careerAreas: publicHealth
     },
     {
-      _id: "resource.sample.internship.ahec-shadow",
+      _id: "sampleInternshipAhecShadow",
       resourceType: RESOURCE_TYPE_IDS.internships,
       title: loc("AHEC Health Careers Shadowing", "Observación de carreras de salud AHEC"),
       summary: loc(
@@ -101,7 +124,7 @@ async function main() {
       careerAreas: allied
     },
     {
-      _id: "resource.sample.internship.hospital-volunteer",
+      _id: "sampleInternshipHospitalVolunteer",
       resourceType: RESOURCE_TYPE_IDS.internships,
       title: loc("Hospital Volunteer & Pre-Health Experience", "Voluntariado hospitalario y experiencia pre-salud"),
       summary: loc(
@@ -119,7 +142,7 @@ async function main() {
       careerAreas: nursing
     },
     {
-      _id: "resource.sample.internship.uva-research",
+      _id: "sampleInternshipUvaResearch",
       resourceType: RESOURCE_TYPE_IDS.internships,
       title: loc("UVA Health Undergraduate Research Internship", "Pasantía de investigación de UVA Health"),
       summary: loc(
@@ -138,7 +161,7 @@ async function main() {
       careerAreas: physician
     },
     {
-      _id: "resource.sample.internship.vcu-nursing",
+      _id: "sampleInternshipVcuNursing",
       resourceType: RESOURCE_TYPE_IDS.internships,
       title: loc("VCU Health Nursing Student Internship", "Pasantía de enfermería de VCU Health"),
       summary: loc(
@@ -157,7 +180,7 @@ async function main() {
       careerAreas: nursing
     },
     {
-      _id: "resource.sample.internship.remote-health-comms",
+      _id: "sampleInternshipRemoteHealthComms",
       resourceType: RESOURCE_TYPE_IDS.internships,
       title: loc("Remote Health Communications Internship", "Pasantía remota de comunicaciones en salud"),
       summary: loc(
@@ -176,7 +199,7 @@ async function main() {
       careerAreas: publicHealth
     },
     {
-      _id: "resource.sample.grant.g3",
+      _id: "sampleGrantG3",
       resourceType: RESOURCE_TYPE_IDS.grants,
       title: loc("Get Skilled, Get a Job, Give Back (G3)", "Get Skilled, Get a Job, Give Back (G3)"),
       summary: loc(
@@ -193,7 +216,7 @@ async function main() {
       careerAreas: allied
     },
     {
-      _id: "resource.sample.grant.workforce-credential",
+      _id: "sampleGrantWorkforceCredential",
       resourceType: RESOURCE_TYPE_IDS.grants,
       title: loc("New Economy Workforce Credential Grant", "Subvención de credenciales de la fuerza laboral"),
       summary: loc(
@@ -209,7 +232,7 @@ async function main() {
       careerAreas: allied
     },
     {
-      _id: "resource.sample.grant.employer-tuition",
+      _id: "sampleGrantEmployerTuition",
       resourceType: RESOURCE_TYPE_IDS.grants,
       title: loc("Hospital Employer Tuition Support", "Apoyo de matrícula de empleadores hospitalarios"),
       summary: loc(
@@ -225,7 +248,7 @@ async function main() {
       careerAreas: nursing
     },
     {
-      _id: "resource.sample.grant.rural-workforce",
+      _id: "sampleGrantRuralWorkforce",
       resourceType: RESOURCE_TYPE_IDS.grants,
       title: loc("Rural Health Workforce Opportunity Grant", "Subvención de fuerza laboral rural"),
       summary: loc(
@@ -242,7 +265,7 @@ async function main() {
       careerAreas: allied
     },
     {
-      _id: "resource.sample.grant.adult-career-switch",
+      _id: "sampleGrantAdultCareerSwitch",
       resourceType: RESOURCE_TYPE_IDS.grants,
       title: loc("Adult Career Switcher Health Training Award", "Premio para cambio de carrera en salud"),
       summary: loc(
@@ -259,7 +282,7 @@ async function main() {
       careerAreas: nursing
     },
     {
-      _id: "resource.sample.education.talking-safety",
+      _id: "sampleEducationTalkingSafety",
       resourceType: RESOURCE_TYPE_IDS.educational,
       title: loc("Youth@Work: Talking Safety (health settings)", "Youth@Work: Talking Safety (entornos de salud)"),
       summary: loc(
@@ -277,7 +300,7 @@ async function main() {
       careerAreas: allied
     },
     {
-      _id: "resource.sample.education.bls-healthcare",
+      _id: "sampleEducationBlsHealthcare",
       resourceType: RESOURCE_TYPE_IDS.educational,
       title: loc("Exploring healthcare careers (BLS Occupational Outlook)", "Explorar carreras de salud (BLS)"),
       summary: loc(
@@ -293,7 +316,7 @@ async function main() {
       careerAreas: physician
     },
     {
-      _id: "resource.sample.education.vdh-school-health",
+      _id: "sampleEducationVdhSchoolHealth",
       resourceType: RESOURCE_TYPE_IDS.educational,
       title: loc("Virginia school health resources", "Recursos de salud escolar de Virginia"),
       summary: loc(
@@ -309,7 +332,7 @@ async function main() {
       careerAreas: publicHealth
     },
     {
-      _id: "resource.sample.education.pathway-planner",
+      _id: "sampleEducationPathwayPlanner",
       resourceType: RESOURCE_TYPE_IDS.educational,
       title: loc("Health career pathway planner (classroom activity)", "Planificador de trayectoria (actividad)"),
       summary: loc(
@@ -325,7 +348,7 @@ async function main() {
       careerAreas: allied
     },
     {
-      _id: "resource.sample.education.clinical-skills-slides",
+      _id: "sampleEducationClinicalSkillsSlides",
       resourceType: RESOURCE_TYPE_IDS.educational,
       title: loc("Intro to clinical skills slide deck", "Presentación de habilidades clínicas"),
       summary: loc(
