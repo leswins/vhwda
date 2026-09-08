@@ -7,6 +7,8 @@ import { ScholarshipList } from "./ScholarshipList"
 import { ProfessionalOrganizationList } from "./ProfessionalOrganizationList"
 import { EducationalInstitutionsList } from "./EducationalInstitutionsList"
 import { HubResourceList } from "./HubResourceList"
+import { HubFacetFilters as HubFacetFiltersPanel, HubSortOptions } from "./HubFacetFilters"
+import { emptyHubFacetFilters, facetsForSlug, type HubFacetFilters } from "../../lib/hubResourceFacets"
 import { SectionHeader } from "./SectionHeader"
 import { ScholarshipsUnderConstruction } from "./ScholarshipsUnderConstruction"
 import { ResourceTypeIcon } from "./ResourceTypeIcon"
@@ -24,6 +26,7 @@ type FiltersPanelProps = {
   searchQuery: string
   onSearchChange: (query: string) => void
   children?: React.ReactNode
+  sortChildren?: React.ReactNode
   showSort?: boolean
   showContentDivider?: boolean
 }
@@ -34,6 +37,7 @@ function FiltersPanel({
   searchQuery,
   onSearchChange,
   children,
+  sortChildren,
   showSort = true,
   showContentDivider = true
 }: FiltersPanelProps) {
@@ -114,6 +118,7 @@ function FiltersPanel({
         className={`flex flex-col gap-0 p-5 border-b-[0.5px] border-foreground lg:gap-fluid-25 lg:p-fluid-25 lg:border-b-0 overflow-y-auto flex-1 scrollbar-hide ${showFiltersOnMobile && !isSearchActive ? "" : "hidden lg:flex"}`}
       >
         {activeTab === "filter" && !isSearchActive ? children : null}
+        {activeTab === "sort" && !isSearchActive ? sortChildren : null}
       </div>
     </div>
   )
@@ -147,6 +152,7 @@ export function PlanYourNextStepsSection({ resourceTypes, activeSections }: Plan
     selectedCareerAreas: []
   })
   const [genericSearch, setGenericSearch] = useState<Record<string, string>>({})
+  const [hubFilters, setHubFilters] = useState<Record<string, HubFacetFilters>>({})
 
   const setCount = (slug: string, count: number) => {
     setCounts((prev) => (prev[slug] === count ? prev : { ...prev, [slug]: count }))
@@ -325,7 +331,12 @@ export function PlanYourNextStepsSection({ resourceTypes, activeSections }: Plan
           )
         }
 
-        const searchQuery = genericSearch[type.slug] ?? ""
+        const facets = facetsForSlug(type.slug)
+        const typeFilters = hubFilters[type.slug] ?? emptyHubFacetFilters()
+        const searchQuery = facets.length > 0 ? typeFilters.searchQuery : (genericSearch[type.slug] ?? "")
+        const setTypeFilters = (next: HubFacetFilters) => {
+          setHubFilters((prev) => ({ ...prev, [type.slug]: next }))
+        }
         return (
           <section key={type._id} id={type.slug} className="scroll-mt-8">
             {header}
@@ -336,7 +347,11 @@ export function PlanYourNextStepsSection({ resourceTypes, activeSections }: Plan
                   searchPlaceholderKey="filters.searchKeywordPlaceholder"
                   searchQuery={searchQuery}
                   onSearchChange={(query) => {
-                    setGenericSearch((prev) => ({ ...prev, [type.slug]: query }))
+                    if (facets.length > 0) {
+                      setTypeFilters({ ...typeFilters, searchQuery: query })
+                    } else {
+                      setGenericSearch((prev) => ({ ...prev, [type.slug]: query }))
+                    }
                     const trimmed = query.trim()
                     if (!trimmed) return
                     window.setTimeout(() => {
@@ -348,15 +363,35 @@ export function PlanYourNextStepsSection({ resourceTypes, activeSections }: Plan
                       })
                     }, 400)
                   }}
-                  showSort={false}
+                  showSort={facets.length > 0}
                   showContentDivider={false}
-                />
+                  sortChildren={
+                    facets.length > 0 ? (
+                      <HubSortOptions
+                        language={language}
+                        filters={typeFilters}
+                        onFiltersChange={setTypeFilters}
+                        showDeadline={type.slug !== "teacher-materials"}
+                      />
+                    ) : null
+                  }
+                >
+                  {facets.length > 0 ? (
+                    <HubFacetFiltersPanel
+                      language={language}
+                      groups={facets}
+                      filters={typeFilters}
+                      onFiltersChange={setTypeFilters}
+                    />
+                  ) : null}
+                </FiltersPanel>
               </div>
               <div className="p-5 lg:p-fluid-50 lg:h-full lg:overflow-y-auto lg:scrollbar-hide">
                 <HubResourceList
                   language={language}
                   resourceType={type}
                   searchQuery={searchQuery}
+                  facetFilters={facets.length > 0 ? typeFilters : undefined}
                   onCountChange={(count) => setCount(type.slug, count)}
                 />
               </div>

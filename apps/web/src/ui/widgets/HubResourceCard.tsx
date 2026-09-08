@@ -6,6 +6,8 @@ import { getLocalizedString, getLocalizedText } from "../../sanity/queries/caree
 import { trackEvent, trackOutboundClick } from "../../utils/analytics"
 import { accentBg } from "../../lib/resourceTypePresentation"
 import type { ResourceAccent } from "../../sanity/queries/resourceTypes"
+import { facetsForSlug } from "../../lib/hubResourceFacets"
+import type { TranslationKey } from "../../utils/i18n"
 
 type Props = {
   language: Language
@@ -19,6 +21,16 @@ export function HubResourceCard({ language, resource, accent = "green", typeSlug
   const description =
     getLocalizedText(language, resource.description) || getLocalizedString(language, resource.summary)
   const institution = resource.institution
+  const facetLabels = facetsForSlug(typeSlug).flatMap((group) => {
+    const raw = resource[group.id]
+    const values = Array.isArray(raw) ? raw : raw ? [raw] : []
+    return values
+      .map((value) => group.options.find((option) => option.value === value)?.labelKey)
+      .filter((key): key is TranslationKey => Boolean(key))
+  })
+  const deadlineLabel = resource.deadline
+    ? t(language, "resources.generic.deadline").replace("{date}", resource.deadline)
+    : null
 
   return (
     <div className="space-y-fluid-8 lg:space-y-4 border-b-[0.5px] border-foreground py-5 lg:py-[40px] first:pt-0 last:border-0 last:pb-0">
@@ -56,7 +68,23 @@ export function HubResourceCard({ language, resource, accent = "green", typeSlug
         </p>
       ) : null}
       {description ? <p className="text-body-sm text-muted leading-snug">{description}</p> : null}
-      {resource.tags && resource.tags.length > 0 ? (
+      {facetLabels.length > 0 || deadlineLabel ? (
+        <div className="flex flex-wrap gap-2">
+          {facetLabels.map((key) => (
+            <span
+              key={key}
+              className="inline-flex items-center rounded-none bg-surface2 px-2 py-1 text-xs text-foreground"
+            >
+              {t(language, key)}
+            </span>
+          ))}
+          {deadlineLabel ? (
+            <span className="inline-flex items-center rounded-none bg-surface2 px-2 py-1 text-xs text-foreground">
+              {deadlineLabel}
+            </span>
+          ) : null}
+        </div>
+      ) : resource.tags && resource.tags.length > 0 ? (
         <div className="flex flex-wrap gap-2">
           {resource.tags.map((tag) => (
             <span

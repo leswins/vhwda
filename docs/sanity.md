@@ -106,7 +106,10 @@ After deploying the Studio schema (`pnpm sanity:deploy`), seed the starting taxo
 
 ```bash
 pnpm --filter studio run seed:resource-types
+pnpm --filter studio run seed:hub-resources
 ```
+
+Studio lists internships, grants, and educational resources as their own folders. Sample documents use IDs starting with `resource.sample.` and can be deleted after a demo.
 
 Editors can then add internships, grants, or any new type in **Resource Types** without a code change.
 

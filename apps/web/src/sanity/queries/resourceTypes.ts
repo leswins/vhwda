@@ -117,7 +117,7 @@ export const FALLBACK_RESOURCE_TYPES: ResourceType[] = [
   {
     _id: "fallback.teacher-materials",
     slug: "teacher-materials",
-    title: { en: "Classroom Materials", es: "Materiales para el Aula" },
+    title: { en: "Educational Resources", es: "Recursos educativos" },
     description: {
       en: "Lesson plans, activities, and educator guides for introducing health careers.",
       es: "Planes de lección, actividades y guías educativas para presentar carreras de salud."

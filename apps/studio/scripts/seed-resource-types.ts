@@ -160,8 +160,8 @@ const SEED: SeedType[] = [
     slug: "teacher-materials",
     title: {
       _type: "localizedString",
-      en: "Classroom Materials",
-      es: "Materiales para el Aula"
+      en: "Educational Resources",
+      es: "Recursos educativos"
     },
     description: {
       _type: "localizedString",
@@ -181,7 +181,7 @@ const SEED: SeedType[] = [
 
 async function main() {
   const mutations = SEED.map((item) => ({
-    createIfNotExists: {
+    createOrReplace: {
       _id: item._id,
       _type: "resourceType",
       ...item

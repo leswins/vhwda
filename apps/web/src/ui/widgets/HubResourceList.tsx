@@ -8,21 +8,25 @@ import { getLocalizedString, getLocalizedText } from "../../sanity/queries/caree
 import { HubResourceCard } from "./HubResourceCard"
 import { getDemoHubResources } from "../../data/demoResources"
 import { useDemoResourcesEnabled } from "../../hooks/useDemoResourcesEnabled"
+import type { HubFacetFilters } from "../../lib/hubResourceFacets"
+import { filterHubResources } from "./filters/filterHubResources"
 
 type Props = {
   language: Language
   resourceType: ResourceType
   searchQuery: string
+  facetFilters?: HubFacetFilters
   onCountChange?: (count: number) => void
 }
 
-export function HubResourceList({ language, resourceType, searchQuery, onCountChange }: Props) {
+export function HubResourceList({ language, resourceType, searchQuery, facetFilters, onCountChange }: Props) {
   const [allResources, setAllResources] = useState<HubResource[]>([])
   const [loading, setLoading] = useState(true)
   const [usingDemo, setUsingDemo] = useState(false)
   const demoEnabled = useDemoResourcesEnabled()
 
   const filtered = useMemo(() => {
+    if (facetFilters) return filterHubResources(allResources, facetFilters, language)
     const query = searchQuery.trim().toLowerCase()
     if (!query) return allResources
     return allResources.filter((resource) => {
@@ -33,7 +37,7 @@ export function HubResourceList({ language, resourceType, searchQuery, onCountCh
       const tags = (resource.tags ?? []).join(" ").toLowerCase()
       return `${title} ${summary} ${description} ${institution} ${tags}`.includes(query)
     })
-  }, [allResources, language, searchQuery])
+  }, [allResources, facetFilters, language, searchQuery])
 
   useEffect(() => {
     onCountChange?.(filtered.length)
