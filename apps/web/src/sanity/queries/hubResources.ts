@@ -3,6 +3,7 @@ import type { LocalizedString, LocalizedText } from "./careers"
 
 export type HubResource = {
   _id: string
+  _createdAt?: string
   title: LocalizedString
   summary?: LocalizedString
   description?: LocalizedText
@@ -15,6 +16,20 @@ export type HubResource = {
   hasFile?: boolean
   fileLabel?: string
   fileUrl?: string
+  experienceKind?: string
+  compensation?: string
+  audienceLevel?: string[]
+  locationScope?: string
+  setting?: string
+  duration?: string
+  opportunityKind?: string
+  applicantType?: string[]
+  fundingAmount?: string
+  materialKind?: string
+  gradeBands?: string[]
+  topicFocus?: string
+  format?: string
+  careerAreas?: Array<{ _id: string; title?: string }>
   resourceType?: {
     _id: string
     slug?: string
@@ -25,6 +40,7 @@ export type HubResource = {
 export const HUB_RESOURCES_QUERY = /* groq */ `
 *[_type == "resource" && published != false && resourceType->slug == $slug] | order(title.en asc) {
   _id,
+  _createdAt,
   title,
   summary,
   description,
@@ -35,6 +51,20 @@ export const HUB_RESOURCES_QUERY = /* groq */ `
   link,
   tags,
   fileLabel,
+  experienceKind,
+  compensation,
+  audienceLevel,
+  locationScope,
+  setting,
+  duration,
+  opportunityKind,
+  applicantType,
+  fundingAmount,
+  materialKind,
+  gradeBands,
+  topicFocus,
+  format,
+  careerAreas[]->{ _id, title },
   "hasFile": defined(file.asset) || defined(fileUrl),
   resourceType->{
     _id,
@@ -47,6 +77,7 @@ export const HUB_RESOURCES_QUERY = /* groq */ `
 export const TEACHER_RESOURCES_QUERY = /* groq */ `
 *[_type == "resource" && published != false && resourceType->audience in ["teacherPortal", "both"]] | order(title.en asc) {
   _id,
+  _createdAt,
   title,
   summary,
   description,
@@ -57,6 +88,20 @@ export const TEACHER_RESOURCES_QUERY = /* groq */ `
   link,
   tags,
   fileLabel,
+  experienceKind,
+  compensation,
+  audienceLevel,
+  locationScope,
+  setting,
+  duration,
+  opportunityKind,
+  applicantType,
+  fundingAmount,
+  materialKind,
+  gradeBands,
+  topicFocus,
+  format,
+  careerAreas[]->{ _id, title },
   "hasFile": defined(file.asset) || defined(fileUrl),
   resourceType->{
     _id,

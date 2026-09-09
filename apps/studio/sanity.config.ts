@@ -2,6 +2,7 @@ import { defineConfig } from "sanity"
 import { structureTool } from "sanity/structure"
 import { schemaTypes } from "./src/schemaTypes"
 import { structure } from "./src/structure"
+import { resourceTemplates } from "./src/templates/resourceTemplates"
 
 export default defineConfig({
   name: "default",
@@ -13,7 +14,8 @@ export default defineConfig({
   plugins: [structureTool({ structure })],
 
   schema: {
-    types: schemaTypes
+    types: schemaTypes,
+    templates: (prev) => [...prev.filter((template) => template.id !== "resource"), ...resourceTemplates]
   }
 })
 

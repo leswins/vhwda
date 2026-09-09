@@ -20,6 +20,9 @@ import { accentBg } from "../lib/resourceTypePresentation"
 import { trackEvent } from "../utils/analytics"
 import { DEMO_TEACHER_RESOURCES } from "../data/demoResources"
 import { useDemoResourcesEnabled } from "../hooks/useDemoResourcesEnabled"
+import { EDUCATION_FACETS, emptyHubFacetFilters } from "../lib/hubResourceFacets"
+import { HubFacetFilters } from "../ui/widgets/HubFacetFilters"
+import { filterHubResources } from "../ui/widgets/filters/filterHubResources"
 
 function GoogleMark() {
   return (
@@ -77,6 +80,7 @@ export function TeacherPortalPage() {
   const [types, setTypes] = useState<ResourceType[]>([])
   const [libraryLoading, setLibraryLoading] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
+  const [educationFilters, setEducationFilters] = useState(emptyHubFacetFilters)
   const [downloadError, setDownloadError] = useState<string | null>(null)
   const [demoLibrary, setDemoLibrary] = useState(false)
   const demoEnabled = useDemoResourcesEnabled()
@@ -127,16 +131,10 @@ export function TeacherPortalPage() {
     }
   }, [showLibrary, demoEnabled])
 
-  const filteredResources = useMemo(() => {
-    const query = searchQuery.trim().toLowerCase()
-    if (!query) return resources
-    return resources.filter((resource) => {
-      const title = getLocalizedString(language, resource.title)?.toLowerCase() ?? ""
-      const summary = getLocalizedString(language, resource.summary)?.toLowerCase() ?? ""
-      const description = getLocalizedText(language, resource.description)?.toLowerCase() ?? ""
-      return `${title} ${summary} ${description} ${resource.institution ?? ""}`.includes(query)
-    })
-  }, [language, resources, searchQuery])
+  const filteredResources = useMemo(
+    () => filterHubResources(resources, { ...educationFilters, searchQuery }, language),
+    [educationFilters, language, resources, searchQuery]
+  )
 
   async function handleAuth(e: React.FormEvent) {
     e.preventDefault()
@@ -471,6 +469,13 @@ export function TeacherPortalPage() {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder={t(language, "teacherPortal.library.search")}
                 className={FORM_INPUT_CLASS}
+              />
+
+              <HubFacetFilters
+                language={language}
+                groups={EDUCATION_FACETS}
+                filters={{ ...educationFilters, searchQuery }}
+                onFiltersChange={setEducationFilters}
               />
 
               {downloadError ? <FieldError message={downloadError} /> : null}
