@@ -1,5 +1,7 @@
 import React from "react"
 import type { ResourceIconKey } from "../../sanity/queries/resourceTypes"
+import briefcaseIcon from "../../assets/icons/Briefcase.svg"
+import grantIcon from "../../assets/icons/Grant.svg"
 
 type Props = {
   icon: ResourceIconKey
@@ -29,15 +31,11 @@ export function ResourceTypeIcon({ icon, className = "h-full w-full" }: Props) {
       )
     case "briefcase":
       return (
-        <svg viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg" className={className} aria-hidden="true">
-          <path d="M17 14V12C17 10.3431 18.3431 9 20 9H30C31.6569 9 33 10.3431 33 12V14H38C40.2091 14 42 15.7909 42 18V36C42 38.2091 40.2091 40 38 40H12C9.79086 40 8 38.2091 8 36V18C8 15.7909 9.79086 14 12 14H17ZM20 12V14H30V12H20ZM8.5 24H41.5V22H8.5V24Z" fill="currentColor" />
-        </svg>
+        <img src={briefcaseIcon} alt="" className={`${className} object-contain`} aria-hidden="true" />
       )
     case "grant":
       return (
-        <svg viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg" className={className} aria-hidden="true">
-          <path d="M25 8C16.1634 8 9 15.1634 9 24C9 32.8366 16.1634 40 25 40C33.8366 40 41 32.8366 41 24C41 15.1634 33.8366 8 25 8ZM25 12C31.6274 12 37 17.3726 37 24C37 30.6274 31.6274 36 25 36C18.3726 36 13 30.6274 13 24C13 17.3726 18.3726 12 25 12ZM24 16H26V18.1C28.21 18.48 30 20.29 30 22.6C30 23.15 29.55 23.6 29 23.6C28.45 23.6 28 23.15 28 22.6C28 21.4 26.99 20.4 25.75 20.4H24.4C23.35 20.4 22.5 21.25 22.5 22.3C22.5 23.18 23.09 23.93 23.95 24.14L27.3 24.95C29.41 25.46 30.9 27.37 30.9 29.55C30.9 32.05 28.95 34.12 26.5 34.5V36.5H24.5V34.5C22.12 34.08 20.3 32.12 20.3 29.65C20.3 29.1 20.75 28.65 21.3 28.65C21.85 28.65 22.3 29.1 22.3 29.65C22.3 31.05 23.45 32.2 24.85 32.2H26.15C27.4 32.2 28.4 31.2 28.4 29.95C28.4 28.92 27.67 28.04 26.66 27.8L23.2 26.96C21.28 26.5 19.9 24.73 19.9 22.7C19.9 20.22 21.78 18.18 24 17.75V16Z" fill="currentColor" />
-        </svg>
+        <img src={grantIcon} alt="" className={`${className} object-contain`} aria-hidden="true" />
       )
     case "document":
     default:
