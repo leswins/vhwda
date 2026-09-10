@@ -46,8 +46,8 @@ function FiltersPanel({
   const [showFiltersOnMobile, setShowFiltersOnMobile] = useState(false)
 
   return (
-    <div className="flex flex-col lg:h-full lg:border-b-0 lg:border-r-[0.5px] lg:border-foreground">
-      <div className="sticky top-0 z-10 bg-surface shrink-0">
+    <div className="flex min-h-0 flex-col lg:h-full lg:overflow-hidden lg:border-b-0 lg:border-r-[0.5px] lg:border-foreground">
+      <div className="sticky top-0 z-10 shrink-0 bg-surface lg:static">
         <div className="relative flex items-center gap-0 p-5 border-b-[0.5px] border-foreground lg:border-y-0 lg:gap-fluid-20 lg:px-fluid-25 lg:py-fluid-25 lg:h-[72px] lg:border-b-[0.5px] lg:border-foreground">
           <div
             className={`flex items-center gap-fluid-20 transition-opacity duration-300 ${isSearchActive ? "opacity-0 pointer-events-none" : "opacity-100"}`}
@@ -115,11 +115,26 @@ function FiltersPanel({
       </div>
 
       <div
-        className={`flex flex-col gap-0 p-5 border-b-[0.5px] border-foreground lg:gap-fluid-25 lg:p-fluid-25 lg:border-b-0 overflow-y-auto flex-1 scrollbar-hide ${showFiltersOnMobile && !isSearchActive ? "" : "hidden lg:flex"}`}
+        className={`flex min-h-0 flex-col gap-0 overflow-y-auto p-5 border-b-[0.5px] border-foreground lg:gap-fluid-25 lg:p-fluid-25 lg:border-b-0 flex-1 scrollbar-hide ${showFiltersOnMobile && !isSearchActive ? "" : "hidden lg:flex"}`}
       >
         {activeTab === "filter" && !isSearchActive ? children : null}
         {activeTab === "sort" && !isSearchActive ? sortChildren : null}
       </div>
+    </div>
+  )
+}
+
+function ResourceSplit({
+  sidebar,
+  children
+}: {
+  sidebar: React.ReactNode
+  children: React.ReactNode
+}) {
+  return (
+    <div className="grid grid-cols-1 overflow-hidden border-b border-foreground lg:grid-cols-[30%_1fr] lg:h-[max(800px,calc(95vh-75px))] lg:border-b-[0.5px]">
+      <div className="min-h-0 lg:h-full lg:overflow-hidden">{sidebar}</div>
+      <div className="min-h-0 p-5 lg:h-full lg:overflow-y-auto lg:p-fluid-50 lg:scrollbar-hide">{children}</div>
     </div>
   )
 }
@@ -258,8 +273,8 @@ export function PlanYourNextStepsSection({ resourceTypes, activeSections }: Plan
               {scholarshipsEnabled ? (
                 <>
                   {header}
-                  <div className="grid grid-cols-1 lg:grid-cols-[30%_1fr] lg:h-[800px] lg:min-h-[calc(95vh-75px)] border-b border-foreground lg:border-b-[0.5px]">
-                    <div className="lg:sticky lg:top-0 lg:h-full">
+                  <ResourceSplit
+                    sidebar={
                       <FiltersPanel
                         language={language}
                         searchPlaceholderKey="filters.searchKeywordPlaceholder"
@@ -267,15 +282,14 @@ export function PlanYourNextStepsSection({ resourceTypes, activeSections }: Plan
                         onSearchChange={(query) => setScholarshipFilters({ searchQuery: query })}
                         showContentDivider={false}
                       />
-                    </div>
-                    <div className="p-5 lg:p-fluid-50 lg:h-full lg:overflow-y-auto lg:scrollbar-hide">
-                      <ScholarshipList
-                        language={language}
-                        filters={scholarshipFilters}
-                        onCountChange={(count) => setCount(type.slug, count)}
-                      />
-                    </div>
-                  </div>
+                    }
+                  >
+                    <ScholarshipList
+                      language={language}
+                      filters={scholarshipFilters}
+                      onCountChange={(count) => setCount(type.slug, count)}
+                    />
+                  </ResourceSplit>
                 </>
               ) : (
                 <ScholarshipsUnderConstruction language={language} />
@@ -288,8 +302,8 @@ export function PlanYourNextStepsSection({ resourceTypes, activeSections }: Plan
           return (
             <section key={type._id} id={type.slug} className="scroll-mt-8">
               {header}
-              <div className="grid grid-cols-1 lg:grid-cols-[30%_1fr] lg:h-[800px] lg:min-h-[calc(95vh-75px)] border-b border-foreground lg:border-b-[0.5px]">
-                <div className="lg:sticky lg:top-0 lg:h-full">
+              <ResourceSplit
+                sidebar={
                   <FiltersPanel
                     language={language}
                     searchPlaceholderKey="filters.searchKeywordPlaceholder"
@@ -306,15 +320,14 @@ export function PlanYourNextStepsSection({ resourceTypes, activeSections }: Plan
                       onFiltersChange={setOrganizationFilters}
                     />
                   </FiltersPanel>
-                </div>
-                <div className="p-5 lg:p-fluid-50 lg:h-full lg:overflow-y-auto lg:scrollbar-hide">
-                  <ProfessionalOrganizationList
-                    language={language}
-                    filters={organizationFilters}
-                    onCountChange={(count) => setCount(type.slug, count)}
-                  />
-                </div>
-              </div>
+                }
+              >
+                <ProfessionalOrganizationList
+                  language={language}
+                  filters={organizationFilters}
+                  onCountChange={(count) => setCount(type.slug, count)}
+                />
+              </ResourceSplit>
             </section>
           )
         }
@@ -340,8 +353,8 @@ export function PlanYourNextStepsSection({ resourceTypes, activeSections }: Plan
         return (
           <section key={type._id} id={type.slug} className="scroll-mt-8">
             {header}
-            <div className="grid grid-cols-1 lg:grid-cols-[30%_1fr] lg:h-[800px] lg:min-h-[calc(95vh-75px)] border-b border-foreground lg:border-b-[0.5px]">
-              <div className="lg:sticky lg:top-0 lg:h-full">
+            <ResourceSplit
+              sidebar={
                 <FiltersPanel
                   language={language}
                   searchPlaceholderKey="filters.searchKeywordPlaceholder"
@@ -385,17 +398,16 @@ export function PlanYourNextStepsSection({ resourceTypes, activeSections }: Plan
                     />
                   ) : null}
                 </FiltersPanel>
-              </div>
-              <div className="p-5 lg:p-fluid-50 lg:h-full lg:overflow-y-auto lg:scrollbar-hide">
-                <HubResourceList
-                  language={language}
-                  resourceType={type}
-                  searchQuery={searchQuery}
-                  facetFilters={facets.length > 0 ? typeFilters : undefined}
-                  onCountChange={(count) => setCount(type.slug, count)}
-                />
-              </div>
-            </div>
+              }
+            >
+              <HubResourceList
+                language={language}
+                resourceType={type}
+                searchQuery={searchQuery}
+                facetFilters={facets.length > 0 ? typeFilters : undefined}
+                onCountChange={(count) => setCount(type.slug, count)}
+              />
+            </ResourceSplit>
           </section>
         )
       })}

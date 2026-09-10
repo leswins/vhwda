@@ -14,6 +14,19 @@ const dict: Dictionary = {
   "page.title.resources": { en: "Resources", es: "Recursos" },
   "page.title.chat": { en: "AI Career Chat", es: "Chat de carreras con IA" },
   "page.title.about": { en: "About", es: "Acerca de" },
+  "page.title.notFound": { en: "404", es: "404" },
+  "notFound.kicker": { en: "404", es: "404" },
+  "notFound.title": { en: "Page not found", es: "Página no encontrada" },
+  "notFound.description": {
+    en: "This page does not exist or may have moved.",
+    es: "Esta página no existe o puede haberse movido."
+  },
+  "notFound.body": {
+    en: "Check the address, or continue from the home page or career resources.",
+    es: "Revisa la dirección, o continúa desde la página de inicio o los recursos de carrera."
+  },
+  "notFound.home": { en: "Back to home", es: "Volver al inicio" },
+  "notFound.resources": { en: "Career resources", es: "Recursos de carrera" },
   "nav.browse": { en: "Browse Careers", es: "Explorar carreras" },
   "nav.quiz": { en: "Career Quiz", es: "Cuestionario" },
   "nav.compare": { en: "Compare", es: "Comparar" },
