@@ -123,8 +123,8 @@ export function ResourcesPage() {
         path="/resources"
       />
       <section className="bg-surface pt-fluid-30 pb-0 lg:p-fluid-50">
-        <div className="grid w-full gap-fluid-30 lg:grid-cols-[48fr_52fr]">
-          <div className="flex flex-col gap-fluid-15 px-fluid-20 lg:px-0 lg:self-start">
+        <div className="grid w-full gap-fluid-30 lg:grid-cols-[48fr_52fr] lg:items-start">
+          <div className="flex flex-col gap-fluid-15 px-fluid-20 bg-surface lg:sticky lg:top-0 lg:z-[1] lg:px-0 lg:self-start lg:pb-fluid-20">
             <span className="text-sub2 font-bold uppercase tracking-[0.15em] text-onSurfaceSecondary">
               {t(language, "resources.kicker")}
             </span>

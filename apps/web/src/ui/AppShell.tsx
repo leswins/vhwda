@@ -132,7 +132,7 @@ export function AppShell() {
   }, [isLoading])
 
   return (
-    <div className="flex min-h-screen flex-col bg-surface text-foreground overflow-x-clip">
+    <div className="flex min-h-screen flex-col bg-surface text-foreground">
       <a
         href="#main"
         className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:border focus:border-border focus:bg-surface focus:px-3 focus:py-2 focus:text-foreground"
