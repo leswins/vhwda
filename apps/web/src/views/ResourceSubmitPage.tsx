@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react"
 import { useLanguageStore } from "../zustand/useLanguageStore"
 import { t } from "../utils/i18n"
-import type { Language } from "../utils/i18n"
+import type { Language, TranslationKey } from "../utils/i18n"
 import { PageHead } from "../ui/PageHead"
 import { Button } from "../ui/components/Button"
 import { CheckboxGroup, FieldError, FieldLabel, FORM_INPUT_CLASS, FORM_SELECT_CLASS, FORM_TEXTAREA_CLASS, cx } from "../ui/forms/fields"
@@ -10,7 +10,22 @@ import {
   getResourceTypeLabel,
   type ResourceType
 } from "../sanity/queries/resourceTypes"
+import { fetchCareerCategories, type CareerCategory } from "../sanity/queries/careerCategories"
 import { canChooseResourceDestination, destinationForAudience } from "../lib/resourceDestination"
+import {
+  EDUCATION_FACETS,
+  GRANT_FACETS,
+  INTERNSHIP_FACETS,
+  LOCATION_SCOPE_OPTIONS,
+  type HubFacetGroup
+} from "../lib/hubResourceFacets"
+import {
+  fieldsForKind,
+  splitTags,
+  submitKindForType,
+  type ResourceDetails,
+  type SubmitFieldSet
+} from "../lib/resourceSubmitFields"
 
 const STAGE_OPTIONS = [
   { value: "high_school", key: "scholarshipForm.stage.highSchool" as const },
@@ -30,7 +45,7 @@ const FUNDING_OPTIONS = [
   { value: "other", key: "scholarshipForm.funding.other" as const }
 ]
 
-const SCOPE_OPTIONS = [
+const SCHOLARSHIP_SCOPE_OPTIONS = [
   { value: "virginia_statewide", key: "scholarshipForm.scope.virginiaStatewide" as const },
   { value: "regional", key: "scholarshipForm.scope.regional" as const },
   { value: "national", key: "scholarshipForm.scope.national" as const },
@@ -46,6 +61,28 @@ const BADGE_OPTIONS = [
   { value: "health_related", key: "scholarshipForm.badge.healthRelated" as const }
 ]
 
+const MEMBERSHIP_OPTIONS = [
+  { value: "student", key: "filters.membershipType.student" as const },
+  { value: "professional", key: "filters.membershipType.professional" as const },
+  { value: "employer", key: "filters.membershipType.employer" as const }
+]
+
+const GEOGRAPHIC_OPTIONS = [
+  { value: "virginia_statewide", key: "filters.geographicFocus.virginiaStatewide" as const },
+  { value: "regional", key: "filters.geographicFocus.regional" as const },
+  { value: "national", key: "filters.geographicFocus.national" as const },
+  { value: "international", key: "filters.geographicFocus.international" as const },
+  { value: "local", key: "filters.geographicFocus.local" as const }
+]
+
+function facetOptions(group: HubFacetGroup) {
+  return group.options.map((option) => ({ value: option.value, key: option.labelKey }))
+}
+
+function facetGroup(groups: HubFacetGroup[], id: string) {
+  return groups.find((group) => group.id === id)
+}
+
 type FormData = {
   resource_type_slug: string
   destination: "public_hub" | "teacher_portal"
@@ -58,11 +95,26 @@ type FormData = {
   deadline: string
   link: string
   file_url: string
+  file_label: string
   current_stage: string[]
   funding_type: string
   location_scope: string
   badges: string[]
-  career_areas_text: string
+  career_area_ids: string[]
+  tags_text: string
+  experience_kind: string
+  compensation: string
+  audience_level: string[]
+  setting: string
+  duration: string
+  opportunity_kind: string
+  applicant_type: string[]
+  funding_amount: string
+  material_kind: string
+  grade_bands: string[]
+  topic_focus: string
+  format: string
+  membership_type: string[]
   submitter_name: string
   submitter_email: string
   submitter_organization: string
@@ -81,11 +133,26 @@ const INITIAL_FORM: FormData = {
   deadline: "",
   link: "",
   file_url: "",
+  file_label: "",
   current_stage: [],
   funding_type: "",
   location_scope: "",
   badges: [],
-  career_areas_text: "",
+  career_area_ids: [],
+  tags_text: "",
+  experience_kind: "",
+  compensation: "",
+  audience_level: [],
+  setting: "",
+  duration: "",
+  opportunity_kind: "",
+  applicant_type: [],
+  funding_amount: "",
+  material_kind: "",
+  grade_bands: [],
+  topic_focus: "",
+  format: "",
+  membership_type: [],
   submitter_name: "",
   submitter_email: "",
   submitter_organization: "",
@@ -94,9 +161,26 @@ const INITIAL_FORM: FormData = {
 
 type FormErrors = Partial<Record<keyof FormData, string>>
 
-function validate(form: FormData, language: Language, selectedType?: ResourceType): FormErrors {
+function validateUrl(value: string) {
+  try {
+    new URL(value)
+    return true
+  } catch {
+    return false
+  }
+}
+
+function validate(form: FormData, language: Language, fields: SubmitFieldSet, selectedType?: ResourceType): FormErrors {
   const errors: FormErrors = {}
-  if (!form.name.trim()) errors.name = t(language, "resourceForm.validation.nameRequired")
+  if (!form.resource_type_slug && !selectedType) {
+    errors.resource_type_slug = t(language, "resourceForm.validation.typeRequired")
+  }
+  if (!form.name.trim()) {
+    errors.name = t(
+      language,
+      fields.nameLabel === "title" ? "resourceForm.validation.titleRequired" : "resourceForm.validation.nameRequired"
+    )
+  }
   if (!form.submitter_name.trim()) errors.submitter_name = t(language, "scholarshipForm.validation.submitterNameRequired")
   if (!form.submitter_email.trim()) {
     errors.submitter_email = t(language, "scholarshipForm.validation.submitterEmailRequired")
@@ -104,35 +188,63 @@ function validate(form: FormData, language: Language, selectedType?: ResourceTyp
     errors.submitter_email = t(language, "scholarshipForm.validation.submitterEmailInvalid")
   }
 
-  const teacherFileOk = form.destination === "teacher_portal" && Boolean(form.file_url.trim())
-  if (!form.link.trim() && !teacherFileOk) {
+  if (fields.linkRequired && !form.link.trim()) {
     errors.link = t(language, "scholarshipForm.validation.linkRequired")
-  } else if (form.link.trim()) {
-    try {
-      new URL(form.link)
-    } catch {
-      errors.link = t(language, "scholarshipForm.validation.linkInvalid")
-    }
+  }
+  if (form.link.trim() && !validateUrl(form.link.trim())) {
+    errors.link = t(language, "scholarshipForm.validation.linkInvalid")
+  }
+  if (form.file_url.trim() && !validateUrl(form.file_url.trim())) {
+    errors.file_url = t(language, "scholarshipForm.validation.linkInvalid")
+  }
+  if (fields.fileUrl && !fields.linkRequired && !form.link.trim() && !form.file_url.trim()) {
+    errors.link = t(language, "resourceForm.validation.accessRequired")
   }
 
-  if (form.file_url.trim()) {
-    try {
-      new URL(form.file_url)
-    } catch {
-      errors.file_url = t(language, "scholarshipForm.validation.linkInvalid")
-    }
+  if (fields.experienceKind && !form.experience_kind) {
+    errors.experience_kind = t(language, "resourceForm.validation.experienceKind")
   }
-
-  if (!form.resource_type_slug && !selectedType) {
-    errors.resource_type_slug = t(language, "resourceForm.validation.typeRequired")
+  if (fields.compensation && !form.compensation) {
+    errors.compensation = t(language, "resourceForm.validation.compensation")
+  }
+  if (fields.opportunityKind && !form.opportunity_kind) {
+    errors.opportunity_kind = t(language, "resourceForm.validation.opportunityKind")
+  }
+  if (fields.applicantType && form.applicant_type.length === 0) {
+    errors.applicant_type = t(language, "resourceForm.validation.applicantType")
+  }
+  if (fields.materialKind && !form.material_kind) {
+    errors.material_kind = t(language, "resourceForm.validation.materialKind")
   }
 
   return errors
 }
 
+function detailsFromForm(form: FormData, fields: SubmitFieldSet): ResourceDetails {
+  const details: ResourceDetails = {}
+  if (fields.experienceKind) details.experienceKind = form.experience_kind
+  if (fields.compensation) details.compensation = form.compensation
+  if (fields.audienceLevel) details.audienceLevel = form.audience_level
+  if (fields.setting) details.setting = form.setting
+  if (fields.duration) details.duration = form.duration
+  if (fields.opportunityKind) details.opportunityKind = form.opportunity_kind
+  if (fields.applicantType) details.applicantType = form.applicant_type
+  if (fields.fundingAmount) details.fundingAmount = form.funding_amount
+  if (fields.materialKind) details.materialKind = form.material_kind
+  if (fields.gradeBands) details.gradeBands = form.grade_bands
+  if (fields.topicFocus) details.topicFocus = form.topic_focus
+  if (fields.format) details.format = form.format
+  if (fields.fileLabel) details.fileLabel = form.file_label
+  if (fields.membershipType) details.membershipType = form.membership_type
+  if (fields.tags) details.tags = splitTags(form.tags_text)
+  if (fields.careerAreas) details.careerAreaIds = form.career_area_ids
+  return details
+}
+
 export function ResourceSubmitPage() {
   const { language } = useLanguageStore()
   const [types, setTypes] = useState<ResourceType[]>([])
+  const [categories, setCategories] = useState<CareerCategory[]>([])
   const [form, setForm] = useState<FormData>(INITIAL_FORM)
   const [errors, setErrors] = useState<FormErrors>({})
   const [submitting, setSubmitting] = useState(false)
@@ -141,10 +253,11 @@ export function ResourceSubmitPage() {
 
   useEffect(() => {
     let cancelled = false
-    fetchResourceTypes().then((all) => {
+    Promise.all([fetchResourceTypes(), fetchCareerCategories().catch(() => [] as CareerCategory[])]).then(([all, nextCategories]) => {
       if (cancelled) return
-      const formTypes = all.filter((type) => type.showInSubmissionForm !== false)
+      const formTypes = all.filter((type) => type.enabled && type.showInSubmissionForm !== false)
       setTypes(formTypes)
+      setCategories(nextCategories ?? [])
       setForm((prev) => {
         const slug = formTypes.some((type) => type.slug === prev.resource_type_slug)
           ? prev.resource_type_slug
@@ -166,11 +279,9 @@ export function ResourceSubmitPage() {
     () => types.find((type) => type.slug === form.resource_type_slug) ?? types[0],
     [form.resource_type_slug, types]
   )
-
-  const showScholarshipFields = selectedType?.sourceKind === "scholarship"
+  const kind = submitKindForType(selectedType)
+  const fields = fieldsForKind(kind)
   const canChooseDestination = canChooseResourceDestination(selectedType?.audience)
-  const showFileField =
-    form.destination === "teacher_portal" || Boolean(selectedType?.allowFileAttachment)
 
   function updateField<K extends keyof FormData>(key: K, value: FormData[K]) {
     setForm((prev) => ({ ...prev, [key]: value }))
@@ -202,7 +313,7 @@ export function ResourceSubmitPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setSubmitError(false)
-    const validationErrors = validate(form, language, selectedType)
+    const validationErrors = validate(form, language, fields, selectedType)
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors)
       const firstErrorKey = Object.keys(validationErrors)[0]
@@ -210,14 +321,58 @@ export function ResourceSubmitPage() {
       return
     }
 
+    const selectedCategories = categories.filter((category) => form.career_area_ids.includes(category._id))
+    const details = detailsFromForm(form, fields)
+    const tags = fields.tags ? splitTags(form.tags_text) : form.badges
+
     setSubmitting(true)
     try {
       const response = await fetch("/api/scholarship-submit", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          ...form,
-          resource_type_id: selectedType?._id.startsWith("fallback.") ? null : selectedType?._id
+          resource_type_slug: form.resource_type_slug,
+          resource_type_id: selectedType?._id.startsWith("fallback.") ? null : selectedType?._id,
+          destination: form.destination,
+          name: form.name,
+          institution: form.institution,
+          summary: fields.summary ? form.summary : "",
+          description: form.description,
+          eligibility: fields.eligibility ? form.eligibility : "",
+          region: fields.region ? form.region : "",
+          deadline: fields.deadline ? form.deadline : "",
+          link: form.link,
+          file_url: fields.fileUrl ? form.file_url : "",
+          current_stage: fields.currentStage
+            ? form.current_stage
+            : fields.audienceLevel
+              ? form.audience_level
+              : fields.applicantType
+                ? form.applicant_type
+                : fields.gradeBands
+                  ? form.grade_bands
+                  : fields.membershipType
+                    ? form.membership_type
+                    : [],
+          funding_type: fields.fundingType
+            ? form.funding_type
+            : fields.experienceKind
+              ? form.experience_kind
+              : fields.opportunityKind
+                ? form.opportunity_kind
+                : fields.materialKind
+                  ? form.material_kind
+                  : "",
+          location_scope: fields.scholarshipLocationScope || fields.hubLocationScope || fields.geographicFocus
+            ? form.location_scope
+            : "",
+          badges: fields.badges ? form.badges : tags,
+          career_areas_text: selectedCategories.map((category) => category.title).join(", "),
+          details,
+          submitter_name: form.submitter_name,
+          submitter_email: form.submitter_email,
+          submitter_organization: form.submitter_organization,
+          notes: form.notes
         })
       })
       if (!response.ok) throw new Error("Submit failed")
@@ -242,6 +397,21 @@ export function ResourceSubmitPage() {
     setSubmitError(false)
     window.scrollTo({ top: 0, behavior: "smooth" })
   }
+
+  const nameLabel = t(
+    language,
+    fields.nameLabel === "title" ? "resourceForm.field.title" : "resourceForm.field.name"
+  )
+  const institutionLabel =
+    fields.institutionLabel === "host"
+      ? t(language, "resourceForm.field.host")
+      : fields.institutionLabel === "org"
+        ? t(language, "resourceForm.field.orgInstitution")
+        : t(language, "scholarshipForm.field.institution")
+  const institutionPlaceholder =
+    fields.institutionLabel === "host"
+      ? t(language, "resourceForm.field.host.placeholder")
+      : t(language, "scholarshipForm.field.institution.placeholder")
 
   if (submitted) {
     return (
@@ -323,192 +493,369 @@ export function ResourceSubmitPage() {
               {t(language, "resourceForm.section.details")}
             </legend>
 
-            <div>
-              <FieldLabel htmlFor="name" label={t(language, "resourceForm.field.name")} required language={language} />
-              <input
-                id="name"
-                type="text"
-                value={form.name}
-                onChange={(e) => updateField("name", e.target.value)}
-                placeholder={t(language, "resourceForm.field.name.placeholder")}
-                className={cx(FORM_INPUT_CLASS, errors.name && "ring-2 ring-accentOrange")}
-              />
-              <FieldError message={errors.name} />
-            </div>
+            <TextField
+              id="name"
+              label={nameLabel}
+              required
+              language={language}
+              value={form.name}
+              onChange={(value) => updateField("name", value)}
+              placeholder={t(language, "resourceForm.field.name.placeholder")}
+              error={errors.name}
+            />
 
-            <div>
-              <FieldLabel htmlFor="institution" label={t(language, "scholarshipForm.field.institution")} language={language} />
-              <input
+            {fields.institution ? (
+              <TextField
                 id="institution"
-                type="text"
+                label={institutionLabel}
+                language={language}
                 value={form.institution}
-                onChange={(e) => updateField("institution", e.target.value)}
-                placeholder={t(language, "scholarshipForm.field.institution.placeholder")}
-                className={FORM_INPUT_CLASS}
+                onChange={(value) => updateField("institution", value)}
+                placeholder={institutionPlaceholder}
               />
-            </div>
+            ) : null}
 
-            <div>
-              <FieldLabel htmlFor="summary" label={t(language, "scholarshipForm.field.summary")} language={language} />
-              <textarea
+            {fields.summary ? (
+              <TextAreaField
                 id="summary"
+                label={t(language, "scholarshipForm.field.summary")}
+                language={language}
                 value={form.summary}
-                onChange={(e) => updateField("summary", e.target.value)}
+                onChange={(value) => updateField("summary", value)}
                 placeholder={t(language, "scholarshipForm.field.summary.placeholder")}
-                className={FORM_TEXTAREA_CLASS}
                 rows={3}
               />
-            </div>
+            ) : null}
 
-            <div>
-              <FieldLabel htmlFor="description" label={t(language, "scholarshipForm.field.description")} language={language} />
-              <textarea
+            {fields.description ? (
+              <TextAreaField
                 id="description"
+                label={t(language, "scholarshipForm.field.description")}
+                language={language}
                 value={form.description}
-                onChange={(e) => updateField("description", e.target.value)}
+                onChange={(value) => updateField("description", value)}
                 placeholder={t(language, "scholarshipForm.field.description.placeholder")}
-                className={FORM_TEXTAREA_CLASS}
                 rows={4}
               />
-            </div>
+            ) : null}
 
-            <div>
-              <FieldLabel htmlFor="eligibility" label={t(language, "scholarshipForm.field.eligibility")} language={language} />
-              <textarea
+            {fields.experienceKind ? (
+              <SelectField
+                id="experience_kind"
+                label={t(language, "filters.experienceKind")}
+                required
+                language={language}
+                value={form.experience_kind}
+                onChange={(value) => updateField("experience_kind", value)}
+                options={facetOptions(facetGroup(INTERNSHIP_FACETS, "experienceKind")!)}
+                error={errors.experience_kind}
+              />
+            ) : null}
+
+            {fields.compensation ? (
+              <SelectField
+                id="compensation"
+                label={t(language, "filters.compensation")}
+                required
+                language={language}
+                value={form.compensation}
+                onChange={(value) => updateField("compensation", value)}
+                options={facetOptions(facetGroup(INTERNSHIP_FACETS, "compensation")!)}
+                error={errors.compensation}
+              />
+            ) : null}
+
+            {fields.audienceLevel ? (
+              <ChoiceField
+                id="audience_level"
+                label={t(language, "filters.audienceLevel")}
+                language={language}
+                selected={form.audience_level}
+                onChange={(values) => updateField("audience_level", values)}
+                options={facetOptions(facetGroup(INTERNSHIP_FACETS, "audienceLevel")!)}
+              />
+            ) : null}
+
+            {fields.setting ? (
+              <SelectField
+                id="setting"
+                label={t(language, "filters.setting")}
+                language={language}
+                value={form.setting}
+                onChange={(value) => updateField("setting", value)}
+                options={facetOptions(facetGroup(INTERNSHIP_FACETS, "setting")!)}
+              />
+            ) : null}
+
+            {fields.duration ? (
+              <TextField
+                id="duration"
+                label={t(language, "resourceForm.field.duration")}
+                language={language}
+                value={form.duration}
+                onChange={(value) => updateField("duration", value)}
+                placeholder={t(language, "resourceForm.field.duration.placeholder")}
+                help={t(language, "resourceForm.field.duration.help")}
+              />
+            ) : null}
+
+            {fields.opportunityKind ? (
+              <SelectField
+                id="opportunity_kind"
+                label={t(language, "filters.opportunityKind")}
+                required
+                language={language}
+                value={form.opportunity_kind}
+                onChange={(value) => updateField("opportunity_kind", value)}
+                options={facetOptions(facetGroup(GRANT_FACETS, "opportunityKind")!)}
+                error={errors.opportunity_kind}
+              />
+            ) : null}
+
+            {fields.applicantType ? (
+              <ChoiceField
+                id="applicant_type"
+                label={t(language, "filters.applicantType")}
+                required
+                language={language}
+                selected={form.applicant_type}
+                onChange={(values) => updateField("applicant_type", values)}
+                options={facetOptions(facetGroup(GRANT_FACETS, "applicantType")!)}
+                error={errors.applicant_type}
+              />
+            ) : null}
+
+            {fields.fundingAmount ? (
+              <TextField
+                id="funding_amount"
+                label={t(language, "resourceForm.field.fundingAmount")}
+                language={language}
+                value={form.funding_amount}
+                onChange={(value) => updateField("funding_amount", value)}
+                placeholder={t(language, "resourceForm.field.fundingAmount.placeholder")}
+              />
+            ) : null}
+
+            {fields.materialKind ? (
+              <SelectField
+                id="material_kind"
+                label={t(language, "filters.materialKind")}
+                required
+                language={language}
+                value={form.material_kind}
+                onChange={(value) => updateField("material_kind", value)}
+                options={facetOptions(facetGroup(EDUCATION_FACETS, "materialKind")!)}
+                error={errors.material_kind}
+              />
+            ) : null}
+
+            {fields.gradeBands ? (
+              <ChoiceField
+                id="grade_bands"
+                label={t(language, "filters.gradeBands")}
+                language={language}
+                selected={form.grade_bands}
+                onChange={(values) => updateField("grade_bands", values)}
+                options={facetOptions(facetGroup(EDUCATION_FACETS, "gradeBands")!)}
+              />
+            ) : null}
+
+            {fields.topicFocus ? (
+              <SelectField
+                id="topic_focus"
+                label={t(language, "filters.topicFocus")}
+                language={language}
+                value={form.topic_focus}
+                onChange={(value) => updateField("topic_focus", value)}
+                options={facetOptions(facetGroup(EDUCATION_FACETS, "topicFocus")!)}
+              />
+            ) : null}
+
+            {fields.format ? (
+              <SelectField
+                id="format"
+                label={t(language, "filters.format")}
+                language={language}
+                value={form.format}
+                onChange={(value) => updateField("format", value)}
+                options={facetOptions(facetGroup(EDUCATION_FACETS, "format")!)}
+              />
+            ) : null}
+
+            {fields.membershipType ? (
+              <ChoiceField
+                id="membership_type"
+                label={t(language, "filters.membershipType")}
+                language={language}
+                selected={form.membership_type}
+                onChange={(values) => updateField("membership_type", values)}
+                options={MEMBERSHIP_OPTIONS}
+              />
+            ) : null}
+
+            {fields.hubLocationScope ? (
+              <SelectField
+                id="location_scope"
+                label={t(language, "filters.locationScope")}
+                language={language}
+                value={form.location_scope}
+                onChange={(value) => updateField("location_scope", value)}
+                options={LOCATION_SCOPE_OPTIONS.map((option) => ({ value: option.value, key: option.labelKey }))}
+              />
+            ) : null}
+
+            {fields.scholarshipLocationScope ? (
+              <SelectField
+                id="location_scope"
+                label={t(language, "scholarshipForm.field.locationScope")}
+                language={language}
+                value={form.location_scope}
+                onChange={(value) => updateField("location_scope", value)}
+                options={SCHOLARSHIP_SCOPE_OPTIONS}
+              />
+            ) : null}
+
+            {fields.geographicFocus ? (
+              <SelectField
+                id="location_scope"
+                label={t(language, "filters.geographicFocus")}
+                language={language}
+                value={form.location_scope}
+                onChange={(value) => updateField("location_scope", value)}
+                options={GEOGRAPHIC_OPTIONS}
+              />
+            ) : null}
+
+            {fields.currentStage ? (
+              <ChoiceField
+                id="current_stage"
+                label={t(language, "scholarshipForm.field.currentStage")}
+                language={language}
+                selected={form.current_stage}
+                onChange={(values) => updateField("current_stage", values)}
+                options={STAGE_OPTIONS}
+              />
+            ) : null}
+
+            {fields.fundingType ? (
+              <SelectField
+                id="funding_type"
+                label={t(language, "scholarshipForm.field.fundingType")}
+                language={language}
+                value={form.funding_type}
+                onChange={(value) => updateField("funding_type", value)}
+                options={FUNDING_OPTIONS}
+              />
+            ) : null}
+
+            {fields.badges ? (
+              <ChoiceField
+                id="badges"
+                label={t(language, "scholarshipForm.field.badges")}
+                language={language}
+                selected={form.badges}
+                onChange={(values) => updateField("badges", values)}
+                options={BADGE_OPTIONS}
+              />
+            ) : null}
+
+            {fields.eligibility ? (
+              <TextAreaField
                 id="eligibility"
+                label={t(language, "scholarshipForm.field.eligibility")}
+                language={language}
                 value={form.eligibility}
-                onChange={(e) => updateField("eligibility", e.target.value)}
+                onChange={(value) => updateField("eligibility", value)}
                 placeholder={t(language, "scholarshipForm.field.eligibility.placeholder")}
-                className={FORM_TEXTAREA_CLASS}
                 rows={3}
               />
-            </div>
+            ) : null}
 
-            <div>
-              <FieldLabel htmlFor="region" label={t(language, "scholarshipForm.field.region")} language={language} />
-              <input
+            {fields.region ? (
+              <TextField
                 id="region"
-                type="text"
-                value={form.region}
-                onChange={(e) => updateField("region", e.target.value)}
-                placeholder={t(language, "scholarshipForm.field.region.placeholder")}
-                className={FORM_INPUT_CLASS}
-              />
-            </div>
-
-            <div>
-              <FieldLabel htmlFor="deadline" label={t(language, "scholarshipForm.field.deadline")} language={language} />
-              <input
-                id="deadline"
-                type="date"
-                value={form.deadline}
-                onChange={(e) => updateField("deadline", e.target.value)}
-                className={FORM_INPUT_CLASS}
-              />
-            </div>
-
-            <div>
-              <FieldLabel
-                htmlFor="link"
-                label={t(language, "scholarshipForm.field.link")}
-                required={form.destination !== "teacher_portal"}
+                label={t(language, fields.nameLabel === "title" ? "resourceForm.field.regionFree" : "scholarshipForm.field.region")}
                 language={language}
+                value={form.region}
+                onChange={(value) => updateField("region", value)}
+                placeholder={t(language, "scholarshipForm.field.region.placeholder")}
               />
-              <input
-                id="link"
-                type="url"
-                value={form.link}
-                onChange={(e) => updateField("link", e.target.value)}
-                placeholder={t(language, "scholarshipForm.field.link.placeholder")}
-                className={cx(FORM_INPUT_CLASS, errors.link && "ring-2 ring-accentOrange")}
-              />
-              <FieldError message={errors.link} />
-            </div>
+            ) : null}
 
-            {showFileField ? (
+            {fields.deadline ? (
               <div>
-                <FieldLabel htmlFor="file_url" label={t(language, "resourceForm.field.fileUrl")} language={language} />
+                <FieldLabel htmlFor="deadline" label={t(language, "scholarshipForm.field.deadline")} language={language} />
                 <input
-                  id="file_url"
-                  type="url"
-                  value={form.file_url}
-                  onChange={(e) => updateField("file_url", e.target.value)}
-                  placeholder={t(language, "resourceForm.field.fileUrl.placeholder")}
-                  className={cx(FORM_INPUT_CLASS, errors.file_url && "ring-2 ring-accentOrange")}
+                  id="deadline"
+                  type="date"
+                  value={form.deadline}
+                  onChange={(e) => updateField("deadline", e.target.value)}
+                  className={FORM_INPUT_CLASS}
                 />
-                <p className="mt-1 text-body-sm text-muted">{t(language, "resourceForm.field.fileUrl.help")}</p>
-                <FieldError message={errors.file_url} />
               </div>
             ) : null}
 
-            {showScholarshipFields ? (
-              <>
-                <div>
-                  <FieldLabel htmlFor="current_stage" label={t(language, "scholarshipForm.field.currentStage")} language={language} />
-                  <CheckboxGroup
-                    options={STAGE_OPTIONS}
-                    selected={form.current_stage}
-                    onChange={(values) => updateField("current_stage", values)}
-                    language={language}
-                  />
-                </div>
+            {fields.link ? (
+              <TextField
+                id="link"
+                label={t(language, "scholarshipForm.field.link")}
+                required={fields.linkRequired}
+                language={language}
+                value={form.link}
+                onChange={(value) => updateField("link", value)}
+                placeholder={t(language, "scholarshipForm.field.link.placeholder")}
+                error={errors.link}
+                type="url"
+              />
+            ) : null}
 
-                <div>
-                  <FieldLabel htmlFor="funding_type" label={t(language, "scholarshipForm.field.fundingType")} language={language} />
-                  <select
-                    id="funding_type"
-                    value={form.funding_type}
-                    onChange={(e) => updateField("funding_type", e.target.value)}
-                    className={FORM_SELECT_CLASS}
-                  >
-                    <option value="">{t(language, "scholarshipForm.field.fundingType.select")}</option>
-                    {FUNDING_OPTIONS.map((opt) => (
-                      <option key={opt.value} value={opt.value}>
-                        {t(language, opt.key)}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+            {fields.fileUrl ? (
+              <div>
+                <TextField
+                  id="file_url"
+                  label={t(language, "resourceForm.field.fileUrl")}
+                  language={language}
+                  value={form.file_url}
+                  onChange={(value) => updateField("file_url", value)}
+                  placeholder={t(language, "resourceForm.field.fileUrl.placeholder")}
+                  error={errors.file_url}
+                  type="url"
+                />
+                <p className="mt-1 text-body-sm text-muted">{t(language, "resourceForm.field.fileUrl.help")}</p>
+              </div>
+            ) : null}
 
-                <div>
-                  <FieldLabel htmlFor="location_scope" label={t(language, "scholarshipForm.field.locationScope")} language={language} />
-                  <select
-                    id="location_scope"
-                    value={form.location_scope}
-                    onChange={(e) => updateField("location_scope", e.target.value)}
-                    className={FORM_SELECT_CLASS}
-                  >
-                    <option value="">{t(language, "scholarshipForm.field.locationScope.select")}</option>
-                    {SCOPE_OPTIONS.map((opt) => (
-                      <option key={opt.value} value={opt.value}>
-                        {t(language, opt.key)}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+            {fields.fileLabel ? (
+              <TextField
+                id="file_label"
+                label={t(language, "resourceForm.field.fileLabel")}
+                language={language}
+                value={form.file_label}
+                onChange={(value) => updateField("file_label", value)}
+                placeholder={t(language, "resourceForm.field.fileLabel.placeholder")}
+              />
+            ) : null}
 
-                <div>
-                  <FieldLabel htmlFor="badges" label={t(language, "scholarshipForm.field.badges")} language={language} />
-                  <CheckboxGroup
-                    options={BADGE_OPTIONS}
-                    selected={form.badges}
-                    onChange={(values) => updateField("badges", values)}
-                    language={language}
-                  />
-                </div>
+            {fields.careerAreas && categories.length > 0 ? (
+              <ChoiceField
+                id="career_area_ids"
+                label={t(language, "resourceForm.field.careerAreas")}
+                language={language}
+                selected={form.career_area_ids}
+                onChange={(values) => updateField("career_area_ids", values)}
+                options={categories.map((category) => ({ value: category._id, label: category.title }))}
+              />
+            ) : null}
 
-                <div>
-                  <FieldLabel htmlFor="career_areas_text" label={t(language, "scholarshipForm.field.careerAreas")} language={language} />
-                  <textarea
-                    id="career_areas_text"
-                    value={form.career_areas_text}
-                    onChange={(e) => updateField("career_areas_text", e.target.value)}
-                    placeholder={t(language, "scholarshipForm.field.careerAreas.placeholder")}
-                    className={FORM_TEXTAREA_CLASS}
-                    rows={2}
-                  />
-                </div>
-              </>
+            {fields.tags ? (
+              <TextField
+                id="tags_text"
+                label={t(language, "resourceForm.field.tags")}
+                language={language}
+                value={form.tags_text}
+                onChange={(value) => updateField("tags_text", value)}
+                placeholder={t(language, "resourceForm.field.tags.placeholder")}
+              />
             ) : null}
           </fieldset>
 
@@ -519,55 +866,44 @@ export function ResourceSubmitPage() {
               {t(language, "scholarshipForm.section.submitter")}
             </legend>
 
-            <div>
-              <FieldLabel htmlFor="submitter_name" label={t(language, "scholarshipForm.field.submitterName")} required language={language} />
-              <input
-                id="submitter_name"
-                type="text"
-                value={form.submitter_name}
-                onChange={(e) => updateField("submitter_name", e.target.value)}
-                placeholder={t(language, "scholarshipForm.field.submitterName.placeholder")}
-                className={cx(FORM_INPUT_CLASS, errors.submitter_name && "ring-2 ring-accentOrange")}
-              />
-              <FieldError message={errors.submitter_name} />
-            </div>
-
-            <div>
-              <FieldLabel htmlFor="submitter_email" label={t(language, "scholarshipForm.field.submitterEmail")} required language={language} />
-              <input
-                id="submitter_email"
-                type="email"
-                value={form.submitter_email}
-                onChange={(e) => updateField("submitter_email", e.target.value)}
-                placeholder={t(language, "scholarshipForm.field.submitterEmail.placeholder")}
-                className={cx(FORM_INPUT_CLASS, errors.submitter_email && "ring-2 ring-accentOrange")}
-              />
-              <FieldError message={errors.submitter_email} />
-            </div>
-
-            <div>
-              <FieldLabel htmlFor="submitter_organization" label={t(language, "scholarshipForm.field.submitterOrg")} language={language} />
-              <input
-                id="submitter_organization"
-                type="text"
-                value={form.submitter_organization}
-                onChange={(e) => updateField("submitter_organization", e.target.value)}
-                placeholder={t(language, "scholarshipForm.field.submitterOrg.placeholder")}
-                className={FORM_INPUT_CLASS}
-              />
-            </div>
-
-            <div>
-              <FieldLabel htmlFor="notes" label={t(language, "scholarshipForm.field.notes")} language={language} />
-              <textarea
-                id="notes"
-                value={form.notes}
-                onChange={(e) => updateField("notes", e.target.value)}
-                placeholder={t(language, "scholarshipForm.field.notes.placeholder")}
-                className={FORM_TEXTAREA_CLASS}
-                rows={3}
-              />
-            </div>
+            <TextField
+              id="submitter_name"
+              label={t(language, "scholarshipForm.field.submitterName")}
+              required
+              language={language}
+              value={form.submitter_name}
+              onChange={(value) => updateField("submitter_name", value)}
+              placeholder={t(language, "scholarshipForm.field.submitterName.placeholder")}
+              error={errors.submitter_name}
+            />
+            <TextField
+              id="submitter_email"
+              label={t(language, "scholarshipForm.field.submitterEmail")}
+              required
+              language={language}
+              value={form.submitter_email}
+              onChange={(value) => updateField("submitter_email", value)}
+              placeholder={t(language, "scholarshipForm.field.submitterEmail.placeholder")}
+              error={errors.submitter_email}
+              type="email"
+            />
+            <TextField
+              id="submitter_organization"
+              label={t(language, "scholarshipForm.field.submitterOrg")}
+              language={language}
+              value={form.submitter_organization}
+              onChange={(value) => updateField("submitter_organization", value)}
+              placeholder={t(language, "scholarshipForm.field.submitterOrg.placeholder")}
+            />
+            <TextAreaField
+              id="notes"
+              label={t(language, "scholarshipForm.field.notes")}
+              language={language}
+              value={form.notes}
+              onChange={(value) => updateField("notes", value)}
+              placeholder={t(language, "scholarshipForm.field.notes.placeholder")}
+              rows={3}
+            />
           </fieldset>
 
           {submitError && (
@@ -584,6 +920,146 @@ export function ResourceSubmitPage() {
         </div>
       </form>
     </>
+  )
+}
+
+function TextField({
+  id,
+  label,
+  required,
+  language,
+  value,
+  onChange,
+  placeholder,
+  error,
+  type = "text",
+  help
+}: {
+  id: string
+  label: string
+  required?: boolean
+  language: Language
+  value: string
+  onChange: (value: string) => void
+  placeholder?: string
+  error?: string
+  type?: string
+  help?: string
+}) {
+  return (
+    <div>
+      <FieldLabel htmlFor={id} label={label} required={required} language={language} />
+      <input
+        id={id}
+        type={type}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        className={cx(FORM_INPUT_CLASS, error && "ring-2 ring-accentOrange")}
+      />
+      {help ? <p className="mt-1 text-body-sm text-muted">{help}</p> : null}
+      <FieldError message={error} />
+    </div>
+  )
+}
+
+function TextAreaField({
+  id,
+  label,
+  language,
+  value,
+  onChange,
+  placeholder,
+  rows
+}: {
+  id: string
+  label: string
+  language: Language
+  value: string
+  onChange: (value: string) => void
+  placeholder?: string
+  rows: number
+}) {
+  return (
+    <div>
+      <FieldLabel htmlFor={id} label={label} language={language} />
+      <textarea
+        id={id}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        className={FORM_TEXTAREA_CLASS}
+        rows={rows}
+      />
+    </div>
+  )
+}
+
+function SelectField({
+  id,
+  label,
+  required,
+  language,
+  value,
+  onChange,
+  options,
+  error
+}: {
+  id: string
+  label: string
+  required?: boolean
+  language: Language
+  value: string
+  onChange: (value: string) => void
+  options: Array<{ value: string; key?: TranslationKey; label?: string }>
+  error?: string
+}) {
+  return (
+    <div>
+      <FieldLabel htmlFor={id} label={label} required={required} language={language} />
+      <select
+        id={id}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className={cx(FORM_SELECT_CLASS, error && "ring-2 ring-accentOrange")}
+      >
+        <option value="">{t(language, "resourceForm.select")}</option>
+        {options.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.label ?? (option.key ? t(language, option.key) : option.value)}
+          </option>
+        ))}
+      </select>
+      <FieldError message={error} />
+    </div>
+  )
+}
+
+function ChoiceField({
+  id,
+  label,
+  required,
+  language,
+  selected,
+  onChange,
+  options,
+  error
+}: {
+  id: string
+  label: string
+  required?: boolean
+  language: Language
+  selected: string[]
+  onChange: (values: string[]) => void
+  options: Array<{ value: string; key?: TranslationKey; label?: string }>
+  error?: string
+}) {
+  return (
+    <div>
+      <FieldLabel htmlFor={id} label={label} required={required} language={language} />
+      <CheckboxGroup options={options} selected={selected} onChange={onChange} language={language} />
+      <FieldError message={error} />
+    </div>
   )
 }
 
