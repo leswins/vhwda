@@ -921,8 +921,40 @@ const dict: Dictionary = {
   "resourceForm.field.fileUrl": { en: "File URL", es: "URL del archivo" },
   "resourceForm.field.fileUrl.placeholder": { en: "https://example.com/lesson-plan.pdf", es: "https://ejemplo.com/plan-de-leccion.pdf" },
   "resourceForm.field.fileUrl.help": {
-    en: "Optional. Use a shareable file link if this belongs in the teacher library. The team can also upload files in Sanity after review.",
-    es: "Opcional. Usa un enlace compartible si pertenece a la biblioteca para docentes. El equipo también puede subir archivos en Sanity después de la revisión."
+    en: "Optional alternative to an uploaded file. The VHWDA team can also upload the file in Sanity after review.",
+    es: "Alternativa opcional a un archivo subido. El equipo de VHWDA también puede subir el archivo en Sanity después de la revisión."
+  },
+  "resourceForm.field.title": { en: "Title", es: "Título" },
+  "resourceForm.field.host": { en: "Host / sponsor", es: "Anfitrión / patrocinador" },
+  "resourceForm.field.host.placeholder": {
+    en: "Organization offering the experience, funding, or material",
+    es: "Organización que ofrece la experiencia, el financiamiento o el material"
+  },
+  "resourceForm.field.orgInstitution": { en: "Institution/Organization Name", es: "Nombre de la institución/organización" },
+  "resourceForm.field.duration": { en: "Duration", es: "Duración" },
+  "resourceForm.field.duration.placeholder": { en: "e.g. Summer, 8 weeks, semester", es: "ej. Verano, 8 semanas, semestre" },
+  "resourceForm.field.duration.help": { en: "e.g. Summer, 8 weeks, semester.", es: "ej. Verano, 8 semanas, semestre." },
+  "resourceForm.field.fundingAmount": { en: "Funding amount", es: "Monto de financiamiento" },
+  "resourceForm.field.fundingAmount.placeholder": {
+    en: "e.g. Up to $3,000, last-dollar, varies",
+    es: "ej. Hasta $3,000, último dólar, varía"
+  },
+  "resourceForm.field.fileLabel": { en: "File label", es: "Etiqueta del archivo" },
+  "resourceForm.field.fileLabel.placeholder": { en: "e.g. Lesson plan PDF", es: "ej. PDF del plan de lección" },
+  "resourceForm.field.tags": { en: "Tags", es: "Etiquetas" },
+  "resourceForm.field.tags.placeholder": { en: "Separate tags with commas", es: "Separa las etiquetas con comas" },
+  "resourceForm.field.careerAreas": { en: "Career areas", es: "Áreas de carrera" },
+  "resourceForm.field.regionFree": { en: "Region (free text)", es: "Región (texto libre)" },
+  "resourceForm.select": { en: "Select", es: "Seleccionar" },
+  "resourceForm.validation.titleRequired": { en: "Title is required", es: "El título es obligatorio" },
+  "resourceForm.validation.experienceKind": { en: "Select an experience type", es: "Selecciona un tipo de experiencia" },
+  "resourceForm.validation.compensation": { en: "Select compensation", es: "Selecciona la compensación" },
+  "resourceForm.validation.opportunityKind": { en: "Select an opportunity type", es: "Selecciona un tipo de oportunidad" },
+  "resourceForm.validation.applicantType": { en: "Select at least one applicant type", es: "Selecciona al menos un tipo de solicitante" },
+  "resourceForm.validation.materialKind": { en: "Select a material type", es: "Selecciona un tipo de material" },
+  "resourceForm.validation.accessRequired": {
+    en: "Add a downloadable file URL or web link",
+    es: "Agrega una URL de archivo o un enlace web"
   },
   "resourceForm.submit": { en: "Submit resource", es: "Enviar recurso" },
   "resourceForm.submitting": { en: "Submitting…", es: "Enviando…" },

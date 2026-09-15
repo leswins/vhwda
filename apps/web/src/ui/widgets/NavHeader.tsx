@@ -9,6 +9,7 @@ import { GlobalSearchDropdown } from "./GlobalSearchDropdown"
 import { Button } from "../components/Button"
 import { Divider } from "../components/Divider"
 import { trackEvent, trackOutboundClick } from "../../utils/analytics"
+import { useSiteFeatureFlags } from "../../hooks/useSiteFeatureFlags"
 import closeIcon from "../../assets/icons/close.svg"
 
 function AiStarIcon({ className }: { className?: string }) {
@@ -69,6 +70,8 @@ export function NavHeader() {
   const searchContainerRef = useRef<HTMLDivElement | null>(null)
 
   const isChatOpen = location.pathname === "/chat"
+  const featureFlags = useSiteFeatureFlags()
+  const showAskAi = Boolean(featureFlags?.aiChatEnabled)
 
   /**
    * Lazily load global search data on first search activation.
@@ -223,7 +226,7 @@ export function NavHeader() {
             className={`flex items-stretch bg-surface transition-opacity duration-250 ease-out ${isSearchActive ? "pointer-events-none opacity-0" : "opacity-100"
               }`}
           >
-            {!isMenuOpen && (
+            {!isMenuOpen && (showAskAi || isChatOpen) && (
               <div className="relative flex items-stretch overflow-hidden">
                 <div
                   className={`flex items-stretch transition-all duration-250 ease-out ${isChatOpen ? "opacity-100" : "pointer-events-none absolute left-0 inset-y-0 w-max opacity-0"
@@ -256,6 +259,7 @@ export function NavHeader() {
                   </button>
                 </div>
 
+                {showAskAi ? (
                 <div
                   className={`flex items-stretch transition-all duration-250 ease-out ${!isChatOpen ? "opacity-100" : "pointer-events-none absolute left-0 inset-y-0 w-max opacity-0"
                     }`}
@@ -281,6 +285,7 @@ export function NavHeader() {
                     <AiStarIcon className="hidden lg:block w-icon-25 h-icon-25 text-accentBlue" />
                   </Button>
                 </div>
+                ) : null}
                 <Divider orientation="vertical" className={`bg-foreground ${isChatOpen ? "hidden lg:block" : ""}`} />
               </div>
             )}

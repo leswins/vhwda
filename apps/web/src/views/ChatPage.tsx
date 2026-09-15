@@ -12,6 +12,7 @@ import { ChatMessages } from "../ui/widgets/chat/ChatMessages"
 import { ChatInput } from "../ui/widgets/chat/ChatInput"
 import { t } from "../utils/i18n"
 import { trackEvent } from "../utils/analytics"
+import { useSiteFeatureFlags } from "../hooks/useSiteFeatureFlags"
 
 type Message = {
   type: "user" | "bot" | "system"
@@ -23,6 +24,7 @@ export function ChatPage() {
   const { language } = useLanguageStore()
   const { setLoading } = useGlobalLoadingStore()
   const navigate = useNavigate()
+  const featureFlags = useSiteFeatureFlags()
   const [userInput, setUserInput] = useState("")
   const [response, setResponse] = useState<Message[]>([])
   const [isLoading, setIsLoading] = useState(false)
@@ -49,12 +51,21 @@ export function ChatPage() {
       }
     }
 
+    if (!featureFlags?.aiChatEnabled) return
     loadCareersContext()
-  }, [language, setLoading])
+  }, [language, setLoading, featureFlags])
 
   useEffect(() => {
+    if (featureFlags === null) return
+    if (!featureFlags.aiChatEnabled) {
+      navigate("/", { replace: true })
+    }
+  }, [featureFlags, navigate])
+
+  useEffect(() => {
+    if (!featureFlags?.aiChatEnabled) return
     trackEvent("ai_chat_open", { language })
-  }, [language])
+  }, [featureFlags, language])
 
   const handleSubmit = async (promptToSend: string = userInput) => {
     if (!promptToSend.trim()) {

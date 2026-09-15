@@ -134,7 +134,7 @@ export const FALLBACK_RESOURCE_TYPES: ResourceType[] = [
 ]
 
 export const RESOURCE_TYPES_QUERY = /* groq */ `
-*[_type == "resourceType" && enabled != false] | order(sortOrder asc, title.en asc) {
+*[_type == "resourceType"] | order(sortOrder asc, title.en asc) {
   _id,
   slug,
   title,
@@ -181,7 +181,9 @@ function normalizeType(raw: Partial<ResourceType> & { _id: string }): ResourceTy
   }
 }
 
-export async function fetchResourceTypes(): Promise<ResourceType[]> {
+export async function fetchResourceTypes(options?: {
+  includeDisabled?: boolean
+}): Promise<ResourceType[]> {
   try {
     const rows = await sanityClient.fetch<Array<Partial<ResourceType> & { _id: string }>>(
       RESOURCE_TYPES_QUERY
@@ -190,18 +192,20 @@ export async function fetchResourceTypes(): Promise<ResourceType[]> {
     const bySlug = new Map<string, ResourceType>()
     for (const type of FALLBACK_RESOURCE_TYPES) bySlug.set(type.slug, type)
     for (const type of types) bySlug.set(type.slug, type)
-    return [...bySlug.values()].sort((a, b) => (a.sortOrder ?? 100) - (b.sortOrder ?? 100))
+    const merged = [...bySlug.values()].sort((a, b) => (a.sortOrder ?? 100) - (b.sortOrder ?? 100))
+    if (options?.includeDisabled) return merged
+    return merged.filter((type) => type.enabled)
   } catch {
     return FALLBACK_RESOURCE_TYPES
   }
 }
 
 export function isPublicHubType(type: ResourceType) {
-  return type.audience === "publicHub" || type.audience === "both"
+  return type.enabled !== false && (type.audience === "publicHub" || type.audience === "both")
 }
 
 export function isTeacherPortalType(type: ResourceType) {
-  return type.audience === "teacherPortal" || type.audience === "both"
+  return type.enabled !== false && (type.audience === "teacherPortal" || type.audience === "both")
 }
 
 export function getResourceTypeLabel(language: Language, type: ResourceType) {

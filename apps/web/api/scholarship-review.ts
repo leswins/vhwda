@@ -15,6 +15,7 @@ import {
   patchResourceSubmission,
   type ResourceSubmission
 } from "../server/submissions"
+import { submitKindForSlug, type ResourceDetails } from "../src/lib/resourceSubmitFields"
 
 type ReviewPayload = {
   id?: string
@@ -38,8 +39,20 @@ function splitList(value?: string | null) {
     .filter(Boolean)
 }
 
-async function resolveCareerAreaRefs(careerAreasText?: string | null) {
-  const names = splitList(careerAreasText)
+function detailsOf(submission: ResourceSubmission): ResourceDetails {
+  return submission.details ?? {}
+}
+
+async function resolveCareerAreaRefs(submission: ResourceSubmission) {
+  const ids = detailsOf(submission).careerAreaIds?.filter(Boolean) ?? []
+  if (ids.length > 0) {
+    return ids.map((id) => ({
+      _type: "reference",
+      _ref: id,
+      _key: crypto.randomUUID().slice(0, 12)
+    }))
+  }
+  const names = splitList(submission.career_areas_text)
   if (names.length === 0) return []
   const matches = await sanityQuery<Array<{ _id: string }>>(
     `*[_type == "careerCategory" && title in $names]{ _id }`,
@@ -92,7 +105,7 @@ async function createSanityDocument(submission: ResourceSubmission) {
     if (submission.funding_type) doc.fundingType = submission.funding_type
     if (submission.location_scope) doc.locationScope = submission.location_scope
     if (submission.badges?.length) doc.badges = submission.badges
-    const careerAreas = await resolveCareerAreaRefs(submission.career_areas_text)
+    const careerAreas = await resolveCareerAreaRefs(submission)
     if (careerAreas.length) doc.careerAreas = careerAreas
 
     const result = await sanityMutate([{ create: doc }])
@@ -109,13 +122,17 @@ async function createSanityDocument(submission: ResourceSubmission) {
     if (submission.institution) doc.institution = submission.institution
     if (submission.description) doc.description = localizedText(submission.description)
     if (submission.location_scope) doc.geographicFocus = submission.location_scope
-    const careerAreas = await resolveCareerAreaRefs(submission.career_areas_text)
+    const details = detailsOf(submission)
+    if (details.membershipType?.length) doc.membershipType = details.membershipType
+    const careerAreas = await resolveCareerAreaRefs(submission)
     if (careerAreas.length) doc.careerAreas = careerAreas
 
     const result = await sanityMutate([{ create: doc }])
     return result.ok ? { id: docId } : null
   }
 
+  const details = detailsOf(submission)
+  const kind = submitKindForSlug(submission.resource_type_slug)
   const doc: Record<string, unknown> = {
     _id: docId,
     _type: "resource",
@@ -128,16 +145,34 @@ async function createSanityDocument(submission: ResourceSubmission) {
   if (submission.summary) doc.summary = localizedString(submission.summary)
   if (submission.description) doc.description = localizedText(submission.description)
   if (submission.institution) doc.institution = submission.institution
-  if (submission.eligibility) doc.eligibility = localizedText(submission.eligibility)
+  if (kind !== "educational" && submission.eligibility) doc.eligibility = localizedText(submission.eligibility)
   if (submission.region) doc.region = submission.region
-  if (submission.deadline) doc.deadline = submission.deadline
+  if (kind !== "educational" && submission.deadline) doc.deadline = submission.deadline
   if (submission.link) doc.link = submission.link
   if (submission.file_url) doc.fileUrl = submission.file_url
-  const tags = [
-    ...(submission.badges ?? []),
-    ...splitList(submission.career_areas_text)
-  ].filter((value, index, all) => all.indexOf(value) === index)
-  if (tags.length) doc.tags = tags
+  if (details.fileLabel) doc.fileLabel = details.fileLabel
+  if (details.experienceKind || (kind === "internship" && submission.funding_type)) {
+    doc.experienceKind = details.experienceKind || submission.funding_type
+  }
+  if (details.compensation) doc.compensation = details.compensation
+  if (details.audienceLevel?.length) doc.audienceLevel = details.audienceLevel
+  if (details.setting) doc.setting = details.setting
+  if (details.duration) doc.duration = details.duration
+  if (details.opportunityKind || (kind === "grant" && submission.funding_type)) {
+    doc.opportunityKind = details.opportunityKind || submission.funding_type
+  }
+  if (details.applicantType?.length) doc.applicantType = details.applicantType
+  if (details.fundingAmount) doc.fundingAmount = details.fundingAmount
+  if (details.materialKind || (kind === "educational" && submission.funding_type)) {
+    doc.materialKind = details.materialKind || submission.funding_type
+  }
+  if (details.gradeBands?.length) doc.gradeBands = details.gradeBands
+  if (details.topicFocus) doc.topicFocus = details.topicFocus
+  if (details.format) doc.format = details.format
+  if (submission.location_scope) doc.locationScope = submission.location_scope
+  const careerAreas = await resolveCareerAreaRefs(submission)
+  if (careerAreas.length) doc.careerAreas = careerAreas
+  if (details.tags?.length) doc.tags = details.tags
 
   const result = await sanityMutate([{ create: doc }])
   return result.ok ? { id: docId } : null

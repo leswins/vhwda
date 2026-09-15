@@ -1,10 +1,13 @@
-import React, { useState } from "react"
+import React, { useMemo, useState } from "react"
 import { Link } from "react-router-dom"
 import { useLanguageStore } from "../../zustand/useLanguageStore"
 import { t, type TranslationKey } from "../../utils/i18n"
+import { useSiteFeatureFlags } from "../../hooks/useSiteFeatureFlags"
 
 export function Footer() {
   const { language, setLanguage } = useLanguageStore()
+  const featureFlags = useSiteFeatureFlags()
+  const showAskAi = Boolean(featureFlags?.aiChatEnabled)
 
   const exploreLinks: Array<{ key: TranslationKey; to?: string; href?: string }> = [
     { key: "footer.link.home", to: "/" },
@@ -14,13 +17,15 @@ export function Footer() {
     { key: "footer.link.teachers", to: "/teachers" }
   ]
 
-  const helpLinks: Array<{ key: TranslationKey; to?: string; href?: string }> = [
-    { key: "footer.link.compareCareers", to: "/compare" },
-    { key: "footer.link.askAi", to: "/chat" },
-    { key: "footer.link.about", to: "/about" },
-    // TODO: add routes when pages exist
-    { key: "footer.link.contact", href: "mailto:info@vhwda.org" }
-  ]
+  const helpLinks = useMemo(() => {
+    const links: Array<{ key: TranslationKey; to?: string; href?: string }> = [
+      { key: "footer.link.compareCareers", to: "/compare" },
+      ...(showAskAi ? [{ key: "footer.link.askAi" as const, to: "/chat" }] : []),
+      { key: "footer.link.about", to: "/about" },
+      { key: "footer.link.contact", href: "mailto:info@vhwda.org" }
+    ]
+    return links
+  }, [showAskAi])
 
   const [openSection, setOpenSection] = useState<"about" | "explore" | "help" | null>(null)
 
@@ -32,7 +37,7 @@ export function Footer() {
     <footer className="bg-surface text-foreground px-0 lg:px-fluid-50 border-b-0 lg:border-b-[0.5px] border-foreground">
       <div className="w-full lg:max-w-[1368px] lg:mx-auto lg:border-l lg:border-r lg:border-foreground">
         {/* Mobile accordion layout */}
-        <div className="md:hidden border-t border-foreground">
+        <div className="md:hidden border-t-[0.5px] border-foreground">
           {/* About / Brand */}
           <div className="border-b border-foreground">
             <button
@@ -139,7 +144,7 @@ export function Footer() {
         </div>
 
         {/* Desktop layout (unchanged visually) */}
-        <div className="hidden md:grid md:grid-cols-2 border-t border-foreground">
+        <div className="hidden md:grid md:grid-cols-2 border-t-[0.5px] border-foreground">
           {/* Left column - Brand & Info */}
           <div className="flex flex-col gap-fluid-30 lg:gap-[250px] px-fluid-30 lg:pr-[200px] py-fluid-30">
             <svg className="w-[133px] lg:w-[200px] h-auto" viewBox="0 0 404 111" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label={t(language, "brand.name")}>

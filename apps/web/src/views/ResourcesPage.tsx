@@ -139,9 +139,10 @@ export function ResourcesPage() {
               {t(language, "resources.teacherCta")}
             </Link>
           </div>
-          <div className="flex flex-col gap-0 lg:gap-fluid-20 border-t border-foreground lg:border-0">
+          <div className="flex flex-col gap-0 lg:gap-fluid-20 border-t-[0.5px] border-foreground lg:border-0">
             {publicTypes.map((type, index, array) => {
               const isOpen = openSections.includes(type.slug)
+              const isLast = index === array.length - 1
               return (
                 <React.Fragment key={type._id}>
                   <button
@@ -174,14 +175,14 @@ export function ResourcesPage() {
                       </div>
                     ) : null}
                   </button>
-                  {index < array.length - 1 && (
-                    <div className="h-[0.5px] w-full bg-foreground" aria-hidden="true" />
-                  )}
                   {isOpen && (
                     <div className="lg:hidden">
                       <PlanYourNextStepsSection resourceTypes={publicTypes} activeSections={[type.slug]} />
                     </div>
                   )}
+                  {!isLast ? (
+                    <div className="h-[0.5px] w-full bg-foreground" aria-hidden="true" />
+                  ) : null}
                 </React.Fragment>
               )
             })}

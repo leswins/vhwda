@@ -53,7 +53,7 @@ export function CheckboxGroup({
   onChange,
   language
 }: {
-  options: Array<{ value: string; key: Parameters<typeof t>[1] }>
+  options: Array<{ value: string; key?: Parameters<typeof t>[1]; label?: string }>
   selected: string[]
   onChange: (values: string[]) => void
   language: Language
@@ -70,6 +70,7 @@ export function CheckboxGroup({
     <div className="flex flex-wrap gap-2">
       {options.map((opt) => {
         const checked = selected.includes(opt.value)
+        const label = opt.label ?? (opt.key ? t(language, opt.key) : opt.value)
         return (
           <button
             key={opt.value}
@@ -83,7 +84,7 @@ export function CheckboxGroup({
                 : "border-foreground bg-surface text-foreground hover:bg-surface1"
             )}
           >
-            {t(language, opt.key)}
+            {label}
           </button>
         )
       })}

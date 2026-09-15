@@ -143,7 +143,9 @@ export const resourceType = defineType({
       name: "enabled",
       title: "Enabled",
       type: "boolean",
-      initialValue: true
+      initialValue: true,
+      description:
+        "When off, this type is hidden on the Resources page, the educator library, and the submit form. Click Publish after changing this."
     })
   ],
   preview: {

@@ -14,13 +14,23 @@ type Props = {
   resource: HubResource
   accent?: ResourceAccent
   typeSlug?: string
+  fileActionLabel?: string
+  onFileAction?: () => void
 }
 
-export function HubResourceCard({ language, resource, accent = "green", typeSlug }: Props) {
+export function HubResourceCard({
+  language,
+  resource,
+  accent = "green",
+  typeSlug,
+  fileActionLabel,
+  onFileAction
+}: Props) {
   const title = getLocalizedString(language, resource.title) ?? ""
   const description =
     getLocalizedText(language, resource.description) || getLocalizedString(language, resource.summary)
   const institution = resource.institution
+  const actionClass = `shrink-0 ${accentBg(accent)} px-3 py-1.5 lg:px-4 lg:py-2 text-body-sm lg:text-sm font-semibold text-foreground rounded-none transition-colors hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/20`
   const facetLabels = facetsForSlug(typeSlug).flatMap((group) => {
     const raw = resource[group.id]
     const values = Array.isArray(raw) ? raw : raw ? [raw] : []
@@ -36,12 +46,16 @@ export function HubResourceCard({ language, resource, accent = "green", typeSlug
     <div className="space-y-fluid-8 lg:space-y-4 border-b-[0.5px] border-foreground py-5 lg:py-[40px] first:pt-0 last:border-0 last:pb-0">
       <div className="flex items-start justify-between gap-fluid-10">
         <h3 className="text-body-base lg:text-lg font-semibold text-foreground leading-snug">{title}</h3>
-        {resource.link ? (
+        {resource.hasFile && onFileAction && fileActionLabel ? (
+          <button type="button" className={actionClass} onClick={onFileAction}>
+            {fileActionLabel}
+          </button>
+        ) : resource.link ? (
           <a
             href={resource.link}
             target="_blank"
             rel="noopener noreferrer"
-            className={`shrink-0 ${accentBg(accent)} px-3 py-1.5 lg:px-4 lg:py-2 text-body-sm lg:text-sm font-semibold text-foreground rounded-none transition-colors hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/20`}
+            className={actionClass}
             onClick={() => {
               trackEvent("resource_click", {
                 resource_type: typeSlug ?? "hub_resource",

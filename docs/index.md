@@ -9,6 +9,7 @@ This folder is the canonical “source of truth” for how this repo is organize
 - [Design System](design-system.md)
 - [Runbook](runbook.md)
 - [PRD](../prd.md)
+- [Client update: Resource Hub & educator library](VHWDA-Resource-Hub-Client-Update.md)
 
 ## Conventions + contracts
 - [Repo Conventions](conventions.md)

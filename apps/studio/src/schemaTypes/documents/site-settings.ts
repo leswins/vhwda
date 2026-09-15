@@ -41,7 +41,14 @@ export const siteSettings = defineType({
       title: "Feature Flags",
       type: "object",
       fields: [
-        defineField({ name: "aiChatEnabled", title: "AI Chat Enabled", type: "boolean" }),
+        defineField({
+          name: "aiChatEnabled",
+          title: "AI Chat Enabled",
+          type: "boolean",
+          initialValue: false,
+          description:
+            "When off, Ask AI is hidden in the header and footer. Publish Site Settings after changing this toggle so the live website updates."
+        }),
         defineField({
           name: "scholarshipsEnabled",
           title: "Scholarships Enabled",
