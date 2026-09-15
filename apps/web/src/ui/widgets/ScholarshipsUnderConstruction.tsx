@@ -11,9 +11,9 @@ export function ScholarshipsUnderConstruction({ language }: Props) {
   const tapeRepeats = Array.from({ length: 12 }, () => tapeText)
 
   return (
-    <div className="relative overflow-hidden border-b border-foreground">
+    <div className="relative overflow-hidden">
       {/* Header row: matches SectionHeader layout on desktop */}
-      <div className="hidden lg:flex items-center justify-between p-[25px] border-y-[0.5px] border-foreground">
+      <div className="hidden lg:flex items-center justify-between p-[25px] border-b-[0.5px] border-foreground">
         <div className="flex items-center gap-[20px]">
           <div className="flex h-[70px] w-[70px] items-center justify-center bg-[rgb(var(--color-accent-green))]">
             {/* Simple icon placeholder to avoid extra assets */}
