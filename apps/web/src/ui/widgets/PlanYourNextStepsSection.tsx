@@ -131,7 +131,7 @@ export function PlanYourNextStepsSection({ resourceTypes, activeSections }: Plan
   const visibleTypes = resourceTypes.filter((type) => activeSections.includes(type.slug))
 
   return (
-    <div className="space-y-0">
+    <div className="divide-y-[0.5px] divide-foreground">
       {visibleTypes.map((type) => {
         const title = getResourceTypeLabel(language, type)
         const header = (
