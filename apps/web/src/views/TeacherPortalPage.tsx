@@ -14,14 +14,16 @@ import {
   isTeacherPortalType,
   type ResourceType
 } from "../sanity/queries/resourceTypes"
-import { getLocalizedString, getLocalizedText } from "../sanity/queries/careers"
+import { getLocalizedString } from "../sanity/queries/careers"
 import { ResourceTypeIcon } from "../ui/widgets/ResourceTypeIcon"
+import { HubResourceCard } from "../ui/widgets/HubResourceCard"
+import { FiltersPanel, ResourceSplit } from "../ui/widgets/HubResourceSplit"
+import { HubFacetFilters, HubSortOptions } from "../ui/widgets/HubFacetFilters"
 import { accentBg } from "../lib/resourceTypePresentation"
 import { trackEvent } from "../utils/analytics"
 import { DEMO_TEACHER_RESOURCES } from "../data/demoResources"
 import { useDemoResourcesEnabled } from "../hooks/useDemoResourcesEnabled"
 import { EDUCATION_FACETS, emptyHubFacetFilters } from "../lib/hubResourceFacets"
-import { HubFacetFilters } from "../ui/widgets/HubFacetFilters"
 import { filterHubResources } from "../ui/widgets/filters/filterHubResources"
 
 function GoogleMark() {
@@ -79,7 +81,6 @@ export function TeacherPortalPage() {
   const [resources, setResources] = useState<HubResource[]>([])
   const [types, setTypes] = useState<ResourceType[]>([])
   const [libraryLoading, setLibraryLoading] = useState(false)
-  const [searchQuery, setSearchQuery] = useState("")
   const [educationFilters, setEducationFilters] = useState(emptyHubFacetFilters)
   const [downloadError, setDownloadError] = useState<string | null>(null)
   const [demoLibrary, setDemoLibrary] = useState(false)
@@ -132,8 +133,8 @@ export function TeacherPortalPage() {
   }, [showLibrary, demoEnabled])
 
   const filteredResources = useMemo(
-    () => filterHubResources(resources, { ...educationFilters, searchQuery }, language),
-    [educationFilters, language, resources, searchQuery]
+    () => filterHubResources(resources, educationFilters, language),
+    [educationFilters, language, resources]
   )
 
   async function handleAuth(e: React.FormEvent) {
@@ -260,8 +261,9 @@ export function TeacherPortalPage() {
         </div>
       </div>
 
-      <div className="min-h-[70vh] px-5 py-10 lg:p-fluid-50">
-        <div className="mx-auto max-w-2xl">
+      {!initialized || (!user && !demoLibrary) || (user && !onboarded && !demoLibrary) ? (
+        <div className="min-h-[70vh] px-5 py-10 lg:p-fluid-50">
+          <div className="mx-auto max-w-2xl">
           {!initialized ? (
             <p className="text-muted">{t(language, "teacherPortal.loading")}</p>
           ) : !user && !demoLibrary ? (
@@ -423,8 +425,12 @@ export function TeacherPortalPage() {
                 </Button>
               </div>
             </form>
-          ) : (
-            <div className="space-y-8">
+          ) : null}
+          </div>
+        </div>
+      ) : (
+            <div className="min-h-[70vh]">
+              <div className="space-y-6 px-5 py-10 lg:px-fluid-50 lg:pt-fluid-50 lg:pb-fluid-30">
               {demoLibrary ? (
                 <div className="border-[0.5px] border-foreground p-4">
                   <p className="text-body-sm text-muted">{t(language, "teacherPortal.demo.banner")}</p>
@@ -462,83 +468,70 @@ export function TeacherPortalPage() {
                   ))}
                 </div>
               ) : null}
+              </div>
 
-              <input
-                type="search"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder={t(language, "teacherPortal.library.search")}
-                className={FORM_INPUT_CLASS}
-              />
+              <ResourceSplit
+                sidebar={
+                  <FiltersPanel
+                    language={language}
+                    searchPlaceholderKey="teacherPortal.library.search"
+                    searchQuery={educationFilters.searchQuery}
+                    onSearchChange={(query) => setEducationFilters((prev) => ({ ...prev, searchQuery: query }))}
+                    alwaysShowFilters
+                    showContentDivider={false}
+                    sortChildren={
+                      <HubSortOptions
+                        language={language}
+                        filters={educationFilters}
+                        onFiltersChange={setEducationFilters}
+                        showDeadline={false}
+                        name="teacher-library-sort"
+                      />
+                    }
+                  >
+                    <HubFacetFilters
+                      language={language}
+                      groups={EDUCATION_FACETS}
+                      filters={educationFilters}
+                      onFiltersChange={setEducationFilters}
+                    />
+                  </FiltersPanel>
+                }
+              >
+                {downloadError ? <FieldError message={downloadError} /> : null}
+                {libraryLoading ? (
+                  <p className="text-muted">{t(language, "teacherPortal.library.loading")}</p>
+                ) : filteredResources.length === 0 ? (
+                  <p className="text-muted">{t(language, "teacherPortal.library.empty")}</p>
+                ) : (
+                  <div>
+                    {filteredResources.map((resource) => {
+                      const type =
+                        types.find((item) => item.slug === resource.resourceType?.slug) ?? types[0]
+                      return (
+                        <HubResourceCard
+                          key={resource._id}
+                          language={language}
+                          resource={resource}
+                          accent={type?.accent ?? "yellow"}
+                          typeSlug={type?.slug ?? "teacher-materials"}
+                          fileActionLabel={resource.hasFile ? t(language, "teacherPortal.download") : undefined}
+                          onFileAction={resource.hasFile ? () => void handleDownload(resource) : undefined}
+                        />
+                      )
+                    })}
+                  </div>
+                )}
+              </ResourceSplit>
 
-              <HubFacetFilters
-                language={language}
-                groups={EDUCATION_FACETS}
-                filters={{ ...educationFilters, searchQuery }}
-                onFiltersChange={setEducationFilters}
-              />
-
-              {downloadError ? <FieldError message={downloadError} /> : null}
-
-              {libraryLoading ? (
-                <p className="text-muted">{t(language, "teacherPortal.library.loading")}</p>
-              ) : filteredResources.length === 0 ? (
-                <p className="text-muted">{t(language, "teacherPortal.library.empty")}</p>
-              ) : (
-                <div>
-                  {filteredResources.map((resource) => {
-                    const title = getLocalizedString(language, resource.title) ?? ""
-                    const description =
-                      getLocalizedText(language, resource.description) || getLocalizedString(language, resource.summary)
-                    return (
-                      <div key={resource._id} className="space-y-3 border-b-[0.5px] border-foreground py-6 first:pt-0 last:border-0">
-                        <div className="flex items-start justify-between gap-4">
-                          <div className="space-y-2">
-                            <h3 className="text-h4 font-semibold text-foreground">{title}</h3>
-                            {resource.institution ? (
-                              <p className="text-body-xs font-medium uppercase tracking-[0.08em] text-onSurfaceSecondary">
-                                {resource.institution}
-                              </p>
-                            ) : null}
-                            {description ? <p className="text-body-sm text-muted">{description}</p> : null}
-                          </div>
-                          {resource.hasFile ? (
-                            <Button
-                              type="button"
-                              variant="dark"
-                              size="sm"
-                              className="shrink-0 !rounded-none !bg-accentYellow !text-foreground"
-                              onClick={() => void handleDownload(resource)}
-                            >
-                              {t(language, "teacherPortal.download")}
-                            </Button>
-                          ) : resource.link ? (
-                            <a
-                              href={resource.link}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="shrink-0 bg-accentYellow px-4 py-2 text-sm font-semibold text-foreground"
-                            >
-                              {t(language, "common.visitSite")}
-                            </a>
-                          ) : null}
-                        </div>
-                      </div>
-                    )
-                  })}
-                </div>
-              )}
-
-              <p className="text-body-sm text-muted">
+              <p className="px-5 py-6 text-body-sm text-muted lg:px-fluid-50">
                 {t(language, "teacherPortal.library.publicHubPrompt")}{" "}
                 <Link to="/resources" className="underline underline-offset-2">
                   {t(language, "nav.resources")}
                 </Link>
               </p>
             </div>
-          )}
-        </div>
-      </div>
+      )}
     </>
   )
 }

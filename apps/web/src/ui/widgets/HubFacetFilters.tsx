@@ -138,12 +138,14 @@ export function HubSortOptions({
   language,
   filters,
   onFiltersChange,
-  showDeadline = true
+  showDeadline = true,
+  name = "hub-resource-sort"
 }: {
   language: Language
   filters: HubFacetFilters
   onFiltersChange: (filters: HubFacetFilters) => void
   showDeadline?: boolean
+  name?: string
 }) {
   const options = [
     { value: "title" as const, key: "filters.sort.title" as const },
@@ -157,7 +159,7 @@ export function HubSortOptions({
         <label key={option.value} className="flex cursor-pointer items-center gap-[10px] lg:gap-[15px]">
           <input
             type="radio"
-            name="hub-resource-sort"
+            name={name}
             checked={filters.sort === option.value}
             onChange={() => onFiltersChange({ ...filters, sort: option.value })}
             className="h-4 w-4 accent-foreground"
