@@ -1,10 +1,13 @@
-import React, { useState } from "react"
+import React, { useMemo, useState } from "react"
 import { Link } from "react-router-dom"
 import { useLanguageStore } from "../../zustand/useLanguageStore"
 import { t, type TranslationKey } from "../../utils/i18n"
+import { useSiteFeatureFlags } from "../../hooks/useSiteFeatureFlags"
 
 export function Footer() {
   const { language, setLanguage } = useLanguageStore()
+  const featureFlags = useSiteFeatureFlags()
+  const showAskAi = Boolean(featureFlags?.aiChatEnabled)
 
   const exploreLinks: Array<{ key: TranslationKey; to?: string; href?: string }> = [
     { key: "footer.link.home", to: "/" },
@@ -14,13 +17,15 @@ export function Footer() {
     { key: "footer.link.teachers", to: "/teachers" }
   ]
 
-  const helpLinks: Array<{ key: TranslationKey; to?: string; href?: string }> = [
-    { key: "footer.link.compareCareers", to: "/compare" },
-    { key: "footer.link.askAi", to: "/chat" },
-    { key: "footer.link.about", to: "/about" },
-    // TODO: add routes when pages exist
-    { key: "footer.link.contact", href: "mailto:info@vhwda.org" }
-  ]
+  const helpLinks = useMemo(() => {
+    const links: Array<{ key: TranslationKey; to?: string; href?: string }> = [
+      { key: "footer.link.compareCareers", to: "/compare" },
+      ...(showAskAi ? [{ key: "footer.link.askAi" as const, to: "/chat" }] : []),
+      { key: "footer.link.about", to: "/about" },
+      { key: "footer.link.contact", href: "mailto:info@vhwda.org" }
+    ]
+    return links
+  }, [showAskAi])
 
   const [openSection, setOpenSection] = useState<"about" | "explore" | "help" | null>(null)
 
