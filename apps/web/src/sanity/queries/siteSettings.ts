@@ -17,7 +17,8 @@ export const SITE_SETTINGS_FEATURE_FLAGS_QUERY = /* groq */ `
 `
 
 export async function fetchSiteFeatureFlags(): Promise<SiteFeatureFlags> {
-  const data = await sanityClient.fetch<{ featureFlags?: SiteFeatureFlags } | null>(SITE_SETTINGS_FEATURE_FLAGS_QUERY)
+  const client = sanityClient.withConfig({ useCdn: true, perspective: "published" })
+  const data = await client.fetch<{ featureFlags?: SiteFeatureFlags } | null>(SITE_SETTINGS_FEATURE_FLAGS_QUERY)
   return data?.featureFlags ?? {}
 }
 
