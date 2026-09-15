@@ -143,7 +143,7 @@ export function ResourceSubmitPage() {
     let cancelled = false
     fetchResourceTypes().then((all) => {
       if (cancelled) return
-      const formTypes = all.filter((type) => type.showInSubmissionForm !== false)
+      const formTypes = all.filter((type) => type.enabled && type.showInSubmissionForm !== false)
       setTypes(formTypes)
       setForm((prev) => {
         const slug = formTypes.some((type) => type.slug === prev.resource_type_slug)

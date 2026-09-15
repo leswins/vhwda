@@ -383,7 +383,7 @@ export function ResourcePortalPage() {
 
   useEffect(() => {
     let cancelled = false
-    fetchResourceTypes().then((types) => {
+    fetchResourceTypes({ includeDisabled: true }).then((types) => {
       if (cancelled) return
       const next: Record<string, string> = {}
       for (const type of types) {
