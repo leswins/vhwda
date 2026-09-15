@@ -1,8 +1,11 @@
 import React, { useEffect, useMemo, useState } from "react"
 import { Link } from "react-router-dom"
 import { useLanguageStore } from "../zustand/useLanguageStore"
-import { t } from "../utils/i18n"
+import { t, type Language, type TranslationKey } from "../utils/i18n"
 import { PageHead } from "../ui/PageHead"
+import careerExplorationIcon from "../assets/icons/career-exploration.svg"
+import educationPathwaysIcon from "../assets/icons/education-pathways.svg"
+import classroomReadyIcon from "../assets/icons/classroom-ready.svg"
 import { Button } from "../ui/components/Button"
 import { FieldError, FieldLabel, FORM_INPUT_CLASS, FORM_SELECT_CLASS, FORM_TEXTAREA_CLASS, cx } from "../ui/forms/fields"
 import { useTeacherAuthStore } from "../zustand/useTeacherAuthStore"
@@ -43,6 +46,66 @@ const ROLE_OPTIONS = [
   { value: "administrator", key: "teacherPortal.role.administrator" as const },
   { value: "other", key: "teacherPortal.role.other" as const }
 ]
+
+const LANDING_HIGHLIGHTS: Array<{
+  icon: string
+  titleKey: TranslationKey
+  bodyKey: TranslationKey
+}> = [
+  {
+    icon: careerExplorationIcon,
+    titleKey: "teacherPortal.landing.career.title",
+    bodyKey: "teacherPortal.landing.career.body"
+  },
+  {
+    icon: educationPathwaysIcon,
+    titleKey: "teacherPortal.landing.pathways.title",
+    bodyKey: "teacherPortal.landing.pathways.body"
+  },
+  {
+    icon: classroomReadyIcon,
+    titleKey: "teacherPortal.landing.classroom.title",
+    bodyKey: "teacherPortal.landing.classroom.body"
+  }
+]
+
+function TeacherPortalLandingCopy({
+  language,
+  onCreateAccount
+}: {
+  language: Language
+  onCreateAccount: () => void
+}) {
+  return (
+    <div className="flex min-w-0 flex-1 flex-col">
+      <p className="text-body-lg text-foreground">{t(language, "teacherPortal.landing.intro")}</p>
+      <div className="mt-10 divide-y-[0.5px] divide-foreground">
+        {LANDING_HIGHLIGHTS.map((item) => (
+          <div key={item.titleKey} className="flex items-start gap-[15px] py-10 first:pt-0 last:pb-0">
+            <img src={item.icon} alt="" className="mt-0.5 h-[30px] w-[30px] shrink-0" />
+            <div className="flex min-w-0 flex-col gap-[15px]">
+              <h2 className="text-h4 font-bold text-foreground">{t(language, item.titleKey)}</h2>
+              <p className="text-body-lg text-foreground">{t(language, item.bodyKey)}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className="mt-10 flex flex-col gap-6">
+        <h2 className="text-h3 font-bold text-foreground">{t(language, "teacherPortal.landing.close.title")}</h2>
+        <p className="text-body-lg text-foreground">{t(language, "teacherPortal.landing.close.body")}</p>
+        <Button
+          type="button"
+          variant="outline"
+          size="lg"
+          onClick={onCreateAccount}
+          className="w-fit !rounded-none border-foreground"
+        >
+          {t(language, "teacherPortal.landing.createAccountCta")}
+        </Button>
+      </div>
+    </div>
+  )
+}
 
 export function TeacherPortalPage() {
   const { language } = useLanguageStore()
@@ -247,26 +310,51 @@ export function TeacherPortalPage() {
                     ? t(language, "teacherPortal.error.authFailed")
                     : error
 
+  const showLanding = !user && !demoLibrary
+
+  function switchAuthMode(next: "signin" | "signup") {
+    setMode(next)
+    setNeedsConfirmation(false)
+    setFormError(null)
+    clearError()
+  }
+
+  function handleCreateAccountCta() {
+    switchAuthMode("signup")
+    document.getElementById("teacher-auth")?.scrollIntoView({ behavior: "smooth", block: "start" })
+  }
+
   return (
     <>
-      <PageHead title={t(language, "page.title.teachers")} description={t(language, "teacherPortal.subtitle")} path="/teachers" />
+      <PageHead
+        title={t(language, "page.title.teachers")}
+        description={t(language, showLanding ? "teacherPortal.landing.intro" : "teacherPortal.subtitle")}
+        path="/teachers"
+      />
 
-      <div className="border-b-[0.5px] border-foreground px-5 py-10 lg:p-fluid-50">
-        <div className="mx-auto max-w-2xl space-y-3">
+      <div className={cx("px-5 py-10 lg:p-fluid-50", showLanding ? "" : "border-b-[0.5px] border-foreground")}>
+        <div className={cx("space-y-3", showLanding ? "max-w-4xl" : "mx-auto max-w-2xl")}>
           <span className="text-sub2 font-bold uppercase tracking-[0.15em] text-onSurfaceSecondary">
             {t(language, "teacherPortal.kicker")}
           </span>
-          <h1 className="text-h2 font-bold tracking-tight text-foreground">{t(language, "teacherPortal.title")}</h1>
-          <p className="text-body-lg text-muted">{t(language, "teacherPortal.subtitle")}</p>
+          <h1 className="text-h2 font-bold tracking-tight text-foreground">
+            {t(language, showLanding ? "teacherPortal.heroHeadline" : "teacherPortal.title")}
+          </h1>
+          {showLanding ? null : <p className="text-body-lg text-muted">{t(language, "teacherPortal.subtitle")}</p>}
         </div>
       </div>
 
       {!initialized || (!user && !demoLibrary) || (user && !onboarded && !demoLibrary) ? (
-        <div className="min-h-[70vh] px-5 py-10 lg:p-fluid-50">
-          <div className="mx-auto max-w-2xl">
+        showLanding ? (
+        <div className="min-h-[70vh] border-t-[0.5px] border-foreground px-5 py-10 lg:p-fluid-50">
+          <div className="flex flex-col gap-10 lg:flex-row lg:items-start lg:gap-[100px]">
+            <div
+              id="teacher-auth"
+              className="w-full bg-surface lg:sticky lg:top-[50px] lg:w-[415px] lg:shrink-0 lg:self-start"
+            >
           {!initialized ? (
             <p className="text-muted">{t(language, "teacherPortal.loading")}</p>
-          ) : !user && !demoLibrary ? (
+          ) : (
             <div className="space-y-6">
               {!configured ? (
                 <div className="space-y-2 border-[0.5px] border-foreground p-4">
@@ -277,30 +365,24 @@ export function TeacherPortalPage() {
               <div className="flex gap-2">
                 <button
                   type="button"
-                  onClick={() => {
-                    setMode("signin")
-                    setNeedsConfirmation(false)
-                    setFormError(null)
-                    clearError()
-                  }}
+                  onClick={() => switchAuthMode("signin")}
                   className={cx(
                     "px-3 py-1.5 text-body-sm font-medium",
-                    mode === "signin" ? "bg-foreground text-surface" : "text-foreground hover:bg-surface1"
+                    mode === "signin"
+                      ? "bg-foreground text-surface"
+                      : "border-[0.5px] border-foreground text-foreground hover:bg-surface1"
                   )}
                 >
                   {t(language, "teacherPortal.signIn")}
                 </button>
                 <button
                   type="button"
-                  onClick={() => {
-                    setMode("signup")
-                    setNeedsConfirmation(false)
-                    setFormError(null)
-                    clearError()
-                  }}
+                  onClick={() => switchAuthMode("signup")}
                   className={cx(
                     "px-3 py-1.5 text-body-sm font-medium",
-                    mode === "signup" ? "bg-foreground text-surface" : "text-foreground hover:bg-surface1"
+                    mode === "signup"
+                      ? "bg-foreground text-surface"
+                      : "border-[0.5px] border-foreground text-foreground hover:bg-surface1"
                   )}
                 >
                   {t(language, "teacherPortal.createAccount")}
@@ -379,7 +461,14 @@ export function TeacherPortalPage() {
                 </Button>
               ) : null}
             </div>
-          ) : user && !onboarded && !demoLibrary ? (
+          )}
+            </div>
+            <TeacherPortalLandingCopy language={language} onCreateAccount={handleCreateAccountCta} />
+          </div>
+        </div>
+        ) : (
+        <div className="min-h-[70vh] px-5 py-10 lg:p-fluid-50">
+          <div className="mx-auto max-w-2xl">
             <form onSubmit={handleProfile} className="space-y-6">
               <div>
                 <h2 className="text-h4 font-bold text-foreground">{t(language, "teacherPortal.onboarding.title")}</h2>
@@ -425,9 +514,9 @@ export function TeacherPortalPage() {
                 </Button>
               </div>
             </form>
-          ) : null}
           </div>
         </div>
+        )
       ) : (
             <div className="min-h-[70vh]">
               <div className="space-y-6 px-5 py-10 lg:px-fluid-50 lg:pt-fluid-50 lg:pb-fluid-30">

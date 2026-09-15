@@ -1005,9 +1005,44 @@ const dict: Dictionary = {
 
   "teacherPortal.kicker": { en: "For educators", es: "Para educadores" },
   "teacherPortal.title": { en: "Educator resource library", es: "Biblioteca de recursos para educadores" },
+  "teacherPortal.heroHeadline": {
+    en: "Everything you need to bring health careers into the classroom.",
+    es: "Todo lo que necesitas para llevar las carreras de salud al aula."
+  },
   "teacherPortal.subtitle": {
     en: "Sign in to download classroom materials that introduce health careers to students across Virginia.",
     es: "Inicia sesión para descargar materiales de aula que presentan las carreras de salud a estudiantes de Virginia."
+  },
+  "teacherPortal.landing.intro": {
+    en: "The educator resource library gives you a simple way to introduce students to health careers, explain the education and training pathways behind them, and connect classroom learning to real opportunities across Virginia.",
+    es: "La biblioteca de recursos para educadores te ofrece una forma sencilla de presentar a los estudiantes las carreras de salud, explicar las rutas de educación y formación detrás de ellas, y conectar el aprendizaje en el aula con oportunidades reales en Virginia."
+  },
+  "teacherPortal.landing.career.title": { en: "Career exploration", es: "Exploración de carreras" },
+  "teacherPortal.landing.career.body": {
+    en: "Use presentations, handouts, and infographics to help students explore health careers, understand typical salary ranges, and see how classroom learning connects to real roles.",
+    es: "Usa presentaciones, folletos e infografías para ayudar a los estudiantes a explorar carreras de salud, entender rangos salariales típicos y ver cómo el aprendizaje en el aula se conecta con roles reales."
+  },
+  "teacherPortal.landing.pathways.title": { en: "Education & pathways", es: "Educación y trayectorias" },
+  "teacherPortal.landing.pathways.body": {
+    en: "Share career pathway resources, education requirements, and salary information so students can compare entry points, training options, and long-term career possibilities.",
+    es: "Comparte recursos de trayectorias profesionales, requisitos educativos e información salarial para que los estudiantes comparen puntos de entrada, opciones de formación y posibilidades a largo plazo."
+  },
+  "teacherPortal.landing.classroom.title": { en: "Classroom-ready resources", es: "Recursos listos para el aula" },
+  "teacherPortal.landing.classroom.body": {
+    en: "Access materials such as presentations, handouts, infographics, activities, career pathway resources, salary and career information, education requirements, and Virginia school and program information.",
+    es: "Accede a materiales como presentaciones, folletos, infografías, actividades, recursos de trayectorias, información salarial y de carreras, requisitos educativos e información de escuelas y programas de Virginia."
+  },
+  "teacherPortal.landing.close.title": {
+    en: "Help students see what’s possible.",
+    es: "Ayuda a los estudiantes a ver lo que es posible."
+  },
+  "teacherPortal.landing.close.body": {
+    en: "Healthcare careers have many different education and training pathways. These resources help you connect classroom learning and students' interests to real career opportunities across Virginia, making it easier for students to imagine their next step.",
+    es: "Las carreras de salud tienen muchas rutas diferentes de educación y formación. Estos recursos te ayudan a conectar el aprendizaje en el aula y los intereses de los estudiantes con oportunidades reales en Virginia, para que les sea más fácil imaginar su siguiente paso."
+  },
+  "teacherPortal.landing.createAccountCta": {
+    en: "Create a free educator account",
+    es: "Crea una cuenta gratuita de educador"
   },
   "teacherPortal.loading": { en: "Loading educator portal…", es: "Cargando el portal para educadores…" },
   "teacherPortal.notConfigured.title": { en: "Portal setup in progress", es: "Configuración del portal en curso" },
