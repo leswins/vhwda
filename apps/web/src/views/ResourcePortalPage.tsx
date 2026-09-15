@@ -25,6 +25,23 @@ type Submission = {
   location_scope: string | null
   badges: string[]
   career_areas_text: string | null
+  details?: {
+    experienceKind?: string
+    compensation?: string
+    audienceLevel?: string[]
+    setting?: string
+    duration?: string
+    opportunityKind?: string
+    applicantType?: string[]
+    fundingAmount?: string
+    materialKind?: string
+    gradeBands?: string[]
+    topicFocus?: string
+    format?: string
+    fileLabel?: string
+    membershipType?: string[]
+    tags?: string[]
+  } | null
   submitter_name: string
   submitter_email: string
   submitter_organization: string | null
@@ -83,9 +100,67 @@ const BADGE_KEYS: Record<string, Parameters<typeof t>[1]> = {
   health_related: "scholarshipForm.badge.healthRelated"
 }
 
+const VALUE_KEYS: Record<string, Parameters<typeof t>[1]> = {
+  ...STAGE_KEYS,
+  ...FUNDING_KEYS,
+  ...SCOPE_KEYS,
+  ...BADGE_KEYS,
+  remote: "filters.locationScope.remote",
+  internship: "filters.experienceKind.internship",
+  shadowing: "filters.experienceKind.shadowing",
+  volunteer: "filters.experienceKind.volunteer",
+  clinical_rotation: "filters.experienceKind.clinicalRotation",
+  research: "filters.experienceKind.research",
+  apprenticeship: "filters.experienceKind.apprenticeship",
+  paid: "filters.compensation.paid",
+  stipend: "filters.compensation.stipend",
+  unpaid: "filters.compensation.unpaid",
+  career_changer: "filters.audienceLevel.careerChanger",
+  hospital: "filters.setting.hospital",
+  clinic: "filters.setting.clinic",
+  public_health: "filters.setting.publicHealth",
+  community: "filters.setting.community",
+  lab: "filters.setting.lab",
+  last_dollar: "filters.opportunityKind.lastDollar",
+  workforce_grant: "filters.opportunityKind.workforceGrant",
+  credential_funding: "filters.opportunityKind.credentialFunding",
+  employer_sponsored: "filters.opportunityKind.employerSponsored",
+  student: "filters.applicantType.student",
+  worker: "filters.applicantType.worker",
+  adult_learner: "filters.applicantType.adultLearner",
+  employer: "filters.applicantType.employer",
+  school: "filters.applicantType.school",
+  lesson_plan: "filters.materialKind.lessonPlan",
+  curriculum: "filters.materialKind.curriculum",
+  activity: "filters.materialKind.activity",
+  facilitator_guide: "filters.materialKind.facilitatorGuide",
+  video: "filters.materialKind.video",
+  slide_deck: "filters.materialKind.slideDeck",
+  career_profile: "filters.materialKind.careerProfile",
+  elementary: "filters.gradeBands.elementary",
+  middle: "filters.gradeBands.middle",
+  cte: "filters.gradeBands.cte",
+  counselor: "filters.gradeBands.counselor",
+  career_exploration: "filters.topicFocus.careerExploration",
+  workplace_safety: "filters.topicFocus.workplaceSafety",
+  clinical_skills: "filters.topicFocus.clinicalSkills",
+  pathway_planning: "filters.topicFocus.pathwayPlanning",
+  pdf: "filters.format.pdf",
+  web: "filters.format.web",
+  slides: "filters.format.slides",
+  professional: "filters.membershipType.professional"
+}
+
 function label(language: Language, keys: Record<string, Parameters<typeof t>[1]>, value: string) {
   const key = keys[value]
   return key ? t(language, key) : value
+}
+
+function formatValues(language: Language, values?: string | string[] | null) {
+  if (!values) return null
+  const list = Array.isArray(values) ? values : [values]
+  const next = list.filter(Boolean).map((value) => label(language, VALUE_KEYS, value))
+  return next.length ? next.join(", ") : null
 }
 
 function formatDate(iso: string) {
@@ -245,27 +320,86 @@ function SubmissionCard({
               }
             />
             <DetailRow
+              label={t(language, "filters.experienceKind")}
+              value={formatValues(language, submission.details?.experienceKind)}
+            />
+            <DetailRow
+              label={t(language, "filters.compensation")}
+              value={formatValues(language, submission.details?.compensation)}
+            />
+            <DetailRow
+              label={t(language, "filters.audienceLevel")}
+              value={formatValues(language, submission.details?.audienceLevel)}
+            />
+            <DetailRow
+              label={t(language, "filters.setting")}
+              value={formatValues(language, submission.details?.setting)}
+            />
+            <DetailRow label={t(language, "resourceForm.field.duration")} value={submission.details?.duration ?? null} />
+            <DetailRow
+              label={t(language, "filters.opportunityKind")}
+              value={formatValues(language, submission.details?.opportunityKind)}
+            />
+            <DetailRow
+              label={t(language, "filters.applicantType")}
+              value={formatValues(language, submission.details?.applicantType)}
+            />
+            <DetailRow
+              label={t(language, "resourceForm.field.fundingAmount")}
+              value={submission.details?.fundingAmount ?? null}
+            />
+            <DetailRow
+              label={t(language, "filters.materialKind")}
+              value={formatValues(language, submission.details?.materialKind)}
+            />
+            <DetailRow
+              label={t(language, "filters.gradeBands")}
+              value={formatValues(language, submission.details?.gradeBands)}
+            />
+            <DetailRow
+              label={t(language, "filters.topicFocus")}
+              value={formatValues(language, submission.details?.topicFocus)}
+            />
+            <DetailRow
+              label={t(language, "filters.format")}
+              value={formatValues(language, submission.details?.format)}
+            />
+            <DetailRow
+              label={t(language, "resourceForm.field.fileLabel")}
+              value={submission.details?.fileLabel ?? null}
+            />
+            <DetailRow
+              label={t(language, "filters.membershipType")}
+              value={formatValues(language, submission.details?.membershipType)}
+            />
+            <DetailRow
               label={t(language, "scholarshipPortal.detail.currentStage")}
               value={
-                submission.current_stage?.length > 0
+                submission.resource_type_slug === "scholarships" && submission.current_stage?.length > 0
                   ? submission.current_stage.map((s) => label(language, STAGE_KEYS, s)).join(", ")
                   : null
               }
             />
             <DetailRow
               label={t(language, "scholarshipPortal.detail.fundingType")}
-              value={submission.funding_type ? label(language, FUNDING_KEYS, submission.funding_type) : null}
+              value={
+                submission.resource_type_slug === "scholarships" && submission.funding_type
+                  ? label(language, FUNDING_KEYS, submission.funding_type)
+                  : null
+              }
             />
             <DetailRow
-              label={t(language, "scholarshipPortal.detail.locationScope")}
-              value={submission.location_scope ? label(language, SCOPE_KEYS, submission.location_scope) : null}
+              label={t(language, "filters.locationScope")}
+              value={submission.location_scope ? label(language, VALUE_KEYS, submission.location_scope) : null}
             />
             <DetailRow
               label={t(language, "scholarshipPortal.detail.badges")}
               value={
-                submission.badges?.length > 0
+                submission.resource_type_slug === "scholarships" && submission.badges?.length > 0
                   ? submission.badges.map((b) => label(language, BADGE_KEYS, b)).join(", ")
-                  : null
+                  : submission.details?.tags?.length
+                    ? submission.details.tags.join(", ")
+                    : null
               }
             />
             <DetailRow label={t(language, "scholarshipPortal.detail.careerAreas")} value={submission.career_areas_text} />

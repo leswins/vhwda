@@ -2,6 +2,7 @@ export const config = { runtime: "edge" }
 
 import { corsHeaders, jsonResponse, sanityQuery } from "../server/cms"
 import { insertResourceSubmission } from "../server/submissions"
+import { fieldsForKind, submitKindForSlug, type ResourceDetails } from "../src/lib/resourceSubmitFields"
 
 type ResourceDestination = "public_hub" | "teacher_portal"
 
@@ -49,6 +50,7 @@ type SubmissionPayload = {
   location_scope?: string
   badges?: string[]
   career_areas_text?: string
+  details?: ResourceDetails
   submitter_name?: string
   submitter_email?: string
   submitter_organization?: string
@@ -74,6 +76,8 @@ export default async function handler(request: Request) {
   }
 
   const slug = payload.resource_type_slug?.trim() || "scholarships"
+  const kind = submitKindForSlug(slug)
+  const fields = fieldsForKind(kind)
   const destination = await resolveDestination(
     slug,
     payload.destination === "teacher_portal" ? "teacher_portal" : "public_hub"
@@ -86,10 +90,12 @@ export default async function handler(request: Request) {
     errors.push("submitter_email is not a valid email")
   }
 
+  const details = payload.details ?? {}
   const link = payload.link?.trim() || ""
   const fileUrl = payload.file_url?.trim() || ""
-  if (!link && !(destination === "teacher_portal" && fileUrl)) {
-    errors.push("link is required")
+  if (fields.linkRequired && !link) errors.push("link is required")
+  if (fields.fileUrl && !fields.linkRequired && !link && !fileUrl) {
+    errors.push("a file URL or web link is required")
   }
   if (link) {
     try {
@@ -104,6 +110,21 @@ export default async function handler(request: Request) {
     } catch {
       errors.push("file_url must be a valid URL")
     }
+  }
+  if (fields.experienceKind && !details.experienceKind && !payload.funding_type) {
+    errors.push("experience type is required")
+  }
+  if (fields.compensation && !details.compensation) {
+    errors.push("compensation is required")
+  }
+  if (fields.opportunityKind && !details.opportunityKind && !payload.funding_type) {
+    errors.push("opportunity type is required")
+  }
+  if (fields.applicantType && !(details.applicantType?.length || payload.current_stage?.length)) {
+    errors.push("at least one applicant type is required")
+  }
+  if (fields.materialKind && !details.materialKind && !payload.funding_type) {
+    errors.push("material type is required")
   }
 
   if (errors.length > 0) {
@@ -128,6 +149,7 @@ export default async function handler(request: Request) {
     location_scope: payload.location_scope || null,
     badges: payload.badges ?? [],
     career_areas_text: payload.career_areas_text?.trim() || null,
+    details,
     submitter_name: payload.submitter_name!.trim(),
     submitter_email: payload.submitter_email!.trim(),
     submitter_organization: payload.submitter_organization?.trim() || null,

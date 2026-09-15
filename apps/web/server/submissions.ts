@@ -1,4 +1,5 @@
 import { supabaseRest } from "./cms"
+import type { ResourceDetails } from "../src/lib/resourceSubmitFields"
 
 export type ResourceDestination = "public_hub" | "teacher_portal"
 
@@ -21,6 +22,7 @@ export type ResourceSubmission = {
   location_scope: string | null
   badges: string[]
   career_areas_text: string | null
+  details: ResourceDetails
   submitter_name: string
   submitter_email: string
   submitter_organization: string | null
@@ -56,6 +58,7 @@ function withDefaults(row: Partial<ResourceSubmission> & { id: string; name: str
     location_scope: row.location_scope ?? null,
     badges: row.badges ?? [],
     career_areas_text: row.career_areas_text ?? null,
+    details: row.details ?? {},
     submitter_name: row.submitter_name ?? "",
     submitter_email: row.submitter_email ?? "",
     submitter_organization: row.submitter_organization ?? null,
@@ -85,12 +88,15 @@ const FULL_COLUMNS = [
   "location_scope",
   "badges",
   "career_areas_text",
+  "details",
   "submitter_name",
   "submitter_email",
   "submitter_organization",
   "notes",
   "status"
 ]
+
+const COLUMNS_WITHOUT_DETAILS = FULL_COLUMNS.filter((column) => column !== "details")
 
 const LEGACY_COLUMNS = [
   "name",
@@ -128,12 +134,15 @@ export async function insertResourceSubmission(input: ResourceSubmissionInsert) 
     destination: input.destination || "public_hub",
     current_stage: input.current_stage ?? [],
     badges: input.badges ?? [],
+    details: input.details ?? {},
     status: "pending"
   }
 
   const attempts: Array<{ table: string; columns: string[] }> = [
     { table: "resource_submissions", columns: FULL_COLUMNS },
+    { table: "resource_submissions", columns: COLUMNS_WITHOUT_DETAILS },
     { table: "scholarship_submissions", columns: FULL_COLUMNS },
+    { table: "scholarship_submissions", columns: COLUMNS_WITHOUT_DETAILS },
     { table: "scholarship_submissions", columns: LEGACY_COLUMNS }
   ]
 
